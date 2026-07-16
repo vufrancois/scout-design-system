@@ -732,6 +732,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
 
       <h3>Breadcrumbs</h3>
       <ul>
+        <li>On detail (drill-in) pages, the breadcrumb replaces the topbar title: muted parent link(s) &rarr; bold current entity.</li>
         <li>Separator: <code>/</code> character in <code>--muted-foreground</code>.</li>
         <li>Links use <code>--muted-foreground</code> with hover to <code>--foreground</code>.</li>
         <li>Current page (last item): <code>--foreground</code>, <code>font-weight: 600</code>.</li>
@@ -755,6 +756,22 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Use the accent palette to color-code different page types (e.g., sky for Orders, amber for Quotes).</li>
         <li>With actions: buttons sit right of the title, vertically centered. Toolbar-style outline buttons; destructive actions use destructive outline; AI actions use outline + sparkles icon.</li>
         <li>When a page header has actions, its single main action is a primary-filled button, placed last (e.g. Categorize with AI on Products, Import on Inventory). Never more than one primary per header; pages without a main action have no header buttons.</li>
+      </ul>
+
+      <h3>Detail Header</h3>
+      <ul>
+        <li>Header shell for drill-in pages: 48px muted <em>bordered</em> icon tile (not accent-soft — accents are reserved for page headers) + 22px/600 entity name + inline status badge.</li>
+        <li>Attribute rows below, divided by 1px borders: two-column grid, muted label left, value right. Values follow the formatting rules (dates, currency).</li>
+        <li>Pairs with a topbar breadcrumb back to the parent list page.</li>
+        <li><strong>Avatar variant</strong> (entities with identity — properties, users): 72px solid-accent avatar with initials + 16px presence dot (emerald, 3px <code>--background</code> ring), 24px name, icon+text meta rows (type, address).</li>
+        <li><strong>Highlight tiles</strong>: for a few important or linkable attributes — <code>--muted</code> tile, 40px accent-soft icon container, 11px uppercase eyebrow label, 15px/600 value (links to related detail pages inherit color, underline on hover). Use plain attribute rows for longer flat attribute lists.</li>
+      </ul>
+
+      <h3>Section Card</h3>
+      <ul>
+        <li>Card hosting a titled sub-collection on a detail page: 16px/600 title + count pill (24px, <code>--muted</code>, 12px/600) left; controls (segmented view toggle, search) right.</li>
+        <li>The embedded table gets its own 1px border + <code>--radius-md</code> (the section card provides the outer chrome); pagination sits below the table inside the card.</li>
+        <li>Grid views embed the standard entity-card grid.</li>
       </ul>
     </section>
 

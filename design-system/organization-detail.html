@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Organizations — Scout Demo</title>
+  <title>Olivier &amp; Buyers — Scout Demo</title>
   <style>
     /* ========================================
        SCOUT TOKENS (shared)
@@ -145,23 +145,52 @@
     }
 
     /* Page content */
-    .page-content { padding: 32px; max-width: 1360px; }
+    .page-content { padding: 32px; max-width: 1360px; display: flex; flex-direction: column; gap: 16px; }
 
-    /* Page header with actions */
-    .page-header {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
+    /* Breadcrumbs (topbar) */
+    .breadcrumbs { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .breadcrumbs a { color: var(--muted-foreground); text-decoration: none; font-weight: 500; }
+    .breadcrumbs a:hover { color: var(--foreground); }
+    .breadcrumbs .crumb-sep { color: var(--muted-foreground); }
+    .breadcrumbs .crumb-current { color: var(--foreground); font-weight: 600; }
+
+    /* Detail header */
+    .detail-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
     }
-    .page-header-left { display: flex; align-items: center; gap: 16px; }
-    .page-header-icon {
+    .detail-head { display: flex; align-items: center; gap: 16px; padding: 20px; }
+    .detail-icon {
       width: 48px; height: 48px; border-radius: var(--radius-lg);
-      display: flex; align-items: center; justify-content: center;
-      background: var(--sky-soft); flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--muted);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      color: var(--muted-foreground);
     }
-    .page-header-icon svg { width: 24px; height: 24px; stroke: var(--sky); }
-    .page-header-text h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
-    .page-header-text p { font-size: 14px; color: var(--muted-foreground); }
-    .page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .detail-icon svg { width: 22px; height: 22px; }
+    .detail-name-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .detail-name { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: var(--foreground); }
+    .detail-attrs { border-top: 1px solid var(--border); }
+    .detail-attr {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      padding: 14px 20px; font-size: 14px;
+    }
+    .detail-attr + .detail-attr { border-top: 1px solid var(--border); }
+    .detail-attr-label { color: var(--muted-foreground); }
+    .detail-attr-value { color: var(--foreground); }
+
+    /* Section card */
+    .section-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+    }
+    .section-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .section-card-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: var(--foreground); }
+    .count-pill {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 24px; height: 24px; padding: 0 8px;
+      border-radius: var(--radius-pill); font-size: 12px; font-weight: 600;
+      background: var(--muted); color: var(--muted-foreground);
+    }
 
     /* Segmented icon toggle */
     .segmented {
@@ -169,7 +198,7 @@
       border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2px;
     }
     .segmented button {
-      width: 32px; height: 30px; border: none; border-radius: var(--radius-sm);
+      height: 30px; min-width: 32px; padding: 0; border: none; border-radius: var(--radius-sm);
       background: transparent; color: var(--muted-foreground); cursor: pointer;
       display: flex; align-items: center; justify-content: center; transition: all 0.15s;
     }
@@ -178,18 +207,7 @@
     .segmented button svg { width: 16px; height: 16px; }
 
     /* Toolbar */
-    .toolbar {
-      display: flex; align-items: center; justify-content: flex-end;
-      gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
-    }
-    .toolbar-btn-icon {
-      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-md); border: 1px solid var(--border);
-      background: var(--background); color: var(--foreground);
-      cursor: pointer; transition: all 0.15s;
-    }
-    .toolbar-btn-icon:hover { background: var(--accent); }
-    .toolbar-btn-icon svg { width: 16px; height: 16px; }
+    .toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
     .search-wrap { position: relative; display: flex; align-items: center; width: 240px; }
     .search-icon { position: absolute; left: 12px; color: var(--muted-foreground); pointer-events: none; }
     .search-field {
@@ -201,29 +219,22 @@
     .search-field::placeholder { color: var(--muted-foreground); }
     .search-field:focus { border-color: var(--ring); }
 
-    /* Data table */
-    .table-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); overflow: hidden;
-    }
-    .table-scroll { overflow-x: auto; }
-    .table-card table { width: 100%; border-collapse: collapse; }
-    .table-card thead th {
+    /* Table (inside section card) */
+    .table-wrap { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
       padding: 12px 16px; text-align: left; white-space: nowrap;
       font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
       color: var(--muted-foreground); background: var(--muted);
       border-bottom: 1px solid var(--border);
     }
-    .table-card tbody tr { transition: background 0.1s; }
-    .table-card tbody tr:hover { background: var(--accent); }
-    .table-card tbody td {
-      padding: 12px 16px; font-size: 14px; white-space: nowrap;
-      border-bottom: 1px solid var(--border);
-    }
-    .table-card tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 0.1s; }
+    tbody tr:hover { background: var(--accent); }
+    tbody td { padding: 12px 16px; font-size: 14px; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
     .id-cell { font-weight: 500; color: var(--foreground); }
 
-    /* Status dots — badge treatment */
+    /* Status badge dots */
     .status-dot-item {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 3px 10px; border: 1px solid var(--border); border-radius: var(--radius-pill);
@@ -236,7 +247,7 @@
     /* Pagination */
     .pagination {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; border-top: 1px solid var(--border);
+      padding: 12px 0 0; margin-top: 4px;
     }
     .pagination-info { font-size: 13px; color: var(--muted-foreground); }
     .pagination-controls { display: flex; align-items: center; gap: 16px; }
@@ -258,11 +269,7 @@
     .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .pagination-btn svg { width: 16px; height: 16px; }
 
-    /* Empty-state note in card footer */
-    .empty-note { color: var(--muted-foreground); }
-    .empty-note svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-    /* Property cards (grid view) */
+    /* Entity cards (grid view) */
     .entity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .entity-card {
       background: var(--card); border: 1px solid var(--border);
@@ -285,10 +292,7 @@
       display: inline-flex; align-items: center; justify-content: center;
     }
     .avatar + .avatar { margin-left: -8px; }
-    .avatar-more {
-      background: var(--muted); color: var(--muted-foreground);
-      font-size: 10px; font-weight: 600;
-    }
+    .avatar-more { background: var(--muted); color: var(--muted-foreground); font-size: 10px; font-weight: 600; }
     .avatar-label { font-size: 13px; color: var(--muted-foreground); }
   </style>
 </head>
@@ -400,7 +404,11 @@
         <button class="sidebar-toggle" onclick="toggleSidebar()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
         </button>
-        <div class="topbar-title">Organizations</div>
+        <nav class="breadcrumbs">
+          <a href="organizations.html">Organizations</a>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">Olivier &amp; Buyers</span>
+        </nav>
       </div>
       <div class="topbar-actions">
         <button class="topbar-icon-btn">
@@ -416,18 +424,27 @@
     <!-- Page content -->
     <div class="page-content">
 
-      <!-- Page header -->
-      <div class="page-header">
-        <div class="page-header-left">
-          <div class="page-header-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <div class="page-header-text">
-            <h1>Organizations</h1>
-            <p>View organizations procuring in your service area.</p>
+      <!-- Detail header -->
+      <div class="detail-card">
+        <div class="detail-head">
+          <div class="detail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg></div>
+          <div class="detail-name-row">
+            <span class="detail-name">Olivier &amp; Buyers</span>
+            <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
           </div>
         </div>
-        <div class="page-header-actions">
+        <div class="detail-attrs">
+          <div class="detail-attr">
+            <span class="detail-attr-label">Type</span>
+            <span class="detail-attr-value">Company</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Properties section -->
+      <div class="section-card">
+        <div class="section-card-head">
+          <div class="section-card-title">Properties <span class="count-pill">6</span></div>
           <div class="segmented">
             <button id="btn-view-grid" onclick="setView('grid')" title="Grid view">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
@@ -437,164 +454,138 @@
             </button>
           </div>
         </div>
-      </div>
-
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="search-wrap">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="search-field" placeholder="Search" />
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input class="search-field" placeholder="Search properties..." />
+          </div>
         </div>
-        <button class="toolbar-btn-icon" title="Sort">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-        </button>
-      </div>
 
-      <!-- List view -->
-      <div class="table-card" id="view-list">
-        <div class="table-scroll">
-        <table>
-          <thead>
+        <!-- List view -->
+        <div id="view-list">
+          <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Users</th>
+              </tr>
+            </thead>
+            <tbody>
             <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Properties</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="id-cell"><a href="organization-detail.html" style="color:inherit;text-decoration:none">Olivier &amp; Buyers</a></td>
-              <td>Company</td>
+              <td class="id-cell"><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>6</td>
+              <td>20</td>
             </tr>
             <tr>
-              <td class="id-cell">ChadwellTestBuyer</td>
-              <td>Company</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>2</td>
-            </tr>
-            <tr>
-              <td class="id-cell">Demo Inc.</td>
-              <td>Company</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>9</td>
-            </tr>
-            <tr>
-              <td class="id-cell">CLK Properties</td>
-              <td>Company</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <td class="id-cell">Scout E2E Organization</td>
-              <td>Property Management</td>
+              <td class="id-cell">QA-PH-A-R64YQ</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>1</td>
             </tr>
             <tr>
-              <td class="id-cell">QA Shipping Overlap Org mr53vgak</td>
-              <td>Property Management</td>
+              <td class="id-cell">QA-PH-B-R64YQ</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>0</td>
+              <td>1</td>
             </tr>
             <tr>
-              <td class="id-cell">QA Shipping Overlap Org mr54dtgf</td>
-              <td>Property Management</td>
+              <td class="id-cell">QA-PH-C-R64YQ</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>0</td>
+              <td>1</td>
             </tr>
-          </tbody>
-        </table>
-        </div>
-        <div class="pagination">
-          <span class="pagination-info">Page 1 of 1</span>
-          <div class="pagination-controls">
-            <div class="pagination-rows">
-              <span>Rows per page</span>
-              <select class="pagination-rows-select">
-                <option>10</option>
-                <option>25</option>
-                <option>50</option>
-              </select>
-            </div>
-            <div class="pagination-buttons">
-              <button class="pagination-btn" disabled>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4L5 8l4 4"/><path d="M12 4L8 8l4 4"/></svg>
-              </button>
-              <button class="pagination-btn" disabled>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
-              </button>
-              <button class="pagination-btn" disabled>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
-              </button>
-              <button class="pagination-btn" disabled>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4"/><path d="M7 4l4 4-4 4"/></svg>
-              </button>
+            <tr>
+              <td class="id-cell">Bueyrs Test &mdash; New Orleans</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>7</td>
+            </tr>
+            <tr>
+              <td class="id-cell">Bueyrs Test &mdash; Houston</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>3</td>
+            </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="pagination">
+            <span class="pagination-info">Page 1 of 1</span>
+            <div class="pagination-controls">
+              <div class="pagination-rows">
+                <span>Rows per page</span>
+                <select class="pagination-rows-select">
+                  <option>10</option>
+                  <option>25</option>
+                  <option>50</option>
+                </select>
+              </div>
+              <div class="pagination-buttons">
+                <button class="pagination-btn" disabled>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4L5 8l4 4"/><path d="M12 4L8 8l4 4"/></svg>
+                </button>
+                <button class="pagination-btn" disabled>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
+                </button>
+                <button class="pagination-btn" disabled>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+                </button>
+                <button class="pagination-btn" disabled>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4"/><path d="M7 4l4 4-4 4"/></svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Grid view -->
-      <div class="entity-grid" id="view-grid" style="display:none">
+        <!-- Grid view -->
+        <div class="entity-grid" id="view-grid" style="display:none">
           <div class="entity-card">
             <div class="entity-card-header">
-              <div class="entity-card-name"><a href="organization-detail.html" style="color:inherit;text-decoration:none">Olivier &amp; Buyers</a></div>
+              <div class="entity-card-name"><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Company</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 properties</span></div>
+            <div class="entity-card-meta">Residential</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar avatar-more">+16</span></div><span class="avatar-label">20 users</span></div>
           </div>
           <div class="entity-card">
             <div class="entity-card-header">
-              <div class="entity-card-name">ChadwellTestBuyer</div>
+              <div class="entity-card-name">QA-PH-A-R64YQ</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Company</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span></div><span class="avatar-label">2 properties</span></div>
+            <div class="entity-card-meta">Residential</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span></div><span class="avatar-label">1 user</span></div>
           </div>
           <div class="entity-card">
             <div class="entity-card-header">
-              <div class="entity-card-name">Demo Inc.</div>
+              <div class="entity-card-name">QA-PH-B-R64YQ</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Company</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar avatar-more">+5</span></div><span class="avatar-label">9 properties</span></div>
+            <div class="entity-card-meta">Residential</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">1 user</span></div>
           </div>
           <div class="entity-card">
             <div class="entity-card-header">
-              <div class="entity-card-name">CLK Properties</div>
+              <div class="entity-card-name">QA-PH-C-R64YQ</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Company</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">4 properties</span></div>
+            <div class="entity-card-meta">Residential</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">1 user</span></div>
           </div>
           <div class="entity-card">
             <div class="entity-card-header">
-              <div class="entity-card-name">Scout E2E Organization</div>
+              <div class="entity-card-name">Bueyrs Test &mdash; New Orleans</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Property Management</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">1 property</span></div>
+            <div class="entity-card-meta">Residential</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar avatar-more">+3</span></div><span class="avatar-label">7 users</span></div>
           </div>
           <div class="entity-card">
             <div class="entity-card-header">
-              <div class="entity-card-name">QA Shipping Overlap Org mr53vgak</div>
+              <div class="entity-card-name">Bueyrs Test &mdash; Houston</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Property Management</div>
-            <div class="avatar-group empty-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg><span class="avatar-label">No properties</span></div>
+            <div class="entity-card-meta">Residential</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">3 users</span></div>
           </div>
-          <div class="entity-card">
-            <div class="entity-card-header">
-              <div class="entity-card-name">QA Shipping Overlap Org mr54dtgf</div>
-              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
-            </div>
-            <div class="entity-card-meta">Property Management</div>
-            <div class="avatar-group empty-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg><span class="avatar-label">No properties</span></div>
-          </div>
+        </div>
       </div>
 
     </div>

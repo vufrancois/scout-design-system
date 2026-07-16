@@ -1,0 +1,116 @@
+/* ============================================================
+   Scout Design System — Design Tokens
+   ============================================================
+   Single source of truth for both apps:
+   - Buyer App: map to Shadcn UI variable names via Tailwind preset
+   - Vendor/Admin Portal: override @medusajs/ui theme variables
+   Dark theme: add the .dark class to <body>.
+   Full usage rules: design-doc.html (or /design-doc.html on the live site)
+   ============================================================ */
+
+:root {
+  /* Blue shade scale */
+  --blue-50: #eef2ff;
+  --blue-100: #dbe1fe;
+  --blue-200: #b8c4fd;
+  --blue-300: #8da0fb;
+  --blue-400: #6277f5;
+  --blue-500: #3d52e0;
+  --blue-600: #2740b8;
+  --blue-700: #172d77;
+  --blue-800: #122361;
+  --blue-900: #0d1a4a;
+  --blue-950: #080f2e;
+
+  /* Badge / Accent */
+  --violet: #8a5fef;
+  --violet-soft: #f0ebfe;
+  --rose: #e0599b;
+  --rose-soft: #fce8f1;
+  --amber: #f59e0b;
+  --amber-soft: #fef3cd;
+  --emerald: #10b981;
+  --emerald-soft: #d1fae5;
+  --sky: #3b82f6;
+  --sky-soft: #dbeafe;
+  --orange: #f97316;
+  --orange-soft: #ffedd5;
+
+  /* Semantic — Light theme */
+  --background: #ffffff;
+  --foreground: #111111;
+  --primary: #172d77;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #111111;
+  --muted: #f5f5f5;
+  --muted-foreground: #6b7280;
+  --accent: #eef2ff;
+  --accent-foreground: #172d77;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #172d77;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+
+  /* Scout extensions */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --surface-soft: #f8f9fa;
+  --surface-dark: #0d1a4a;
+  --surface-dark-foreground: #ffffff;
+  --surface-dark-muted: #a1a1aa;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.16);
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+  --radius-full: 9999px;
+}
+
+.dark {
+  --background: #080f2e;
+  --foreground: #f5f5f5;
+  --primary: #172d77;
+  --primary-foreground: #ffffff;
+  --secondary: #0d1a4a;
+  --secondary-foreground: #f5f5f5;
+  --muted: #122361;
+  --muted-foreground: #a1a1aa;
+  --accent: #122361;
+  --accent-foreground: #dbe1fe;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #1e3a8a;
+  --input: #1e3a8a;
+  --ring: #3d52e0;
+  --card: #0d1a4a;
+  --card-foreground: #f5f5f5;
+  --popover: #0d1a4a;
+  --popover-foreground: #f5f5f5;
+  --surface-soft: #122361;
+  --surface-dark: #172d77;
+  --surface-dark-foreground: #ffffff;
+  --surface-dark-muted: #a1a1aa;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.5);
+}

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-system",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "design-system", "-l", "3333", "--no-clipboard"],
+      "port": 3333
+    }
+  ]
+}

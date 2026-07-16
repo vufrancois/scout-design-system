@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scout Design System — Design Doc</title>
+  <style>
+    :root {
+      --blue-50: #eef2ff; --blue-100: #dbe1fe; --blue-200: #b8c4fd;
+      --blue-300: #8da0fb; --blue-400: #6277f5; --blue-500: #3d52e0;
+      --blue-600: #2740b8; --blue-700: #172d77; --blue-800: #122361;
+      --blue-900: #0d1a4a; --blue-950: #080f2e;
+      --violet: #8a5fef; --violet-soft: #f0ebfe;
+      --rose: #e0599b; --rose-soft: #fce8f1;
+      --amber: #f59e0b; --amber-soft: #fef3cd;
+      --emerald: #10b981; --emerald-soft: #d1fae5;
+      --sky: #3b82f6; --sky-soft: #dbeafe;
+      --orange: #f97316; --orange-soft: #ffedd5;
+      --background: #ffffff; --foreground: #111111;
+      --primary: #172d77; --primary-foreground: #ffffff;
+      --secondary: #f5f5f5; --secondary-foreground: #111111;
+      --muted: #f5f5f5; --muted-foreground: #6b7280;
+      --accent: #eef2ff; --accent-foreground: #172d77;
+      --destructive: #ef4444; --destructive-foreground: #ffffff;
+      --border: #e5e7eb; --input: #e5e7eb; --ring: #172d77;
+      --card: #ffffff; --card-foreground: #111111;
+      --popover: #ffffff; --popover-foreground: #111111;
+      --success: #10b981; --success-foreground: #ffffff;
+      --warning: #f59e0b; --warning-foreground: #ffffff;
+      --surface-soft: #f8f9fa; --surface-dark: #0d1a4a;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --radius-xs: 4px; --radius-sm: 6px; --radius-md: 8px;
+      --radius-lg: 12px; --radius-xl: 16px; --radius-pill: 9999px;
+    }
+    .dark {
+      --background: #080f2e; --foreground: #f5f5f5;
+      --primary: #172d77; --primary-foreground: #ffffff;
+      --secondary: #0d1a4a; --secondary-foreground: #f5f5f5;
+      --muted: #122361; --muted-foreground: #a1a1aa;
+      --accent: #122361; --accent-foreground: #dbe1fe;
+      --border: #1e3a8a; --input: #1e3a8a; --ring: #3d52e0;
+      --card: #0d1a4a; --card-foreground: #f5f5f5;
+      --popover: #0d1a4a; --popover-foreground: #f5f5f5;
+      --surface-soft: #122361;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.25);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--background); color: var(--foreground);
+      line-height: 1.7; transition: background 0.3s, color 0.3s;
+    }
+    .top-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--background); border-bottom: 1px solid var(--border);
+      padding: 12px 24px; backdrop-filter: blur(12px);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .top-bar-inner { max-width: 860px; margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; color: var(--foreground); text-decoration: none; }
+    .logo span { color: var(--primary); }
+    .top-bar-right { display: flex; align-items: center; gap: 16px; }
+    .demo-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 600; text-decoration: none;
+      background: var(--primary); color: var(--primary-foreground);
+      transition: background 0.15s;
+    }
+    .demo-btn:hover { background: var(--blue-600); }
+    .demo-btn svg { width: 14px; height: 14px; }
+    .page-tabs {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--muted); border: 1px solid var(--border);
+      border-radius: var(--radius-pill); padding: 4px;
+    }
+    .page-tabs a {
+      padding: 6px 14px; border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      text-decoration: none; cursor: pointer; transition: all 0.2s;
+      background: transparent; color: var(--muted-foreground);
+    }
+    .page-tabs a:hover { color: var(--foreground); }
+    .page-tabs a.active { background: var(--background); color: var(--foreground); box-shadow: var(--shadow-xs); }
+    .theme-toggle {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--muted); border: 1px solid var(--border);
+      border-radius: var(--radius-pill); padding: 4px;
+    }
+    .theme-toggle button {
+      padding: 6px 14px; border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      border: none; cursor: pointer; transition: all 0.2s;
+      background: transparent; color: var(--muted-foreground);
+    }
+    .theme-toggle button.active { background: var(--background); color: var(--foreground); box-shadow: var(--shadow-xs); }
+
+    .page { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+
+    /* Document nav */
+    .doc-nav {
+      position: sticky; top: 64px; z-index: 50;
+      background: var(--background); border-bottom: 1px solid var(--border);
+      padding: 12px 0; margin-bottom: 40px;
+      display: flex; gap: 4px; flex-wrap: wrap;
+    }
+    .doc-nav a {
+      padding: 6px 14px; border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 500; text-decoration: none;
+      color: var(--muted-foreground); background: var(--muted);
+      transition: all 0.15s; cursor: pointer;
+    }
+    .doc-nav a:hover { color: var(--foreground); background: var(--accent); }
+    .doc-nav a.active { background: var(--primary); color: var(--primary-foreground); }
+
+    /* Prose */
+    .doc-section { margin-bottom: 56px; scroll-margin-top: 130px; }
+    h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+    .doc-subtitle { font-size: 16px; color: var(--muted-foreground); margin-bottom: 40px; }
+    h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 16px; color: var(--foreground); }
+    h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: var(--foreground); }
+    p { font-size: 14px; color: var(--card-foreground); margin-bottom: 12px; }
+    ul, ol { font-size: 14px; padding-left: 20px; margin-bottom: 12px; color: var(--card-foreground); }
+    li { margin-bottom: 4px; }
+    code {
+      font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px;
+      background: var(--muted); padding: 2px 6px; border-radius: var(--radius-xs);
+      color: var(--accent-foreground);
+    }
+    pre {
+      background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 16px; overflow-x: auto; margin-bottom: 16px;
+    }
+    pre code { background: none; padding: 0; font-size: 12px; line-height: 1.6; color: var(--foreground); }
+    .token-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px; }
+    .token-table th {
+      text-align: left; padding: 8px 12px; background: var(--muted);
+      font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--muted-foreground); border-bottom: 1px solid var(--border);
+    }
+    .token-table td {
+      padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top;
+    }
+    .token-table code { font-size: 12px; }
+    .swatch-inline {
+      display: inline-block; width: 16px; height: 16px; border-radius: var(--radius-xs);
+      vertical-align: middle; margin-right: 6px; border: 1px solid var(--border);
+    }
+    .callout {
+      padding: 16px 20px; border-radius: var(--radius-md); margin-bottom: 16px;
+      border-left: 4px solid var(--primary); background: var(--accent);
+      font-size: 13px; color: var(--accent-foreground);
+    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <a class="logo" href="index.html"><span>Scout</span> Design System</a>
+      <div class="top-bar-right">
+        <div class="page-tabs">
+          <a href="index.html">Components</a>
+          <a class="active" href="design-doc.html">Design Doc</a>
+        </div>
+        <a class="demo-btn" href="orders.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          Vendor App
+        </a>
+        <div class="theme-toggle">
+          <button class="active" onclick="setTheme('light')">Light</button>
+          <button onclick="setTheme('dark')">Dark</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <h1>DESIGN.md</h1>
+    <p class="doc-subtitle">Usage rules, token reference, and implementation guidance for the Scout Design System.</p>
+
+    <nav class="doc-nav" id="doc-nav">
+      <a class="active" onclick="scrollToSection('overview')">Overview</a>
+      <a onclick="scrollToSection('apps')">Apps</a>
+      <a onclick="scrollToSection('colors')">Colors</a>
+      <a onclick="scrollToSection('typography')">Typography</a>
+      <a onclick="scrollToSection('spacing')">Spacing</a>
+      <a onclick="scrollToSection('radius')">Radius</a>
+      <a onclick="scrollToSection('shadows')">Shadows</a>
+      <a onclick="scrollToSection('theming')">Theming</a>
+      <a onclick="scrollToSection('icons')">Icons</a>
+      <a onclick="scrollToSection('formatting')">Formatting</a>
+      <a onclick="scrollToSection('charts')">Charts</a>
+      <a onclick="scrollToSection('components')">Components</a>
+      <a onclick="scrollToSection('patterns')">Patterns</a>
+    </nav>
+
+    <!-- OVERVIEW -->
+    <section class="doc-section" id="overview">
+      <h2>Overview</h2>
+      <p>The Scout Design System provides a shared visual language across two applications: the <strong>Buyer App</strong> and the <strong>Vendor/Admin Portal</strong>. It is built on CSS custom properties as the token layer, with component implementations adapted per framework.</p>
+      <div class="callout">
+        The living component gallery is available on the <a href="index.html">Components</a> tab. This document defines the rules for using those tokens and components.
+      </div>
+      <h3>Principles</h3>
+      <ul>
+        <li><strong>Token-first</strong> — never hard-code colors, spacing, or radii. Always reference CSS custom properties.</li>
+        <li><strong>Semantic over literal</strong> — use <code>--primary</code> not <code>--blue-700</code> in component styles. Literal scale values are for the token layer only.</li>
+        <li><strong>Theme-safe</strong> — every component must work in both light and dark mode. Test both before shipping.</li>
+        <li><strong>Minimal overrides</strong> — extend, don't override. If a component needs a new variant, add it to the system rather than one-off styling.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- APPS -->
+    <section class="doc-section" id="apps">
+      <h2>Application Architecture</h2>
+      <h3>Buyer App</h3>
+      <ul>
+        <li><strong>Framework:</strong> Shadcn UI + Tailwind CSS</li>
+        <li><strong>Token integration:</strong> CSS custom properties mapped to Shadcn's variable naming convention (<code>--primary</code>, <code>--secondary</code>, <code>--muted</code>, etc.)</li>
+        <li><strong>Tailwind preset:</strong> Extend the default theme via a shared <code>tailwind-preset.ts</code> that references the CSS variables.</li>
+      </ul>
+      <h3>Vendor / Admin Portal</h3>
+      <ul>
+        <li><strong>Framework:</strong> <code>@medusajs/ui</code></li>
+        <li><strong>Token integration:</strong> Override Medusa's default theme variables with Scout tokens at the CSS layer.</li>
+        <li><strong>Usage:</strong> Use Medusa's built-in components where possible; only build custom components for Scout-specific patterns.</li>
+      </ul>
+      <div class="callout">
+        Both apps share the same CSS custom property names. The token layer is the contract — component implementations can differ by framework.
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- COLORS -->
+    <section class="doc-section" id="colors">
+      <h2>Colors</h2>
+
+      <h3>Primary Scale</h3>
+      <p>Scout's primary blue is <code>#172d77</code> (blue-700). The full 11-step scale runs from <code>--blue-50</code> to <code>--blue-950</code>.</p>
+      <table class="token-table">
+        <thead><tr><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><code>--blue-50</code></td><td><span class="swatch-inline" style="background:#eef2ff"></span>#eef2ff</td><td>Accent backgrounds, hover states</td></tr>
+          <tr><td><code>--blue-100</code></td><td><span class="swatch-inline" style="background:#dbe1fe"></span>#dbe1fe</td><td>Light accent fills</td></tr>
+          <tr><td><code>--blue-200</code></td><td><span class="swatch-inline" style="background:#b8c4fd"></span>#b8c4fd</td><td>Borders on accent elements</td></tr>
+          <tr><td><code>--blue-300</code></td><td><span class="swatch-inline" style="background:#8da0fb"></span>#8da0fb</td><td>Dark-mode link text</td></tr>
+          <tr><td><code>--blue-400</code></td><td><span class="swatch-inline" style="background:#6277f5"></span>#6277f5</td><td>Hover states on primary</td></tr>
+          <tr><td><code>--blue-500</code></td><td><span class="swatch-inline" style="background:#3d52e0"></span>#3d52e0</td><td>Active states, rings</td></tr>
+          <tr><td><code>--blue-600</code></td><td><span class="swatch-inline" style="background:#2740b8"></span>#2740b8</td><td>Pressed states</td></tr>
+          <tr><td><code>--blue-700</code></td><td><span class="swatch-inline" style="background:#172d77"></span>#172d77</td><td><strong>Primary</strong> — buttons, links, active tabs</td></tr>
+          <tr><td><code>--blue-800</code></td><td><span class="swatch-inline" style="background:#122361"></span>#122361</td><td>Dark surfaces</td></tr>
+          <tr><td><code>--blue-900</code></td><td><span class="swatch-inline" style="background:#0d1a4a"></span>#0d1a4a</td><td>Dark-mode card backgrounds</td></tr>
+          <tr><td><code>--blue-950</code></td><td><span class="swatch-inline" style="background:#080f2e"></span>#080f2e</td><td>Dark-mode page background</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Semantic Tokens</h3>
+      <p>Component code should only use semantic tokens. These automatically adapt between light and dark themes.</p>
+      <table class="token-table">
+        <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><code>--background</code></td><td>#ffffff</td><td>#080f2e</td><td>Page background</td></tr>
+          <tr><td><code>--foreground</code></td><td>#111111</td><td>#f5f5f5</td><td>Primary text</td></tr>
+          <tr><td><code>--primary</code></td><td>#172d77</td><td>#172d77</td><td>Buttons, links, active states</td></tr>
+          <tr><td><code>--primary-foreground</code></td><td>#ffffff</td><td>#ffffff</td><td>Text on primary backgrounds</td></tr>
+          <tr><td><code>--secondary</code></td><td>#f5f5f5</td><td>#0d1a4a</td><td>Secondary button fills</td></tr>
+          <tr><td><code>--muted</code></td><td>#f5f5f5</td><td>#122361</td><td>Disabled fills, subtle backgrounds</td></tr>
+          <tr><td><code>--muted-foreground</code></td><td>#6b7280</td><td>#a1a1aa</td><td>Secondary text, placeholders</td></tr>
+          <tr><td><code>--accent</code></td><td>#eef2ff</td><td>#122361</td><td>Hover backgrounds, highlights</td></tr>
+          <tr><td><code>--border</code></td><td>#e5e7eb</td><td>#1e3a8a</td><td>All borders</td></tr>
+          <tr><td><code>--card</code></td><td>#ffffff</td><td>#0d1a4a</td><td>Card / elevated surface</td></tr>
+          <tr><td><code>--destructive</code></td><td>#ef4444</td><td>#ef4444</td><td>Delete, error states</td></tr>
+          <tr><td><code>--success</code></td><td>#10b981</td><td>#10b981</td><td>Success states</td></tr>
+          <tr><td><code>--warning</code></td><td>#f59e0b</td><td>#f59e0b</td><td>Warning states</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Accent Palette</h3>
+      <p>Each accent has a vivid and soft (tint) variant. Use the soft variant for backgrounds and the vivid variant for text/icons on those backgrounds.</p>
+      <table class="token-table">
+        <thead><tr><th>Name</th><th>Vivid</th><th>Soft</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td>Violet</td><td><span class="swatch-inline" style="background:#8a5fef"></span><code>#8a5fef</code></td><td><span class="swatch-inline" style="background:#f0ebfe"></span><code>#f0ebfe</code></td><td>Badges, categories</td></tr>
+          <tr><td>Rose</td><td><span class="swatch-inline" style="background:#e0599b"></span><code>#e0599b</code></td><td><span class="swatch-inline" style="background:#fce8f1"></span><code>#fce8f1</code></td><td>Urgent, attention</td></tr>
+          <tr><td>Amber</td><td><span class="swatch-inline" style="background:#f59e0b"></span><code>#f59e0b</code></td><td><span class="swatch-inline" style="background:#fef3cd"></span><code>#fef3cd</code></td><td>Pending, awaiting action</td></tr>
+          <tr><td>Emerald</td><td><span class="swatch-inline" style="background:#10b981"></span><code>#10b981</code></td><td><span class="swatch-inline" style="background:#d1fae5"></span><code>#d1fae5</code></td><td>Success, completed, delivered</td></tr>
+          <tr><td>Sky</td><td><span class="swatch-inline" style="background:#3b82f6"></span><code>#3b82f6</code></td><td><span class="swatch-inline" style="background:#dbeafe"></span><code>#dbeafe</code></td><td>Info, shipping, in-progress</td></tr>
+          <tr><td>Orange</td><td><span class="swatch-inline" style="background:#f97316"></span><code>#f97316</code></td><td><span class="swatch-inline" style="background:#ffedd5"></span><code>#ffedd5</code></td><td>Warnings, expiring</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Rules</h3>
+      <ul>
+        <li>Never use raw hex values in component code. Always use the CSS variable.</li>
+        <li>Use semantic tokens (<code>--primary</code>, <code>--border</code>) for UI chrome. Use accent tokens (<code>--amber</code>, <code>--emerald-soft</code>) for status indicators and badges.</li>
+        <li>The blue scale tokens (<code>--blue-50</code> through <code>--blue-950</code>) are for the token definition layer only. Components should use <code>--primary</code>, <code>--accent</code>, etc.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- TYPOGRAPHY -->
+    <section class="doc-section" id="typography">
+      <h2>Typography</h2>
+      <p>Scout uses <strong>Inter</strong> as its primary typeface, with system-font fallbacks. Monospace uses JetBrains Mono.</p>
+      <pre><code>font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
+
+      <h3>Type Scale</h3>
+      <table class="token-table">
+        <thead><tr><th>Role</th><th>Size</th><th>Weight</th><th>Letter Spacing</th></tr></thead>
+        <tbody>
+          <tr><td>Display / Page title</td><td>36px</td><td>800</td><td>-1px</td></tr>
+          <tr><td>Section heading (h2)</td><td>28px</td><td>700</td><td>-0.5px</td></tr>
+          <tr><td>Card title / h3</td><td>22px</td><td>600</td><td>-0.3px</td></tr>
+          <tr><td>Subsection heading</td><td>16px</td><td>600</td><td>normal</td></tr>
+          <tr><td>Body</td><td>14px</td><td>400</td><td>normal</td></tr>
+          <tr><td>Small / meta</td><td>13px</td><td>500</td><td>normal</td></tr>
+          <tr><td>Caption</td><td>12px</td><td>400</td><td>normal</td></tr>
+          <tr><td>Micro / label</td><td>11px</td><td>600</td><td>0.05–0.08em</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Rules</h3>
+      <ul>
+        <li>Use negative letter-spacing on headings (22px+). Body text uses normal spacing.</li>
+        <li>Line height: 1.5 for body text, 1.2 for headings.</li>
+        <li>Font weight range: 400 (body), 500 (labels/buttons), 600 (subheadings), 700 (headings), 800 (display).</li>
+        <li>Never use font sizes below 11px.</li>
+        <li>Identifiers and codes (SKUs, order IDs, tokens) render in JetBrains Mono at 12px, <code>--muted-foreground</code>.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- SPACING -->
+    <section class="doc-section" id="spacing">
+      <h2>Spacing</h2>
+      <p>Scout uses a 4px base grid. All spacing values are multiples of 4.</p>
+      <table class="token-table">
+        <thead><tr><th>Step</th><th>Value</th><th>Common Usage</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>4px</td><td>Tight gaps (icon-to-text)</td></tr>
+          <tr><td>2</td><td>8px</td><td>Inner padding, compact gaps</td></tr>
+          <tr><td>3</td><td>12px</td><td>Default gap between siblings</td></tr>
+          <tr><td>4</td><td>16px</td><td>Card padding, section inner padding</td></tr>
+          <tr><td>5</td><td>20px</td><td>Comfortable card padding</td></tr>
+          <tr><td>6</td><td>24px</td><td>Page horizontal padding, section gaps</td></tr>
+          <tr><td>8</td><td>32px</td><td>Between subsections</td></tr>
+          <tr><td>10</td><td>40px</td><td>Between major sections</td></tr>
+          <tr><td>16</td><td>64px</td><td>Between page sections</td></tr>
+          <tr><td>24</td><td>96px</td><td>Page bottom padding</td></tr>
+        </tbody>
+      </table>
+      <h3>Rules</h3>
+      <ul>
+        <li>Never use arbitrary pixel values. Stick to multiples of 4.</li>
+        <li>In Tailwind, use the default spacing scale: <code>p-1</code> (4px), <code>p-2</code> (8px), <code>p-3</code> (12px), etc.</li>
+        <li>Use <code>gap</code> over margins when spacing siblings in flex/grid containers.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- RADIUS -->
+    <section class="doc-section" id="radius">
+      <h2>Border Radius</h2>
+      <table class="token-table">
+        <thead><tr><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><code>--radius-xs</code></td><td>4px</td><td>Badges, inline code, small elements</td></tr>
+          <tr><td><code>--radius-sm</code></td><td>6px</td><td>Buttons, inputs, pagination controls</td></tr>
+          <tr><td><code>--radius-md</code></td><td>8px</td><td>Cards, dropdowns, toolbar items</td></tr>
+          <tr><td><code>--radius-lg</code></td><td>12px</td><td>Modals, larger cards, stat cards</td></tr>
+          <tr><td><code>--radius-xl</code></td><td>16px</td><td>Feature sections, hero cards</td></tr>
+          <tr><td><code>--radius-pill</code></td><td>9999px</td><td>Pills, tabs, toggles, search bars</td></tr>
+        </tbody>
+      </table>
+      <h3>Rules</h3>
+      <ul>
+        <li>Nesting: inner radius = outer radius minus padding. Example: card has <code>--radius-lg</code> (12px) with 16px padding, inner element uses <code>--radius-xs</code> (4px).</li>
+        <li>Maximum radius is 16px for rectangular elements. Only use <code>--radius-pill</code> for truly pill-shaped elements.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- SHADOWS -->
+    <section class="doc-section" id="shadows">
+      <h2>Shadows</h2>
+      <table class="token-table">
+        <thead><tr><th>Token</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><code>--shadow-xs</code></td><td>Active tab pills, toggles</td></tr>
+          <tr><td><code>--shadow-sm</code></td><td>Cards at rest, inputs on focus</td></tr>
+          <tr><td><code>--shadow-md</code></td><td>Dropdowns, popovers</td></tr>
+          <tr><td><code>--shadow-lg</code></td><td>Modals, floating panels</td></tr>
+          <tr><td><code>--shadow-xl</code></td><td>Toasts, system notifications</td></tr>
+        </tbody>
+      </table>
+      <h3>Rules</h3>
+      <ul>
+        <li>Dark mode uses higher-opacity shadows. The tokens handle this automatically.</li>
+        <li>Elevation hierarchy: page surface (none) < card (xs/sm) < dropdown (md) < modal (lg) < toast (xl).</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- THEMING -->
+    <section class="doc-section" id="theming">
+      <h2>Theming</h2>
+      <p>Scout supports light and dark themes. The theme is controlled by adding the <code>.dark</code> class to the <code>&lt;body&gt;</code> element.</p>
+      <pre><code>/* Light (default) */
+&lt;body&gt;
+
+/* Dark */
+&lt;body class="dark"&gt;</code></pre>
+      <h3>Implementation</h3>
+      <ul>
+        <li>All semantic tokens have both light and dark values defined in the CSS. Switching themes just swaps the variable values.</li>
+        <li>Never use <code>@media (prefers-color-scheme)</code> — theme is user-toggled, not system-derived.</li>
+        <li>When using Tailwind, map CSS variables to the Tailwind config. Use <code>hsl(var(--primary))</code> pattern or direct <code>var()</code> references.</li>
+      </ul>
+      <h3>Rules</h3>
+      <ul>
+        <li>Never use fixed colors like <code>white</code> or <code>#000</code> in component styles. Use <code>--background</code>, <code>--foreground</code>, etc.</li>
+        <li>Test every component in both themes before marking it complete.</li>
+        <li>Accent vivid colors (<code>--amber</code>, <code>--emerald</code>, etc.) stay the same across themes. Only semantic tokens change.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ICONS -->
+    <section class="doc-section" id="icons">
+      <h2>Icons</h2>
+      <p><strong>Lucide</strong> (<code>lucide-react</code>) is the official icon library.</p>
+      <h3>Sizing</h3>
+      <table class="token-table">
+        <thead><tr><th>Context</th><th>Size</th><th>Stroke Width</th></tr></thead>
+        <tbody>
+          <tr><td>Inline with text (buttons, labels)</td><td>16px</td><td>2</td></tr>
+          <tr><td>Standalone (nav, toolbar icons)</td><td>20px</td><td>2</td></tr>
+          <tr><td>Feature / hero icons</td><td>24px</td><td>1.5 or 2</td></tr>
+          <tr><td>Icon containers (stat cards, page headers)</td><td>24px icon in 40px container</td><td>2</td></tr>
+        </tbody>
+      </table>
+      <h3>Rules</h3>
+      <ul>
+        <li>Always use <code>stroke-linecap="round"</code> and <code>stroke-linejoin="round"</code> (Lucide defaults).</li>
+        <li>Icon color should inherit from text color via <code>stroke="currentColor"</code>.</li>
+        <li>For colored icon containers, use the accent soft color as background and the vivid accent as stroke color.</li>
+        <li>Never use icons from other libraries. If Lucide doesn't have what you need, request an addition to the system.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- FORMATTING -->
+    <section class="doc-section" id="formatting">
+      <h2>Formatting</h2>
+      <p>Canonical rules for displaying currency, dates, and times. These apply across both apps — a value should never be formatted two different ways on two different screens.</p>
+
+      <h3>Currency</h3>
+      <table class="token-table">
+        <thead><tr><th>Context</th><th>Format</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Default (prices, totals, line items)</td><td>Symbol prefix, no space, comma thousands, always 2 decimals</td><td><code>$1,907.75</code></td></tr>
+          <tr><td>Vendor financial tables (orders, quotes, payouts)</td><td>Default + ISO code suffix</td><td><code>$1,907.75 USD</code></td></tr>
+          <tr><td>Stat cards / dashboard aggregates only</td><td>Abbreviated, 1 decimal</td><td><code>$45.3K</code>, <code>$1.2M</code></td></tr>
+          <tr><td>Negative amounts</td><td>Minus before symbol — never parentheses</td><td><code>-$45.00</code></td></tr>
+          <tr><td>Zero</td><td>Show as a value — never "Free" in financial contexts</td><td><code>$0.00</code></td></tr>
+        </tbody>
+      </table>
+      <h3>Currency Rules</h3>
+      <ul>
+        <li>Never drop cents on monetary values in tables or documents — <code>$561.08</code>, not <code>$561</code>.</li>
+        <li>No space between symbol and amount: <code>$1,907.75</code>, not <code>$ 1,907.75</code>.</li>
+        <li>The ISO code suffix (<code>USD</code>) appears wherever currency could vary — all Vendor portal financial tables use it.</li>
+        <li>Abbreviation (<code>$45.3K</code>) is only for at-a-glance aggregates; anything actionable or exact shows full precision.</li>
+        <li>Implementation: <code>Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })</code>.</li>
+      </ul>
+
+      <h3>Date &amp; Time</h3>
+      <table class="token-table">
+        <thead><tr><th>Context</th><th>Format</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Standard date (tables, details)</td><td><code>MM/DD/YYYY</code> — zero-padded</td><td><code>07/13/2026</code></td></tr>
+          <tr><td>Date with time</td><td><code>MM/DD/YYYY, h:mm AM/PM</code></td><td><code>07/13/2026, 2:30 PM</code></td></tr>
+          <tr><td>Recent activity (&lt; 7 days)</td><td>Relative</td><td><code>2h ago</code>, <code>Yesterday</code></td></tr>
+          <tr><td>Date range</td><td>En dash with spaces</td><td><code>12/11/2026 – 12/13/2026</code></td></tr>
+        </tbody>
+      </table>
+      <h3>Date Rules</h3>
+      <ul>
+        <li>US numeric format everywhere: <code>MM/DD/YYYY</code>, always zero-padded (<code>06/03/2026</code>, not <code>6/3/2026</code>).</li>
+        <li>Spelled-out or abbreviated month names are reserved for prose and marketing copy — never in UI data displays.</li>
+        <li>Relative timestamps switch to the standard date after 7 days. Tooltips on relative timestamps show the full date + time.</li>
+        <li>12-hour clock with AM/PM; minutes always shown (<code>2:00 PM</code>, not <code>2 PM</code>).</li>
+        <li>Implementation: <code>Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })</code>.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- CHARTS -->
+    <section class="doc-section" id="charts">
+      <h2>Charts</h2>
+      <p>Charts are implemented with the app's charting library; the design system governs colors and labels.</p>
+      <ul>
+        <li>Categorical ramp, in series order: <code>--blue-800</code>, <code>--blue-500</code>, <code>--blue-300</code>, <code>--blue-200</code>, <code>--border</code>.</li>
+        <li>Single-series charts (bars, lines, areas) use <code>--blue-400</code>.</li>
+        <li>Axis/tick labels: 9&ndash;10px <code>--muted-foreground</code>; gridlines use <code>--border</code>.</li>
+        <li>Chart axis dates use <code>MM/DD</code> shorthand; full <code>MM/DD/YYYY</code> everywhere else.</li>
+        <li>Donut center: 26px/700 value + 11px muted caption. Legend: 8px dot, 13px label, right-aligned 600-weight value.</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- COMPONENTS -->
+    <section class="doc-section" id="components">
+      <h2>Components</h2>
+      <p>See the <a href="index.html">Components</a> tab for the visual reference. Below are usage rules.</p>
+
+      <h3>Buttons</h3>
+      <ul>
+        <li>Variants: primary, secondary, outline, destructive outline, ghost, destructive, link.</li>
+        <li>Destructive outline (red text, neutral border, red border on hover) for dangerous actions in toolbars and page headers; reserve the filled destructive variant for confirmation moments (modal confirm).</li>
+        <li>AI-powered actions use the standard outline variant with a sparkles icon (e.g. "Categorize with AI") — no dedicated AI button style.</li>
+        <li>Height: 40px default, 36px for compact contexts (toolbars), 48px for hero CTAs.</li>
+        <li>Always use <code>font-family: inherit</code> on buttons to prevent browser defaults.</li>
+        <li>Focus: 2px <code>--ring</code> outline offset 2px from the button (via double box-shadow). Applied on <code>:focus-visible</code> only — keyboard focus, not mouse clicks. Dark mode uses <code>--blue-400</code> for contrast.</li>
+        <li>Disabled: opacity 0.5, <code>cursor: not-allowed</code>, pointer events off. Never remove a disabled button from the layout — it holds its space.</li>
+        <li>Pressed: scale to 98% while active.</li>
+        <li>Loading: inline 14px spinner (2px stroke, currentColor) replaces the leading icon; button is disabled while loading and the label switches to the in-progress verb ("Saving...").</li>
+        <li>Leading icons: 16px with 8px gap. Icon-only buttons are square (40px, or 36px small) and require an <code>aria-label</code>.</li>
+        <li>Ghost icon actions: borderless 32px icon buttons for inline row/card actions (kebab menu, edit); 24px small variant for affordances beside text (copy an identifier). Muted color, <code>--muted</code> hover.</li>
+      </ul>
+
+      <h3>Inputs & Select</h3>
+      <ul>
+        <li>Height: 40px. Border: <code>1px solid var(--border)</code>.</li>
+        <li>Focus ring: <code>2px solid var(--ring)</code> with 2px offset.</li>
+        <li>Placeholder text uses <code>--muted-foreground</code>.</li>
+      </ul>
+
+      <h3>Checkbox</h3>
+      <ul>
+        <li>16px square, <code>--radius-xs</code>, 1px <code>--border</code>. Checked: <code>--primary</code> fill with white checkmark.</li>
+        <li>Hover darkens the border to <code>--muted-foreground</code>. Disabled: 50% opacity, muted background.</li>
+        <li>Table bulk selection: leading 40px column, header checkbox selects all. With label: 8px gap, 14px text.</li>
+      </ul>
+
+      <h3>Switch</h3>
+      <ul>
+        <li>36&times;20px pill; <code>--border</code> track, <code>--primary</code> when on, 16px white knob with xs shadow. Disabled: 50% opacity.</li>
+        <li>Use for immediate state changes (activating a price list, enabling a setting) — the change applies on toggle. Use a checkbox when the change requires a save action.</li>
+        <li>In tables: dedicated column (e.g. "Active"), vertically centered. Focus ring follows the button focus-visible pattern.</li>
+      </ul>
+
+      <h3>Progress</h3>
+      <ul>
+        <li>4px pill track, <code>--muted</code> background, <code>--primary</code> fill. On colored surfaces: <code>rgba(255,255,255,0.3)</code> track with white fill.</li>
+        <li>Pair with an 11px muted percentage label below ("45% Processed").</li>
+      </ul>
+
+      <h3>Badges</h3>
+      <ul>
+        <li>Neutral (category pills): <code>--muted</code> background, 1px <code>--border</code>, pill radius, 12px/500 text in <code>--muted-foreground</code>. Truncate with ellipsis past 220px; vertically align middle in table cells.</li>
+        <li>Soft accents: accent-soft background + matching 6px dot for semantic states. See the accent palette in Colors.</li>
+      </ul>
+
+      <h3>List Item Card</h3>
+      <ul>
+        <li>Card-based alternative to table rows for rich list items (inventory, catalogs). White card, 1px <code>--border</code>, <code>--radius-lg</code>, <code>16px 20px</code> padding, <code>--shadow-sm</code> on hover.</li>
+        <li>4px left accent bar signals status (emerald in stock, red out of stock) — same accent-bar language as color-coded stat cards and toasts. The accent bar appears in <strong>both</strong> the list and grid variants so status never drifts between views.</li>
+        <li>Anatomy, left to right: checkbox (inside the card), 48px thumbnail, name + monospace SKU, soft accent badge cluster, price, kebab menu.</li>
+        <li>12px gap between cards. Pair with the bulk selection bar above the list.</li>
+        <li><strong>Grid variant:</strong> media-first display mode of the same item, switched via the Segmented Toggle. Square (1:1) image area with body below (name, badges, price + actions footer). 4-column grid, 16px gap.</li>
+        <li><strong>Entity card (text-first grid):</strong> for entities without imagery (properties, organizations). Status badge sits in the header row beside the name; meta line below; avatar stack footer. 3-column grid, 16px gap.</li>
+        <li><strong>Entity card — compact (horizontal):</strong> densest flavor for simple groupings (customer groups). Single row: 36px solid-accent avatar with icon, name (truncates), trailing avatar stack + count. No status badge or meta line.</li>
+        <li>Overlay-on-media: controls floating on the image (checkbox top-left, status badge top-right, SKU chip bottom-left) get a <code>--background</code> fill and xs shadow, inset 12px.</li>
+        <li>Row actions: kebab menu always; at most one promoted quick-action (e.g. edit) placed beside it.</li>
+      </ul>
+
+      <h3>Avatars</h3>
+      <ul>
+        <li>Circular, 28px default (36px large), 2px <code>--background</code> border. Colors rotate through the accent palette; initials optional (11px/600 white).</li>
+        <li>Stack: -8px overlap, show at most 4 avatars then a <code>+N</code> overflow chip (<code>--muted</code> background, 10px/600). Pair with a muted count label ("20 users").</li>
+      </ul>
+
+      <h3>Star Rating</h3>
+      <ul>
+        <li>Filled Lucide stars in <code>--amber</code> (the palette's rating color); empty stars use <code>--border</code>. 16px default, 20px large, 2px gap.</li>
+        <li>Read-only display. Optional trailing value label (13px/600, 6px gap): <code>4.0</code>, <code>5.0 avg</code>.</li>
+      </ul>
+
+      <h3>Chips</h3>
+      <ul>
+        <li>Read-only stat chips for page headers — 40px height (button-height), <code>--radius-lg</code>, 13px/500, never interactive. Distinct from badges (smaller, inline) and filter chips (removable, in the toolbar).</li>
+        <li>Default: <code>--background</code> fill with 1px <code>--border</code>. Accent variant: accent-soft fill with matching border and dark accent text.</li>
+        <li>Content: leading 16px icon or inline star rating + short stat text ("3 reviews", "128 orders this week").</li>
+        <li>Date range chip: 34px display-only chip with calendar icon for dashboard card controls (<code>06/17/2026 &ndash; 07/16/2026</code>).</li>
+      </ul>
+
+      <h3>Metric Tile</h3>
+      <ul>
+        <li>Solid-accent KPI tiles for dashboards — single-tone fills (<code>--emerald</code>, <code>--primary</code>, <code>--blue-900</code>) with white text; never gradients.</li>
+        <li>Hero variant: centered, 34px value, optional pill chip for the time window ("30D"). Compact: left-aligned label + 28px value + 11px note.</li>
+      </ul>
+
+      <h3>Insight Card</h3>
+      <ul>
+        <li>Dashboard card header: 32px muted icon tile + 15px/600 title (+ optional 13px muted subtitle) left; controls right (segmented toggle, date chip).</li>
+        <li>Without a subtitle the title vertically centers against the icon; with one, both top-align.</li>
+      </ul>
+
+      <h3>Activity Feed</h3>
+      <ul>
+        <li>Bordered rows (<code>--radius-md</code>, 12px 16px padding, accent hover): 36px icon tile + 14px/600 title + 13px muted description + relative timestamp right.</li>
+        <li>Icon tile is muted by default; accent-soft (e.g. sky) for highlighted event types like new orders.</li>
+        <li>Timestamps follow the relative-time formatting rule ("1h ago", "Yesterday").</li>
+      </ul>
+
+      <h3>Marketing Card</h3>
+      <ul>
+        <li>Card for promotions and campaigns. 4px <strong>top</strong> accent bar maps to publishing status (Active = emerald, Scheduled = orange, Draft = gray) — never decorative colors.</li>
+        <li>44px soft-accent icon tile carries entity identity (violet/sky/emerald rotate per entity); kebab top-right.</li>
+        <li>Promotion variant: monospace code + small copy button, offer line, then status badge + neutral attribute badges.</li>
+        <li>Campaign variant: name + optional muted description, status badge row, then neutral badges for usage limits and date range.</li>
+      </ul>
+
+      <h3>Segmented Toggle</h3>
+      <ul>
+        <li>Compact toggle for mutually exclusive views. <code>--muted</code> container, 1px border, <code>--radius-md</code>, 2px padding. Two variants: icon-only (32&times;30px segments — list/grid switching) and text (12px/600 labels with 10px horizontal padding — time windows like 7D/30D/90D).</li>
+        <li>Segments: 32×30px, icon-only with a <code>title</code>/<code>aria-label</code>. Active segment lifts to <code>--background</code> with <code>--primary</code> icon and xs shadow.</li>
+        <li>Use for view switching only — filters belong in the Tab Bar, on/off settings in a switch.</li>
+      </ul>
+
+      <h3>Cards</h3>
+      <ul>
+        <li>Background: <code>--card</code>. Border: <code>1px solid var(--border)</code>. Radius: <code>--radius-lg</code>.</li>
+        <li>Padding: 20–24px. Use consistent padding within a card grid.</li>
+      </ul>
+
+      <h3>Table</h3>
+      <ul>
+        <li>Header: <code>--muted</code> background, uppercase 11px labels.</li>
+        <li>Rows: <code>--accent</code> on hover, <code>4px solid var(--primary)</code> left border on selected.</li>
+        <li>Bulk selection: leading 40px checkbox column; header checkbox selects all rows. For card lists, use the bulk selection bar instead: "Select page (N items)" checkbox left, "Select all N items" outline button right.</li>
+        <li>Row actions: trailing 48px column with a 32px ghost kebab button (ellipsis icon); menu opens on click.</li>
+        <li>Pagination placement: full pagination bar (page info + rows-per-page + 4 buttons) below tables; compact pagination (page info + prev/next) top-right of the toolbar for card lists.</li>
+      </ul>
+
+      <h3>Tabs</h3>
+      <ul>
+        <li>Three variants: navigation tabs, tabs with count badges, filter tabs (wrapping).</li>
+        <li>Active state: <code>--primary</code> background with <code>--primary-foreground</code> text.</li>
+        <li>Use for both page navigation and content filtering.</li>
+      </ul>
+
+      <h3>Stat Cards</h3>
+      <ul>
+        <li>Two variants: neutral (icon + metric + label + CTA) and color-coded (left border + tinted count for workflow stages).</li>
+        <li>Neutral cards use accent-soft backgrounds for icon containers.</li>
+        <li>Color-coded cards map to workflow stages: amber (fulfillment), sky (shipping), emerald (delivery), violet (payment).</li>
+      </ul>
+
+      <h3>Modal</h3>
+      <ul>
+        <li>Backdrop: <code>rgba(0,0,0,0.5)</code> with <code>backdrop-filter: blur(4px)</code>.</li>
+        <li>Max width: 480px. Radius: <code>--radius-lg</code>. Shadow: <code>--shadow-lg</code>.</li>
+        <li>Footer buttons align right, with secondary action first (left) and primary action last (right).</li>
+      </ul>
+
+      <h3>Toast</h3>
+      <ul>
+        <li>Left accent bar (4px wide) indicates type: default, success, warning, error, info.</li>
+        <li>Shadow: <code>--shadow-xl</code> for float-above-content feel.</li>
+      </ul>
+
+      <h3>Status Dots</h3>
+      <ul>
+        <li>Badge treatment: 8px circle + 13px label inside a pill — 1px <code>--border</code>, <code>--radius-pill</code>, <code>3px 10px</code> padding, <code>--background</code> fill.</li>
+        <li>Colors: emerald (active/validated/delivered), amber (pending/partially fulfilled), muted-foreground (inactive/placed), red (error/not fulfilled), sky (info), orange (warning/payment pending).</li>
+        <li>Order lifecycle mapping is documented in the Components tab under Status Dots → Order Lifecycle. Publishing lifecycle (Draft = gray, Scheduled = orange, Active = green) under Status Dots → Publishing Lifecycle — every status shows a dot, including Draft.</li>
+      </ul>
+
+      <h3>Skeletons</h3>
+      <ul>
+        <li>Base: <code>--muted</code> background with a shimmer sweep (1.6s ease-in-out loop). Shimmer is a translucent white gradient — <code>rgba(255,255,255,0.6)</code> light, <code>rgba(255,255,255,0.08)</code> dark.</li>
+        <li>Mirror the real content's layout: same dimensions, radius, and grid position as the component being loaded. Never a generic spinner for content areas.</li>
+        <li>Radius follows the element being mimicked: <code>--radius-xs</code> for text lines, <code>--radius-sm</code> for titles, 50% for avatars, <code>--radius-pill</code> for badges, component radius for cards/buttons.</li>
+        <li>Show 3–5 skeleton rows for tables, never the full page count. Keep header rows real — only body content shimmers.</li>
+        <li>Respect <code>prefers-reduced-motion</code>: the shimmer animation is disabled, leaving the static muted shape.</li>
+        <li>Use skeletons for initial loads; use inline spinners only for user-triggered actions (button submit, refresh).</li>
+      </ul>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- PATTERNS -->
+    <section class="doc-section" id="patterns">
+      <h2>Patterns</h2>
+
+      <h3>Sidebar</h3>
+      <ul>
+        <li>Width: 240px. Background: <code>--surface-dark</code> (dark blue). Text: <code>--surface-dark-foreground</code>.</li>
+        <li>Items: 40px height, <code>--radius-md</code>, 12px gap between icon and label.</li>
+        <li>Active item: lighter blue background (<code>rgba(255,255,255,0.1)</code>).</li>
+        <li>Notification badges: <code>--rose</code> background, white text, pill shape.</li>
+      </ul>
+
+      <h3>Search</h3>
+      <ul>
+        <li>Full-width with search icon (left-positioned). Pill border-radius.</li>
+        <li>Height: 44px. Transition on focus: border color shifts to <code>--ring</code>.</li>
+      </ul>
+
+      <h3>Breadcrumbs</h3>
+      <ul>
+        <li>Separator: <code>/</code> character in <code>--muted-foreground</code>.</li>
+        <li>Links use <code>--muted-foreground</code> with hover to <code>--foreground</code>.</li>
+        <li>Current page (last item): <code>--foreground</code>, <code>font-weight: 600</code>.</li>
+      </ul>
+
+      <h3>Toolbar</h3>
+      <ul>
+        <li>Horizontal flex bar with <code>justify-content: space-between</code>.</li>
+        <li>Left group: filter buttons. Right group: search + view controls.</li>
+        <li>Button height: 36px. Uses outline style with icon + text.</li>
+        <li>Icons: Lucide — calendar (date range), credit-card (payment), sliders-horizontal (view), refresh-cw (refresh).</li>
+        <li>Filter bar: applied filters render as segmented chips — attribute segment (muted text), value segment (500 weight), and a &times; remove segment, divided by 1px borders inside one <code>--radius-md</code> pill-less container.</li>
+        <li>"Add filter" trigger: toolbar button with a <strong>dashed</strong> border, muted text, leading filter icon and trailing chevron-down. Opens the standard dropdown menu; selected option uses accent background + check (never a leading dot).</li>
+        <li>"Clear all": ghost text button, visible only while at least one filter is applied.</li>
+      </ul>
+
+      <h3>Page Header</h3>
+      <ul>
+        <li>Colored icon container (40px, accent-soft background) + title (22px, weight 600) + subtitle (14px, muted).</li>
+        <li>Use the accent palette to color-code different page types (e.g., sky for Orders, amber for Quotes).</li>
+        <li>With actions: buttons sit right of the title, vertically centered. Toolbar-style outline buttons; destructive actions use destructive outline; AI actions use outline + sparkles icon.</li>
+        <li>When a page header has actions, its single main action is a primary-filled button, placed last (e.g. Categorize with AI on Products, Import on Inventory). Never more than one primary per header; pages without a main action have no header buttons.</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <script>
+    function setTheme(theme) {
+      document.body.classList.toggle('dark', theme === 'dark');
+      document.querySelectorAll('.theme-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === theme);
+      });
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.doc-nav a').forEach(a => a.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    const docSections = document.querySelectorAll('.doc-section');
+    const docNavLinks = document.querySelectorAll('.doc-nav a');
+    const docObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          docNavLinks.forEach(a => a.classList.remove('active'));
+          const link = document.querySelector(`.doc-nav a[onclick="scrollToSection('${entry.target.id}')"]`);
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-130px 0px -60% 0px' });
+    docSections.forEach(s => docObserver.observe(s));
+  </script>
+
+</body>
+</html>

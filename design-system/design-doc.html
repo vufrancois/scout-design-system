@@ -628,6 +628,12 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Without a subtitle the title vertically centers against the icon; with one, both top-align.</li>
       </ul>
 
+      <h3>Empty State</h3>
+      <ul>
+        <li>Shown inside the table/list container when zero items match: 48px muted icon circle + 15px/600 title + 13px muted description (max 360px) + optional recovery action (outline button, e.g. "Clear filters").</li>
+        <li>Filtered-empty states always offer the recovery action; true-empty states (no data yet) offer the primary creation action instead.</li>
+      </ul>
+
       <h3>Activity Feed</h3>
       <ul>
         <li>Bordered rows (<code>--radius-md</code>, 12px 16px padding, accent hover): 36px icon tile + 14px/600 title + 13px muted description + relative timestamp right.</li>
@@ -659,6 +665,9 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <h3>Table</h3>
       <ul>
         <li>Header: <code>--muted</code> background, uppercase 11px labels.</li>
+        <li>Sortable columns: header shows stacked 12px chevrons (muted); the active column turns <code>--primary</code> with a single directional arrow. Click toggles asc/desc; text and dates default to asc-first except dates and numeric ratings, which default desc-first.</li>
+        <li>Default ordering: work-queue tables sort attention-needed items first (e.g. "Needs reply"), then newest.</li>
+        <li>Long-text cells (reviews, descriptions): truncate with ellipsis at a fixed max-width (~280px); the full text is available via <code>title</code> tooltip. Never let free text wrap or stretch the table.</li>
         <li>Rows: <code>--accent</code> on hover, <code>4px solid var(--primary)</code> left border on selected.</li>
         <li>Bulk selection: leading 40px checkbox column; header checkbox selects all rows. For card lists, use the bulk selection bar instead: "Select page (N items)" checkbox left, "Select all N items" outline button right.</li>
         <li>Row actions: trailing 48px column with a 32px ghost kebab button (ellipsis icon); menu opens on click.</li>

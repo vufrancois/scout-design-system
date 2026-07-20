@@ -147,7 +147,7 @@
     /* Page content */
     .page-content { padding: 32px; max-width: 1360px; }
 
-    /* Page header with actions */
+    /* Page header */
     .page-header {
       display: flex; align-items: center; justify-content: space-between;
       gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
@@ -163,48 +163,45 @@
     .page-header-text p { font-size: 14px; color: var(--muted-foreground); }
     .page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-    /* Segmented icon toggle */
-    .segmented {
-      display: inline-flex; gap: 2px; background: var(--muted);
-      border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2px;
+    /* Chips + stars */
+    .summary-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 40px; padding: 0 16px; border-radius: var(--radius-lg);
+      font-size: 13px; font-weight: 500; color: var(--foreground);
+      background: var(--background); border: 1px solid var(--border);
     }
-    .segmented button {
-      width: 32px; height: 30px; border: none; border-radius: var(--radius-sm);
-      background: transparent; color: var(--muted-foreground); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-    }
-    .segmented button:hover { color: var(--foreground); }
-    .segmented button.active { background: var(--background); color: var(--primary); box-shadow: var(--shadow-xs); }
-    .segmented button svg { width: 16px; height: 16px; }
+    .summary-chip > svg { width: 16px; height: 16px; }
+    .summary-chip-accent { background: var(--amber-soft); border-color: var(--amber); color: #92610a; }
+    .stars { display: inline-flex; align-items: center; gap: 2px; color: var(--amber); }
+    .stars svg { width: 16px; height: 16px; }
+    .stars .star-empty { color: var(--border); }
+    .stars-value { font-size: 13px; font-weight: 600; color: var(--foreground); margin-left: 6px; }
 
-    .toolbar-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      height: 36px; padding: 0 14px; border-radius: var(--radius-md);
+    /* Filter tabs */
+    .tab-bar {
+      display: inline-flex; gap: 4px; flex-wrap: wrap;
+      background: var(--muted); padding: 4px; border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+    }
+    .tab-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: var(--radius-md);
       font-size: 13px; font-weight: 500; font-family: inherit;
-      background: var(--background); color: var(--foreground);
-      border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+      background: transparent; color: var(--muted-foreground);
+      border: none; cursor: pointer; transition: all 0.15s;
     }
-    .toolbar-btn:hover { background: var(--accent); }
-    .toolbar-btn svg { width: 16px; height: 16px; }
-    .toolbar-btn.btn-primary-fill {
-      background: var(--primary); color: var(--primary-foreground); border-color: var(--primary);
-      font-weight: 600;
+    .tab-item:hover { color: var(--foreground); background: var(--background); }
+    .tab-item.active { background: var(--primary); color: var(--primary-foreground); box-shadow: var(--shadow-xs); }
+    .tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: var(--radius-pill); font-size: 11px; font-weight: 600;
+      background: rgba(0,0,0,0.08); color: var(--muted-foreground);
     }
-    .toolbar-btn.btn-primary-fill:hover { background: var(--blue-600); }
+    .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
 
     /* Toolbar */
-    .toolbar {
-      display: flex; align-items: center; justify-content: flex-end;
-      gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
-    }
-    .toolbar-btn-icon {
-      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-md); border: 1px solid var(--border);
-      background: var(--background); color: var(--foreground);
-      cursor: pointer; transition: all 0.15s;
-    }
-    .toolbar-btn-icon:hover { background: var(--accent); }
-    .toolbar-btn-icon svg { width: 16px; height: 16px; }
+    .toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
     .search-wrap { position: relative; display: flex; align-items: center; width: 240px; }
     .search-icon { position: absolute; left: 12px; color: var(--muted-foreground); pointer-events: none; }
     .search-field {
@@ -215,8 +212,56 @@
     }
     .search-field::placeholder { color: var(--muted-foreground); }
     .search-field:focus { border-color: var(--ring); }
+    .toolbar-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: var(--background); color: var(--foreground);
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+    }
+    .toolbar-btn:hover { background: var(--accent); }
+    .toolbar-btn svg { width: 16px; height: 16px; }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 200px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
 
-    /* Data table */
+    /* Table */
     .table-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius-lg); overflow: hidden;
@@ -229,6 +274,10 @@
       color: var(--muted-foreground); background: var(--muted);
       border-bottom: 1px solid var(--border);
     }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    th.sorted { color: var(--primary); }
     .table-card tbody tr { transition: background 0.1s; }
     .table-card tbody tr:hover { background: var(--accent); }
     .table-card tbody td {
@@ -236,9 +285,20 @@
       border-bottom: 1px solid var(--border);
     }
     .table-card tbody tr:last-child td { border-bottom: none; }
-    .id-cell { font-weight: 500; color: var(--foreground); }
+    .cell-muted { color: var(--muted-foreground); font-size: 13px; }
+    .cell-truncate {
+      max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
 
-    /* Status dots — badge treatment */
+    /* Customer cell */
+    .customer-cell { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #fff;
+    }
+
+    /* Status badge dots */
     .status-dot-item {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 3px 10px; border: 1px solid var(--border); border-radius: var(--radius-pill);
@@ -246,188 +306,58 @@
     }
     .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .status-dot.dot-active { background: var(--emerald); }
-    .status-dot.dot-inactive { background: var(--muted-foreground); }
-    .status-dot.dot-warning { background: var(--orange); }
+    .status-dot.dot-pending { background: var(--amber); }
     .status-dot-label { font-size: 13px; color: var(--foreground); }
 
-    /* Pagination */
-    .pagination {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; border-top: 1px solid var(--border);
-    }
-    .pagination-info { font-size: 13px; color: var(--muted-foreground); }
-    .pagination-controls { display: flex; align-items: center; gap: 16px; }
-    .pagination-rows { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-foreground); }
-    .pagination-rows-select {
-      height: 28px; padding: 2px 24px 2px 8px; border-radius: var(--radius-sm);
-      font-size: 13px; font-family: inherit; background: var(--background);
-      color: var(--foreground); border: 1px solid var(--border);
-      appearance: none; cursor: pointer;
-    }
-    .pagination-buttons { display: flex; gap: 4px; }
-    .pagination-btn {
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: var(--background); color: var(--foreground);
-      cursor: pointer; transition: all 0.15s; font-family: inherit;
-    }
-    .pagination-btn:hover:not(:disabled) { background: var(--accent); }
-    .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .pagination-btn svg { width: 16px; height: 16px; }
-
-    /* Star rating */
-    .stars { display: inline-flex; align-items: center; gap: 2px; color: var(--amber); }
-    .stars svg { width: 16px; height: 16px; }
-
-    /* Page header summary chips */
-    .summary-chip {
-      display: inline-flex; align-items: center; gap: 8px;
-      height: 40px; padding: 0 16px; border-radius: var(--radius-lg);
-      font-size: 13px; font-weight: 500; color: var(--foreground);
-      background: var(--background); border: 1px solid var(--border);
-    }
-    .summary-chip > svg { width: 16px; height: 16px; }
-    .summary-chip-accent { background: var(--amber-soft); border-color: var(--amber); color: #92610a; }
-
-    /* Data table */
-    .table-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); overflow: hidden;
-    }
-    .table-scroll { overflow-x: auto; }
-    .table-card table { width: 100%; border-collapse: collapse; }
-    .table-card thead th {
-      padding: 12px 16px; text-align: left; white-space: nowrap;
-      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
-      color: var(--muted-foreground); background: var(--muted);
-      border-bottom: 1px solid var(--border);
-    }
-    .table-card tbody tr { transition: background 0.1s; }
-    .table-card tbody tr:hover { background: var(--accent); }
-    .table-card tbody td {
-      padding: 12px 16px; font-size: 14px; white-space: nowrap;
-      border-bottom: 1px solid var(--border);
-    }
-    .table-card tbody tr:last-child td { border-bottom: none; }
-    .id-cell { font-weight: 500; color: var(--foreground); }
-
-    /* Pagination */
-    .pagination {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; border-top: 1px solid var(--border);
-    }
-    .pagination-info { font-size: 13px; color: var(--muted-foreground); }
-    .pagination-controls { display: flex; align-items: center; gap: 16px; }
-    .pagination-rows { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-foreground); }
-    .pagination-rows-select {
-      height: 28px; padding: 2px 24px 2px 8px; border-radius: var(--radius-sm);
-      font-size: 13px; font-family: inherit; background: var(--background);
-      color: var(--foreground); border: 1px solid var(--border);
-      appearance: none; cursor: pointer;
-    }
-    .pagination-buttons { display: flex; gap: 4px; }
-    .pagination-btn {
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: var(--background); color: var(--foreground);
-      cursor: pointer; transition: all 0.15s; font-family: inherit;
-    }
-    .pagination-btn:hover:not(:disabled) { background: var(--accent); }
-    .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .pagination-btn svg { width: 16px; height: 16px; }
-
-    /* Campaign card */
-    .promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-    .promo-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 20px; overflow: hidden;
-      display: flex; flex-direction: column; gap: 14px;
-      position: relative; transition: box-shadow 0.15s;
-    }
-    .promo-card:hover { box-shadow: var(--shadow-sm); }
-    .promo-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    }
-    .promo-card.status-active::before { background: var(--emerald); }
-    .promo-card.status-draft::before { background: var(--muted-foreground); }
-    .promo-card.status-scheduled::before { background: var(--orange); }
-    .camp-head { display: flex; align-items: flex-start; justify-content: space-between; }
-    .camp-name { font-size: 16px; font-weight: 700; color: var(--foreground); }
-    .camp-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
-    .promo-head { display: flex; align-items: flex-start; gap: 12px; }
-    .promo-tile {
-      width: 44px; height: 44px; border-radius: var(--radius-lg);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .promo-tile svg { width: 22px; height: 22px; }
-    .promo-title-wrap { flex: 1; min-width: 0; }
-    .promo-code-row { display: flex; align-items: center; gap: 4px; }
-    .promo-code {
-      font-family: "JetBrains Mono", ui-monospace, monospace;
-      font-size: 15px; font-weight: 700; color: var(--foreground);
-    }
+    /* Row actions */
     .row-action {
       width: 32px; height: 32px; border-radius: var(--radius-md);
       border: none; background: none; color: var(--muted-foreground);
       cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-      transition: background 0.15s; flex-shrink: 0;
+      transition: background 0.15s;
     }
     .row-action:hover { background: var(--muted); color: var(--foreground); }
     .row-action svg { width: 16px; height: 16px; }
-    .row-action-sm { width: 24px; height: 24px; border-radius: var(--radius-sm); }
-    .row-action-sm svg { width: 13px; height: 13px; }
-    .promo-off { font-size: 14px; color: var(--foreground); margin-top: 2px; }
-    .promo-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .badge-neutral {
-      display: inline-block; vertical-align: middle; max-width: 220px;
-      padding: 2px 10px; border-radius: var(--radius-pill);
-      font-size: 12px; font-weight: 500; line-height: 1.6; color: var(--muted-foreground);
-      background: var(--muted); border: 1px solid var(--border);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
 
-    /* Compact entity card (horizontal) */
-    .entity-card-compact {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 16px 20px;
-      display: flex; align-items: center; gap: 12px;
-      transition: box-shadow 0.15s;
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
     }
-    .entity-card-compact:hover { box-shadow: var(--shadow-sm); }
-    .entity-card-compact-name { font-size: 15px; font-weight: 600; color: var(--foreground); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .entity-card-compact .avatar-lg svg { width: 18px; height: 18px; }
-
-    /* Empty-state note in card footer */
-    .empty-note { color: var(--muted-foreground); }
-    .empty-note svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-    /* Property cards (grid view) */
-    .entity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .entity-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 20px;
-      display: flex; flex-direction: column; gap: 8px;
-      transition: box-shadow 0.15s;
-    }
-    .entity-card:hover { box-shadow: var(--shadow-sm); }
-    .entity-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-    .entity-card-name { font-size: 15px; font-weight: 600; color: var(--foreground); }
-    .entity-card-meta { font-size: 13px; color: var(--muted-foreground); }
-
-    /* Avatar stack */
-    .avatar-group { display: flex; align-items: center; gap: 10px; }
-    .avatar-stack { display: flex; align-items: center; }
-    .avatar {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 2px solid var(--background); flex-shrink: 0;
-      display: inline-flex; align-items: center; justify-content: center;
-    }
-    .avatar + .avatar { margin-left: -8px; }
-    .avatar-more {
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
       background: var(--muted); color: var(--muted-foreground);
-      font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
     }
-    .avatar-label { font-size: 13px; color: var(--muted-foreground); }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
+
+    /* Pagination */
+    .pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-top: 1px solid var(--border);
+    }
+    .pagination-info { font-size: 13px; color: var(--muted-foreground); }
+    .pagination-controls { display: flex; align-items: center; gap: 16px; }
+    .pagination-rows { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-foreground); }
+    .pagination-rows-select {
+      height: 28px; padding: 2px 24px 2px 8px; border-radius: var(--radius-sm);
+      font-size: 13px; font-family: inherit; background: var(--background);
+      color: var(--foreground); border: 1px solid var(--border);
+      appearance: none; cursor: pointer;
+    }
+    .pagination-buttons { display: flex; gap: 4px; }
+    .pagination-btn {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--background); color: var(--foreground);
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .pagination-btn:hover:not(:disabled) { background: var(--accent); }
+    .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination-btn svg { width: 16px; height: 16px; }
   </style>
 </head>
 <body>
@@ -568,54 +498,156 @@
         <div class="page-header-actions">
           <span class="summary-chip summary-chip-accent">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
-            3 reviews
+            8 reviews
           </span>
           <span class="summary-chip">
-            <span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span>
-            avg
+            <span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg class="star-empty" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span>
+            <span class="stars-value">4.3 avg</span>
           </span>
         </div>
       </div>
 
+      <!-- Filter tabs -->
+      <div class="tab-bar">
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">All <span class="tab-count">8</span></button>
+        <button class="tab-item" data-tab="needs" onclick="setTab('needs')">Needs reply <span class="tab-count">3</span></button>
+        <button class="tab-item" data-tab="replied" onclick="setTab('replied')">Replied <span class="tab-count">5</span></button>
+      </div>
 
-      <!-- Reviews table -->
+      <!-- Toolbar -->
+      <div class="toolbar" style="justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="filter-chip" id="filter-chip" style="display:none">
+            <span class="filter-chip-attr">Rating</span>
+            <span class="filter-chip-value" id="filter-chip-value"></span>
+            <button class="filter-chip-remove" onclick="clearRatingFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+              Add filter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div class="dropdown-item" onclick="setRatingFilter(5)">5 stars</div>
+              <div class="dropdown-item" onclick="setRatingFilter(4)">4 stars</div>
+              <div class="dropdown-item" onclick="setRatingFilter(3)">3 stars</div>
+              <div class="dropdown-item" onclick="setRatingFilter(2)">2 stars</div>
+              <div class="dropdown-item" onclick="setRatingFilter(1)">1 star</div>
+            </div>
+          </div>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearRatingFilter()">Clear all</button>
+        </div>
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input class="search-field" id="review-search" placeholder="Search reviews..." oninput="applyFilters()" />
+        </div>
+      </div>
+
+      <!-- Table -->
       <div class="table-card">
         <div class="table-scroll">
-        <table>
+        <table id="reviews-table">
           <thead>
             <tr>
-              <th>Customer</th>
-              <th>Stars</th>
+              <th class="sortable" data-col="name" onclick="setSort('name')">Customer<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="email" onclick="setSort('email')">Email<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="stars" onclick="setSort('stars')">Stars<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
               <th>Review</th>
-              <th>Added</th>
-              <th>Status</th>
+              <th class="sortable" data-col="date" onclick="setSort('date')">Added<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="status" onclick="setSort('status')">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th style="width:80px"></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="id-cell">Demo Buyer</td>
-              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
-              <td>Amazing Customer Service.</td>
-              <td>05/12/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Replied</span></span></td>
+            <tr data-name="Olivier Belaud" data-email="olivier.belaud@olivierbuyers.com" data-stars="3" data-date="2026-07-18" data-status="needs">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--rose)">OB</span>Olivier Belaud</div></td>
+              <td class="cell-muted">olivier.belaud@olivierbuyers.com</td>
+              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg class="star-empty" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg class="star-empty" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
+              <td><div class="cell-truncate" title="Delivery took longer than expected and one item arrived damaged. Support resolved it, but the process took several days longer than it should have.">Delivery took longer than expected and one item arrived damaged. Support resolved it, but the process took several days longer than it should have.</div></td>
+              <td>2d ago</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-pending"></span><span class="status-dot-label">Needs reply</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Demo Buyer</td>
-              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
-              <td>Great customer service!</td>
-              <td>05/13/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Replied</span></span></td>
+            <tr data-name="Jake Koenigsberg" data-email="jake.k@demoinc.com" data-stars="4" data-date="2026-07-16" data-status="needs">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--violet)">JK</span>Jake Koenigsberg</div></td>
+              <td class="cell-muted">jake.k@demoinc.com</td>
+              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg class="star-empty" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
+              <td><div class="cell-truncate" title="Great selection and fair pricing. Would love faster shipping options for urgent maintenance orders.">Great selection and fair pricing. Would love faster shipping options for urgent maintenance orders.</div></td>
+              <td>4d ago</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-pending"></span><span class="status-dot-label">Needs reply</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Demo Buyer</td>
+            <tr data-name="QADev Buyer" data-email="qadev.buyer@olivierbuyers.com" data-stars="5" data-date="2026-07-15" data-status="needs">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--sky)">QB</span>QADev Buyer</div></td>
+              <td class="cell-muted">qadev.buyer@olivierbuyers.com</td>
               <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
-              <td>Great experience!</td>
+              <td><div class="cell-truncate" title="Amazing Customer Service.">Amazing Customer Service.</div></td>
+              <td>5d ago</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-pending"></span><span class="status-dot-label">Needs reply</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Demo Buyer" data-email="demo.buyer@demoinc.com" data-stars="5" data-date="2026-05-15" data-status="replied">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--emerald)">DB</span>Demo Buyer</div></td>
+              <td class="cell-muted">demo.buyer@demoinc.com</td>
+              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
+              <td><div class="cell-truncate" title="Great experience!">Great experience!</div></td>
               <td>05/15/2026</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Replied</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Demo Buyer" data-email="demo.buyer@demoinc.com" data-stars="5" data-date="2026-05-13" data-status="replied">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--amber)">DB</span>Demo Buyer</div></td>
+              <td class="cell-muted">demo.buyer@demoinc.com</td>
+              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
+              <td><div class="cell-truncate" title="Great customer service!">Great customer service!</div></td>
+              <td>05/13/2026</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Replied</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Marc Chadwell" data-email="marc@chadwelltest.com" data-stars="4" data-date="2026-05-12" data-status="replied">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--rose)">MC</span>Marc Chadwell</div></td>
+              <td class="cell-muted">marc@chadwelltest.com</td>
+              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg class="star-empty" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
+              <td><div class="cell-truncate" title="Ordering flow is easy. Invoicing could be clearer for multi-property orders.">Ordering flow is easy. Invoicing could be clearer for multi-property orders.</div></td>
+              <td>05/12/2026</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Replied</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="QA Mail Buyer" data-email="qa.mail@olivierbuyers.com" data-stars="5" data-date="2026-05-10" data-status="replied">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--violet)">QM</span>QA Mail Buyer</div></td>
+              <td class="cell-muted">qa.mail@olivierbuyers.com</td>
+              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
+              <td><div class="cell-truncate" title="Fast fulfillment and everything arrived exactly as described.">Fast fulfillment and everything arrived exactly as described.</div></td>
+              <td>05/10/2026</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Replied</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Sam Rivera" data-email="sam.rivera@clkproperties.com" data-stars="3" data-date="2026-05-08" data-status="replied">
+              <td><div class="customer-cell"><span class="avatar" style="background:var(--sky)">SR</span>Sam Rivera</div></td>
+              <td class="cell-muted">sam.rivera@clkproperties.com</td>
+              <td><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg class="star-empty" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg><svg class="star-empty" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg></span></td>
+              <td><div class="cell-truncate" title="Product quality is good but two SKUs were out of stock for weeks.">Product quality is good but two SKUs were out of stock for weeks.</div></td>
+              <td>05/08/2026</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Replied</span></span></td>
+              <td style="width:80px"><button class="row-action" title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
           </tbody>
         </table>
         </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state" style="display:none">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <div class="empty-state-title">No reviews found</div>
+          <div class="empty-state-desc">No reviews match your current search and filters. Try adjusting or clearing them.</div>
+          <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
+        </div>
+
         <div class="pagination">
           <span class="pagination-info">Page 1 of 1</span>
           <div class="pagination-controls">
@@ -649,10 +681,123 @@
   </div>
 
   <script>
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+      desc: '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>'
+    };
+    // Default: needs-reply first, then newest
+    let sortState = { col: null, dir: 'desc' };
+    let activeTab = 'all';
+
+    function rowsArr() {
+      return [...document.querySelectorAll('#reviews-table tbody tr')];
+    }
+
+    function defaultCompare(a, b) {
+      const s = (a.dataset.status === 'needs' ? 0 : 1) - (b.dataset.status === 'needs' ? 0 : 1);
+      if (s !== 0) return s;
+      return b.dataset.date.localeCompare(a.dataset.date);
+    }
+
+    function applySort() {
+      const tbody = document.querySelector('#reviews-table tbody');
+      const rows = rowsArr();
+      rows.sort((a, b) => {
+        if (!sortState.col) return defaultCompare(a, b);
+        let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+        if (sortState.col === 'stars') { av = +av; bv = +bv; }
+        const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+        return sortState.dir === 'asc' ? cmp : -cmp;
+      });
+      rows.forEach(r => tbody.appendChild(r));
+      // header indicators
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) {
+          th.classList.add('sorted');
+          icon.innerHTML = ARROWS[sortState.dir];
+        } else {
+          th.classList.remove('sorted');
+          icon.innerHTML = ARROWS.neutral;
+        }
+      });
+    }
+
+    function setSort(col) {
+      if (sortState.col === col) {
+        sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortState = { col, dir: col === 'date' || col === 'stars' ? 'desc' : 'asc' };
+      }
+      applySort();
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      applyFilters();
+    }
+
+    let ratingFilter = null;
+
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      m.style.display = m.style.display === 'none' ? '' : 'none';
+    }
+
+    function setRatingFilter(n) {
+      ratingFilter = n;
+      document.getElementById('filter-chip-value').textContent = n + (n === 1 ? ' star' : ' stars');
+      document.getElementById('filter-chip').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#filter-menu .dropdown-item').forEach(i => {
+        const sel = i.textContent.replace('\u2713','').trim().startsWith(n + ' ');
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      applyFilters();
+    }
+
+    function clearRatingFilter() {
+      ratingFilter = null;
+      document.getElementById('filter-chip').style.display = 'none';
+      document.getElementById('filter-clear').style.display = 'none';
+      document.querySelectorAll('#filter-menu .dropdown-item').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('review-search').value.toLowerCase();
+      let visible = 0;
+      rowsArr().forEach(r => {
+        const tabOk = activeTab === 'all' || r.dataset.status === activeTab;
+        const text = r.textContent.toLowerCase();
+        const searchOk = !q || text.includes(q);
+        const ratingOk = ratingFilter === null || +r.dataset.stars === ratingFilter;
+        const show = tabOk && searchOk && ratingOk;
+        r.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('empty-state').style.display = visible === 0 ? '' : 'none';
+    }
+
+    function clearFilters() {
+      document.getElementById('review-search').value = '';
+      clearRatingFilter();
+      setTab('all');
+    }
+
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    applySort();
   </script>
 </body>
 </html>

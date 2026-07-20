@@ -406,6 +406,26 @@
 
     /* Table */
     .table-wrap { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    th.sorted { color: var(--primary); }
+    .cell-truncate { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
     table { width: 100%; border-collapse: collapse; }
     th { text-align: left; padding: 10px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: var(--muted); color: var(--muted-foreground); border-bottom: 1px solid var(--border); }
     td { padding: 12px 16px; font-size: 13px; color: var(--foreground); border-bottom: 1px solid var(--border); }
@@ -1305,6 +1325,7 @@
           <a onclick="scrollToSection('metric-tile')">Metric Tile</a>
           <a onclick="scrollToSection('insight-card')">Insight Card</a>
           <a onclick="scrollToSection('activity-feed')">Activity Feed</a>
+          <a onclick="scrollToSection('empty-state')">Empty State</a>
           <a onclick="scrollToSection('icon-containers')">Icon Containers</a>
           <a onclick="scrollToSection('skeletons')">Skeletons</a>
         </div>
@@ -1734,11 +1755,11 @@
     <section class="section" id="table">
       <div class="section-header">
         <h2 class="section-title">Table</h2>
-        <p class="section-desc">Muted header row, accent hover, primary left-border on selected rows. Leading checkbox column for bulk selection, trailing kebab for row actions. Pagination sits below the table.</p>
+        <p class="section-desc">Muted header row, accent hover, primary left-border on selected rows. Sortable columns show stacked chevrons (primary arrow when active). Leading checkbox column for bulk selection, trailing kebab for row actions. Long-text cells truncate with ellipsis. Pagination sits below the table.</p>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th style="width:40px"><input type="checkbox" class="checkbox" /></th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th style="width:48px"></th></tr></thead>
+          <thead><tr><th style="width:40px"><input type="checkbox" class="checkbox" /></th><th class="sortable sorted">Name<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></th><th class="sortable">Email<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th class="sortable">Role<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th class="sortable">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th style="width:48px"></th></tr></thead>
           <tbody>
             <tr><td><input type="checkbox" class="checkbox" /></td><td>Alex Morgan</td><td>alex@scout.com</td><td>Admin</td><td><span class="status status-active">Active</span></td><td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr>
             <tr><td><input type="checkbox" class="checkbox" /></td><td>Jamie Chen</td><td>jamie@scout.com</td><td>Editor</td><td><span class="status status-pending">Pending</span></td><td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr>
@@ -2997,6 +3018,27 @@
         </div>
       </div>
     </section>
+
+    <!-- ===================== EMPTY STATE ===================== -->
+    <section class="section" id="empty-state">
+      <div class="section-header">
+        <h2 class="section-title">Empty State</h2>
+        <p class="section-desc">Placeholder shown inside tables, lists, and cards when no items match (or none exist yet). Muted icon circle + title + description + optional recovery action.</p>
+      </div>
+      <div class="comp-card">
+        <div style="border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <div class="empty-state-title">No reviews found</div>
+            <div class="empty-state-desc">No reviews match your current search and filters. Try adjusting or clearing them.</div>
+            <button class="toolbar-btn">Clear filters</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
 
     <!-- ===================== TOOLBAR ===================== -->
     <section class="section" id="toolbar">

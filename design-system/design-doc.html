@@ -365,6 +365,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       </table>
       <h3>Rules</h3>
       <ul>
+        <li>Page content stretches to fill the viewport — never apply a max-width to the content area. It uses 32px padding on all sides; grids and tables flex to the available width.</li>
         <li>Never use arbitrary pixel values. Stick to multiples of 4.</li>
         <li>In Tailwind, use the default spacing scale: <code>p-1</code> (4px), <code>p-2</code> (8px), <code>p-3</code> (12px), etc.</li>
         <li>Use <code>gap</code> over margins when spacing siblings in flex/grid containers.</li>

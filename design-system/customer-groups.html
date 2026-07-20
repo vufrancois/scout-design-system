@@ -194,7 +194,7 @@
 
     /* Toolbar */
     .toolbar {
-      display: flex; align-items: center; justify-content: flex-end;
+      display: flex; align-items: center; justify-content: space-between;
       gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
     }
     .toolbar-btn-icon {
@@ -315,6 +315,101 @@
       font-size: 10px; font-weight: 600;
     }
     .avatar-label { font-size: 13px; color: var(--muted-foreground); }
+
+    /* Sortable headers */
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    th.sorted { color: var(--primary); }
+
+    .desc-cell {
+      max-width: 280px; color: var(--muted-foreground);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Row actions */
+    .row-action {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      border: none; background: none; color: var(--muted-foreground);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .row-action:hover { background: var(--muted); color: var(--foreground); }
+    .row-action svg { width: 16px; height: 16px; }
+
+    /* Filter bar */
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 220px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+
+    /* Group card (stacked compact entity card) */
+    .group-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+      transition: box-shadow 0.15s;
+    }
+    .group-card:hover { box-shadow: var(--shadow-sm); }
+    .group-card-head { display: flex; align-items: flex-start; gap: 12px; }
+    .group-card-head .avatar-lg { flex-shrink: 0; }
+    .group-card-head .avatar-lg svg { width: 18px; height: 18px; }
+    .group-card-title { flex: 1; min-width: 0; }
+    .group-card-name { font-size: 15px; font-weight: 600; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .group-card-desc { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .group-card-actions { display: flex; align-items: center; gap: 4px; }
+    .group-card-meta { font-size: 12px; color: var(--muted-foreground); }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -470,51 +565,95 @@
 
       <!-- Toolbar -->
       <div class="toolbar">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="filter-chip" id="chip-org" style="display:none">
+            <span class="filter-chip-attr">Organization</span>
+            <span class="filter-chip-value" id="chip-org-value"></span>
+            <button class="filter-chip-remove" onclick="clearOrgFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+              Add filter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div id="menu-root">
+                <div class="dropdown-item" onclick="showFilterMenu('orgs')">Organization <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+              </div>
+              <div id="menu-orgs" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-org="ChadwellTestBuyer" onclick="setOrgFilter('ChadwellTestBuyer')">ChadwellTestBuyer</div>
+                <div class="dropdown-item" data-org="Demo Inc." onclick="setOrgFilter('Demo Inc.')">Demo Inc.</div>
+                <div class="dropdown-item" data-org="CLK Properties" onclick="setOrgFilter('CLK Properties')">CLK Properties</div>
+                <div class="dropdown-item" data-org="Scout E2E Organization" onclick="setOrgFilter('Scout E2E Organization')">Scout E2E Organization</div>
+              </div>
+            </div>
+          </div>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
+        </div>
         <div class="search-wrap">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="search-field" placeholder="Search" />
+          <input class="search-field" id="cg-search" placeholder="Search customer groups" oninput="applyFilters()" />
         </div>
-        <button class="toolbar-btn-icon" title="Sort">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-        </button>
       </div>
 
       <!-- List view -->
       <div class="table-card" id="view-list">
         <div class="table-scroll">
-        <table>
+        <table id="cg-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Organizations</th>
-              <th>Properties</th>
+              <th class="sortable" data-col="name" onclick="setSort('name')">Name<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th>Description</th>
+              <th class="sortable" data-col="orgcount" onclick="setSort('orgcount')">Organizations<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="props" onclick="setSort('props')">Properties<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="created" onclick="setSort('created')">Created<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th style="width:80px"></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr data-id="cg1" data-name="Demo" data-orgcount="2" data-props="8" data-created="2026-06-22" data-orgs="Demo Inc.|CLK Properties">
               <td class="id-cell">Demo</td>
+              <td class="desc-cell" title="Demo group for internal walkthroughs">Demo group for internal walkthroughs</td>
               <td><div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--rose)"></span></div><span class="avatar-label">2 orgs</span></div></td>
-              <td>0</td>
+              <td>8</td>
+              <td>06/22/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
+            <tr data-id="cg2" data-name="Demo 3 - No CTB" data-orgcount="3" data-props="9" data-created="2026-06-10" data-orgs="Demo Inc.|CLK Properties|Scout E2E Organization">
               <td class="id-cell">Demo 3 - No CTB</td>
+              <td class="desc-cell" title="Every organization except ChadwellTestBuyer">Every organization except ChadwellTestBuyer</td>
               <td><div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--amber)"></span></div><span class="avatar-label">3 orgs</span></div></td>
-              <td>0</td>
+              <td>9</td>
+              <td>06/10/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
+            <tr data-id="cg3" data-name="Only CTB" data-orgcount="1" data-props="3" data-created="2026-05-28" data-orgs="ChadwellTestBuyer">
               <td class="id-cell">Only CTB</td>
+              <td class="desc-cell" title="ChadwellTestBuyer accounts only">ChadwellTestBuyer accounts only</td>
               <td><div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">1 org</span></div></td>
-              <td>0</td>
+              <td>3</td>
+              <td>05/28/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
+            <tr data-id="cg4" data-name="All Orgs" data-orgcount="4" data-props="12" data-created="2026-05-12" data-orgs="ChadwellTestBuyer|Demo Inc.|CLK Properties|Scout E2E Organization">
               <td class="id-cell">All Orgs</td>
+              <td class="desc-cell" title="Every active organization on Scout">Every active organization on Scout</td>
               <td><div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--rose)"></span></div><span class="avatar-label">4 orgs</span></div></td>
-              <td>0</td>
+              <td>12</td>
+              <td>05/12/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
+            <tr data-id="cg5" data-name="Test Group" data-orgcount="2" data-props="2" data-created="2026-04-30" data-orgs="Scout E2E Organization|ChadwellTestBuyer">
               <td class="id-cell">Test Group</td>
+              <td class="desc-cell" title="Sandbox group for QA test runs">Sandbox group for QA test runs</td>
               <td><div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">2 orgs</span></div></td>
-              <td>0</td>
+              <td>2</td>
+              <td>04/30/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
           </tbody>
         </table>
@@ -550,48 +689,203 @@
 
       <!-- Grid view -->
       <div class="entity-grid" id="view-grid" style="display:none">
-          <div class="entity-card-compact">
-            <span class="avatar avatar-lg" style="background:var(--rose)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-            <div class="entity-card-compact-name">Demo</div>
+          <div class="group-card" data-id="cg1" data-name="Demo" data-orgcount="2" data-props="8" data-created="2026-06-22" data-orgs="Demo Inc.|CLK Properties">
+            <div class="group-card-head">
+              <span class="avatar avatar-lg" style="background:var(--rose)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div class="group-card-title">
+                <div class="group-card-name">Demo</div>
+                <div class="group-card-desc" title="Demo group for internal walkthroughs">Demo group for internal walkthroughs</div>
+              </div>
+              <div class="group-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+            </div>
             <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--rose)"></span></div><span class="avatar-label">2 orgs</span></div>
+            <div class="group-card-meta">8 properties &middot; Created 06/22/2026</div>
           </div>
-          <div class="entity-card-compact">
-            <span class="avatar avatar-lg" style="background:var(--violet)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-            <div class="entity-card-compact-name">Demo 3 - No CTB</div>
+          <div class="group-card" data-id="cg2" data-name="Demo 3 - No CTB" data-orgcount="3" data-props="9" data-created="2026-06-10" data-orgs="Demo Inc.|CLK Properties|Scout E2E Organization">
+            <div class="group-card-head">
+              <span class="avatar avatar-lg" style="background:var(--violet)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div class="group-card-title">
+                <div class="group-card-name">Demo 3 - No CTB</div>
+                <div class="group-card-desc" title="Every organization except ChadwellTestBuyer">Every organization except ChadwellTestBuyer</div>
+              </div>
+              <div class="group-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+            </div>
             <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--amber)"></span></div><span class="avatar-label">3 orgs</span></div>
+            <div class="group-card-meta">9 properties &middot; Created 06/10/2026</div>
           </div>
-          <div class="entity-card-compact">
-            <span class="avatar avatar-lg" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-            <div class="entity-card-compact-name">Only CTB</div>
+          <div class="group-card" data-id="cg3" data-name="Only CTB" data-orgcount="1" data-props="3" data-created="2026-05-28" data-orgs="ChadwellTestBuyer">
+            <div class="group-card-head">
+              <span class="avatar avatar-lg" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div class="group-card-title">
+                <div class="group-card-name">Only CTB</div>
+                <div class="group-card-desc" title="ChadwellTestBuyer accounts only">ChadwellTestBuyer accounts only</div>
+              </div>
+              <div class="group-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+            </div>
             <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">1 org</span></div>
+            <div class="group-card-meta">3 properties &middot; Created 05/28/2026</div>
           </div>
-          <div class="entity-card-compact">
-            <span class="avatar avatar-lg" style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-            <div class="entity-card-compact-name">All Orgs</div>
+          <div class="group-card" data-id="cg4" data-name="All Orgs" data-orgcount="4" data-props="12" data-created="2026-05-12" data-orgs="ChadwellTestBuyer|Demo Inc.|CLK Properties|Scout E2E Organization">
+            <div class="group-card-head">
+              <span class="avatar avatar-lg" style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div class="group-card-title">
+                <div class="group-card-name">All Orgs</div>
+                <div class="group-card-desc" title="Every active organization on Scout">Every active organization on Scout</div>
+              </div>
+              <div class="group-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+            </div>
             <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--rose)"></span></div><span class="avatar-label">4 orgs</span></div>
+            <div class="group-card-meta">12 properties &middot; Created 05/12/2026</div>
           </div>
-          <div class="entity-card-compact">
-            <span class="avatar avatar-lg" style="background:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-            <div class="entity-card-compact-name">Test Group</div>
+          <div class="group-card" data-id="cg5" data-name="Test Group" data-orgcount="2" data-props="2" data-created="2026-04-30" data-orgs="Scout E2E Organization|ChadwellTestBuyer">
+            <div class="group-card-head">
+              <span class="avatar avatar-lg" style="background:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div class="group-card-title">
+                <div class="group-card-name">Test Group</div>
+                <div class="group-card-desc" title="Sandbox group for QA test runs">Sandbox group for QA test runs</div>
+              </div>
+              <div class="group-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+            </div>
             <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">2 orgs</span></div>
+            <div class="group-card-meta">2 properties &middot; Created 04/30/2026</div>
           </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-state-title">No customer groups found</div>
+        <div class="empty-state-desc">No groups match your current search and filters. Try adjusting or clearing them.</div>
+        <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
       </div>
 
     </div>
   </div>
 
   <script>
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+      desc: '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>'
+    };
+    let currentView = 'list';
+    let orgFilter = null;
+    let sortState = { col: 'name', dir: 'asc' };
+
     function setView(view) {
-      document.getElementById('view-list').style.display = view === 'list' ? '' : 'none';
-      document.getElementById('view-grid').style.display = view === 'grid' ? '' : 'none';
+      currentView = view;
       document.getElementById('btn-view-list').classList.toggle('active', view === 'list');
       document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
+      applyFilters();
+    }
+
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      if (opening) showFilterMenu('root');
+    }
+
+    function showFilterMenu(which) {
+      ['root', 'orgs'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+
+    function setOrgFilter(name) {
+      orgFilter = name;
+      document.getElementById('chip-org-value').textContent = name;
+      document.getElementById('chip-org').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#menu-orgs .dropdown-item[data-org]').forEach(i => {
+        const sel = i.dataset.org === name;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      applyFilters();
+    }
+
+    function clearOrgFilter() {
+      orgFilter = null;
+      document.getElementById('chip-org').style.display = 'none';
+      document.getElementById('filter-clear').style.display = 'none';
+      document.querySelectorAll('#menu-orgs .dropdown-item[data-org]').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      applyFilters();
+    }
+
+    function itemsFor(view) {
+      return view === 'list'
+        ? [...document.querySelectorAll('#cg-table tbody tr')]
+        : [...document.querySelectorAll('#view-grid .group-card')];
+    }
+
+    function matches(el, q) {
+      const searchOk = !q || el.textContent.toLowerCase().includes(q);
+      const orgOk = orgFilter === null || el.dataset.orgs.split('|').includes(orgFilter);
+      return searchOk && orgOk;
+    }
+
+    function applySort() {
+      const cmp = (a, b) => {
+        let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+        if (sortState.col === 'orgcount' || sortState.col === 'props') { av = +av; bv = +bv; }
+        if (sortState.col === 'name') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+        const c = av < bv ? -1 : av > bv ? 1 : 0;
+        return sortState.dir === 'asc' ? c : -c;
+      };
+      const tbody = document.querySelector('#cg-table tbody');
+      itemsFor('list').sort(cmp).forEach(r => tbody.appendChild(r));
+      const grid = document.getElementById('view-grid');
+      itemsFor('grid').sort(cmp).forEach(c => grid.appendChild(c));
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) { th.classList.add('sorted'); icon.innerHTML = ARROWS[sortState.dir]; }
+        else { th.classList.remove('sorted'); icon.innerHTML = ARROWS.neutral; }
+      });
+    }
+
+    function setSort(col) {
+      if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      else sortState = { col, dir: col === 'created' || col === 'orgcount' || col === 'props' ? 'desc' : 'asc' };
+      applySort();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('cg-search').value.toLowerCase();
+      let visible = 0;
+      itemsFor('list').forEach(r => {
+        const show = currentView === 'list' && matches(r, q);
+        r.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      itemsFor('grid').forEach(c => {
+        const show = currentView === 'grid' && matches(c, q);
+        c.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('view-list').style.display = currentView === 'list' && visible > 0 ? '' : 'none';
+      document.getElementById('view-grid').style.display = currentView === 'grid' && visible > 0 ? '' : 'none';
+      document.getElementById('empty-state').style.display = visible === 0 ? '' : 'none';
+    }
+
+    function clearFilters() {
+      document.getElementById('cg-search').value = '';
+      clearOrgFilter();
     }
 
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    applySort();
+    applyFilters();
   </script>
 </body>
 </html>

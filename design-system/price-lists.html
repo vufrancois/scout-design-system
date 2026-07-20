@@ -147,7 +147,7 @@
     /* Page content */
     .page-content { padding: 32px; }
 
-    /* Page header with actions */
+    /* Page header */
     .page-header {
       display: flex; align-items: center; justify-content: space-between;
       gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
@@ -162,21 +162,6 @@
     .page-header-text h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
     .page-header-text p { font-size: 14px; color: var(--muted-foreground); }
     .page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-
-    /* Segmented icon toggle */
-    .segmented {
-      display: inline-flex; gap: 2px; background: var(--muted);
-      border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2px;
-    }
-    .segmented button {
-      width: 32px; height: 30px; border: none; border-radius: var(--radius-sm);
-      background: transparent; color: var(--muted-foreground); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-    }
-    .segmented button:hover { color: var(--foreground); }
-    .segmented button.active { background: var(--background); color: var(--primary); box-shadow: var(--shadow-xs); }
-    .segmented button svg { width: 16px; height: 16px; }
-
     .toolbar-btn {
       display: inline-flex; align-items: center; gap: 6px;
       height: 36px; padding: 0 14px; border-radius: var(--radius-md);
@@ -191,96 +176,49 @@
       font-weight: 600;
     }
     .toolbar-btn.btn-primary-fill:hover { background: var(--blue-600); }
-
-    /* Toolbar */
-    .toolbar {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
-    }
-    .toolbar-right { display: flex; align-items: center; gap: 8px; }
-    .toolbar-btn-icon {
-      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-md); border: 1px solid var(--border);
-      background: var(--background); color: var(--foreground);
-      cursor: pointer; transition: all 0.15s;
-    }
-    .toolbar-btn-icon:hover { background: var(--accent); }
-    .toolbar-btn-icon svg { width: 16px; height: 16px; }
-    .search-wrap { position: relative; display: flex; align-items: center; width: 240px; }
-    .search-icon { position: absolute; left: 12px; color: var(--muted-foreground); pointer-events: none; }
-    .search-field {
-      height: 36px; width: 100%; padding: 0 12px 0 36px;
-      border-radius: var(--radius-md); border: 1px solid var(--border);
-      font-size: 13px; font-family: inherit; background: var(--background);
-      color: var(--foreground); outline: none; transition: border-color 0.15s;
-    }
-    .search-field::placeholder { color: var(--muted-foreground); }
-    .search-field:focus { border-color: var(--ring); }
-
-    /* Data table */
-    .table-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); overflow: hidden;
-    }
-    .table-scroll { overflow-x: auto; }
-    .table-card table { width: 100%; border-collapse: collapse; }
-    .table-card thead th {
-      padding: 12px 16px; text-align: left; white-space: nowrap;
-      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
-      color: var(--muted-foreground); background: var(--muted);
-      border-bottom: 1px solid var(--border);
-    }
-    .table-card tbody tr { transition: background 0.1s; }
-    .table-card tbody tr:hover { background: var(--accent); }
-    .table-card tbody td {
-      padding: 12px 16px; font-size: 14px; white-space: nowrap;
-      border-bottom: 1px solid var(--border);
-    }
-    .table-card tbody tr:last-child td { border-bottom: none; }
-    .id-cell { font-weight: 500; color: var(--foreground); }
-
-    /* Status dots — badge treatment */
-    .status-dot-item {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 3px 10px; border: 1px solid var(--border); border-radius: var(--radius-pill);
-      background: var(--background);
-    }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .status-dot.dot-active { background: var(--emerald); }
-    .status-dot.dot-inactive { background: var(--muted-foreground); }
-    .status-dot.dot-warning { background: var(--orange); }
-    .status-dot-label { font-size: 13px; color: var(--foreground); }
-
-    /* Pagination */
-    .pagination {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; border-top: 1px solid var(--border);
-    }
-    .pagination-info { font-size: 13px; color: var(--muted-foreground); }
-    .pagination-controls { display: flex; align-items: center; gap: 16px; }
-    .pagination-rows { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-foreground); }
-    .pagination-rows-select {
-      height: 28px; padding: 2px 24px 2px 8px; border-radius: var(--radius-sm);
-      font-size: 13px; font-family: inherit; background: var(--background);
-      color: var(--foreground); border: 1px solid var(--border);
-      appearance: none; cursor: pointer;
-    }
-    .pagination-buttons { display: flex; gap: 4px; }
-    .pagination-btn {
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: var(--background); color: var(--foreground);
-      cursor: pointer; transition: all 0.15s; font-family: inherit;
-    }
-    .pagination-btn:hover:not(:disabled) { background: var(--accent); }
-    .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .pagination-btn svg { width: 16px; height: 16px; }
-
-    /* Filter bar */
     .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
     .toolbar-btn-dashed:hover { color: var(--foreground); }
     .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
     .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+
+    /* Segmented toggle */
+    .segmented {
+      display: inline-flex; gap: 2px; background: var(--muted);
+      border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2px;
+    }
+    .segmented button {
+      height: 30px; min-width: 32px; padding: 0; border: none; border-radius: var(--radius-sm);
+      background: transparent; color: var(--muted-foreground); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .segmented button:hover { color: var(--foreground); }
+    .segmented button.active { background: var(--background); color: var(--primary); box-shadow: var(--shadow-xs); }
+    .segmented button svg { width: 16px; height: 16px; }
+
+    /* Filter tabs */
+    .tab-bar {
+      display: inline-flex; gap: 4px; flex-wrap: wrap;
+      background: var(--muted); padding: 4px; border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+    }
+    .tab-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: transparent; color: var(--muted-foreground);
+      border: none; cursor: pointer; transition: all 0.15s;
+    }
+    .tab-item:hover { color: var(--foreground); background: var(--background); }
+    .tab-item.active { background: var(--primary); color: var(--primary-foreground); box-shadow: var(--shadow-xs); }
+    .tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: var(--radius-pill); font-size: 11px; font-weight: 600;
+      background: rgba(0,0,0,0.08); color: var(--muted-foreground);
+    }
+    .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
+
+    /* Filter bar */
     .filter-chip {
       display: inline-flex; align-items: stretch; height: 36px;
       border: 1px solid var(--border); border-radius: var(--radius-md);
@@ -303,13 +241,11 @@
     .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
     .filter-chip-remove svg { width: 14px; height: 14px; }
     .filter-menu-wrap { position: relative; }
-    .dropdown-preview {
-      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
-      border: 1px solid var(--border); box-shadow: var(--shadow-md);
-    }
     .filter-menu {
       position: absolute; top: calc(100% + 4px); left: 0;
-      min-width: 240px; z-index: 20;
+      min-width: 220px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
     }
     .dropdown-item {
       padding: 10px 14px; font-size: 14px; cursor: pointer;
@@ -319,10 +255,59 @@
     .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
     .dropdown-item .check { font-size: 14px; color: var(--primary); }
 
+    /* Toolbar */
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .search-wrap { position: relative; display: flex; align-items: center; width: 240px; }
+    .search-icon { position: absolute; left: 12px; color: var(--muted-foreground); pointer-events: none; }
+    .search-field {
+      height: 36px; width: 100%; padding: 0 12px 0 36px;
+      border-radius: var(--radius-md); border: 1px solid var(--border);
+      font-size: 13px; font-family: inherit; background: var(--background);
+      color: var(--foreground); outline: none; transition: border-color 0.15s;
+    }
+    .search-field::placeholder { color: var(--muted-foreground); }
+    .search-field:focus { border-color: var(--ring); }
+
+    /* Table */
+    .table-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+    .table-card table { width: 100%; border-collapse: collapse; }
+    .table-card thead th {
+      padding: 12px 16px; text-align: left; white-space: nowrap;
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--muted-foreground); background: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    th.sorted { color: var(--primary); }
+    .table-card tbody tr { transition: background 0.1s; }
+    .table-card tbody tr:hover { background: var(--accent); }
+    .table-card tbody td { padding: 12px 16px; font-size: 14px; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    .table-card tbody tr:last-child td { border-bottom: none; }
+    .id-cell { font-weight: 500; color: var(--foreground); }
+    .desc-cell {
+      max-width: 280px; color: var(--muted-foreground);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Status dots */
+    .status-dot-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 3px 10px; border: 1px solid var(--border); border-radius: var(--radius-pill);
+      background: var(--background);
+    }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.dot-active { background: var(--emerald); }
+    .status-dot.dot-inactive { background: var(--muted-foreground); }
+    .status-dot.dot-warning { background: var(--orange); }
+    .status-dot-label { font-size: 13px; color: var(--foreground); }
+
     /* Badges */
-    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; white-space: nowrap; }
-    .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
-    .badge svg { flex-shrink: 0; }
     .badge-neutral {
       display: inline-block; vertical-align: middle; max-width: 220px;
       padding: 2px 10px; border-radius: var(--radius-pill);
@@ -331,7 +316,7 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* Toggle switch */
+    /* Switch */
     .switch {
       appearance: none; width: 36px; height: 20px; border-radius: var(--radius-pill);
       background: var(--border); position: relative; cursor: pointer;
@@ -344,9 +329,8 @@
     }
     .switch:checked { background: var(--primary); }
     .switch:checked::after { transform: translateX(16px); }
-    .switch:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Table row action */
+    /* Row actions */
     .row-action {
       width: 32px; height: 32px; border-radius: var(--radius-md);
       border: none; background: none; color: var(--muted-foreground);
@@ -356,93 +340,78 @@
     .row-action:hover { background: var(--muted); color: var(--foreground); }
     .row-action svg { width: 16px; height: 16px; }
 
-    /* Price list feature card */
-    .pl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    /* Price list cards (marketing-card anatomy) */
+    .pl-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    @media (max-width: 1200px) { .pl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 800px) { .pl-grid { grid-template-columns: minmax(0, 1fr); } }
     .pl-card {
-      display: flex; background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); overflow: hidden; transition: box-shadow 0.15s;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px; overflow: hidden;
+      display: flex; flex-direction: column; gap: 14px;
+      position: relative; transition: box-shadow 0.15s;
     }
     .pl-card:hover { box-shadow: var(--shadow-sm); }
-    .pl-panel {
-      width: 200px; flex-shrink: 0; padding: 20px;
-      display: flex; flex-direction: column; color: #fff; position: relative;
+    .pl-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+    .pl-card.status-active::before { background: var(--emerald); }
+    .pl-card.status-scheduled::before { background: var(--orange); }
+    .pl-card.status-draft::before { background: var(--muted-foreground); }
+    .pl-head { display: flex; align-items: flex-start; gap: 12px; }
+    .pl-tile {
+      width: 44px; height: 44px; border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      background: var(--sky-soft); color: var(--sky);
     }
-    .pl-panel.panel-scheduled { background: var(--orange); }
-    .pl-panel.panel-active { background: var(--primary); }
-    .pl-panel.panel-draft { background: var(--muted-foreground); }
-    .pl-panel-chip {
-      position: absolute; top: 14px; right: 14px;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
-      background: rgba(255,255,255,0.22); border-radius: var(--radius-pill); padding: 3px 10px;
-    }
-    .pl-panel-count { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-top: auto; }
-    .pl-panel-label { font-size: 13px; opacity: 0.9; margin-bottom: 16px; }
+    .pl-tile svg { width: 22px; height: 22px; }
+    .pl-title-wrap { flex: 1; min-width: 0; }
+    .pl-title { font-size: 16px; font-weight: 700; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pl-desc { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    .pl-actions { display: flex; align-items: center; gap: 4px; }
+    .pl-actions .switch { margin-right: 4px; }
+    .pl-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pl-usage { display: flex; flex-direction: column; gap: 6px; }
+    .pl-usage-label { font-size: 12px; color: var(--muted-foreground); }
+    .pl-usage-label strong { color: var(--foreground); font-weight: 600; }
     .progress { height: 4px; border-radius: var(--radius-pill); background: var(--muted); overflow: hidden; }
     .progress-fill { height: 100%; border-radius: var(--radius-pill); background: var(--primary); }
-    .progress.on-color { background: rgba(255,255,255,0.3); }
-    .progress.on-color .progress-fill { background: #fff; }
-    .pl-panel-progress-label { font-size: 11px; opacity: 0.9; margin-top: 6px; }
-    .pl-body { flex: 1; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-    .pl-body-header { display: flex; align-items: center; gap: 10px; }
-    .pl-title { font-size: 17px; font-weight: 700; color: var(--foreground); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .pl-desc { font-size: 12px; color: var(--muted-foreground); }
-    .pl-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .pl-dates { display: flex; gap: 32px; }
-    .pl-date-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); }
-    .pl-date-value { font-size: 13px; color: var(--foreground); }
-    .pl-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
-    .pl-created { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted-foreground); }
-    .pl-created svg { width: 14px; height: 14px; }
-    .table-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 500; color: var(--sky);
-      text-decoration: none; cursor: pointer;
-    }
-    .table-link:hover { text-decoration: underline; }
-    .table-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .pl-created { font-size: 12px; color: var(--muted-foreground); }
 
-    /* Compact entity card (horizontal) */
-    .entity-card-compact {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 16px 20px;
-      display: flex; align-items: center; gap: 12px;
-      transition: box-shadow 0.15s;
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
     }
-    .entity-card-compact:hover { box-shadow: var(--shadow-sm); }
-    .entity-card-compact-name { font-size: 15px; font-weight: 600; color: var(--foreground); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .entity-card-compact .avatar-lg svg { width: 18px; height: 18px; }
-
-    /* Empty-state note in card footer */
-    .empty-note { color: var(--muted-foreground); }
-    .empty-note svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-    /* Property cards (grid view) */
-    .entity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .entity-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 20px;
-      display: flex; flex-direction: column; gap: 8px;
-      transition: box-shadow 0.15s;
-    }
-    .entity-card:hover { box-shadow: var(--shadow-sm); }
-    .entity-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-    .entity-card-name { font-size: 15px; font-weight: 600; color: var(--foreground); }
-    .entity-card-meta { font-size: 13px; color: var(--muted-foreground); }
-
-    /* Avatar stack */
-    .avatar-group { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-    .avatar-stack { display: flex; align-items: center; }
-    .avatar {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 2px solid var(--background); flex-shrink: 0;
-      display: inline-flex; align-items: center; justify-content: center;
-    }
-    .avatar + .avatar { margin-left: -8px; }
-    .avatar-more {
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
       background: var(--muted); color: var(--muted-foreground);
-      font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
     }
-    .avatar-label { font-size: 13px; color: var(--muted-foreground); }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
+
+    /* Pagination */
+    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); }
+    .pagination-info { font-size: 13px; color: var(--muted-foreground); }
+    .pagination-controls { display: flex; align-items: center; gap: 16px; }
+    .pagination-rows { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-foreground); }
+    .pagination-rows-select {
+      height: 28px; padding: 2px 24px 2px 8px; border-radius: var(--radius-sm);
+      font-size: 13px; font-family: inherit; background: var(--background);
+      color: var(--foreground); border: 1px solid var(--border);
+      appearance: none; cursor: pointer;
+    }
+    .pagination-buttons { display: flex; gap: 4px; }
+    .pagination-btn {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--background); color: var(--foreground);
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .pagination-btn:hover:not(:disabled) { background: var(--accent); }
+    .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination-btn svg { width: 16px; height: 16px; }
   </style>
 </head>
 <body>
@@ -573,7 +542,7 @@
       <div class="page-header">
         <div class="page-header-left">
           <div class="page-header-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
           </div>
           <div class="page-header-text">
             <h1>Price Lists</h1>
@@ -596,13 +565,28 @@
         </div>
       </div>
 
+      <!-- Filter tabs -->
+      <div class="tab-bar">
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">All <span class="tab-count" data-count="all">4</span></button>
+        <button class="tab-item" data-tab="active" onclick="setTab('active')">Active <span class="tab-count" data-count="active">1</span></button>
+        <button class="tab-item" data-tab="scheduled" onclick="setTab('scheduled')">Scheduled <span class="tab-count" data-count="scheduled">1</span></button>
+        <button class="tab-item" data-tab="draft" onclick="setTab('draft')">Draft <span class="tab-count" data-count="draft">2</span></button>
+      </div>
+
       <!-- Toolbar -->
       <div class="toolbar">
-        <div class="toolbar-group" style="display:flex;align-items:center;gap:8px">
-          <span class="filter-chip" id="filter-chip" style="display:none">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="filter-chip" id="chip-created" style="display:none">
             <span class="filter-chip-attr">Created</span>
-            <span class="filter-chip-value" id="filter-chip-value"></span>
-            <button class="filter-chip-remove" onclick="clearFilter()" title="Remove filter">
+            <span class="filter-chip-value" id="chip-created-value"></span>
+            <button class="filter-chip-remove" onclick="clearCreatedFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <span class="filter-chip" id="chip-group" style="display:none">
+            <span class="filter-chip-attr">Customer Group</span>
+            <span class="filter-chip-value" id="chip-group-value"></span>
+            <button class="filter-chip-remove" onclick="clearGroupFilter()" title="Remove filter">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
           </span>
@@ -612,69 +596,88 @@
               Add filter
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </button>
-            <div class="dropdown-preview filter-menu" id="filter-menu" style="display:none">
-              <div class="dropdown-item" onclick="setFilter('Today')">Today</div>
-              <div class="dropdown-item" onclick="setFilter('Last 7 days')">Last 7 days</div>
-              <div class="dropdown-item" onclick="setFilter('Last 30 days')">Last 30 days</div>
-              <div class="dropdown-item" onclick="setFilter('Last 90 days')">Last 90 days</div>
-              <div class="dropdown-item" onclick="setFilter('Last 12 months')">Last 12 months</div>
-              <div class="dropdown-item" onclick="setFilter('Custom')">Custom</div>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div id="menu-root">
+                <div class="dropdown-item" onclick="showFilterMenu('created')">Created <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+                <div class="dropdown-item" onclick="showFilterMenu('groups')">Customer group <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+              </div>
+              <div id="menu-created" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-days="0" onclick="setCreatedFilter(0, 'Today')">Today</div>
+                <div class="dropdown-item" data-days="7" onclick="setCreatedFilter(7, 'Last 7 days')">Last 7 days</div>
+                <div class="dropdown-item" data-days="30" onclick="setCreatedFilter(30, 'Last 30 days')">Last 30 days</div>
+                <div class="dropdown-item" data-days="90" onclick="setCreatedFilter(90, 'Last 90 days')">Last 90 days</div>
+                <div class="dropdown-item" data-days="365" onclick="setCreatedFilter(365, 'Last 12 months')">Last 12 months</div>
+              </div>
+              <div id="menu-groups" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-group="Demo" onclick="setGroupFilter('Demo')">Demo</div>
+                <div class="dropdown-item" data-group="Demo 3 - No CTB" onclick="setGroupFilter('Demo 3 - No CTB')">Demo 3 - No CTB</div>
+                <div class="dropdown-item" data-group="Only CTB" onclick="setGroupFilter('Only CTB')">Only CTB</div>
+                <div class="dropdown-item" data-group="All Orgs" onclick="setGroupFilter('All Orgs')">All Orgs</div>
+                <div class="dropdown-item" data-group="Test Group" onclick="setGroupFilter('Test Group')">Test Group</div>
+              </div>
             </div>
           </div>
-          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilter()">Clear all</button>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
         </div>
-        <div class="toolbar-right">
-          <div class="search-wrap">
-            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input class="search-field" placeholder="Search price lists" />
-          </div>
-          <button class="toolbar-btn-icon" title="Sort">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-          </button>
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input class="search-field" id="pl-search" placeholder="Search price lists" oninput="applyFilters()" />
         </div>
       </div>
 
       <!-- List view -->
       <div class="table-card" id="view-list">
         <div class="table-scroll">
-        <table>
+        <table id="pl-table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Status</th>
-              <th>Price Overrides</th>
+              <th class="sortable" data-col="title" onclick="setSort('title')">Title<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th>Description</th>
+              <th class="sortable" data-col="status" onclick="setSort('status')">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="overrides" onclick="setSort('overrides')">Price Overrides<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="created" onclick="setSort('created')">Created<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
               <th>Active</th>
-              <th style="width:48px"></th>
+              <th style="width:80px"></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr data-id="pl1" data-title="Test List" data-status="scheduled" data-overrides="3" data-created="2026-06-30" data-groups="Test Group">
               <td class="id-cell">Test List</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span></td>
+              <td class="desc-cell" title="Test list">Test list</td>
+              <td><span class="status-dot-item js-status-badge"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span></td>
               <td>3</td>
-              <td><input type="checkbox" class="switch" checked /></td>
-              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td>06/30/2026</td>
+              <td><input type="checkbox" class="switch" onchange="toggleActive('pl1', this.checked)" /></td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
+            <tr data-id="pl2" data-title="Price List 6/15" data-status="draft" data-overrides="10359" data-created="2026-06-15" data-groups="Demo|All Orgs">
               <td class="id-cell">Price List 6/15</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span></td>
+              <td class="desc-cell" title="Price List 6/15">Price List 6/15</td>
+              <td><span class="status-dot-item js-status-badge"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span></td>
               <td>10,359</td>
-              <td><input type="checkbox" class="switch" /></td>
-              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td>06/15/2026</td>
+              <td><input type="checkbox" class="switch" onchange="toggleActive('pl2', this.checked)" /></td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
+            <tr data-id="pl3" data-title="CLK 2026 Price List" data-status="active" data-overrides="693" data-created="2026-05-21" data-groups="Demo|Only CTB">
               <td class="id-cell">CLK 2026 Price List</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td class="desc-cell" title="Demo vendor negotiated price list with CLK 2026">Demo vendor negotiated price list with CLK 2026</td>
+              <td><span class="status-dot-item js-status-badge"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>693</td>
-              <td><input type="checkbox" class="switch" checked /></td>
-              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td>05/21/2026</td>
+              <td><input type="checkbox" class="switch" onchange="toggleActive('pl3', this.checked)" checked /></td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
+            <tr data-id="pl4" data-title="Demo $999.99" data-status="draft" data-overrides="10360" data-created="2026-05-01" data-groups="Demo|Demo 3 - No CTB">
               <td class="id-cell">Demo $999.99</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span></td>
+              <td class="desc-cell" title="For demonstration purposes.">For demonstration purposes.</td>
+              <td><span class="status-dot-item js-status-badge"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span></td>
               <td>10,360</td>
-              <td><input type="checkbox" class="switch" /></td>
-              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td>05/01/2026</td>
+              <td><input type="checkbox" class="switch" onchange="toggleActive('pl4', this.checked)" /></td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
           </tbody>
         </table>
@@ -710,151 +713,305 @@
 
       <!-- Grid view -->
       <div class="pl-grid" id="view-grid" style="display:none">
-          <div class="pl-card">
-            <div class="pl-panel panel-scheduled">
-              <span class="pl-panel-chip">SCHEDULED</span>
-              <div class="pl-panel-count">3</div>
-              <div class="pl-panel-label">price overrides</div>
-              <div class="progress on-color"><div class="progress-fill" style="width:0%"></div></div>
-              <div class="pl-panel-progress-label">0% Scheduled</div>
-            </div>
-            <div class="pl-body">
-              <div class="pl-body-header">
-                <div class="pl-title">Test List</div>
-                <input type="checkbox" class="switch" checked />
-                <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
-              </div>
+        <div class="pl-card status-scheduled" data-id="pl1" data-title="Test List" data-status="scheduled" data-overrides="3" data-created="2026-06-30" data-groups="Test Group">
+          <div class="pl-head">
+            <div class="pl-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></div>
+            <div class="pl-title-wrap">
+              <div class="pl-title">Test List</div>
               <div class="pl-desc">Test list</div>
-              <div class="pl-badges">
-                <span class="badge" style="background:var(--amber-soft);color:#92610a"><span class="badge-dot" style="background:#f59e0b"></span>Scheduled</span>
-                <span class="badge" style="background:var(--amber-soft);color:#92610a"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>3 scheduled</span>
-              </div>
-              <div class="pl-dates">
-                <div><div class="pl-date-label">Starts</div><div class="pl-date-value">12/11/2026</div></div>
-                <div><div class="pl-date-label">Ends</div><div class="pl-date-value">12/13/2026</div></div>
-              </div>
-              <div class="pl-footer">
-                <span class="pl-created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Created 06/30/2026</span>
-                <a class="table-link">View <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
-              </div>
+            </div>
+            <div class="pl-actions">
+              <input type="checkbox" class="switch" onchange="toggleActive('pl1', this.checked)" />
+              <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
             </div>
           </div>
-          <div class="pl-card">
-            <div class="pl-panel panel-draft">
-              <span class="pl-panel-chip">DRAFT</span>
-              <div class="pl-panel-count">10,359</div>
-              <div class="pl-panel-label">price overrides</div>
-              <div class="progress on-color"><div class="progress-fill" style="width:0%"></div></div>
-              <div class="pl-panel-progress-label">0% Draft</div>
-            </div>
-            <div class="pl-body">
-              <div class="pl-body-header">
-                <div class="pl-title">Price List 6/15</div>
-                <input type="checkbox" class="switch" />
-                <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
-              </div>
+          <div class="pl-badges">
+            <span class="status-dot-item js-status-badge"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span>
+            <span class="badge-neutral" title="12/11/2026 – 12/13/2026">Starts 12/11/2026</span>
+          </div>
+          <div class="pl-usage">
+            <span class="pl-usage-label"><strong>3</strong> of 10,360 products priced</span>
+            <div class="progress"><div class="progress-fill" style="width:1%"></div></div>
+          </div>
+          <div class="pl-created">Created 06/30/2026</div>
+        </div>
+        <div class="pl-card status-draft" data-id="pl2" data-title="Price List 6/15" data-status="draft" data-overrides="10359" data-created="2026-06-15" data-groups="Demo|All Orgs">
+          <div class="pl-head">
+            <div class="pl-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></div>
+            <div class="pl-title-wrap">
+              <div class="pl-title">Price List 6/15</div>
               <div class="pl-desc">Price List 6/15</div>
-              <div class="pl-badges">
-                <span class="badge" style="background:var(--muted);color:var(--muted-foreground)"><span class="badge-dot" style="background:var(--muted-foreground)"></span>Draft</span>
-                <span class="badge" style="background:var(--muted);color:var(--muted-foreground)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>10,359 inactive</span>
-              </div>
-              <div class="pl-footer">
-                <span class="pl-created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Created 06/15/2026</span>
-                <a class="table-link">View <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
-              </div>
+            </div>
+            <div class="pl-actions">
+              <input type="checkbox" class="switch" onchange="toggleActive('pl2', this.checked)" />
+              <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
             </div>
           </div>
-          <div class="pl-card">
-            <div class="pl-panel panel-active">
-              <span class="pl-panel-chip">ACTIVE</span>
-              <div class="pl-panel-count">693</div>
-              <div class="pl-panel-label">price overrides</div>
-              <div class="progress on-color"><div class="progress-fill" style="width:100%"></div></div>
-              <div class="pl-panel-progress-label">100% Live now</div>
+          <div class="pl-badges">
+            <span class="status-dot-item js-status-badge"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span>
+          </div>
+          <div class="pl-usage">
+            <span class="pl-usage-label"><strong>10,359</strong> of 10,360 products priced</span>
+            <div class="progress"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="pl-created">Created 06/15/2026</div>
+        </div>
+        <div class="pl-card status-active" data-id="pl3" data-title="CLK 2026 Price List" data-status="active" data-overrides="693" data-created="2026-05-21" data-groups="Demo|Only CTB">
+          <div class="pl-head">
+            <div class="pl-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></div>
+            <div class="pl-title-wrap">
+              <div class="pl-title">CLK 2026 Price List</div>
+              <div class="pl-desc">Demo vendor negotiated price list with CLK 2026</div>
             </div>
-            <div class="pl-body">
-              <div class="pl-body-header">
-                <div class="pl-title">CLK 2026 Price List</div>
-                <input type="checkbox" class="switch" checked />
-                <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
-              </div>
-              <div class="pl-desc">DEMO VENDOR NEGOTIATED PRICE LIST WITH CLK 2026</div>
-              <div class="pl-badges">
-                <span class="badge" style="background:var(--emerald-soft);color:#047857"><span class="badge-dot" style="background:#10b981"></span>Active</span>
-                <span class="badge" style="background:var(--emerald-soft);color:#047857"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>693 live</span>
-              </div>
-              <div class="pl-footer">
-                <span class="pl-created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Created 05/21/2026</span>
-                <a class="table-link">View <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
-              </div>
+            <div class="pl-actions">
+              <input type="checkbox" class="switch" onchange="toggleActive('pl3', this.checked)" checked />
+              <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
             </div>
           </div>
-          <div class="pl-card">
-            <div class="pl-panel panel-draft">
-              <span class="pl-panel-chip">DRAFT</span>
-              <div class="pl-panel-count">10,360</div>
-              <div class="pl-panel-label">price overrides</div>
-              <div class="progress on-color"><div class="progress-fill" style="width:0%"></div></div>
-              <div class="pl-panel-progress-label">0% Draft</div>
-            </div>
-            <div class="pl-body">
-              <div class="pl-body-header">
-                <div class="pl-title">Demo $999.99</div>
-                <input type="checkbox" class="switch" />
-                <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
-              </div>
+          <div class="pl-badges">
+            <span class="status-dot-item js-status-badge"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+          </div>
+          <div class="pl-usage">
+            <span class="pl-usage-label"><strong>693</strong> of 10,360 products priced</span>
+            <div class="progress"><div class="progress-fill" style="width:7%"></div></div>
+          </div>
+          <div class="pl-created">Created 05/21/2026</div>
+        </div>
+        <div class="pl-card status-draft" data-id="pl4" data-title="Demo $999.99" data-status="draft" data-overrides="10360" data-created="2026-05-01" data-groups="Demo|Demo 3 - No CTB">
+          <div class="pl-head">
+            <div class="pl-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></div>
+            <div class="pl-title-wrap">
+              <div class="pl-title">Demo $999.99</div>
               <div class="pl-desc">For demonstration purposes.</div>
-              <div class="pl-badges">
-                <span class="badge" style="background:var(--muted);color:var(--muted-foreground)"><span class="badge-dot" style="background:var(--muted-foreground)"></span>Draft</span>
-                <span class="badge" style="background:var(--muted);color:var(--muted-foreground)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>10,360 inactive</span>
-              </div>
-              <div class="pl-footer">
-                <span class="pl-created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Created 05/01/2026</span>
-                <a class="table-link">View <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
-              </div>
+            </div>
+            <div class="pl-actions">
+              <input type="checkbox" class="switch" onchange="toggleActive('pl4', this.checked)" />
+              <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
             </div>
           </div>
+          <div class="pl-badges">
+            <span class="status-dot-item js-status-badge"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span>
+          </div>
+          <div class="pl-usage">
+            <span class="pl-usage-label"><strong>10,360</strong> of 10,360 products priced</span>
+            <div class="progress"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="pl-created">Created 05/01/2026</div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-state-title">No price lists found</div>
+        <div class="empty-state-desc">No price lists match your current search and filters. Try adjusting or clearing them.</div>
+        <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
       </div>
 
     </div>
   </div>
 
   <script>
+    const TODAY = '2026-07-20';
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+      desc: '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>'
+    };
+    let currentView = 'list';
+    let activeTab = 'all';
+    let createdFilter = null;
+    let groupFilter = null;
+    let sortState = { col: 'created', dir: 'desc' };
+
+    function setView(view) {
+      currentView = view;
+      document.getElementById('btn-view-list').classList.toggle('active', view === 'list');
+      document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
+      applyFilters();
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      applyFilters();
+    }
+
     function toggleFilterMenu() {
       const m = document.getElementById('filter-menu');
-      m.style.display = m.style.display === 'none' ? '' : 'none';
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      if (opening) showFilterMenu('root');
     }
-    function setFilter(value) {
-      document.getElementById('filter-chip-value').textContent = value;
-      document.getElementById('filter-chip').style.display = '';
-      document.getElementById('filter-clear').style.display = '';
-      document.querySelectorAll('#filter-menu .dropdown-item').forEach(i => {
-        const sel = i.textContent.replace('\u2713','').trim() === value;
+
+    function showFilterMenu(which) {
+      ['root', 'created', 'groups'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+
+    function isoDaysAgo(days) {
+      const d = new Date(TODAY + 'T00:00:00');
+      d.setDate(d.getDate() - days);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function setCreatedFilter(days, label) {
+      createdFilter = days;
+      document.getElementById('chip-created-value').textContent = label;
+      document.getElementById('chip-created').style.display = '';
+      document.querySelectorAll('#menu-created .dropdown-item[data-days]').forEach(i => {
+        const sel = +i.dataset.days === days;
         i.classList.toggle('selected', sel);
         i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
       });
       document.getElementById('filter-menu').style.display = 'none';
+      updateFilterUI();
+      applyFilters();
     }
-    function clearFilter() {
-      document.getElementById('filter-chip').style.display = 'none';
-      document.getElementById('filter-clear').style.display = 'none';
-      document.querySelectorAll('#filter-menu .dropdown-item').forEach(i => {
+
+    function clearCreatedFilter() {
+      createdFilter = null;
+      document.getElementById('chip-created').style.display = 'none';
+      document.querySelectorAll('#menu-created .dropdown-item[data-days]').forEach(i => {
         i.classList.remove('selected');
         i.innerHTML = i.textContent.replace('\u2713','').trim();
       });
+      updateFilterUI();
+      applyFilters();
     }
 
-    function setView(view) {
-      document.getElementById('view-list').style.display = view === 'list' ? '' : 'none';
-      document.getElementById('view-grid').style.display = view === 'grid' ? '' : 'none';
-      document.getElementById('btn-view-list').classList.toggle('active', view === 'list');
-      document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
+    function setGroupFilter(name) {
+      groupFilter = name;
+      document.getElementById('chip-group-value').textContent = name;
+      document.getElementById('chip-group').style.display = '';
+      document.querySelectorAll('#menu-groups .dropdown-item[data-group]').forEach(i => {
+        const sel = i.dataset.group === name;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      updateFilterUI();
+      applyFilters();
+    }
+
+    function clearGroupFilter() {
+      groupFilter = null;
+      document.getElementById('chip-group').style.display = 'none';
+      document.querySelectorAll('#menu-groups .dropdown-item[data-group]').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      updateFilterUI();
+      applyFilters();
+    }
+
+    function updateFilterUI() {
+      const any = createdFilter !== null || groupFilter !== null;
+      document.getElementById('filter-clear').style.display = any ? '' : 'none';
+    }
+
+    function itemsFor(view) {
+      return view === 'list'
+        ? [...document.querySelectorAll('#pl-table tbody tr')]
+        : [...document.querySelectorAll('#view-grid .pl-card')];
+    }
+
+    function matches(el, q) {
+      const tabOk = activeTab === 'all' || el.dataset.status === activeTab;
+      const searchOk = !q || el.textContent.toLowerCase().includes(q);
+      const createdOk = createdFilter === null || el.dataset.created >= isoDaysAgo(createdFilter);
+      const groupOk = groupFilter === null || el.dataset.groups.split('|').includes(groupFilter);
+      return tabOk && searchOk && createdOk && groupOk;
+    }
+
+    function applySort() {
+      const cmp = (a, b) => {
+        let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+        if (sortState.col === 'overrides') { av = +av; bv = +bv; }
+        const c = av < bv ? -1 : av > bv ? 1 : 0;
+        return sortState.dir === 'asc' ? c : -c;
+      };
+      const tbody = document.querySelector('#pl-table tbody');
+      itemsFor('list').sort(cmp).forEach(r => tbody.appendChild(r));
+      const grid = document.getElementById('view-grid');
+      itemsFor('grid').sort(cmp).forEach(c => grid.appendChild(c));
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) { th.classList.add('sorted'); icon.innerHTML = ARROWS[sortState.dir]; }
+        else { th.classList.remove('sorted'); icon.innerHTML = ARROWS.neutral; }
+      });
+    }
+
+    function setSort(col) {
+      if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      else sortState = { col, dir: col === 'created' || col === 'overrides' ? 'desc' : 'asc' };
+      applySort();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('pl-search').value.toLowerCase();
+      let visible = 0;
+      itemsFor('list').forEach(r => {
+        const show = currentView === 'list' && matches(r, q);
+        r.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      itemsFor('grid').forEach(c => {
+        const show = currentView === 'grid' && matches(c, q);
+        c.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('view-list').style.display = currentView === 'list' && visible > 0 ? '' : 'none';
+      document.getElementById('view-grid').style.display = currentView === 'grid' && visible > 0 ? '' : 'none';
+      document.getElementById('empty-state').style.display = visible === 0 ? '' : 'none';
+    }
+
+    function clearFilters() {
+      document.getElementById('pl-search').value = '';
+      clearCreatedFilter();
+      clearGroupFilter();
+      setTab('all');
+    }
+
+    function statusBadgeHtml(st) {
+      const dots = { active: 'dot-active', scheduled: 'dot-warning', draft: 'dot-inactive' };
+      const label = st.charAt(0).toUpperCase() + st.slice(1);
+      return '<span class="status-dot ' + dots[st] + '"></span><span class="status-dot-label">' + label + '</span>';
+    }
+
+    function toggleActive(id, on) {
+      const newStatus = on ? 'active' : 'draft';
+      document.querySelectorAll('[data-id="' + id + '"]').forEach(el => {
+        el.dataset.status = newStatus;
+        el.classList.remove('status-active', 'status-scheduled', 'status-draft');
+        if (el.classList.contains('pl-card')) el.classList.add('status-' + newStatus);
+        el.querySelectorAll('.js-status-badge').forEach(b => b.innerHTML = statusBadgeHtml(newStatus));
+        el.querySelectorAll('.switch').forEach(s => s.checked = on);
+      });
+      updateTabCounts();
+      applyFilters();
+    }
+
+    function updateTabCounts() {
+      const rows = itemsFor('list');
+      const counts = { all: rows.length, active: 0, scheduled: 0, draft: 0 };
+      rows.forEach(r => counts[r.dataset.status]++);
+      Object.entries(counts).forEach(([k, v]) => {
+        const el = document.querySelector('.tab-count[data-count="' + k + '"]');
+        if (el) el.textContent = v;
+      });
     }
 
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    applySort();
+    applyFilters();
   </script>
 </body>
 </html>

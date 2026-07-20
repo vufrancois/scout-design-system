@@ -40,7 +40,7 @@ When a search or filter combination matches nothing, a friendly empty state appe
 ### 11. Accurate rating summary
 The header summary now shows a numeric average ("4.3 avg") with a matching star display, replacing the imprecise five-star graphic.
 
-## Design system additions (benefit all future screens)
+## Design system additions
 
 - **Sortable table headers** — spec and interaction rules, reusable on every table
 - **Long-text truncation rule** — standard treatment for text-heavy columns

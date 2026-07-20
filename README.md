@@ -8,7 +8,7 @@ Living design system and screen reference for Scout, built as static HTML with C
 |---|---|
 | [Components](https://scout-design-system-beta.vercel.app/) | Living component gallery — every component with light/dark theme toggle |
 | [Design Doc](https://scout-design-system-beta.vercel.app/design-doc.html) | Written spec: tokens, usage rules, formatting standards, chart rules |
-| [Vendor App](https://scout-design-system-beta.vercel.app/orders.html) | 12 fully-built demo screens using only design-system components |
+| [Vendor App](https://scout-design-system-beta.vercel.app/orders.html) | 14 fully-built demo screens (12 views + 2 detail pages) using only design-system components |
 
 ## Structure
 
@@ -29,6 +29,10 @@ design-system/
   campaigns.html
   reviews.html
   insights.html
+  organization-detail.html   Detail-page reference implementations
+  property-detail.html
+docs/
+  enhancements/       Per-view UX enhancement summaries (client-facing changelog)
 ```
 
 ## For engineers

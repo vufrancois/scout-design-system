@@ -248,6 +248,7 @@
     .status-dot.dot-active { background: var(--emerald); }
     .status-dot.dot-inactive { background: var(--muted-foreground); }
     .status-dot.dot-warning { background: var(--orange); }
+    .status-dot.dot-ended { background: var(--rose); }
     .status-dot-label { font-size: 13px; color: var(--foreground); }
 
     /* Pagination */
@@ -377,6 +378,7 @@
     .promo-card.status-active::before { background: var(--emerald); }
     .promo-card.status-draft::before { background: var(--muted-foreground); }
     .promo-card.status-scheduled::before { background: var(--orange); }
+    .promo-card.status-ended::before { background: var(--rose); }
     .camp-head { display: flex; align-items: flex-start; justify-content: space-between; }
     .camp-name { font-size: 16px; font-weight: 700; color: var(--foreground); }
     .camp-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
@@ -601,10 +603,11 @@
 
       <!-- Filter tabs -->
       <div class="tab-bar">
-        <button class="tab-item active" data-tab="all" onclick="setTab('all')">All <span class="tab-count">6</span></button>
-        <button class="tab-item" data-tab="active" onclick="setTab('active')">Active <span class="tab-count">2</span></button>
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">All <span class="tab-count">8</span></button>
+        <button class="tab-item" data-tab="active" onclick="setTab('active')">Active <span class="tab-count">3</span></button>
         <button class="tab-item" data-tab="scheduled" onclick="setTab('scheduled')">Scheduled <span class="tab-count">2</span></button>
         <button class="tab-item" data-tab="draft" onclick="setTab('draft')">Draft <span class="tab-count">2</span></button>
+        <button class="tab-item" data-tab="ended" onclick="setTab('ended')">Ended <span class="tab-count">1</span></button>
       </div>
 
       <!-- Toolbar -->
@@ -650,6 +653,7 @@
           </div>
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            <span class="badge-neutral">Usage budget &middot; 1,000 uses</span>
             <span class="badge-neutral" title="06/01/2026 – 08/15/2026">Ends 08/15/2026</span>
           </div>
           <div class="camp-usage">
@@ -668,11 +672,31 @@
           </div>
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            <span class="badge-neutral">Usage budget &middot; 500 uses</span>
             <span class="badge-neutral" title="04/01/2026 – 09/30/2026">Ends 09/30/2026</span>
           </div>
           <div class="camp-usage">
             <span class="camp-usage-label"><strong>82</strong> of 500 uses</span>
             <div class="progress"><div class="progress-fill" style="width:16%"></div></div>
+          </div>
+        </div>
+        <div class="promo-card status-active" data-status="active" data-offer="limit">
+          <div class="camp-head">
+            <div class="promo-tile" style="background:var(--amber-soft);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+          </div>
+          <div>
+            <div class="camp-name">B2B Rebate Program</div>
+            <div class="camp-desc">Quarterly rebates for enterprise property partners</div>
+          </div>
+          <div class="promo-badges">
+            <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            <span class="badge-neutral">Spend budget &middot; $10,000.00 USD</span>
+            <span class="badge-neutral" title="01/01/2026 – 12/31/2026">Ends 12/31/2026</span>
+          </div>
+          <div class="camp-usage">
+            <span class="camp-usage-label"><strong>$6,750.00</strong> of $10,000.00 spent</span>
+            <div class="progress"><div class="progress-fill" style="width:68%"></div></div>
           </div>
         </div>
         <div class="promo-card status-scheduled" data-status="scheduled" data-offer="limit">
@@ -686,7 +710,7 @@
           </div>
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span>
-            <span class="badge-neutral">1,000 use limit</span>
+            <span class="badge-neutral">Usage budget &middot; 1,000 uses</span>
             <span class="badge-neutral" title="12/11/2026 – 12/13/2026">Starts 12/11/2026</span>
           </div>
         </div>
@@ -702,6 +726,7 @@
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span>
             <span class="badge-neutral">$10.00 off</span>
+            <span class="badge-neutral">Spend budget &middot; $5,000.00 USD</span>
             <span class="badge-neutral" title="12/11/2026 – 12/13/2026">Starts 12/11/2026</span>
           </div>
         </div>
@@ -716,7 +741,7 @@
           </div>
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span>
-            <span class="badge-neutral">No limit uses</span>
+            <span class="badge-neutral">Usage budget &middot; No limit</span>
           </div>
         </div>
         <div class="promo-card status-draft" data-status="draft" data-offer="amount">
@@ -731,6 +756,26 @@
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span>
             <span class="badge-neutral">$25.00 off</span>
+            <span class="badge-neutral">Spend budget &middot; $2,500.00 USD</span>
+          </div>
+        </div>
+        <div class="promo-card status-ended" data-status="ended" data-offer="limit">
+          <div class="camp-head">
+            <div class="promo-tile" style="background:var(--violet-soft);color:var(--violet)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+          </div>
+          <div>
+            <div class="camp-name">Spring Kickoff</div>
+            <div class="camp-desc">Early-season discounts for returning properties</div>
+          </div>
+          <div class="promo-badges">
+            <span class="status-dot-item"><span class="status-dot dot-ended"></span><span class="status-dot-label">Ended</span></span>
+            <span class="badge-neutral">Usage budget &middot; 500 uses</span>
+            <span class="badge-neutral" title="03/01/2026 – 05/31/2026">Ended 05/31/2026</span>
+          </div>
+          <div class="camp-usage">
+            <span class="camp-usage-label"><strong>412</strong> of 500 uses</span>
+            <div class="progress"><div class="progress-fill" style="width:82%"></div></div>
           </div>
         </div>
       </div>

@@ -789,6 +789,7 @@
     .promo-card.status-active::before { background: var(--emerald); }
     .promo-card.status-draft::before { background: var(--muted-foreground); }
     .promo-card.status-scheduled::before { background: var(--orange); }
+    .promo-card.status-ended::before { background: var(--rose); }
     .promo-head { display: flex; align-items: flex-start; gap: 12px; }
     .promo-tile {
       width: 44px; height: 44px; border-radius: var(--radius-lg);
@@ -806,6 +807,9 @@
     .camp-head { display: flex; align-items: flex-start; justify-content: space-between; }
     .camp-name { font-size: 16px; font-weight: 700; color: var(--foreground); }
     .camp-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+    .camp-usage { display: flex; flex-direction: column; gap: 6px; }
+    .camp-usage-label { font-size: 12px; color: var(--muted-foreground); }
+    .camp-usage-label strong { color: var(--foreground); font-weight: 600; }
 
     /* Bulk selection bar */
     .bulk-bar {
@@ -985,6 +989,7 @@
     .status-dot.dot-error { background: var(--destructive); }
     .status-dot.dot-info { background: var(--sky); }
     .status-dot.dot-warning { background: var(--orange); }
+    .status-dot.dot-ended { background: var(--rose); }
 
     .status-dot-lg { width: 10px; height: 10px; }
     .status-dot-pulse { animation: dot-pulse 2s ease-in-out infinite; }
@@ -2611,7 +2616,7 @@
     <section class="section" id="marketing-card">
       <div class="section-header">
         <h2 class="section-title">Marketing Card</h2>
-        <p class="section-desc">Card for promotions and campaigns. 4px top accent bar maps to publishing status (Active&nbsp;= emerald, Scheduled&nbsp;= orange, Draft&nbsp;= gray); soft accent icon tile carries entity identity. Status badge dots + neutral badges for attributes.</p>
+        <p class="section-desc">Card for promotions and campaigns. 4px top accent bar maps to publishing status (Active&nbsp;= emerald, Scheduled&nbsp;= orange, Draft&nbsp;= gray, Ended&nbsp;= rose); soft accent icon tile carries entity identity. Status badge dots + neutral badges for attributes. Budgets are always labeled with type + unit; progress is labeled in the budget's own unit.</p>
       </div>
       <div class="comp-card">
         <h3 class="subsection-title">Promotion &amp; Campaign Variants</h3>
@@ -2647,8 +2652,27 @@
               <span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span>
             </div>
             <div class="promo-badges">
-              <span class="badge-neutral">1,000 uses</span>
+              <span class="badge-neutral">Usage budget &middot; 1,000 uses</span>
               <span class="badge-neutral">12/11/2026 &ndash; 12/13/2026</span>
+            </div>
+          </div>
+          <div class="promo-card status-ended">
+            <div class="camp-head">
+              <div class="promo-tile" style="background:var(--amber-soft);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+              <div><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+            </div>
+            <div>
+              <div class="camp-name">B2B Rebate Program</div>
+              <div class="camp-desc">Spend-budget campaign, ended</div>
+            </div>
+            <div class="promo-badges">
+              <span class="status-dot-item"><span class="status-dot dot-ended"></span><span class="status-dot-label">Ended</span></span>
+              <span class="badge-neutral">Spend budget &middot; $10,000.00 USD</span>
+              <span class="badge-neutral" title="01/01/2026 &ndash; 06/30/2026">Ended 06/30/2026</span>
+            </div>
+            <div class="camp-usage">
+              <span class="camp-usage-label"><strong>$8,425.00</strong> of $10,000.00 spent</span>
+              <div class="progress"><div class="progress-fill" style="width:84%"></div></div>
             </div>
           </div>
         </div>

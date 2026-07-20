@@ -647,7 +647,9 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Card for promotions and campaigns. 4px <strong>top</strong> accent bar maps to publishing status (Active = emerald, Scheduled = orange, Draft = gray) — never decorative colors.</li>
         <li>44px soft-accent icon tile carries entity identity (violet/sky/emerald rotate per entity); kebab top-right.</li>
         <li>Promotion variant: monospace code + small copy button, offer line, then status badge + neutral attribute badges.</li>
-        <li>Campaign variant: name + optional muted description, status badge row, then neutral badges for usage limits and date range.</li>
+        <li>Campaign variant: name + optional muted description, status badge row, then neutral badges for limits and offers.</li>
+        <li>Usage on active items: show a Progress bar with "<strong>N</strong> of M uses" only when a limit exists (campaigns with use limits); uncapped items (promotions) show a plain count label ("<strong>213</strong> redemptions") — never a progress bar without a denominator.</li>
+        <li>Dates are framed by state — Scheduled: "Starts MM/DD/YYYY"; Active: "Ends MM/DD/YYYY"; Draft: none. The full range lives in the badge's <code>title</code> tooltip.</li>
       </ul>
 
       <h3>Segmented Toggle</h3>

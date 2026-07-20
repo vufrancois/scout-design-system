@@ -5,3 +5,5 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | View | Summary |
 |---|---|
 | Reviews | [reviews.md](reviews.md) |
+| Campaigns | [campaigns.md](campaigns.md) |
+| Promotions | [promotions.md](promotions.md) |

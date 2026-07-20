@@ -275,6 +275,93 @@
     .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .pagination-btn svg { width: 16px; height: 16px; }
 
+    /* Filter bar */
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 200px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+
+    /* Filter tabs */
+    .tab-bar {
+      display: inline-flex; gap: 4px; flex-wrap: wrap;
+      background: var(--muted); padding: 4px; border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+    }
+    .tab-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: transparent; color: var(--muted-foreground);
+      border: none; cursor: pointer; transition: all 0.15s;
+    }
+    .tab-item:hover { color: var(--foreground); background: var(--background); }
+    .tab-item.active { background: var(--primary); color: var(--primary-foreground); box-shadow: var(--shadow-xs); }
+    .tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: var(--radius-pill); font-size: 11px; font-weight: 600;
+      background: rgba(0,0,0,0.08); color: var(--muted-foreground);
+    }
+    .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
+
+    /* Progress */
+    .progress { height: 4px; border-radius: var(--radius-pill); background: var(--muted); overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: var(--radius-pill); background: var(--primary); }
+    .camp-usage { display: flex; flex-direction: column; gap: 6px; }
+    .camp-usage-label { font-size: 12px; color: var(--muted-foreground); }
+    .camp-usage-label strong { color: var(--foreground); font-weight: 600; }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
+
     /* Campaign card */
     .promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
     .promo-card {
@@ -512,74 +599,215 @@
         </div>
       </div>
 
+      <!-- Filter tabs -->
+      <div class="tab-bar">
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">All <span class="tab-count">6</span></button>
+        <button class="tab-item" data-tab="active" onclick="setTab('active')">Active <span class="tab-count">2</span></button>
+        <button class="tab-item" data-tab="scheduled" onclick="setTab('scheduled')">Scheduled <span class="tab-count">2</span></button>
+        <button class="tab-item" data-tab="draft" onclick="setTab('draft')">Draft <span class="tab-count">2</span></button>
+      </div>
+
       <!-- Toolbar -->
-      <div class="toolbar" style="justify-content:flex-end">
+      <div class="toolbar" style="justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="filter-chip" id="filter-chip" style="display:none">
+            <span class="filter-chip-attr">Offer</span>
+            <span class="filter-chip-value" id="filter-chip-value"></span>
+            <button class="filter-chip-remove" onclick="clearOfferFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+              Add filter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div class="dropdown-item" data-offer="amount" onclick="setOfferFilter('amount', 'Amount off')">Amount off</div>
+              <div class="dropdown-item" data-offer="limit" onclick="setOfferFilter('limit', 'Use limit')">Use limit</div>
+              <div class="dropdown-item" data-offer="nolimit" onclick="setOfferFilter('nolimit', 'No limit')">No limit</div>
+            </div>
+          </div>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearOfferFilter()">Clear all</button>
+        </div>
         <div class="search-wrap">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="search-field" placeholder="Search campaigns..." />
+          <input class="search-field" id="camp-search" placeholder="Search campaigns..." oninput="applyFilters()" />
         </div>
-        <button class="toolbar-btn-icon" title="Sort">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-        </button>
       </div>
 
       <!-- Campaign cards -->
-      <div class="promo-grid">
-        <div class="promo-card status-scheduled">
+      <div class="promo-grid" id="camp-grid">
+        <div class="promo-card status-active" data-status="active" data-offer="limit">
           <div class="camp-head">
             <div class="promo-tile" style="background:var(--emerald-soft);color:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
-            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+          </div>
+          <div>
+            <div class="camp-name">Summer Clearance</div>
+            <div class="camp-desc">Storewide summer discounts for all properties</div>
+          </div>
+          <div class="promo-badges">
+            <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            <span class="badge-neutral" title="06/01/2026 – 08/15/2026">Ends 08/15/2026</span>
+          </div>
+          <div class="camp-usage">
+            <span class="camp-usage-label"><strong>347</strong> of 1,000 uses</span>
+            <div class="progress"><div class="progress-fill" style="width:35%"></div></div>
+          </div>
+        </div>
+        <div class="promo-card status-active" data-status="active" data-offer="limit">
+          <div class="camp-head">
+            <div class="promo-tile" style="background:var(--sky-soft);color:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+          </div>
+          <div>
+            <div class="camp-name">CLK Loyalty Rewards</div>
+            <div class="camp-desc">Negotiated loyalty discount for CLK Properties</div>
+          </div>
+          <div class="promo-badges">
+            <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            <span class="badge-neutral" title="04/01/2026 – 09/30/2026">Ends 09/30/2026</span>
+          </div>
+          <div class="camp-usage">
+            <span class="camp-usage-label"><strong>82</strong> of 500 uses</span>
+            <div class="progress"><div class="progress-fill" style="width:16%"></div></div>
+          </div>
+        </div>
+        <div class="promo-card status-scheduled" data-status="scheduled" data-offer="limit">
+          <div class="camp-head">
+            <div class="promo-tile" style="background:var(--violet-soft);color:var(--violet)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
           </div>
           <div>
             <div class="camp-name">Sales Summer 2026</div>
-            <div class="camp-desc">123</div>
+            <div class="camp-desc">Summer clearance across catalog</div>
           </div>
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span>
-          </div>
-          <div class="promo-badges">
-            <span class="badge-neutral">1,000 uses</span>
-            <span class="badge-neutral">12/11/2026 &ndash; 12/13/2026</span>
+            <span class="badge-neutral">1,000 use limit</span>
+            <span class="badge-neutral" title="12/11/2026 – 12/13/2026">Starts 12/11/2026</span>
           </div>
         </div>
-        <div class="promo-card status-scheduled">
+        <div class="promo-card status-scheduled" data-status="scheduled" data-offer="amount">
           <div class="camp-head">
-            <div class="promo-tile" style="background:var(--sky-soft);color:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
-            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
-          </div>
-          <div>
-            <div class="camp-name">123</div>
-          </div>
-          <div class="promo-badges">
-            <span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span>
-          </div>
-          <div class="promo-badges">
-            <span class="badge-neutral">No limit uses</span>
-            <span class="badge-neutral">12/11/2026 &ndash; 12/13/2026</span>
-          </div>
-        </div>
-        <div class="promo-card status-scheduled">
-          <div class="camp-head">
-            <div class="promo-tile" style="background:var(--violet-soft);color:var(--violet)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
-            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+            <div class="promo-tile" style="background:var(--rose-soft);color:var(--rose)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
           </div>
           <div>
             <div class="camp-name">Summer Sale</div>
+            <div class="camp-desc">$10.00 off qualifying orders</div>
           </div>
           <div class="promo-badges">
             <span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Scheduled</span></span>
-          </div>
-          <div class="promo-badges">
             <span class="badge-neutral">$10.00 off</span>
-            <span class="badge-neutral">12/11/2026 &ndash; 12/13/2026</span>
+            <span class="badge-neutral" title="12/11/2026 – 12/13/2026">Starts 12/11/2026</span>
           </div>
         </div>
+        <div class="promo-card status-draft" data-status="draft" data-offer="nolimit">
+          <div class="camp-head">
+            <div class="promo-tile" style="background:var(--amber-soft);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+          </div>
+          <div>
+            <div class="camp-name">123</div>
+            <div class="camp-desc">Draft campaign</div>
+          </div>
+          <div class="promo-badges">
+            <span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span>
+            <span class="badge-neutral">No limit uses</span>
+          </div>
+        </div>
+        <div class="promo-card status-draft" data-status="draft" data-offer="amount">
+          <div class="camp-head">
+            <div class="promo-tile" style="background:var(--orange-soft);color:var(--orange)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+          </div>
+          <div>
+            <div class="camp-name">Holiday Preview</div>
+            <div class="camp-desc">$25.00 off for early holiday orders</div>
+          </div>
+          <div class="promo-badges">
+            <span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Draft</span></span>
+            <span class="badge-neutral">$25.00 off</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-state-title">No campaigns found</div>
+        <div class="empty-state-desc">No campaigns match your current search and filters. Try adjusting or clearing them.</div>
+        <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
       </div>
 
     </div>
   </div>
 
   <script>
+    let activeTab = 'all';
+    let offerFilter = null;
+
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      m.style.display = m.style.display === 'none' ? '' : 'none';
+    }
+
+    function setOfferFilter(key, label) {
+      offerFilter = key;
+      document.getElementById('filter-chip-value').textContent = label;
+      document.getElementById('filter-chip').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#filter-menu .dropdown-item').forEach(i => {
+        const sel = i.dataset.offer === key;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      applyFilters();
+    }
+
+    function clearOfferFilter() {
+      offerFilter = null;
+      document.getElementById('filter-chip').style.display = 'none';
+      document.getElementById('filter-clear').style.display = 'none';
+      document.querySelectorAll('#filter-menu .dropdown-item').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      applyFilters();
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('camp-search').value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#camp-grid .promo-card').forEach(c => {
+        const tabOk = activeTab === 'all' || c.dataset.status === activeTab;
+        const searchOk = !q || c.textContent.toLowerCase().includes(q);
+        const offerOk = offerFilter === null || c.dataset.offer === offerFilter;
+        const show = tabOk && searchOk && offerOk;
+        c.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('empty-state').style.display = visible === 0 ? '' : 'none';
+    }
+
+    function clearFilters() {
+      document.getElementById('camp-search').value = '';
+      clearOfferFilter();
+      setTab('all');
+    }
+
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');

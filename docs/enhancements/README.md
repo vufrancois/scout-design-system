@@ -13,8 +13,9 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | Properties + Property detail | [properties.md](properties.md) |
 | Inventory | [inventory.md](inventory.md) |
 | Products | [products.md](products.md) |
+| Quotes | [quotes.md](quotes.md) |
 
-Remaining views: Orders, Quotes, Insights.
+Remaining views: Orders, Insights.
 
 ## Format
 

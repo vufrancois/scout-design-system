@@ -320,7 +320,7 @@
     th.sortable { cursor: pointer; user-select: none; }
     th.sortable:hover { color: var(--foreground); }
     .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
-    th.sorted { color: var(--primary); }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
 
     .desc-cell {
       max-width: 280px; color: var(--muted-foreground);
@@ -760,8 +760,8 @@
   <script>
     const ARROWS = {
       neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
-      asc: '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
-      desc: '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>'
+      asc: '<path d="m7 14.5 5-5 5 5"/>',
+      desc: '<path d="m7 9.5 5 5 5-5"/>'
     };
     let currentView = 'list';
     let orgFilter = null;

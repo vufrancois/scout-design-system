@@ -474,6 +474,12 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <h2>Formatting</h2>
       <p>Canonical rules for displaying currency, dates, and times. These apply across both apps — a value should never be formatted two different ways on two different screens.</p>
 
+      <h3>Terminology</h3>
+      <ul>
+        <li><strong>Buyers</strong> are the people who live at or purchase for properties. Never call them "users" anywhere in vendor-facing copy — table columns, avatar-stack labels, stats, and empty states all say Buyers.</li>
+        <li><strong>Customer</strong> is reserved for organization-level concepts only (Customer Groups, Customer Management). An organization is a customer; the people at its properties are buyers.</li>
+      </ul>
+
       <h3>Currency</h3>
       <table class="token-table">
         <thead><tr><th>Context</th><th>Format</th><th>Example</th></tr></thead>
@@ -670,7 +676,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <h3>Table</h3>
       <ul>
         <li>Header: <code>--muted</code> background, uppercase 11px labels.</li>
-        <li>Sortable columns: header shows stacked 12px chevrons (muted); the active column turns <code>--primary</code> with a single directional arrow. Click toggles asc/desc; text and dates default to asc-first except dates and numeric ratings, which default desc-first.</li>
+        <li>Sortable columns: header shows stacked 12px chevrons (muted); the active column turns <code>--primary</code> with a single directional chevron (same stroke family as the neutral pair — never a stemmed arrow). Click toggles asc/desc; text and dates default to asc-first except dates and numeric ratings, which default desc-first.</li>
         <li>Default ordering: work-queue tables sort attention-needed items first (e.g. "Needs reply"), then newest.</li>
         <li>Long-text cells (reviews, descriptions): truncate with ellipsis at a fixed max-width (~280px); the full text is available via <code>title</code> tooltip. Never let free text wrap or stretch the table.</li>
         <li>Rows: <code>--accent</code> on hover, <code>4px solid var(--primary)</code> left border on selected.</li>
@@ -775,7 +781,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <h3>Detail Header</h3>
       <ul>
         <li>Header shell for drill-in pages: 48px muted <em>bordered</em> icon tile (not accent-soft — accents are reserved for page headers) + 22px/600 entity name + inline status badge.</li>
-        <li>Attribute rows below, divided by 1px borders: two-column grid, muted label left, value right. Values follow the formatting rules (dates, currency).</li>
+        <li>Attribute rows below, divided by 1px borders: two-column grid, muted label left, value right. Values follow the formatting rules (dates, currency). Use attribute rows only for <strong>3+ facts</strong> — one or two short facts (e.g. Type) belong as neutral badges beside the status badge in the name row, never as a lone attribute table.</li>
         <li>Pairs with a topbar breadcrumb back to the parent list page.</li>
         <li><strong>Avatar variant</strong> (entities with identity — properties, users): 72px solid-accent avatar with initials + 16px presence dot (emerald, 3px <code>--background</code> ring), 24px name, icon+text meta rows (type, address).</li>
         <li><strong>Highlight tiles</strong>: for a few important or linkable attributes — <code>--muted</code> tile, 40px accent-soft icon container, 11px uppercase eyebrow label, 15px/600 value (links to related detail pages inherit color, underline on hover). Use plain attribute rows for longer flat attribute lists.</li>

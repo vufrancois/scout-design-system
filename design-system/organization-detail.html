@@ -207,7 +207,7 @@
     .segmented button svg { width: 16px; height: 16px; }
 
     /* Toolbar */
-    .toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
     .search-wrap { position: relative; display: flex; align-items: center; width: 240px; }
     .search-icon { position: absolute; left: 12px; color: var(--muted-foreground); pointer-events: none; }
     .search-field {
@@ -294,6 +294,106 @@
     .avatar + .avatar { margin-left: -8px; }
     .avatar-more { background: var(--muted); color: var(--muted-foreground); font-size: 10px; font-weight: 600; }
     .avatar-label { font-size: 13px; color: var(--muted-foreground); }
+
+    .badge-neutral {
+      display: inline-block; vertical-align: middle;
+      padding: 2px 10px; border-radius: var(--radius-pill);
+      font-size: 12px; font-weight: 500; line-height: 1.6; color: var(--muted-foreground);
+      background: var(--muted); border: 1px solid var(--border); white-space: nowrap;
+    }
+
+    /* Metric strip */
+    .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+    @media (max-width: 900px) { .metric-row { grid-template-columns: 1fr; } }
+    .metric-tile {
+      border-radius: var(--radius-lg); padding: 20px; color: #fff;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .metric-tile-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+    .metric-tile-head svg { width: 16px; height: 16px; }
+    .metric-tile-chip {
+      font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.22);
+      border-radius: var(--radius-pill); padding: 2px 8px;
+    }
+    .metric-tile-value { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .metric-tile-note { font-size: 11px; opacity: 0.85; }
+    .metric-emerald { background: var(--emerald); }
+    .metric-primary { background: var(--primary); }
+    .metric-navy { background: var(--blue-900); }
+
+    /* Sortable headers */
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 20px; text-align: center; gap: 6px;
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+
+    .prop-cell { display: flex; align-items: center; gap: 10px; }
+    .prop-cell .avatar { font-size: 11px; font-weight: 600; color: #fff; border: none; }
+    .entity-card-header .avatar { font-size: 11px; font-weight: 600; color: #fff; border: none; margin-right: 2px; }
+
+    /* Filter bar */
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 220px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+    .toolbar-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: var(--background); color: var(--foreground);
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+    }
+    .toolbar-btn:hover { background: var(--accent); }
+    .toolbar-btn svg { width: 16px; height: 16px; }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
   </style>
 </head>
 <body>
@@ -431,13 +531,27 @@
           <div class="detail-name-row">
             <span class="detail-name">Olivier &amp; Buyers</span>
             <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            <span class="badge-neutral">Company</span>
           </div>
         </div>
-        <div class="detail-attrs">
-          <div class="detail-attr">
-            <span class="detail-attr-label">Type</span>
-            <span class="detail-attr-value">Company</span>
-          </div>
+      </div>
+
+      <!-- Account stats -->
+      <div class="metric-row">
+        <div class="metric-tile metric-primary">
+          <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>Properties</div>
+          <div class="metric-tile-value">6</div>
+          <div class="metric-tile-note">all active</div>
+        </div>
+        <div class="metric-tile metric-emerald">
+          <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Buyers</div>
+          <div class="metric-tile-value">33</div>
+          <div class="metric-tile-note">across 6 properties</div>
+        </div>
+        <div class="metric-tile metric-navy">
+          <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Spend <span class="metric-tile-chip">12M</span></div>
+          <div class="metric-tile-value">$84,120.50</div>
+          <div class="metric-tile-note">#2 account by spend</div>
         </div>
       </div>
 
@@ -455,9 +569,36 @@
           </div>
         </div>
         <div class="toolbar">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="filter-chip" id="chip-type" style="display:none">
+              <span class="filter-chip-attr">Type</span>
+              <span class="filter-chip-value" id="chip-type-value"></span>
+              <button class="filter-chip-remove" onclick="clearTypeFilter()" title="Remove filter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </span>
+            <div class="filter-menu-wrap">
+              <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+                Add filter
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="filter-menu" id="filter-menu" style="display:none">
+                <div id="menu-root">
+                  <div class="dropdown-item" onclick="showFilterMenu('type')">Type <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+                </div>
+                <div id="menu-type" style="display:none">
+                  <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                  <div class="dropdown-item" data-type="Residential" onclick="setTypeFilter('Residential')">Residential</div>
+                  <div class="dropdown-item" data-type="Commercial" onclick="setTypeFilter('Commercial')">Commercial</div>
+                </div>
+              </div>
+            </div>
+            <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
+          </div>
           <div class="search-wrap">
             <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input class="search-field" placeholder="Search properties..." />
+            <input class="search-field" id="prop-search" placeholder="Search properties..." oninput="applyFilters()" />
           </div>
         </div>
 
@@ -467,41 +608,62 @@
           <table>
             <thead>
               <tr>
-                <th>Name</th>
+                <th class="sortable" data-col="name" onclick="setSort('name')">Name<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="type" onclick="setSort('type')">Type<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
                 <th>Status</th>
-                <th>Users</th>
+                <th class="sortable" data-col="buyers" onclick="setSort('buyers')">Buyers<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="spend" onclick="setSort('spend')">Spend (12 mo)<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="lastorder" onclick="setSort('lastorder')">Last Order<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
               </tr>
             </thead>
             <tbody>
-            <tr>
-              <td class="id-cell"><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></td>
+            <tr data-type="Residential" data-name="Central Park View" data-buyers="20" data-spend="41250.75" data-lastorder="2026-07-19">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--violet)">CP</span><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></div></td>
+              <td>Residential</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>20</td>
+              <td>$41,250.75 USD</td>
+              <td>2d ago</td>
             </tr>
-            <tr>
-              <td class="id-cell">QA-PH-A-R64YQ</td>
+            <tr data-type="Commercial" data-name="QA-PH-A-R64YQ" data-buyers="1" data-spend="4120.25" data-lastorder="2026-06-28">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--sky)">QA</span>QA-PH-A-R64YQ</div></td>
+              <td>Commercial</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>1</td>
+              <td>$4,120.25 USD</td>
+              <td>06/28/2026</td>
             </tr>
-            <tr>
-              <td class="id-cell">QA-PH-B-R64YQ</td>
+            <tr data-type="Commercial" data-name="QA-PH-B-R64YQ" data-buyers="1" data-spend="3890.0" data-lastorder="2026-04-02">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--emerald)">QB</span>QA-PH-B-R64YQ</div></td>
+              <td>Commercial</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>1</td>
+              <td>$3,890.00 USD</td>
+              <td>04/02/2026</td>
             </tr>
-            <tr>
-              <td class="id-cell">QA-PH-C-R64YQ</td>
+            <tr data-type="Commercial" data-name="QA-PH-C-R64YQ" data-buyers="1" data-spend="3615.0" data-lastorder="2026-03-15">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--orange)">QC</span>QA-PH-C-R64YQ</div></td>
+              <td>Commercial</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>1</td>
+              <td>$3,615.00 USD</td>
+              <td>03/15/2026</td>
             </tr>
-            <tr>
-              <td class="id-cell">Bueyrs Test &mdash; New Orleans</td>
+            <tr data-type="Residential" data-name="Bueyrs Test &mdash; New Orleans" data-buyers="7" data-spend="18940.0" data-lastorder="2026-07-16">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--rose)">BN</span>Bueyrs Test &mdash; New Orleans</div></td>
+              <td>Residential</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>7</td>
+              <td>$18,940.00 USD</td>
+              <td>5d ago</td>
             </tr>
-            <tr>
-              <td class="id-cell">Bueyrs Test &mdash; Houston</td>
+            <tr data-type="Residential" data-name="Bueyrs Test &mdash; Houston" data-buyers="3" data-spend="12304.5" data-lastorder="2026-05-18">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--amber)">BH</span>Bueyrs Test &mdash; Houston</div></td>
+              <td>Residential</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>3</td>
+              <td>$12,304.50 USD</td>
+              <td>05/18/2026</td>
             </tr>
             </tbody>
           </table>
@@ -537,54 +699,75 @@
 
         <!-- Grid view -->
         <div class="entity-grid" id="view-grid" style="display:none">
-          <div class="entity-card">
+          <div class="entity-card" data-type="Residential" data-name="Central Park View" data-buyers="20" data-spend="41250.75" data-lastorder="2026-07-19">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--violet)">CP</span>
               <div class="entity-card-name"><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar avatar-more">+16</span></div><span class="avatar-label">20 users</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar avatar-more">+16</span></div><span class="avatar-label">20 buyers</span></div>
+            <div class="entity-card-meta"><strong style="color:var(--foreground);font-weight:600">$41,250.75 USD</strong> (12 mo) &middot; Last order 2d ago</div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-type="Commercial" data-name="QA-PH-A-R64YQ" data-buyers="1" data-spend="4120.25" data-lastorder="2026-06-28">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--sky)">QA</span>
               <div class="entity-card-name">QA-PH-A-R64YQ</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Residential</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span></div><span class="avatar-label">1 user</span></div>
+            <div class="entity-card-meta">Commercial</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-meta"><strong style="color:var(--foreground);font-weight:600">$4,120.25 USD</strong> (12 mo) &middot; Last order 06/28/2026</div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-type="Commercial" data-name="QA-PH-B-R64YQ" data-buyers="1" data-spend="3890.0" data-lastorder="2026-04-02">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--emerald)">QB</span>
               <div class="entity-card-name">QA-PH-B-R64YQ</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Residential</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">1 user</span></div>
+            <div class="entity-card-meta">Commercial</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-meta"><strong style="color:var(--foreground);font-weight:600">$3,890.00 USD</strong> (12 mo) &middot; Last order 04/02/2026</div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-type="Commercial" data-name="QA-PH-C-R64YQ" data-buyers="1" data-spend="3615.0" data-lastorder="2026-03-15">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--orange)">QC</span>
               <div class="entity-card-name">QA-PH-C-R64YQ</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Residential</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">1 user</span></div>
+            <div class="entity-card-meta">Commercial</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-meta"><strong style="color:var(--foreground);font-weight:600">$3,615.00 USD</strong> (12 mo) &middot; Last order 03/15/2026</div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-type="Residential" data-name="Bueyrs Test &mdash; New Orleans" data-buyers="7" data-spend="18940.0" data-lastorder="2026-07-16">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--rose)">BN</span>
               <div class="entity-card-name">Bueyrs Test &mdash; New Orleans</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar avatar-more">+3</span></div><span class="avatar-label">7 users</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar avatar-more">+3</span></div><span class="avatar-label">7 buyers</span></div>
+            <div class="entity-card-meta"><strong style="color:var(--foreground);font-weight:600">$18,940.00 USD</strong> (12 mo) &middot; Last order 5d ago</div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-type="Residential" data-name="Bueyrs Test &mdash; Houston" data-buyers="3" data-spend="12304.5" data-lastorder="2026-05-18">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--amber)">BH</span>
               <div class="entity-card-name">Bueyrs Test &mdash; Houston</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">3 users</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">3 buyers</span></div>
+            <div class="entity-card-meta"><strong style="color:var(--foreground);font-weight:600">$12,304.50 USD</strong> (12 mo) &middot; Last order 05/18/2026</div>
           </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state" style="display:none">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <div class="empty-state-title">No properties found</div>
+          <div class="empty-state-desc">No properties match your search.</div>
         </div>
       </div>
 
@@ -592,17 +775,121 @@
   </div>
 
   <script>
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m7 14.5 5-5 5 5"/>',
+      desc: '<path d="m7 9.5 5 5 5-5"/>'
+    };
+    let currentView = 'list';
+    let sortState = { col: 'buyers', dir: 'desc' };
+    let typeFilter = null;
+
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      if (opening) showFilterMenu('root');
+    }
+
+    function showFilterMenu(which) {
+      ['root', 'type'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+
+    function setTypeFilter(name) {
+      typeFilter = name;
+      document.getElementById('chip-type-value').textContent = name;
+      document.getElementById('chip-type').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#menu-type .dropdown-item[data-type]').forEach(i => {
+        const sel = i.dataset.type === name;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      applyFilters();
+    }
+
+    function clearTypeFilter() {
+      typeFilter = null;
+      document.getElementById('chip-type').style.display = 'none';
+      document.getElementById('filter-clear').style.display = 'none';
+      document.querySelectorAll('#menu-type .dropdown-item[data-type]').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      applyFilters();
+    }
+
+    function clearFilters() {
+      document.getElementById('prop-search').value = '';
+      clearTypeFilter();
+    }
+
     function setView(view) {
-      document.getElementById('view-list').style.display = view === 'list' ? '' : 'none';
-      document.getElementById('view-grid').style.display = view === 'grid' ? '' : 'none';
+      currentView = view;
       document.getElementById('btn-view-list').classList.toggle('active', view === 'list');
       document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
+      applyFilters();
+    }
+
+    function itemsFor(view) {
+      return view === 'list'
+        ? [...document.querySelectorAll('#view-list tbody tr')]
+        : [...document.querySelectorAll('#view-grid .entity-card')];
+    }
+
+    function applySort() {
+      const cmp = (a, b) => {
+        let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+        if (sortState.col === 'buyers' || sortState.col === 'spend') { av = +av; bv = +bv; }
+        else { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+        const c = av < bv ? -1 : av > bv ? 1 : 0;
+        return sortState.dir === 'asc' ? c : -c;
+      };
+      const tbody = document.querySelector('#view-list tbody');
+      itemsFor('list').sort(cmp).forEach(r => tbody.appendChild(r));
+      const grid = document.getElementById('view-grid');
+      itemsFor('grid').sort(cmp).forEach(c => grid.appendChild(c));
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) { th.classList.add('sorted'); icon.innerHTML = ARROWS[sortState.dir]; }
+        else { th.classList.remove('sorted'); icon.innerHTML = ARROWS.neutral; }
+      });
+    }
+
+    function setSort(col) {
+      if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      else sortState = { col, dir: ['buyers','spend','lastorder'].includes(col) ? 'desc' : 'asc' };
+      applySort();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('prop-search').value.toLowerCase();
+      let visible = 0;
+      itemsFor('list').forEach(r => {
+        const show = currentView === 'list' && r.textContent.toLowerCase().includes(q) && (typeFilter === null || r.dataset.type === typeFilter);
+        r.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      itemsFor('grid').forEach(c => {
+        const show = currentView === 'grid' && c.textContent.toLowerCase().includes(q) && (typeFilter === null || c.dataset.type === typeFilter);
+        c.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('view-list').style.display = currentView === 'list' && visible > 0 ? '' : 'none';
+      document.getElementById('view-grid').style.display = currentView === 'grid' && visible > 0 ? '' : 'none';
+      document.getElementById('empty-state').style.display = visible === 0 ? '' : 'none';
     }
 
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    applySort();
+    applyFilters();
   </script>
 </body>
 </html>

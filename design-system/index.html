@@ -409,7 +409,7 @@
     th.sortable { cursor: pointer; user-select: none; }
     th.sortable:hover { color: var(--foreground); }
     .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
-    th.sorted { color: var(--primary); }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
     .cell-truncate { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* Empty state */
@@ -1764,7 +1764,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th style="width:40px"><input type="checkbox" class="checkbox" /></th><th class="sortable sorted">Name<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></th><th class="sortable">Email<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th class="sortable">Role<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th class="sortable">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th style="width:48px"></th></tr></thead>
+          <thead><tr><th style="width:40px"><input type="checkbox" class="checkbox" /></th><th class="sortable sorted">Name<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 14.5 5-5 5 5"/></svg></th><th class="sortable">Email<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th class="sortable">Role<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th class="sortable">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th style="width:48px"></th></tr></thead>
           <tbody>
             <tr><td><input type="checkbox" class="checkbox" /></td><td>Alex Morgan</td><td>alex@scout.com</td><td>Admin</td><td><span class="status status-active">Active</span></td><td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr>
             <tr><td><input type="checkbox" class="checkbox" /></td><td>Jamie Chen</td><td>jamie@scout.com</td><td>Editor</td><td><span class="status status-pending">Pending</span></td><td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr>
@@ -2212,13 +2212,13 @@
             <span class="avatar" style="background:var(--rose)"></span>
             <span class="avatar avatar-more">+16</span>
           </div>
-          <span class="avatar-label">20 users</span>
+          <span class="avatar-label">20 buyers</span>
         </div>
         <div class="avatar-group">
           <div class="avatar-stack">
             <span class="avatar" style="background:var(--sky)"></span>
           </div>
-          <span class="avatar-label">1 user</span>
+          <span class="avatar-label">1 buyer</span>
         </div>
       </div>
     </section>
@@ -2388,7 +2388,7 @@
                 <span class="avatar" style="background:var(--rose)"></span>
                 <span class="avatar avatar-more">+16</span>
               </div>
-              <span class="avatar-label">20 users</span>
+              <span class="avatar-label">20 buyers</span>
             </div>
           </div>
           <div class="entity-card">
@@ -2401,7 +2401,7 @@
               <div class="avatar-stack">
                 <span class="avatar" style="background:var(--sky)"></span>
               </div>
-              <span class="avatar-label">1 user</span>
+              <span class="avatar-label">1 buyer</span>
             </div>
           </div>
         </div>
@@ -3279,6 +3279,7 @@
             <div class="detail-name-row">
               <span class="detail-name">Olivier &amp; Buyers</span>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+              <span class="badge-neutral">Company</span>
             </div>
           </div>
           <div class="detail-attrs">
@@ -3295,7 +3296,7 @@
       </div>
       <div class="comp-card">
         <h3 class="subsection-title">Avatar Variant with Highlight Tiles</h3>
-        <p class="subsection-desc">For entities with identity (properties, users): 72px solid-accent avatar with initials + 16px presence dot (3px background ring), 24px name, icon+text meta rows. Highlight tiles below for a few important or linkable attributes — use plain attribute rows for longer flat lists.</p>
+        <p class="subsection-desc">For entities with identity (properties, buyers): 72px solid-accent avatar with initials + 16px presence dot (3px background ring), 24px name, icon+text meta rows. Highlight tiles below for a few important or linkable attributes — use plain attribute rows for longer flat lists.</p>
         <div class="detail-card">
           <div class="detail-head" style="align-items:center;gap:20px;padding:24px 20px">
             <div class="detail-avatar">CP<span class="presence-dot"></span></div>
@@ -3347,7 +3348,7 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Name</th><th>Status</th><th>Users</th></tr></thead>
+              <thead><tr><th>Name</th><th>Status</th><th>Buyers</th></tr></thead>
               <tbody>
                 <tr><td class="id-cell">Central Park View</td><td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td><td>20</td></tr>
                 <tr><td class="id-cell">Bueyrs Test &mdash; New Orleans</td><td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td><td>7</td></tr>

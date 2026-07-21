@@ -9,6 +9,7 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | Promotions | [promotions.md](promotions.md) |
 | Price Lists | [price-lists.md](price-lists.md) |
 | Customer Groups | [customer-groups.md](customer-groups.md) |
+| Organizations | [organizations.md](organizations.md) |
 
 ## Format
 

@@ -199,9 +199,9 @@
     .stat-card-colored.stat-emerald::before { background: var(--emerald); }
     .stat-card-colored.stat-amber::before { background: var(--amber); }
     .stat-card-header { display: flex; align-items: center; gap: 8px; }
-    .stat-card-header svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .stat-card-title { font-size: 15px; font-weight: 500; color: var(--foreground); }
-    .stat-card-count { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-top: 4px; }
+    .stat-card-header svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .stat-card-title { font-size: 13px; font-weight: 600; color: var(--foreground); }
+    .stat-card-count { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
     .stat-card-colored.stat-sky .stat-card-count { color: var(--sky); }
     .stat-card-colored.stat-violet .stat-card-count { color: var(--violet); }
     .stat-card-colored.stat-orange .stat-card-count { color: var(--orange); }
@@ -473,6 +473,15 @@
     .empty-state-icon svg { width: 22px; height: 22px; }
     .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
     .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .stat-card-title { display: inline-flex; align-items: center; gap: 6px; }
+    .stat-card-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .stat-card-colored.stat-sky .stat-card-icon { color: var(--sky); }
+    .stat-card-colored.stat-orange .stat-card-icon { color: var(--orange); }
+    .stat-card-colored.stat-amber .stat-card-icon { color: var(--amber); }
+    .stat-card-colored.stat-emerald .stat-card-icon { color: var(--emerald); }
+    .stat-card-colored.stat-violet .stat-card-icon { color: var(--violet); }
+    .stat-card-colored.stat-rose .stat-card-icon { color: var(--rose); }
+    .stat-card-colored.stat-gray .stat-card-icon { color: var(--muted-foreground); }
   </style>
 </head>
 <body>
@@ -634,35 +643,35 @@
       <div class="stat-grid">
         <div class="stat-card-colored stat-sky" data-tab="all" onclick="setTab('all')">
           <div class="stat-card-header">
-            <span class="stat-card-title">Total</span>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Total</span>
           </div>
           <div class="stat-card-count">10,360</div>
           <div class="stat-card-desc">All imported products</div>
         </div>
         <div class="stat-card-colored stat-orange" data-tab="uncategorized" onclick="setTab('uncategorized')">
           <div class="stat-card-header">
-            <span class="stat-card-title">Uncategorized</span>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>Uncategorized</span>
           </div>
           <div class="stat-card-count">338</div>
           <div class="stat-card-desc">Awaiting categorization</div>
         </div>
         <div class="stat-card-colored stat-amber" data-tab="review" onclick="setTab('review')">
           <div class="stat-card-header">
-            <span class="stat-card-title">In Review</span>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>In Review</span>
           </div>
           <div class="stat-card-count">4</div>
           <div class="stat-card-desc">Awaiting approval</div>
         </div>
         <div class="stat-card-colored stat-emerald" data-tab="published" onclick="setTab('published')">
           <div class="stat-card-header">
-            <span class="stat-card-title">Published</span>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>Published</span>
           </div>
           <div class="stat-card-count">10,006</div>
           <div class="stat-card-desc">Live on storefront</div>
         </div>
         <div class="stat-card-colored stat-rose" data-tab="rejected" onclick="setTab('rejected')">
           <div class="stat-card-header">
-            <span class="stat-card-title">Rejected</span>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Rejected</span>
           </div>
           <div class="stat-card-count">12</div>
           <div class="stat-card-desc">Needs re-categorization</div>

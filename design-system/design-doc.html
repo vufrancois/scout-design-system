@@ -697,7 +697,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
 
       <h3>Stat Cards</h3>
       <ul>
-        <li>Two variants: neutral (icon + metric + label + CTA) and color-coded (4px <strong>left</strong> accent bar on a standard <code>--border</code> border + tinted count). Never color the full border — the accent bar carries the status color, same accent-bar language as inventory item cards and toasts.</li>
+        <li>Two variants: neutral (icon + metric + label + CTA) and color-coded (4px <strong>left</strong> accent bar on a standard <code>--border</code> border + tinted count). Never color the full border — the accent bar carries the status color, same accent-bar language as inventory item cards and toasts. The 13px title leads with a 16px icon in the accent color, using the <strong>same glyph as the card's tab</strong> — mirroring the Metric Tile's icon-led header.</li>
         <li>Neutral cards use accent-soft backgrounds for icon containers.</li>
         <li>Color-coded cards map 1:1 to row statuses or workflow stages — same names and colors as the status dots, and the stage counts sum to the total.</li>
         <li>On lifecycle pages the cards are <strong>tab shortcuts</strong>: hover lifts with a small shadow; the card whose tab is active gets its accent color as border + soft background tint.</li>

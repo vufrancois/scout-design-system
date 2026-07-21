@@ -431,6 +431,15 @@
     .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
     .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
     .empty-state .toolbar-btn { margin-top: 10px; }
+    .stat-card-title { display: inline-flex; align-items: center; gap: 6px; }
+    .stat-card-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .stat-card-colored.stat-sky .stat-card-icon { color: var(--sky); }
+    .stat-card-colored.stat-orange .stat-card-icon { color: var(--orange); }
+    .stat-card-colored.stat-amber .stat-card-icon { color: var(--amber); }
+    .stat-card-colored.stat-emerald .stat-card-icon { color: var(--emerald); }
+    .stat-card-colored.stat-violet .stat-card-icon { color: var(--violet); }
+    .stat-card-colored.stat-rose .stat-card-icon { color: var(--rose); }
+    .stat-card-colored.stat-gray .stat-card-icon { color: var(--muted-foreground); }
   </style>
 </head>
 <body>
@@ -571,27 +580,27 @@
       <!-- Lifecycle stat cards -->
       <div class="stat-grid">
         <div class="stat-card-colored stat-amber" data-tab="pending" onclick="setTab('pending')">
-          <span class="stat-card-title">Pending</span>
+          <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending</span>
           <div class="stat-card-count">6</div>
           <div class="stat-card-desc">Awaiting your quote</div>
         </div>
         <div class="stat-card-colored stat-sky" data-tab="quoted" onclick="setTab('quoted')">
-          <span class="stat-card-title">Quoted</span>
+          <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>Quoted</span>
           <div class="stat-card-count">4</div>
           <div class="stat-card-desc">Awaiting buyer response</div>
         </div>
         <div class="stat-card-colored stat-emerald" data-tab="accepted" onclick="setTab('accepted')">
-          <span class="stat-card-title">Accepted</span>
+          <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>Accepted</span>
           <div class="stat-card-count">5</div>
           <div class="stat-card-desc">Ready to convert</div>
         </div>
         <div class="stat-card-colored stat-violet" data-tab="converted" onclick="setTab('converted')">
-          <span class="stat-card-title">Converted</span>
+          <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Converted</span>
           <div class="stat-card-count">2</div>
           <div class="stat-card-desc">Turned into orders</div>
         </div>
         <div class="stat-card-colored stat-gray" data-tab="closed" onclick="setTab('closed')">
-          <span class="stat-card-title">Closed</span>
+          <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Closed</span>
           <div class="stat-card-count">3</div>
           <div class="stat-card-desc">Rejected or cancelled</div>
         </div>

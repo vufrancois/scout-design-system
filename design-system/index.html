@@ -3296,16 +3296,18 @@
       </div>
       <div class="comp-card">
         <h3 class="subsection-title">Avatar Variant with Highlight Tiles</h3>
-        <p class="subsection-desc">For entities with identity (properties, buyers): 72px solid-accent avatar with initials + 16px presence dot (3px background ring), 24px name, icon+text meta rows. Highlight tiles below for a few important or linkable attributes — use plain attribute rows for longer flat lists.</p>
+        <p class="subsection-desc">For entities with identity (properties, buyers): 72px solid-accent avatar with initials (no presence dot — properties are not people), 24px name, then a badge row: status badge + neutral badges for short facts (type, address). Highlight tiles below for a few important or linkable attributes — use plain attribute rows for longer flat lists.</p>
         <div class="detail-card">
           <div class="detail-head" style="align-items:center;gap:20px;padding:24px 20px">
-            <div class="detail-avatar">CP<span class="presence-dot"></span></div>
+            <div class="detail-avatar">CP</div>
             <div class="detail-title-block">
               <span class="detail-name" style="font-size:24px">Central Park View</span>
-              <span class="detail-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>Residential</span>
-              <span class="detail-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>59 West 46th Street, New York, NY, 10036</span>
+              <div class="detail-badges" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+                <span class="badge-neutral">Residential</span>
+                <span class="badge-neutral" title="59 West 46th Street, New York, NY, 10036">59 West 46th Street, New York, NY, 10036</span>
+              </div>
             </div>
-            <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
           </div>
           <div class="attr-tiles">
             <div class="attr-tile">

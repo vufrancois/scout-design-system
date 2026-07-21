@@ -179,7 +179,7 @@
 
     /* Toolbar */
     .toolbar {
-      display: flex; align-items: center; justify-content: flex-end;
+      display: flex; align-items: center; justify-content: space-between;
       gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
     }
     .toolbar-btn-icon {
@@ -286,6 +286,124 @@
       font-size: 10px; font-weight: 600;
     }
     .avatar-label { font-size: 13px; color: var(--muted-foreground); }
+
+    /* Filter tabs */
+    .tab-bar {
+      display: inline-flex; gap: 4px; flex-wrap: wrap;
+      background: var(--muted); padding: 4px; border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+    }
+    .tab-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: transparent; color: var(--muted-foreground);
+      border: none; cursor: pointer; transition: all 0.15s;
+    }
+    .tab-item:hover { color: var(--foreground); background: var(--background); }
+    .tab-item.active { background: var(--primary); color: var(--primary-foreground); box-shadow: var(--shadow-xs); }
+    .tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: var(--radius-pill); font-size: 11px; font-weight: 600;
+      background: rgba(0,0,0,0.08); color: var(--muted-foreground);
+    }
+    .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
+
+    /* Sortable headers */
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
+
+    /* Property cell avatar */
+    .prop-cell { display: flex; align-items: center; gap: 10px; }
+    .prop-cell .avatar, .entity-card-header > .avatar { font-size: 11px; font-weight: 600; color: #fff; border: none; margin-right: 2px; }
+
+    /* Row actions */
+    .row-action {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      border: none; background: none; color: var(--muted-foreground);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .row-action:hover { background: var(--muted); color: var(--foreground); }
+    .row-action svg { width: 16px; height: 16px; }
+
+    /* Filter bar */
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 220px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+    .toolbar-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: var(--background); color: var(--foreground);
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+    }
+    .toolbar-btn:hover { background: var(--accent); }
+    .toolbar-btn svg { width: 16px; height: 16px; }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+
+    /* Entity card footer */
+    .entity-card-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border); padding-top: 12px; margin-top: 2px;
+    }
+    .entity-card-foot-meta { font-size: 12px; color: var(--muted-foreground); }
+    .entity-card-foot-meta strong { color: var(--foreground); font-weight: 600; }
+    .entity-card-actions { display: flex; align-items: center; gap: 2px; }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -435,126 +553,326 @@
         </div>
       </div>
 
+      <!-- Filter tabs -->
+      <div class="tab-bar">
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">All <span class="tab-count">22</span></button>
+        <button class="tab-item" data-tab="active" onclick="setTab('active')">Active <span class="tab-count">21</span></button>
+        <button class="tab-item" data-tab="inactive" onclick="setTab('inactive')">Inactive <span class="tab-count">1</span></button>
+      </div>
+
       <!-- Toolbar -->
       <div class="toolbar">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="filter-chip" id="chip-type" style="display:none">
+            <span class="filter-chip-attr">Type</span>
+            <span class="filter-chip-value" id="chip-type-value"></span>
+            <button class="filter-chip-remove" onclick="clearTypeFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <span class="filter-chip" id="chip-org" style="display:none">
+            <span class="filter-chip-attr">Organization</span>
+            <span class="filter-chip-value" id="chip-org-value"></span>
+            <button class="filter-chip-remove" onclick="clearOrgFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+              Add filter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div id="menu-root">
+                <div class="dropdown-item" onclick="showFilterMenu('type')">Type <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+                <div class="dropdown-item" onclick="showFilterMenu('org')">Organization <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+              </div>
+              <div id="menu-type" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-type="Residential" onclick="setTypeFilter('Residential')">Residential</div>
+                <div class="dropdown-item" data-type="Commercial" onclick="setTypeFilter('Commercial')">Commercial</div>
+              </div>
+              <div id="menu-org" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-org="Olivier &amp; Buyers" onclick="setOrgFilter('Olivier & Buyers')">Olivier &amp; Buyers</div>
+                <div class="dropdown-item" data-org="ChadwellTestBuyer" onclick="setOrgFilter('ChadwellTestBuyer')">ChadwellTestBuyer</div>
+                <div class="dropdown-item" data-org="Demo Inc." onclick="setOrgFilter('Demo Inc.')">Demo Inc.</div>
+                <div class="dropdown-item" data-org="CLK Properties" onclick="setOrgFilter('CLK Properties')">CLK Properties</div>
+                <div class="dropdown-item" data-org="Scout E2E Organization" onclick="setOrgFilter('Scout E2E Organization')">Scout E2E Organization</div>
+              </div>
+            </div>
+          </div>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
+        </div>
         <div class="search-wrap">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="search-field" placeholder="Search" />
+          <input class="search-field" id="prop-search" placeholder="Search properties" oninput="onFilterChange()" />
         </div>
-        <button class="toolbar-btn-icon" title="Sort">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-        </button>
       </div>
 
       <!-- List view -->
       <div class="table-card" id="view-list">
         <div class="table-scroll">
-        <table>
+        <table id="prop-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Organization</th>
-              <th>Status</th>
-              <th>Customers</th>
+              <th class="sortable" data-col="name" onclick="setSort('name')">Name<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="type" onclick="setSort('type')">Type<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="org" onclick="setSort('org')">Organization<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="status" onclick="setSort('status')">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="buyers" onclick="setSort('buyers')">Buyers<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="spend" onclick="setSort('spend')">Spend (12 mo)<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="lastorder" onclick="setSort('lastorder')">Last Order<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th style="width:80px"></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="id-cell"><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></td>
+            <tr data-name="Central Park View" data-type="Residential" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="20" data-spend="41250.75" data-lastorder="2026-07-19">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--violet)">CP</span><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></div></td>
               <td>Residential</td>
               <td>Olivier &amp; Buyers</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>20</td>
+              <td>$41,250.75 USD</td>
+              <td>2d ago</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">The Superdome</td>
+            <tr data-name="Bueyrs Test &mdash; New Orleans" data-type="Residential" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="7" data-spend="18940.0" data-lastorder="2026-07-16">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--rose)">BN</span>Bueyrs Test &mdash; New Orleans</div></td>
               <td>Residential</td>
-              <td>ChadwellTestBuyer</td>
+              <td>Olivier &amp; Buyers</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>7</td>
+              <td>$18,940.00 USD</td>
+              <td>5d ago</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Bueyrs Test &mdash; Houston" data-type="Residential" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="3" data-spend="12304.5" data-lastorder="2026-05-18">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--amber)">BH</span>Bueyrs Test &mdash; Houston</div></td>
+              <td>Residential</td>
+              <td>Olivier &amp; Buyers</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>3</td>
+              <td>$12,304.50 USD</td>
+              <td>05/18/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="QA-PH-A-R64YQ" data-type="Commercial" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="1" data-spend="4120.25" data-lastorder="2026-06-28">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--sky)">QA</span>QA-PH-A-R64YQ</div></td>
+              <td>Commercial</td>
+              <td>Olivier &amp; Buyers</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>1</td>
+              <td>$4,120.25 USD</td>
+              <td>06/28/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">NRG Stadium</td>
-              <td>Residential</td>
-              <td>ChadwellTestBuyer</td>
+            <tr data-name="QA-PH-B-R64YQ" data-type="Commercial" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="1" data-spend="3890.0" data-lastorder="2026-04-02">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--emerald)">QB</span>QA-PH-B-R64YQ</div></td>
+              <td>Commercial</td>
+              <td>Olivier &amp; Buyers</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>1</td>
+              <td>$3,890.00 USD</td>
+              <td>04/02/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Magnolia Place Apartments</td>
+            <tr data-name="QA-PH-C-R64YQ" data-type="Commercial" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="1" data-spend="3615.0" data-lastorder="2026-03-15">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--orange)">QC</span>QA-PH-C-R64YQ</div></td>
+              <td>Commercial</td>
+              <td>Olivier &amp; Buyers</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>1</td>
+              <td>$3,615.00 USD</td>
+              <td>03/15/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="The Superdome" data-type="Commercial" data-org="ChadwellTestBuyer" data-status="active" data-buyers="5" data-spend="7150.25" data-lastorder="2026-07-08">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--amber)">SD</span>The Superdome</div></td>
+              <td>Commercial</td>
+              <td>ChadwellTestBuyer</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>5</td>
+              <td>$7,150.25 USD</td>
+              <td>07/08/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="NRG Stadium" data-type="Commercial" data-org="ChadwellTestBuyer" data-status="active" data-buyers="4" data-spend="5329.75" data-lastorder="2026-06-30">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--rose)">NR</span>NRG Stadium</div></td>
+              <td>Commercial</td>
+              <td>ChadwellTestBuyer</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>4</td>
+              <td>$5,329.75 USD</td>
+              <td>06/30/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Magnolia Place Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="9" data-spend="28340.0" data-lastorder="2026-07-20">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--violet)">MP</span>Magnolia Place Apartments</div></td>
               <td>Residential</td>
               <td>Demo Inc.</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>9</td>
+              <td>$28,340.00 USD</td>
+              <td>1d ago</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Bayou Crossing Apartments</td>
+            <tr data-name="Bayou Crossing Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="7" data-spend="15780.25" data-lastorder="2026-07-17">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--sky)">BC</span>Bayou Crossing Apartments</div></td>
               <td>Residential</td>
               <td>Demo Inc.</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>7</td>
+              <td>$15,780.25 USD</td>
+              <td>4d ago</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Lone Star Flats</td>
+            <tr data-name="Lone Star Flats" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="5" data-spend="13905.0" data-lastorder="2026-07-12">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--emerald)">LS</span>Lone Star Flats</div></td>
               <td>Residential</td>
               <td>Demo Inc.</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>7</td>
+              <td>5</td>
+              <td>$13,905.00 USD</td>
+              <td>07/12/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Riverwalk Residences</td>
+            <tr data-name="Riverwalk Residences" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="4" data-spend="11260.75" data-lastorder="2026-07-05">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--rose)">RR</span>Riverwalk Residences</div></td>
               <td>Residential</td>
               <td>Demo Inc.</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>4</td>
+              <td>$11,260.75 USD</td>
+              <td>07/05/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Magnolia Heights Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="4" data-spend="10415.0" data-lastorder="2026-06-27">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--amber)">MH</span>Magnolia Heights Apartments</div></td>
+              <td>Residential</td>
+              <td>Demo Inc.</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>4</td>
+              <td>$10,415.00 USD</td>
+              <td>06/27/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Gulf Breeze Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="4" data-spend="9875.5" data-lastorder="2026-06-19">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--sky)">GB</span>Gulf Breeze Apartments</div></td>
+              <td>Residential</td>
+              <td>Demo Inc.</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>4</td>
+              <td>$9,875.50 USD</td>
+              <td>06/19/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="The Star" data-type="Commercial" data-org="Demo Inc." data-status="active" data-buyers="3" data-spend="25338.75" data-lastorder="2026-07-15">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--violet)">TS</span>The Star</div></td>
+              <td>Commercial</td>
+              <td>Demo Inc.</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>3</td>
+              <td>$25,338.75 USD</td>
+              <td>6d ago</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Marc's Church" data-type="Commercial" data-org="Demo Inc." data-status="active" data-buyers="3" data-spend="4650.0" data-lastorder="2026-05-22">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--emerald)">MC</span>Marc's Church</div></td>
+              <td>Commercial</td>
+              <td>Demo Inc.</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>3</td>
+              <td>$4,650.00 USD</td>
+              <td>05/22/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Cyprus Glenn" data-type="Residential" data-org="Demo Inc." data-status="inactive" data-buyers="2" data-spend="2110.0" data-lastorder="2026-02-14">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--orange)">CG</span>Cyprus Glenn</div></td>
+              <td>Residential</td>
+              <td>Demo Inc.</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Inactive</span></span></td>
+              <td>2</td>
+              <td>$2,110.00 USD</td>
+              <td>02/14/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Cypress Lake Apartments" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="6" data-spend="16890.0" data-lastorder="2026-07-11">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--sky)">CL</span>Cypress Lake Apartments</div></td>
+              <td>Residential</td>
+              <td>CLK Properties</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
               <td>6</td>
+              <td>$16,890.00 USD</td>
+              <td>07/11/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Magnolia Heights Apartments</td>
+            <tr data-name="Oakeigh Apartments" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="5" data-spend="13760.5" data-lastorder="2026-07-03">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--amber)">OA</span>Oakeigh Apartments</div></td>
               <td>Residential</td>
-              <td>Demo Inc.</td>
+              <td>CLK Properties</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>6</td>
+              <td>5</td>
+              <td>$13,760.50 USD</td>
+              <td>07/03/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">Gulf Breeze Apartments</td>
+            <tr data-name="Sherwood Acres" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="4" data-spend="8559.5" data-lastorder="2026-06-21">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--rose)">SA</span>Sherwood Acres</div></td>
               <td>Residential</td>
-              <td>Demo Inc.</td>
+              <td>CLK Properties</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>6</td>
+              <td>4</td>
+              <td>$8,559.50 USD</td>
+              <td>06/21/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">The Star</td>
+            <tr data-name="Beau Chene Villas" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="3" data-spend="6000.0" data-lastorder="2026-05-27">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--emerald)">BV</span>Beau Chene Villas</div></td>
               <td>Residential</td>
-              <td>Demo Inc.</td>
+              <td>CLK Properties</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
-              <td>6</td>
+              <td>3</td>
+              <td>$6,000.00 USD</td>
+              <td>05/27/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Scout E2E Test Property" data-type="Commercial" data-org="Scout E2E Organization" data-status="active" data-buyers="3" data-spend="1890.75" data-lastorder="2026-05-02">
+              <td class="id-cell"><div class="prop-cell"><span class="avatar" style="background:var(--violet)">SE</span>Scout E2E Test Property</div></td>
+              <td>Commercial</td>
+              <td>Scout E2E Organization</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span></td>
+              <td>3</td>
+              <td>$1,890.75 USD</td>
+              <td>05/02/2026</td>
+              <td style="width:80px"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
           </tbody>
         </table>
         </div>
         <div class="pagination">
-          <span class="pagination-info">Page 1 of 2</span>
+          <span class="pagination-info" id="page-info">Page 1 of 3</span>
           <div class="pagination-controls">
             <div class="pagination-rows">
               <span>Rows per page</span>
-              <select class="pagination-rows-select">
+              <select class="pagination-rows-select" id="rows-select" onchange="setPageSize(this.value)">
                 <option>10</option>
                 <option>25</option>
                 <option>50</option>
               </select>
             </div>
             <div class="pagination-buttons">
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-first" onclick="setPage(1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4L5 8l4 4"/><path d="M12 4L8 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-prev" onclick="setPage(page - 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-next" onclick="setPage(page + 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-last" onclick="setPage(totalPages())">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4"/><path d="M7 4l4 4-4 4"/></svg>
               </button>
             </div>
@@ -564,167 +882,472 @@
 
       <!-- Grid view -->
       <div class="entity-grid" id="view-grid" style="display:none">
-          <div class="entity-card">
+          <div class="entity-card" data-name="Central Park View" data-type="Residential" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="20" data-spend="41250.75" data-lastorder="2026-07-19">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--violet)">CP</span>
               <div class="entity-card-name"><a href="property-detail.html" style="color:inherit;text-decoration:none">Central Park View</a></div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Olivier &amp; Buyers</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar avatar-more">+16</span></div><span class="avatar-label">20 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar avatar-more">+16</span></div><span class="avatar-label">20 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$41,250.75 USD</strong> (12 mo) &middot; Last order 2d ago</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Bueyrs Test &mdash; New Orleans" data-type="Residential" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="7" data-spend="18940.0" data-lastorder="2026-07-16">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--rose)">BN</span>
+              <div class="entity-card-name">Bueyrs Test &mdash; New Orleans</div>
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            </div>
+            <div class="entity-card-meta">Residential &middot; Olivier &amp; Buyers</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar avatar-more">+3</span></div><span class="avatar-label">7 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$18,940.00 USD</strong> (12 mo) &middot; Last order 5d ago</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
+          </div>
+          <div class="entity-card" data-name="Bueyrs Test &mdash; Houston" data-type="Residential" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="3" data-spend="12304.5" data-lastorder="2026-05-18">
+            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--amber)">BH</span>
+              <div class="entity-card-name">Bueyrs Test &mdash; Houston</div>
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            </div>
+            <div class="entity-card-meta">Residential &middot; Olivier &amp; Buyers</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">3 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$12,304.50 USD</strong> (12 mo) &middot; Last order 05/18/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
+          </div>
+          <div class="entity-card" data-name="QA-PH-A-R64YQ" data-type="Commercial" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="1" data-spend="4120.25" data-lastorder="2026-06-28">
+            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--sky)">QA</span>
+              <div class="entity-card-name">QA-PH-A-R64YQ</div>
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            </div>
+            <div class="entity-card-meta">Commercial &middot; Olivier &amp; Buyers</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$4,120.25 USD</strong> (12 mo) &middot; Last order 06/28/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
+          </div>
+          <div class="entity-card" data-name="QA-PH-B-R64YQ" data-type="Commercial" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="1" data-spend="3890.0" data-lastorder="2026-04-02">
+            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--emerald)">QB</span>
+              <div class="entity-card-name">QA-PH-B-R64YQ</div>
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            </div>
+            <div class="entity-card-meta">Commercial &middot; Olivier &amp; Buyers</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$3,890.00 USD</strong> (12 mo) &middot; Last order 04/02/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
+          </div>
+          <div class="entity-card" data-name="QA-PH-C-R64YQ" data-type="Commercial" data-org="Olivier &amp; Buyers" data-status="active" data-buyers="1" data-spend="3615.0" data-lastorder="2026-03-15">
+            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--orange)">QC</span>
+              <div class="entity-card-name">QA-PH-C-R64YQ</div>
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            </div>
+            <div class="entity-card-meta">Commercial &middot; Olivier &amp; Buyers</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--orange)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$3,615.00 USD</strong> (12 mo) &middot; Last order 03/15/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
+          </div>
+          <div class="entity-card" data-name="The Superdome" data-type="Commercial" data-org="ChadwellTestBuyer" data-status="active" data-buyers="5" data-spend="7150.25" data-lastorder="2026-07-08">
+            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--amber)">SD</span>
               <div class="entity-card-name">The Superdome</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Residential &middot; ChadwellTestBuyer</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-meta">Commercial &middot; ChadwellTestBuyer</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar avatar-more">+1</span></div><span class="avatar-label">5 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$7,150.25 USD</strong> (12 mo) &middot; Last order 07/08/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="NRG Stadium" data-type="Commercial" data-org="ChadwellTestBuyer" data-status="active" data-buyers="4" data-spend="5329.75" data-lastorder="2026-06-30">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--rose)">NR</span>
               <div class="entity-card-name">NRG Stadium</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Residential &middot; ChadwellTestBuyer</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">1 buyer</span></div>
+            <div class="entity-card-meta">Commercial &middot; ChadwellTestBuyer</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">4 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$5,329.75 USD</strong> (12 mo) &middot; Last order 06/30/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Magnolia Place Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="9" data-spend="28340.0" data-lastorder="2026-07-20">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--violet)">MP</span>
               <div class="entity-card-name">Magnolia Place Apartments</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar avatar-more">+5</span></div><span class="avatar-label">9 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--orange)"></span><span class="avatar avatar-more">+5</span></div><span class="avatar-label">9 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$28,340.00 USD</strong> (12 mo) &middot; Last order 1d ago</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Bayou Crossing Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="7" data-spend="15780.25" data-lastorder="2026-07-17">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--sky)">BC</span>
               <div class="entity-card-name">Bayou Crossing Apartments</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar avatar-more">+3</span></div><span class="avatar-label">7 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--orange)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar avatar-more">+3</span></div><span class="avatar-label">7 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$15,780.25 USD</strong> (12 mo) &middot; Last order 4d ago</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Lone Star Flats" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="5" data-spend="13905.0" data-lastorder="2026-07-12">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--emerald)">LS</span>
               <div class="entity-card-name">Lone Star Flats</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar avatar-more">+3</span></div><span class="avatar-label">7 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--orange)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar avatar-more">+1</span></div><span class="avatar-label">5 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$13,905.00 USD</strong> (12 mo) &middot; Last order 07/12/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Riverwalk Residences" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="4" data-spend="11260.75" data-lastorder="2026-07-05">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--rose)">RR</span>
               <div class="entity-card-name">Riverwalk Residences</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--orange)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span></div><span class="avatar-label">4 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$11,260.75 USD</strong> (12 mo) &middot; Last order 07/05/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Magnolia Heights Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="4" data-spend="10415.0" data-lastorder="2026-06-27">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--amber)">MH</span>
               <div class="entity-card-name">Magnolia Heights Apartments</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span></div><span class="avatar-label">4 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$10,415.00 USD</strong> (12 mo) &middot; Last order 06/27/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Gulf Breeze Apartments" data-type="Residential" data-org="Demo Inc." data-status="active" data-buyers="4" data-spend="9875.5" data-lastorder="2026-06-19">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--sky)">GB</span>
               <div class="entity-card-name">Gulf Breeze Apartments</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">4 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$9,875.50 USD</strong> (12 mo) &middot; Last order 06/19/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="The Star" data-type="Commercial" data-org="Demo Inc." data-status="active" data-buyers="3" data-spend="25338.75" data-lastorder="2026-07-15">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--violet)">TS</span>
               <div class="entity-card-name">The Star</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 buyers</span></div>
+            <div class="entity-card-meta">Commercial &middot; Demo Inc.</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">3 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$25,338.75 USD</strong> (12 mo) &middot; Last order 6d ago</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Marc's Church" data-type="Commercial" data-org="Demo Inc." data-status="active" data-buyers="3" data-spend="4650.0" data-lastorder="2026-05-22">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--emerald)">MC</span>
               <div class="entity-card-name">Marc's Church</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
-            <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 buyers</span></div>
+            <div class="entity-card-meta">Commercial &middot; Demo Inc.</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--orange)"></span></div><span class="avatar-label">3 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$4,650.00 USD</strong> (12 mo) &middot; Last order 05/22/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Cyprus Glenn" data-type="Residential" data-org="Demo Inc." data-status="inactive" data-buyers="2" data-spend="2110.0" data-lastorder="2026-02-14">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--orange)">CG</span>
               <div class="entity-card-name">Cyprus Glenn</div>
-              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+              <span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Inactive</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; Demo Inc.</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 buyers</span></div>
-          </div>
-          <div class="entity-card">
-            <div class="entity-card-header">
-              <div class="entity-card-name">QA-PH-A-R64YQ</div>
-              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--orange)"></span></div><span class="avatar-label">2 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$2,110.00 USD</strong> (12 mo) &middot; Last order 02/14/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
             </div>
-            <div class="entity-card-meta">Residential &middot; Olivier &amp; Buyers</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">1 buyer</span></div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Cypress Lake Apartments" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="6" data-spend="16890.0" data-lastorder="2026-07-11">
             <div class="entity-card-header">
-              <div class="entity-card-name">QA-PH-B-R64YQ</div>
-              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
-            </div>
-            <div class="entity-card-meta">Residential &middot; Olivier &amp; Buyers</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span></div><span class="avatar-label">1 buyer</span></div>
-          </div>
-          <div class="entity-card">
-            <div class="entity-card-header">
-              <div class="entity-card-name">QA-PH-C-R64YQ</div>
-              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
-            </div>
-            <div class="entity-card-meta">Residential &middot; Olivier &amp; Buyers</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span></div><span class="avatar-label">1 buyer</span></div>
-          </div>
-          <div class="entity-card">
-            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--sky)">CL</span>
               <div class="entity-card-name">Cypress Lake Apartments</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; CLK Properties</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">2 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--orange)"></span><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar avatar-more">+2</span></div><span class="avatar-label">6 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$16,890.00 USD</strong> (12 mo) &middot; Last order 07/11/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Oakeigh Apartments" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="5" data-spend="13760.5" data-lastorder="2026-07-03">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--amber)">OA</span>
               <div class="entity-card-name">Oakeigh Apartments</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; CLK Properties</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--violet)"></span></div><span class="avatar-label">2 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--rose)"></span><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar avatar-more">+1</span></div><span class="avatar-label">5 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$13,760.50 USD</strong> (12 mo) &middot; Last order 07/03/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
-          <div class="entity-card">
+          <div class="entity-card" data-name="Sherwood Acres" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="4" data-spend="8559.5" data-lastorder="2026-06-21">
             <div class="entity-card-header">
+              <span class="avatar" style="background:var(--rose)">SA</span>
               <div class="entity-card-name">Sherwood Acres</div>
               <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
             </div>
             <div class="entity-card-meta">Residential &middot; CLK Properties</div>
-            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--rose)"></span></div><span class="avatar-label">2 buyers</span></div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--violet)"></span><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">4 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$8,559.50 USD</strong> (12 mo) &middot; Last order 06/21/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
           </div>
+          <div class="entity-card" data-name="Beau Chene Villas" data-type="Residential" data-org="CLK Properties" data-status="active" data-buyers="3" data-spend="6000.0" data-lastorder="2026-05-27">
+            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--emerald)">BV</span>
+              <div class="entity-card-name">Beau Chene Villas</div>
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            </div>
+            <div class="entity-card-meta">Residential &middot; CLK Properties</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--sky)"></span><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span></div><span class="avatar-label">3 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$6,000.00 USD</strong> (12 mo) &middot; Last order 05/27/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
+          </div>
+          <div class="entity-card" data-name="Scout E2E Test Property" data-type="Commercial" data-org="Scout E2E Organization" data-status="active" data-buyers="3" data-spend="1890.75" data-lastorder="2026-05-02">
+            <div class="entity-card-header">
+              <span class="avatar" style="background:var(--violet)">SE</span>
+              <div class="entity-card-name">Scout E2E Test Property</div>
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+            </div>
+            <div class="entity-card-meta">Commercial &middot; Scout E2E Organization</div>
+            <div class="avatar-group"><div class="avatar-stack"><span class="avatar" style="background:var(--amber)"></span><span class="avatar" style="background:var(--emerald)"></span><span class="avatar" style="background:var(--orange)"></span></div><span class="avatar-label">3 buyers</span></div>
+            <div class="entity-card-foot">
+              <span class="entity-card-foot-meta"><strong>$1,890.75 USD</strong> (12 mo) &middot; Last order 05/02/2026</span>
+              <span class="entity-card-actions"><button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></span>
+            </div>
+          </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-state-title">No properties found</div>
+        <div class="empty-state-desc">No properties match your current search and filters. Try adjusting or clearing them.</div>
+        <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
       </div>
 
     </div>
   </div>
 
   <script>
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m7 14.5 5-5 5 5"/>',
+      desc: '<path d="m7 9.5 5 5 5-5"/>'
+    };
+    let currentView = 'list';
+    let activeTab = 'all';
+    let typeFilter = null;
+    let orgFilter = null;
+    let sortState = { col: 'name', dir: 'asc' };
+    let page = 1;
+    let pageSize = 10;
+    let visible = [];
+
     function setView(view) {
-      document.getElementById('view-list').style.display = view === 'list' ? '' : 'none';
-      document.getElementById('view-grid').style.display = view === 'grid' ? '' : 'none';
+      currentView = view;
       document.getElementById('btn-view-list').classList.toggle('active', view === 'list');
       document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
+      render();
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      onFilterChange();
+    }
+
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      if (opening) showFilterMenu('root');
+    }
+
+    function showFilterMenu(which) {
+      ['root', 'type', 'org'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+
+    function markSelected(menuId, attr, value) {
+      document.querySelectorAll('#' + menuId + ' .dropdown-item[' + attr + ']').forEach(i => {
+        const sel = i.getAttribute(attr).replace('&amp;','&') === value;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+    }
+
+    function setTypeFilter(v) {
+      typeFilter = v;
+      document.getElementById('chip-type-value').textContent = v;
+      document.getElementById('chip-type').style.display = '';
+      markSelected('menu-type', 'data-type', v);
+      document.getElementById('filter-menu').style.display = 'none';
+      updateFilterUI(); onFilterChange();
+    }
+    function clearTypeFilter() {
+      typeFilter = null;
+      document.getElementById('chip-type').style.display = 'none';
+      markSelected('menu-type', 'data-type', '\u0000');
+      updateFilterUI(); onFilterChange();
+    }
+    function setOrgFilter(v) {
+      orgFilter = v;
+      document.getElementById('chip-org-value').textContent = v;
+      document.getElementById('chip-org').style.display = '';
+      markSelected('menu-org', 'data-org', v);
+      document.getElementById('filter-menu').style.display = 'none';
+      updateFilterUI(); onFilterChange();
+    }
+    function clearOrgFilter() {
+      orgFilter = null;
+      document.getElementById('chip-org').style.display = 'none';
+      markSelected('menu-org', 'data-org', '\u0000');
+      updateFilterUI(); onFilterChange();
+    }
+    function updateFilterUI() {
+      document.getElementById('filter-clear').style.display = (typeFilter || orgFilter) ? '' : 'none';
+    }
+    function clearFilters() {
+      document.getElementById('prop-search').value = '';
+      typeFilter = null; orgFilter = null;
+      document.getElementById('chip-type').style.display = 'none';
+      document.getElementById('chip-org').style.display = 'none';
+      markSelected('menu-type', 'data-type', '\u0000');
+      markSelected('menu-org', 'data-org', '\u0000');
+      updateFilterUI();
+      setTab('all');
+    }
+
+    function rowsAll() { return [...document.querySelectorAll('#prop-table tbody tr')]; }
+    function cardsAll() { return [...document.querySelectorAll('#view-grid .entity-card')]; }
+
+    function matches(el, q) {
+      const tabOk = activeTab === 'all' || el.dataset.status === activeTab;
+      const searchOk = !q || el.textContent.toLowerCase().includes(q);
+      const typeOk = typeFilter === null || el.dataset.type === typeFilter;
+      const orgOk = orgFilter === null || el.dataset.org.replace('&amp;','&') === orgFilter;
+      return tabOk && searchOk && typeOk && orgOk;
+    }
+
+    function cmp(a, b) {
+      let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+      if (['buyers','spend'].includes(sortState.col)) { av = +av; bv = +bv; }
+      else { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+      const c = av < bv ? -1 : av > bv ? 1 : 0;
+      return sortState.dir === 'asc' ? c : -c;
+    }
+
+    function setSort(col) {
+      if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      else sortState = { col, dir: ['buyers','spend','lastorder'].includes(col) ? 'desc' : 'asc' };
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) { th.classList.add('sorted'); icon.innerHTML = ARROWS[sortState.dir]; }
+        else { th.classList.remove('sorted'); icon.innerHTML = ARROWS.neutral; }
+      });
+      onFilterChange();
+    }
+
+    function totalPages() { return Math.max(1, Math.ceil(visible.length / pageSize)); }
+    function setPage(p) { page = Math.min(Math.max(1, p), totalPages()); render(); }
+    function setPageSize(n) { pageSize = +n; page = 1; render(); }
+    function onFilterChange() { page = 1; recompute(); }
+
+    function recompute() {
+      const q = document.getElementById('prop-search').value.toLowerCase();
+      const rows = rowsAll().filter(r => matches(r, q)).sort(cmp);
+      const tbody = document.querySelector('#prop-table tbody');
+      rows.forEach(r => tbody.appendChild(r));
+      const cards = cardsAll().filter(c => matches(c, q)).sort(cmp);
+      const grid = document.getElementById('view-grid');
+      cards.forEach(c => grid.appendChild(c));
+      visible = currentView === 'list' ? rows : cards;
+      render();
+    }
+
+    function render() {
+      const q = document.getElementById('prop-search').value.toLowerCase();
+      const list = currentView === 'list';
+      visible = (list ? rowsAll() : cardsAll()).filter(el => matches(el, q)).sort(cmp);
+      const start = (page - 1) * pageSize, end = page * pageSize;
+      rowsAll().forEach(r => r.style.display = 'none');
+      cardsAll().forEach(c => c.style.display = 'none');
+      visible.slice(start, end).forEach(el => el.style.display = '');
+      const any = visible.length > 0;
+      document.getElementById('view-list').style.display = list && any ? '' : 'none';
+      document.getElementById('view-grid').style.display = !list && any ? '' : 'none';
+      document.getElementById('empty-state').style.display = any ? 'none' : '';
+      document.getElementById('page-info').textContent = 'Page ' + page + ' of ' + totalPages();
+      document.getElementById('pg-first').disabled = page <= 1;
+      document.getElementById('pg-prev').disabled = page <= 1;
+      document.getElementById('pg-next').disabled = page >= totalPages();
+      document.getElementById('pg-last').disabled = page >= totalPages();
     }
 
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    document.querySelector('th[data-col="name"]').classList.add('sorted');
+    document.querySelector('th[data-col="name"] .sort-icon').innerHTML = ARROWS.asc;
+    recompute();
   </script>
 </body>
 </html>

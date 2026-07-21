@@ -9,7 +9,10 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | Promotions | [promotions.md](promotions.md) |
 | Price Lists | [price-lists.md](price-lists.md) |
 | Customer Groups | [customer-groups.md](customer-groups.md) |
-| Organizations | [organizations.md](organizations.md) |
+| Organizations + Organization detail | [organizations.md](organizations.md) |
+| Properties + Property detail | [properties.md](properties.md) |
+
+Remaining views: Orders, Quotes, Products, Inventory, Insights.
 
 ## Format
 

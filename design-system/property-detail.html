@@ -171,7 +171,9 @@
       width: 16px; height: 16px; border-radius: 50%;
       background: var(--emerald); border: 3px solid var(--background);
     }
-    .detail-title-block { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .detail-title-block { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .detail-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .detail-badges .badge-neutral { max-width: 340px; overflow: hidden; text-overflow: ellipsis; }
     .detail-name { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; color: var(--foreground); }
     .detail-meta {
       display: inline-flex; align-items: center; gap: 8px;
@@ -229,7 +231,7 @@
     .insight-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
 
     /* Toolbar */
-    .toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
     .search-wrap { position: relative; display: flex; align-items: center; width: 240px; }
     .search-icon { position: absolute; left: 12px; color: var(--muted-foreground); pointer-events: none; }
     .search-field {
@@ -276,6 +278,90 @@
     .pagination-btn:hover:not(:disabled) { background: var(--accent); }
     .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .pagination-btn svg { width: 16px; height: 16px; }
+
+    /* Sortable headers */
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
+
+    .buyer-cell { display: flex; align-items: center; gap: 10px; }
+    .buyer-cell .avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #fff;
+    }
+    .email-cell { color: var(--muted-foreground); }
+    .badge-neutral {
+      display: inline-block; vertical-align: middle;
+      padding: 2px 10px; border-radius: var(--radius-pill);
+      font-size: 12px; font-weight: 500; line-height: 1.6; color: var(--muted-foreground);
+      background: var(--muted); border: 1px solid var(--border); white-space: nowrap;
+    }
+
+    /* Filter bar */
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 200px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+    .toolbar-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: var(--background); color: var(--foreground);
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+    }
+    .toolbar-btn:hover { background: var(--accent); }
+    .toolbar-btn svg { width: 16px; height: 16px; }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 20px; text-align: center; gap: 6px;
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
   </style>
 </head>
 <body>
@@ -409,13 +495,15 @@
       <!-- Detail header (avatar variant) -->
       <div class="detail-card">
         <div class="detail-head">
-          <div class="detail-avatar">CP<span class="presence-dot"></span></div>
+          <div class="detail-avatar">CP</div>
           <div class="detail-title-block">
             <span class="detail-name">Central Park View</span>
-            <span class="detail-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>Residential</span>
-            <span class="detail-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>59 West 46th Street, New York, NY, 10036</span>
+            <div class="detail-badges">
+              <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
+              <span class="badge-neutral">Residential</span>
+              <span class="badge-neutral" title="59 West 46th Street, New York, NY, 10036">59 West 46th Street, New York, NY, 10036</span>
+            </div>
           </div>
-          <span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Active</span></span>
         </div>
         <div class="attr-tiles">
           <div class="attr-tile">
@@ -432,87 +520,263 @@
               <div class="attr-tile-value">20</div>
             </div>
           </div>
+          <div class="attr-tile">
+            <div class="attr-tile-icon" style="background:var(--emerald-soft);color:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div>
+              <div class="attr-tile-label">Spend (12 mo)</div>
+              <div class="attr-tile-value">$41,250.75</div>
+            </div>
+          </div>
+          <div class="attr-tile">
+            <div class="attr-tile-icon" style="background:var(--amber-soft);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div>
+              <div class="attr-tile-label">Last Order</div>
+              <div class="attr-tile-value">2d ago</div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Buyers section -->
       <div class="section-card">
-        <div class="section-card-head">
-          <div class="insight-title-wrap">
-            <div class="insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-            <div>
-              <div class="insight-title">Buyers</div>
-              <div class="insight-sub">20 Buyers associated with this property</div>
-            </div>
-          </div>
-        </div>
         <div class="toolbar">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="filter-chip" id="chip-role" style="display:none">
+              <span class="filter-chip-attr">Role</span>
+              <span class="filter-chip-value" id="chip-role-value"></span>
+              <button class="filter-chip-remove" onclick="clearRoleFilter()" title="Remove filter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </span>
+            <div class="filter-menu-wrap">
+              <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+                Add filter
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="filter-menu" id="filter-menu" style="display:none">
+                <div id="menu-root">
+                  <div class="dropdown-item" onclick="showFilterMenu('role')">Role <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+                </div>
+                <div id="menu-role" style="display:none">
+                  <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                  <div class="dropdown-item" data-role="Buyer" onclick="setRoleFilter('Buyer')">Buyer</div>
+                  <div class="dropdown-item" data-role="Supervisor" onclick="setRoleFilter('Supervisor')">Supervisor</div>
+                </div>
+              </div>
+            </div>
+            <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
+          </div>
           <div class="search-wrap">
             <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input class="search-field" placeholder="Search buyers..." />
+            <input class="search-field" id="buyer-search" placeholder="Search buyers..." oninput="onFilterChange()" />
           </div>
         </div>
         <div class="table-wrap">
-          <table>
+          <table id="buyer-table">
             <thead>
-              <tr><th>Name</th></tr>
+              <tr>
+                <th class="sortable" data-col="name" onclick="setSort('name')">Name<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="role" onclick="setSort('role')">Role<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="email" onclick="setSort('email')">Email<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="orders" onclick="setSort('orders')">Orders (12 mo)<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="spend" onclick="setSort('spend')">Spend (12 mo)<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+                <th class="sortable" data-col="lastorder" onclick="setSort('lastorder')">Last Order<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Olivier Belaud</td>
+            <tr data-name="Olivier Belaud" data-role="Supervisor" data-email="olivier.belaud@olivierbuyers.com" data-orders="48" data-spend="8986.25" data-lastorder="2026-07-19">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--rose)">OB</span>Olivier Belaud</div></td>
+              <td><span class="badge-neutral">Supervisor</span></td>
+              <td class="email-cell">olivier.belaud@olivierbuyers.com</td>
+              <td>48</td>
+              <td>$8,986.25 USD</td>
+              <td>2d ago</td>
             </tr>
-            <tr>
-              <td>Olivier Belaud</td>
+            <tr data-name="Marisol Vega" data-role="Buyer" data-email="marisol.vega@olivierbuyers.com" data-orders="31" data-spend="4328.25" data-lastorder="2026-07-18">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--violet)">MV</span>Marisol Vega</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">marisol.vega@olivierbuyers.com</td>
+              <td>31</td>
+              <td>$4,328.25 USD</td>
+              <td>3d ago</td>
             </tr>
-            <tr>
-              <td>QADev Supervisor</td>
+            <tr data-name="QADev Supervisor" data-role="Supervisor" data-email="qadev.supervisor@olivierbuyers.com" data-orders="12" data-spend="1942.0" data-lastorder="2026-07-15">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--sky)">QS</span>QADev Supervisor</div></td>
+              <td><span class="badge-neutral">Supervisor</span></td>
+              <td class="email-cell">qadev.supervisor@olivierbuyers.com</td>
+              <td>12</td>
+              <td>$1,942.00 USD</td>
+              <td>6d ago</td>
             </tr>
-            <tr>
-              <td>QADev Buyer</td>
+            <tr data-name="QADev Buyer" data-role="Buyer" data-email="qadev.buyer@olivierbuyers.com" data-orders="27" data-spend="5054.75" data-lastorder="2026-07-10">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--amber)">QB</span>QADev Buyer</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">qadev.buyer@olivierbuyers.com</td>
+              <td>27</td>
+              <td>$5,054.75 USD</td>
+              <td>07/10/2026</td>
             </tr>
-            <tr>
-              <td>QA Threshold Supervisor</td>
+            <tr data-name="Priya Natarajan" data-role="Buyer" data-email="priya.natarajan@olivierbuyers.com" data-orders="22" data-spend="3071.5" data-lastorder="2026-07-09">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--emerald)">PN</span>Priya Natarajan</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">priya.natarajan@olivierbuyers.com</td>
+              <td>22</td>
+              <td>$3,071.50 USD</td>
+              <td>07/09/2026</td>
             </tr>
-            <tr>
-              <td>QA Threshold Buyer</td>
+            <tr data-name="QA Threshold Supervisor" data-role="Supervisor" data-email="qa.threshold.supervisor@olivierbuyers.com" data-orders="8" data-spend="1294.75" data-lastorder="2026-07-02">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--orange)">QS</span>QA Threshold Supervisor</div></td>
+              <td><span class="badge-neutral">Supervisor</span></td>
+              <td class="email-cell">qa.threshold.supervisor@olivierbuyers.com</td>
+              <td>8</td>
+              <td>$1,294.75 USD</td>
+              <td>07/02/2026</td>
             </tr>
-            <tr>
-              <td>QA Inbox Supervisor</td>
+            <tr data-name="Devon Carter" data-role="Buyer" data-email="devon.carter@olivierbuyers.com" data-orders="18" data-spend="3369.75" data-lastorder="2026-07-01">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--rose)">DC</span>Devon Carter</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">devon.carter@olivierbuyers.com</td>
+              <td>18</td>
+              <td>$3,369.75 USD</td>
+              <td>07/01/2026</td>
             </tr>
-            <tr>
-              <td>QA Inbox Buyer</td>
+            <tr data-name="Alena Petrova" data-role="Supervisor" data-email="alena.petrova@olivierbuyers.com" data-orders="11" data-spend="1535.75" data-lastorder="2026-06-25">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--violet)">AP</span>Alena Petrova</div></td>
+              <td><span class="badge-neutral">Supervisor</span></td>
+              <td class="email-cell">alena.petrova@olivierbuyers.com</td>
+              <td>11</td>
+              <td>$1,535.75 USD</td>
+              <td>06/25/2026</td>
             </tr>
-            <tr>
-              <td>QA Mail Supervisor</td>
+            <tr data-name="QA Threshold Buyer" data-role="Buyer" data-email="qa.threshold.buyer@olivierbuyers.com" data-orders="15" data-spend="2427.5" data-lastorder="2026-06-24">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--sky)">QB</span>QA Threshold Buyer</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">qa.threshold.buyer@olivierbuyers.com</td>
+              <td>15</td>
+              <td>$2,427.50 USD</td>
+              <td>06/24/2026</td>
             </tr>
-            <tr>
-              <td>QA Mail Buyer</td>
+            <tr data-name="Marcus Webb" data-role="Buyer" data-email="marcus.webb@olivierbuyers.com" data-orders="14" data-spend="2621.0" data-lastorder="2026-06-17">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--amber)">MW</span>Marcus Webb</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">marcus.webb@olivierbuyers.com</td>
+              <td>14</td>
+              <td>$2,621.00 USD</td>
+              <td>06/17/2026</td>
+            </tr>
+            <tr data-name="QA Inbox Supervisor" data-role="Supervisor" data-email="qa.inbox.supervisor@olivierbuyers.com" data-orders="5" data-spend="698.0" data-lastorder="2026-06-12">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--emerald)">QS</span>QA Inbox Supervisor</div></td>
+              <td><span class="badge-neutral">Supervisor</span></td>
+              <td class="email-cell">qa.inbox.supervisor@olivierbuyers.com</td>
+              <td>5</td>
+              <td>$698.00 USD</td>
+              <td>06/12/2026</td>
+            </tr>
+            <tr data-name="Sofia Reyes" data-role="Buyer" data-email="sofia.reyes@olivierbuyers.com" data-orders="10" data-spend="1618.25" data-lastorder="2026-06-08">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--orange)">SR</span>Sofia Reyes</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">sofia.reyes@olivierbuyers.com</td>
+              <td>10</td>
+              <td>$1,618.25 USD</td>
+              <td>06/08/2026</td>
+            </tr>
+            <tr data-name="QA Inbox Buyer" data-role="Buyer" data-email="qa.inbox.buyer@olivierbuyers.com" data-orders="9" data-spend="1685.0" data-lastorder="2026-05-30">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--rose)">QB</span>QA Inbox Buyer</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">qa.inbox.buyer@olivierbuyers.com</td>
+              <td>9</td>
+              <td>$1,685.00 USD</td>
+              <td>05/30/2026</td>
+            </tr>
+            <tr data-name="Tom Nguyen" data-role="Buyer" data-email="tom.nguyen@olivierbuyers.com" data-orders="7" data-spend="977.25" data-lastorder="2026-05-28">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--violet)">TN</span>Tom Nguyen</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">tom.nguyen@olivierbuyers.com</td>
+              <td>7</td>
+              <td>$977.25 USD</td>
+              <td>05/28/2026</td>
+            </tr>
+            <tr data-name="Rachel Kim" data-role="Supervisor" data-email="rachel.kim@olivierbuyers.com" data-orders="4" data-spend="647.25" data-lastorder="2026-05-15">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--sky)">RK</span>Rachel Kim</div></td>
+              <td><span class="badge-neutral">Supervisor</span></td>
+              <td class="email-cell">rachel.kim@olivierbuyers.com</td>
+              <td>4</td>
+              <td>$647.25 USD</td>
+              <td>05/15/2026</td>
+            </tr>
+            <tr data-name="QA Mail Supervisor" data-role="Supervisor" data-email="qa.mail.supervisor@olivierbuyers.com" data-orders="3" data-spend="561.75" data-lastorder="2026-05-06">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--amber)">QS</span>QA Mail Supervisor</div></td>
+              <td><span class="badge-neutral">Supervisor</span></td>
+              <td class="email-cell">qa.mail.supervisor@olivierbuyers.com</td>
+              <td>3</td>
+              <td>$561.75 USD</td>
+              <td>05/06/2026</td>
+            </tr>
+            <tr data-name="Ben Okafor" data-role="Buyer" data-email="ben.okafor@olivierbuyers.com" data-orders="5" data-spend="698.0" data-lastorder="2026-04-29">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--emerald)">BO</span>Ben Okafor</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">ben.okafor@olivierbuyers.com</td>
+              <td>5</td>
+              <td>$698.00 USD</td>
+              <td>04/29/2026</td>
+            </tr>
+            <tr data-name="QA Mail Buyer" data-role="Buyer" data-email="qa.mail.buyer@olivierbuyers.com" data-orders="6" data-spend="971.0" data-lastorder="2026-04-18">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--orange)">QB</span>QA Mail Buyer</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">qa.mail.buyer@olivierbuyers.com</td>
+              <td>6</td>
+              <td>$971.00 USD</td>
+              <td>04/18/2026</td>
+            </tr>
+            <tr data-name="Lucia Marchetti" data-role="Buyer" data-email="lucia.marchetti@olivierbuyers.com" data-orders="3" data-spend="561.75" data-lastorder="2026-04-10">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--rose)">LM</span>Lucia Marchetti</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">lucia.marchetti@olivierbuyers.com</td>
+              <td>3</td>
+              <td>$561.75 USD</td>
+              <td>04/10/2026</td>
+            </tr>
+            <tr data-name="Hank Dawes" data-role="Buyer" data-email="hank.dawes@olivierbuyers.com" data-orders="2" data-spend="-1799.0" data-lastorder="2026-03-21">
+              <td><div class="buyer-cell"><span class="avatar" style="background:var(--violet)">HD</span>Hank Dawes</div></td>
+              <td><span class="badge-neutral">Buyer</span></td>
+              <td class="email-cell">hank.dawes@olivierbuyers.com</td>
+              <td>2</td>
+              <td>$-1,799.00 USD</td>
+              <td>03/21/2026</td>
             </tr>
             </tbody>
           </table>
         </div>
+        <div class="empty-state" id="empty-state" style="display:none">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <div class="empty-state-title">No buyers found</div>
+          <div class="empty-state-desc">No buyers match your search or filters.</div>
+        </div>
         <div class="pagination">
-          <span class="pagination-info">Page 1 of 2</span>
+          <span class="pagination-info" id="page-info">Page 1 of 2</span>
           <div class="pagination-controls">
             <div class="pagination-rows">
               <span>Rows per page</span>
-              <select class="pagination-rows-select">
+              <select class="pagination-rows-select" id="rows-select" onchange="setPageSize(this.value)">
                 <option>10</option>
                 <option>25</option>
                 <option>50</option>
               </select>
             </div>
             <div class="pagination-buttons">
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-first" onclick="setPage(1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4L5 8l4 4"/><path d="M12 4L8 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-prev" onclick="setPage(page - 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-next" onclick="setPage(page + 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-last" onclick="setPage(totalPages())">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4"/><path d="M7 4l4 4-4 4"/></svg>
               </button>
             </div>
@@ -524,10 +788,109 @@
   </div>
 
   <script>
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m7 14.5 5-5 5 5"/>',
+      desc: '<path d="m7 9.5 5 5 5-5"/>'
+    };
+    let roleFilter = null;
+    let sortState = { col: 'lastorder', dir: 'desc' };
+    let page = 1;
+    let pageSize = 10;
+    let visible = [];
+
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      if (opening) showFilterMenu('root');
+    }
+    function showFilterMenu(which) {
+      ['root', 'role'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+    function setRoleFilter(v) {
+      roleFilter = v;
+      document.getElementById('chip-role-value').textContent = v;
+      document.getElementById('chip-role').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#menu-role .dropdown-item[data-role]').forEach(i => {
+        const sel = i.dataset.role === v;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      onFilterChange();
+    }
+    function clearRoleFilter() {
+      roleFilter = null;
+      document.getElementById('chip-role').style.display = 'none';
+      document.getElementById('filter-clear').style.display = 'none';
+      document.querySelectorAll('#menu-role .dropdown-item[data-role]').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      onFilterChange();
+    }
+    function clearFilters() {
+      document.getElementById('buyer-search').value = '';
+      clearRoleFilter();
+    }
+
+    function rowsAll() { return [...document.querySelectorAll('#buyer-table tbody tr')]; }
+    function matches(r, q) {
+      const searchOk = !q || r.textContent.toLowerCase().includes(q);
+      const roleOk = roleFilter === null || r.dataset.role === roleFilter;
+      return searchOk && roleOk;
+    }
+    function cmp(a, b) {
+      let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+      if (sortState.col === 'orders' || sortState.col === 'spend') { av = +av; bv = +bv; }
+      else { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+      const c = av < bv ? -1 : av > bv ? 1 : 0;
+      return sortState.dir === 'asc' ? c : -c;
+    }
+    function setSort(col) {
+      if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      else sortState = { col, dir: ['orders','spend','lastorder'].includes(col) ? 'desc' : 'asc' };
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) { th.classList.add('sorted'); icon.innerHTML = ARROWS[sortState.dir]; }
+        else { th.classList.remove('sorted'); icon.innerHTML = ARROWS.neutral; }
+      });
+      onFilterChange();
+    }
+    function totalPages() { return Math.max(1, Math.ceil(visible.length / pageSize)); }
+    function setPage(p) { page = Math.min(Math.max(1, p), totalPages()); render(); }
+    function setPageSize(n) { pageSize = +n; page = 1; render(); }
+    function onFilterChange() { page = 1; render(); }
+
+    function render() {
+      const q = document.getElementById('buyer-search').value.toLowerCase();
+      visible = rowsAll().filter(r => matches(r, q)).sort(cmp);
+      const tbody = document.querySelector('#buyer-table tbody');
+      visible.forEach(r => tbody.appendChild(r));
+      rowsAll().forEach(r => r.style.display = 'none');
+      const start = (page - 1) * pageSize;
+      visible.slice(start, start + pageSize).forEach(r => r.style.display = '');
+      document.querySelector('#buyer-table').style.display = visible.length ? '' : 'none';
+      document.getElementById('empty-state').style.display = visible.length ? 'none' : '';
+      document.getElementById('page-info').textContent = 'Page ' + page + ' of ' + totalPages();
+      document.getElementById('pg-first').disabled = page <= 1;
+      document.getElementById('pg-prev').disabled = page <= 1;
+      document.getElementById('pg-next').disabled = page >= totalPages();
+      document.getElementById('pg-last').disabled = page >= totalPages();
+    }
+
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    document.querySelector('th[data-col="lastorder"]').classList.add('sorted');
+    document.querySelector('th[data-col="lastorder"] .sort-icon').innerHTML = ARROWS.desc;
+    render();
   </script>
 </body>
 </html>

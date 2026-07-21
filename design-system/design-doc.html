@@ -679,6 +679,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Sortable columns: header shows stacked 12px chevrons (muted); the active column turns <code>--primary</code> with a single directional chevron (same stroke family as the neutral pair — never a stemmed arrow). Click toggles asc/desc; text and dates default to asc-first except dates and numeric ratings, which default desc-first.</li>
         <li>Default ordering: work-queue tables sort attention-needed items first (e.g. "Needs reply"), then newest.</li>
         <li>Long-text cells (reviews, descriptions): truncate with ellipsis at a fixed max-width (~280px); the full text is available via <code>title</code> tooltip. Never let free text wrap or stretch the table.</li>
+        <li><strong>Enum columns are badges:</strong> columns with a small fixed set of values (Type, Role, Category) render each value as a neutral badge — never bare text. Entity references (names, organizations), free text, numbers, and dates stay plain; Status keeps the status-dot badge.</li>
         <li>Rows: <code>--accent</code> on hover, <code>4px solid var(--primary)</code> left border on selected.</li>
         <li>Bulk selection: leading 40px checkbox column; header checkbox selects all rows. For card lists, use the bulk selection bar instead: "Select page (N items)" checkbox left, "Select all N items" outline button right.</li>
         <li>Row actions: trailing 48px column with a 32px ghost kebab button (ellipsis icon); menu opens on click.</li>

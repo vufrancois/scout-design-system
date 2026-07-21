@@ -33,3 +33,4 @@ The property header's presence dot was removed (presence dots are for people, no
 
 - **Live pagination rule** (design doc, Table section) — pagination is functional wherever data exceeds the page size; page resets on filter/search/sort changes; one page slice drives both views
 - **Detail Header avatar variant** (gallery + design doc) — no presence dot (presence dots are for people, not entities); short facts (type, address) render as a badge row beside the status badge, matching the icon variant's convention; long badge values truncate with the full text in the tooltip
+- **Enum-columns-are-badges rule** (design doc, Table section) — columns with a small fixed set of values (Type, Role, Category) render each value as a neutral badge, never bare text; applied to the Type columns on Properties, Organizations, and the org-detail Properties section (Role on the buyers table already followed it)

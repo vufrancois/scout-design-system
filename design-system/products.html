@@ -182,7 +182,7 @@
 
     /* Color-coded stat cards — design system component (no CTA variant) */
     .stat-grid {
-      display: grid; grid-template-columns: 1fr 1.4fr 1fr 1fr 1fr;
+      display: grid; grid-template-columns: repeat(5, 1fr);
       gap: 16px; margin-bottom: 28px;
     }
     .stat-card-colored {
@@ -193,15 +193,10 @@
     .stat-card-colored::before {
       content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
     }
-    .stat-card-colored.stat-sky { border-color: var(--sky); }
     .stat-card-colored.stat-sky::before { background: var(--sky); }
-    .stat-card-colored.stat-violet { border-color: var(--violet); }
     .stat-card-colored.stat-violet::before { background: var(--violet); }
-    .stat-card-colored.stat-orange { border-color: var(--orange); }
     .stat-card-colored.stat-orange::before { background: var(--orange); }
-    .stat-card-colored.stat-emerald { border-color: var(--emerald); }
     .stat-card-colored.stat-emerald::before { background: var(--emerald); }
-    .stat-card-colored.stat-amber { border-color: var(--amber); }
     .stat-card-colored.stat-amber::before { background: var(--amber); }
     .stat-card-header { display: flex; align-items: center; gap: 8px; }
     .stat-card-header svg { width: 18px; height: 18px; flex-shrink: 0; }
@@ -250,8 +245,8 @@
     .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
 
     /* Toolbar */
-    .toolbar {
-      display: flex; align-items: center; justify-content: flex-end;
+.toolbar {
+      display: flex; align-items: center; justify-content: space-between;
       gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
     }
     .toolbar-btn-icon {
@@ -383,6 +378,101 @@
     .pagination-btn:hover:not(:disabled) { background: var(--accent); }
     .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .pagination-btn svg { width: 16px; height: 16px; }
+    .stat-card-colored.stat-rose::before { background: var(--rose); }
+    .stat-card-colored.stat-rose .stat-card-count { color: var(--rose); }
+    .stat-card-colored { cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s, background 0.15s; }
+    .stat-card-colored:hover { box-shadow: var(--shadow-sm); }
+    .stat-card-colored.active.stat-sky { border-color: var(--sky); background: var(--sky-soft); }
+    .stat-card-colored.active.stat-orange { border-color: var(--orange); background: var(--orange-soft); }
+    .stat-card-colored.active.stat-amber { border-color: var(--amber); background: var(--amber-soft); }
+    .stat-card-colored.active.stat-emerald { border-color: var(--emerald); background: var(--emerald-soft); }
+    .stat-card-colored.active.stat-rose { border-color: var(--rose); background: var(--rose-soft); }
+    .status-dot.dot-review { background: var(--amber); }
+    .status-dot.dot-rejected { background: var(--rose); }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
+    .cat-col { min-width: 220px; }
+    .product-name { max-width: 340px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+    .product-meta { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    @media (max-width: 1280px) { .col-imported { display: none; } .stat-grid { grid-template-columns: repeat(3, 1fr) !important; } }
+    @media (max-width: 1100px) { .col-price { display: none; } }
+    .cat-col .badge-neutral { max-width: 200px; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+    .badge-ai {
+      display: inline-flex; align-items: center; gap: 4px; vertical-align: middle;
+      padding: 2px 8px; margin-left: 6px; border-radius: var(--radius-pill);
+      font-size: 11px; font-weight: 600; color: var(--violet);
+      background: var(--violet-soft); white-space: nowrap;
+    }
+    .badge-ai svg { width: 11px; height: 11px; }
+    .cat-none { color: var(--muted-foreground); }
+    .row-action.action-approve:hover { background: var(--emerald-soft); color: var(--emerald); }
+    .row-action.action-reject:hover { background: var(--rose-soft); color: var(--rose); }
+    tr.selected td { background: var(--accent); }
+
+    .bulk-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .bulk-bar-left { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--foreground); }
+    .bulk-selected-label { font-size: 13px; font-weight: 600; color: var(--primary); }
+    .bulk-actions { display: flex; align-items: center; gap: 8px; }
+
+    /* Filter bar */
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 240px; max-height: 320px; overflow-y: auto; z-index: 20;
+      border-radius: var(--radius-lg); background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
   </style>
 </head>
 <body>
@@ -540,205 +630,720 @@
         </div>
       </div>
 
-      <!-- Color-coded stat cards (no-CTA variant) -->
+      <!-- Lifecycle stat cards -->
       <div class="stat-grid">
-        <div class="stat-card-colored stat-sky">
+        <div class="stat-card-colored stat-sky" data-tab="all" onclick="setTab('all')">
           <div class="stat-card-header">
             <span class="stat-card-title">Total</span>
           </div>
           <div class="stat-card-count">10,360</div>
-          <div class="stat-card-desc">All products in catalog</div>
+          <div class="stat-card-desc">All imported products</div>
         </div>
-        <div class="stat-card-colored stat-violet">
-          <div class="stat-card-header">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></svg>
-            <span class="stat-card-title">Scout AI Categorization</span>
-          </div>
-          <div class="stat-card-count">10,358</div>
-          <div class="stat-card-desc">products sent to AI</div>
-          <div class="stat-pills">
-            <span class="stat-pill"><strong>0</strong> remaining</span>
-            <span class="stat-pill stat-pill-warn"><strong>338</strong> needs review</span>
-          </div>
-        </div>
-        <div class="stat-card-colored stat-orange">
+        <div class="stat-card-colored stat-orange" data-tab="uncategorized" onclick="setTab('uncategorized')">
           <div class="stat-card-header">
             <span class="stat-card-title">Uncategorized</span>
           </div>
           <div class="stat-card-count">338</div>
-          <div class="stat-card-desc">Products to be categorized</div>
+          <div class="stat-card-desc">Awaiting categorization</div>
         </div>
-        <div class="stat-card-colored stat-emerald">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Published</span>
-          </div>
-          <div class="stat-card-count">10,018</div>
-          <div class="stat-card-desc">Live on storefront</div>
-        </div>
-        <div class="stat-card-colored stat-amber">
+        <div class="stat-card-colored stat-amber" data-tab="review" onclick="setTab('review')">
           <div class="stat-card-header">
             <span class="stat-card-title">In Review</span>
           </div>
           <div class="stat-card-count">4</div>
-          <div class="stat-card-desc">Proposed or rejected</div>
+          <div class="stat-card-desc">Awaiting approval</div>
+        </div>
+        <div class="stat-card-colored stat-emerald" data-tab="published" onclick="setTab('published')">
+          <div class="stat-card-header">
+            <span class="stat-card-title">Published</span>
+          </div>
+          <div class="stat-card-count">10,006</div>
+          <div class="stat-card-desc">Live on storefront</div>
+        </div>
+        <div class="stat-card-colored stat-rose" data-tab="rejected" onclick="setTab('rejected')">
+          <div class="stat-card-header">
+            <span class="stat-card-title">Rejected</span>
+          </div>
+          <div class="stat-card-count">12</div>
+          <div class="stat-card-desc">Needs re-categorization</div>
         </div>
       </div>
 
-      <!-- Tab bar — Filter Tabs (wrapping) component -->
+      <!-- Tab bar -->
       <div class="tab-bar">
-        <button class="tab-item active">
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-          All Products <span class="tab-count">99+</span>
+          All Products <span class="tab-count">10,360</span>
         </button>
-        <button class="tab-item">
+        <button class="tab-item" data-tab="uncategorized" onclick="setTab('uncategorized')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
-          Uncategorized <span class="tab-count">99+</span>
+          Uncategorized <span class="tab-count">338</span>
         </button>
-        <button class="tab-item">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z"/></svg>
-          Proposed <span class="tab-count">4</span>
+        <button class="tab-item" data-tab="review" onclick="setTab('review')">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          In Review <span class="tab-count">4</span>
         </button>
-        <button class="tab-item">
+        <button class="tab-item" data-tab="published" onclick="setTab('published')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-          Published <span class="tab-count">99+</span>
+          Published <span class="tab-count">10,006</span>
         </button>
-        <button class="tab-item">
+        <button class="tab-item" data-tab="rejected" onclick="setTab('rejected')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
-          Rejected
+          Rejected <span class="tab-count">12</span>
         </button>
       </div>
 
       <!-- Toolbar -->
       <div class="toolbar">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="filter-chip" id="chip-cat" style="display:none">
+            <span class="filter-chip-attr">Category</span>
+            <span class="filter-chip-value" id="chip-cat-value"></span>
+            <button class="filter-chip-remove" onclick="clearCatFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+              Add filter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div id="menu-root">
+                <div class="dropdown-item" onclick="showFilterMenu('cat')">Category <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+              </div>
+              <div id="menu-cat" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-cat="Mini Blinds - Vinyl" onclick="setCatFilter(this.dataset.cat)">Mini Blinds - Vinyl</div>
+                <div class="dropdown-item" data-cat="Alarms - Smoke Detectors" onclick="setCatFilter(this.dataset.cat)">Alarms - Smoke Detectors</div>
+                <div class="dropdown-item" data-cat="Toilet Tanks &amp; Bowls" onclick="setCatFilter(this.dataset.cat)">Toilet Tanks &amp; Bowls</div>
+                <div class="dropdown-item" data-cat="Copper Pipe &amp; Fittings" onclick="setCatFilter(this.dataset.cat)">Copper Pipe &amp; Fittings</div>
+                <div class="dropdown-item" data-cat="Latches - Door" onclick="setCatFilter(this.dataset.cat)">Latches - Door</div>
+                <div class="dropdown-item" data-cat="HVAC Chemicals" onclick="setCatFilter(this.dataset.cat)">HVAC Chemicals</div>
+                <div class="dropdown-item" data-cat="Angle Stops, Valves &amp; Supplies" onclick="setCatFilter(this.dataset.cat)">Angle Stops, Valves &amp; Supplies</div>
+                <div class="dropdown-item" data-cat="Fuses" onclick="setCatFilter(this.dataset.cat)">Fuses</div>
+                <div class="dropdown-item" data-cat="Garbage Disposals" onclick="setCatFilter(this.dataset.cat)">Garbage Disposals</div>
+                <div class="dropdown-item" data-cat="Water Heaters - Parts" onclick="setCatFilter(this.dataset.cat)">Water Heaters - Parts</div>
+                <div class="dropdown-item" data-cat="Ballasts &amp; Drivers" onclick="setCatFilter(this.dataset.cat)">Ballasts &amp; Drivers</div>
+                <div class="dropdown-item" data-cat="Caulk &amp; Sealants" onclick="setCatFilter(this.dataset.cat)">Caulk &amp; Sealants</div>
+                <div class="dropdown-item" data-cat="Door Closers" onclick="setCatFilter(this.dataset.cat)">Door Closers</div>
+                <div class="dropdown-item" data-cat="Weatherstripping" onclick="setCatFilter(this.dataset.cat)">Weatherstripping</div>
+                <div class="dropdown-item" data-cat="Light Bulbs - LED" onclick="setCatFilter(this.dataset.cat)">Light Bulbs - LED</div>
+                <div class="dropdown-item" data-cat="Faucets - Kitchen" onclick="setCatFilter(this.dataset.cat)">Faucets - Kitchen</div>
+                <div class="dropdown-item" data-cat="Toilet Repair" onclick="setCatFilter(this.dataset.cat)">Toilet Repair</div>
+                <div class="dropdown-item" data-cat="Electrical - Wiring Devices" onclick="setCatFilter(this.dataset.cat)">Electrical - Wiring Devices</div>
+                <div class="dropdown-item" data-cat="Appliance Parts" onclick="setCatFilter(this.dataset.cat)">Appliance Parts</div>
+                <div class="dropdown-item" data-cat="Paint Supplies" onclick="setCatFilter(this.dataset.cat)">Paint Supplies</div>
+              </div>
+            </div>
+          </div>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
+          <span style="font-size:13px;color:var(--muted-foreground)">Showing a sample of the catalog &mdash; counts reflect all 10,360 products.</span>
+        </div>
         <div class="search-wrap">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="search-field" placeholder="Search" />
+          <input class="search-field" id="prod-search" placeholder="Search products" oninput="onFilterChange()" />
         </div>
-        <button class="toolbar-btn-icon" title="Sort">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-        </button>
+      </div>
+
+      <!-- Bulk selection bar -->
+      <div class="bulk-bar">
+        <label class="bulk-bar-left">
+          <input type="checkbox" class="checkbox" id="page-check" onchange="togglePage(this.checked)" />
+          <span id="page-check-label">Select page (50 items)</span>
+          <span class="bulk-selected-label" id="selected-label" style="display:none"></span>
+        </label>
+        <div class="bulk-actions">
+          <span id="bulk-action-btns" style="display:none">
+            <button class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Categorize with AI</button>
+            <button class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export</button>
+          </span>
+          <button class="toolbar-btn toolbar-btn-ghost" id="clear-sel-btn" style="display:none" onclick="clearSelection()">Clear selection</button>
+          <button class="toolbar-btn" onclick="selectAllItems()">Select all loaded</button>
+        </div>
       </div>
 
       <!-- Data table -->
-      <div class="table-card">
+      <div class="table-card" id="view-list">
         <div class="table-scroll">
-        <table>
+        <table id="prod-table">
           <thead>
             <tr>
-              <th style="width:40px"><input type="checkbox" class="checkbox" /></th>
-              <th>Product</th>
-              <th>Category</th>
-              <th>Variants</th>
-              <th>Status</th>
-              <th style="width:48px"></th>
+              <th style="width:40px"><input type="checkbox" class="checkbox" id="head-check" onchange="togglePage(this.checked)" /></th>
+              <th class="sortable" data-col="name" onclick="setSort('name')">Product<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable cat-col" data-col="cat" onclick="setSort('cat')">Category<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable col-price" data-col="price" onclick="setSort('price')">Price<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="status" onclick="setSort('status')">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable col-imported" data-col="imported" onclick="setSort('imported')">Imported<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th style="width:110px"></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">47 × 60 in. Vinyl Cordless Plus Mini Blind</span></div></td>
-              <td><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
-              <td>1</td>
+            <tr data-name="47 × 60 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="3" data-status="published" data-price="41.25" data-imported="2026-04-28">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="47 × 60 in. Vinyl Cordless Plus Mini Blind">47 × 60 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$41.25 &ndash; $63.97</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td class="col-imported">04/28/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">AC/DC Smoke Alarm with 10 Year Sealed Battery</span></div></td>
-              <td><span class="badge-neutral">Alarms - Smoke Detectors</span></td>
-              <td>1</td>
+            <tr data-name="AC/DC Smoke Alarm with 10 Year Sealed Battery" data-cat="Alarms - Smoke Detectors" data-variants="2" data-status="published" data-price="11.950000000000001" data-imported="2026-05-28">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="AC/DC Smoke Alarm with 10 Year Sealed Battery">AC/DC Smoke Alarm with 10 Year Sealed Battery</span><div class="product-meta">2 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Alarms - Smoke Detectors</span></td>
+              <td class="col-price">$11.95 &ndash; $23.13</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td class="col-imported">05/28/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">Calhoun 1.28 gpf Toilet Tank in White</span></div></td>
-              <td><span class="badge-neutral">Toilet Tanks &amp; Bowls</span></td>
-              <td>1</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            <tr data-name="Photoelectric Smoke &amp; CO Combo Alarm" data-cat="Alarms - Smoke Detectors" data-variants="1" data-status="review" data-price="10.25" data-imported="2026-07-15">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Photoelectric Smoke &amp; CO Combo Alarm">Photoelectric Smoke &amp; CO Combo Alarm</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Alarms - Smoke Detectors</span><span class="badge-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Scout AI</span></td>
+              <td class="col-price">$10.25</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-review"></span><span class="status-dot-label">In Review</span></span></td>
+              <td class="col-imported">07/15/2026</td>
+              <td style="width:110px"><button class="row-action action-approve" title="Approve category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><button class="row-action action-reject" title="Reject category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">Figure 5V4976 1 × 1/2 in. Copper Fitting</span></div></td>
-              <td><span class="badge-neutral">Copper Pipe &amp; Fittings</span></td>
-              <td>1</td>
+            <tr data-name="Calhoun 1.28 gpf Toilet Tank in White" data-cat="Toilet Tanks &amp; Bowls" data-variants="2" data-status="published" data-price="7.8500000000000005" data-imported="2026-04-17">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Calhoun 1.28 gpf Toilet Tank in White">Calhoun 1.28 gpf Toilet Tank in White</span><div class="product-meta">2 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Toilet Tanks & Bowls</span></td>
+              <td class="col-price">$7.85 &ndash; $14.39</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td class="col-imported">04/17/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">Passage Knob in Polished Brass</span></div></td>
-              <td><span class="badge-neutral">Latches - Door</span></td>
-              <td>1</td>
+            <tr data-name="Cadet 3 Elongated Toilet Bowl" data-cat="Toilet Tanks &amp; Bowls" data-variants="1" data-status="published" data-price="14.05" data-imported="2026-07-19">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Cadet 3 Elongated Toilet Bowl">Cadet 3 Elongated Toilet Bowl</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Toilet Tanks & Bowls</span></td>
+              <td class="col-price">$14.05</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td class="col-imported">07/19/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">Pro-Flush™ Line Set Flush Kit</span></div></td>
-              <td><span class="badge-neutral">HVAC Chemicals</span></td>
-              <td>1</td>
+            <tr data-name="Figure 5V4976 1 × 1/2 in. Copper Fitting" data-cat="Copper Pipe &amp; Fittings" data-variants="3" data-status="published" data-price="99.85000000000001" data-imported="2026-02-06">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Figure 5V4976 1 × 1/2 in. Copper Fitting">Figure 5V4976 1 × 1/2 in. Copper Fitting</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Copper Pipe & Fittings</span></td>
+              <td class="col-price">$99.85 &ndash; $152.15</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td class="col-imported">02/06/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">Regal™ V-500-AA 3/4 in. x 9 in. Valve</span></div></td>
-              <td><span class="badge-neutral">Angle Stops, Valves &amp; Supplies</span></td>
-              <td>1</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            <tr data-name="3/4 in. Copper Coupling (Bag of 10)" data-cat="Copper Pipe &amp; Fittings" data-variants="1" data-status="review" data-price="76.60000000000001" data-imported="2026-07-17">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="3/4 in. Copper Coupling (Bag of 10)">3/4 in. Copper Coupling (Bag of 10)</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Copper Pipe & Fittings</span><span class="badge-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Scout AI</span></td>
+              <td class="col-price">$76.60</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-review"></span><span class="status-dot-label">In Review</span></span></td>
+              <td class="col-imported">07/17/2026</td>
+              <td style="width:110px"><button class="row-action action-approve" title="Approve category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><button class="row-action action-reject" title="Reject category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">SL Series 15A Time Delay Plug Fuse</span></div></td>
-              <td><span class="badge-neutral">Fuses</span></td>
-              <td>1</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            <tr data-name="Passage Knob in Polished Brass" data-cat="Latches - Door" data-variants="1" data-status="rejected" data-price="71.7" data-imported="2026-04-21">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Passage Knob in Polished Brass">Passage Knob in Polished Brass</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Latches - Door</span></td>
+              <td class="col-price">$71.70</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-rejected"></span><span class="status-dot-label">Rejected</span></span></td>
+              <td class="col-imported">04/21/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">Stainless Steel Quick Lock Mounting Kit</span></div></td>
-              <td><span class="badge-neutral">Garbage Disposals</span></td>
-              <td>1</td>
+            <tr data-name="Privacy Lever in Satin Nickel" data-cat="Latches - Door" data-variants="3" data-status="published" data-price="8.950000000000001" data-imported="2026-05-26">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Privacy Lever in Satin Nickel">Privacy Lever in Satin Nickel</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Latches - Door</span></td>
+              <td class="col-price">$8.95 &ndash; $20.21</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td class="col-imported">05/26/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td><input type="checkbox" class="checkbox" /></td>
-              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><span class="product-name">White Universal Tank Lever</span></div></td>
-              <td><span class="badge-neutral">Toilet Parts</span></td>
-              <td>1</td>
+            <tr data-name="Pro-Flush™ Line Set Flush Kit" data-cat="HVAC Chemicals" data-variants="1" data-status="published" data-price="20.3" data-imported="2026-02-04">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Pro-Flush™ Line Set Flush Kit">Pro-Flush™ Line Set Flush Kit</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">HVAC Chemicals</span></td>
+              <td class="col-price">$20.30</td>
               <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
-              <td><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+              <td class="col-imported">02/04/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Coil Cleaner Concentrate 1 gal." data-cat="HVAC Chemicals" data-variants="1" data-status="published" data-price="39.45" data-imported="2026-04-10">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Coil Cleaner Concentrate 1 gal.">Coil Cleaner Concentrate 1 gal.</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">HVAC Chemicals</span></td>
+              <td class="col-price">$39.45</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/10/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Regal™ V-500-AA 3/4 in. x 9 in. Valve" data-cat="Angle Stops, Valves &amp; Supplies" data-variants="1" data-status="published" data-price="24.55" data-imported="2026-02-03">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Regal™ V-500-AA 3/4 in. x 9 in. Valve">Regal™ V-500-AA 3/4 in. x 9 in. Valve</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Angle Stops, Valves & Supplies</span></td>
+              <td class="col-price">$24.55</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">02/03/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="1/4-Turn Angle Stop 5/8 × 3/8 in." data-cat="Angle Stops, Valves &amp; Supplies" data-variants="1" data-status="published" data-price="77.95" data-imported="2026-05-26">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="1/4-Turn Angle Stop 5/8 × 3/8 in.">1/4-Turn Angle Stop 5/8 × 3/8 in.</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Angle Stops, Valves & Supplies</span></td>
+              <td class="col-price">$77.95</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">05/26/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="SL Series 15A Time Delay Plug Fuse" data-cat="" data-variants="1" data-status="uncategorized" data-price="67.3" data-imported="2025-11-20">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="SL Series 15A Time Delay Plug Fuse">SL Series 15A Time Delay Plug Fuse</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$67.30</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">11/20/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Class RK5 Cartridge Fuse 30A" data-cat="Fuses" data-variants="1" data-status="published" data-price="10.450000000000001" data-imported="2026-04-15">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Class RK5 Cartridge Fuse 30A">Class RK5 Cartridge Fuse 30A</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Fuses</span></td>
+              <td class="col-price">$10.45</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/15/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Stainless Steel Quick Lock Mounting Kit" data-cat="" data-variants="1" data-status="uncategorized" data-price="82.75" data-imported="2025-12-20">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Stainless Steel Quick Lock Mounting Kit">Stainless Steel Quick Lock Mounting Kit</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$82.75</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">12/20/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="1/2 HP Continuous Feed Disposal" data-cat="Garbage Disposals" data-variants="1" data-status="published" data-price="40.1" data-imported="2026-01-27">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="1/2 HP Continuous Feed Disposal">1/2 HP Continuous Feed Disposal</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Garbage Disposals</span></td>
+              <td class="col-price">$40.10</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">01/27/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Universal Thermocouple 24 in." data-cat="Water Heaters - Parts" data-variants="3" data-status="published" data-price="45.6" data-imported="2026-05-03">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Universal Thermocouple 24 in.">Universal Thermocouple 24 in.</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Water Heaters - Parts</span></td>
+              <td class="col-price">$45.60 &ndash; $75.17</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">05/03/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="T&amp;P Relief Valve 3/4 in." data-cat="" data-variants="1" data-status="uncategorized" data-price="94.35000000000001" data-imported="2025-11-02">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="T&amp;P Relief Valve 3/4 in.">T&amp;P Relief Valve 3/4 in.</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$94.35</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">11/02/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="2-Lamp T8 Electronic Ballast" data-cat="Ballasts &amp; Drivers" data-variants="1" data-status="published" data-price="38.5" data-imported="2026-02-08">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="2-Lamp T8 Electronic Ballast">2-Lamp T8 Electronic Ballast</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Ballasts & Drivers</span></td>
+              <td class="col-price">$38.50</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">02/08/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="LED Driver 24V 60W" data-cat="Ballasts &amp; Drivers" data-variants="1" data-status="published" data-price="88.5" data-imported="2026-05-01">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="LED Driver 24V 60W">LED Driver 24V 60W</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Ballasts & Drivers</span></td>
+              <td class="col-price">$88.50</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">05/01/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Silicone Sealant Clear 10.1 oz." data-cat="Caulk &amp; Sealants" data-variants="1" data-status="published" data-price="117.7" data-imported="2026-07-15">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Silicone Sealant Clear 10.1 oz.">Silicone Sealant Clear 10.1 oz.</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Caulk & Sealants</span></td>
+              <td class="col-price">$117.70</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">07/15/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Painter’s Acrylic Caulk White" data-cat="Caulk &amp; Sealants" data-variants="1" data-status="rejected" data-price="52.2" data-imported="2026-03-15">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Painter’s Acrylic Caulk White">Painter’s Acrylic Caulk White</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Caulk & Sealants</span></td>
+              <td class="col-price">$52.20</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-rejected"></span><span class="status-dot-label">Rejected</span></span></td>
+              <td class="col-imported">03/15/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Grade 1 Surface Door Closer" data-cat="Door Closers" data-variants="3" data-status="published" data-price="21.200000000000003" data-imported="2026-05-27">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Grade 1 Surface Door Closer">Grade 1 Surface Door Closer</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Door Closers</span></td>
+              <td class="col-price">$21.20 &ndash; $40.05</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">05/27/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Spring Hinge 4 in. Satin Chrome" data-cat="Door Closers" data-variants="1" data-status="published" data-price="12.55" data-imported="2026-02-17">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Spring Hinge 4 in. Satin Chrome">Spring Hinge 4 in. Satin Chrome</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Door Closers</span></td>
+              <td class="col-price">$12.55</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">02/17/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Door Sweep 36 in. Aluminum" data-cat="Weatherstripping" data-variants="3" data-status="published" data-price="95.45" data-imported="2026-02-21">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Door Sweep 36 in. Aluminum">Door Sweep 36 in. Aluminum</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Weatherstripping</span></td>
+              <td class="col-price">$95.45 &ndash; $211.74</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">02/21/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="V-Seal Weatherstrip 17 ft." data-cat="Weatherstripping" data-variants="3" data-status="published" data-price="44.300000000000004" data-imported="2026-03-16">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="V-Seal Weatherstrip 17 ft.">V-Seal Weatherstrip 17 ft.</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Weatherstripping</span></td>
+              <td class="col-price">$44.30 &ndash; $84.02</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">03/16/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="A19 LED Bulb 60W Equivalent (4-Pack)" data-cat="" data-variants="3" data-status="uncategorized" data-price="11.5" data-imported="2025-11-22">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="A19 LED Bulb 60W Equivalent (4-Pack)">A19 LED Bulb 60W Equivalent (4-Pack)</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$11.50 &ndash; $17.18</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">11/22/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="PAR38 Flood LED 90W Equivalent" data-cat="Light Bulbs - LED" data-variants="1" data-status="published" data-price="84.7" data-imported="2026-01-15">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="PAR38 Flood LED 90W Equivalent">PAR38 Flood LED 90W Equivalent</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Light Bulbs - LED</span></td>
+              <td class="col-price">$84.70</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">01/15/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Single-Handle Kitchen Faucet Chrome" data-cat="Faucets - Kitchen" data-variants="2" data-status="review" data-price="88.7" data-imported="2026-06-09">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Single-Handle Kitchen Faucet Chrome">Single-Handle Kitchen Faucet Chrome</span><div class="product-meta">2 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Faucets - Kitchen</span><span class="badge-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Scout AI</span></td>
+              <td class="col-price">$88.70 &ndash; $151.64</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-review"></span><span class="status-dot-label">In Review</span></span></td>
+              <td class="col-imported">06/09/2026</td>
+              <td style="width:110px"><button class="row-action action-approve" title="Approve category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><button class="row-action action-reject" title="Reject category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Pull-Down Sprayer Faucet Stainless" data-cat="Faucets - Kitchen" data-variants="3" data-status="published" data-price="99.25" data-imported="2026-04-18">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Pull-Down Sprayer Faucet Stainless">Pull-Down Sprayer Faucet Stainless</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Faucets - Kitchen</span></td>
+              <td class="col-price">$99.25 &ndash; $167.20</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/18/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Fill Valve &amp; Flapper Repair Kit" data-cat="Toilet Repair" data-variants="1" data-status="published" data-price="43.95" data-imported="2026-07-03">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Fill Valve &amp; Flapper Repair Kit">Fill Valve &amp; Flapper Repair Kit</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Toilet Repair</span></td>
+              <td class="col-price">$43.95</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">07/03/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Wax Ring with Flange Bolts" data-cat="Toilet Repair" data-variants="2" data-status="published" data-price="23.1" data-imported="2026-06-09">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Wax Ring with Flange Bolts">Wax Ring with Flange Bolts</span><div class="product-meta">2 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Toilet Repair</span></td>
+              <td class="col-price">$23.10 &ndash; $35.04</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">06/09/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Duplex Receptacle 15A White (10-Pack)" data-cat="Electrical - Wiring Devices" data-variants="3" data-status="published" data-price="93.0" data-imported="2026-03-25">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Duplex Receptacle 15A White (10-Pack)">Duplex Receptacle 15A White (10-Pack)</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Electrical - Wiring Devices</span></td>
+              <td class="col-price">$93.00 &ndash; $142.23</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">03/25/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Decorator Rocker Switch 3-Way" data-cat="" data-variants="1" data-status="uncategorized" data-price="49.050000000000004" data-imported="2025-12-17">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Decorator Rocker Switch 3-Way">Decorator Rocker Switch 3-Way</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$49.05</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">12/17/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Dryer Vent Kit 4 in. × 8 ft." data-cat="Appliance Parts" data-variants="1" data-status="published" data-price="22.900000000000002" data-imported="2026-03-01">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Dryer Vent Kit 4 in. × 8 ft.">Dryer Vent Kit 4 in. × 8 ft.</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Appliance Parts</span></td>
+              <td class="col-price">$22.90</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">03/01/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Range Drip Pan Set Chrome" data-cat="Appliance Parts" data-variants="1" data-status="published" data-price="35.85" data-imported="2026-01-19">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Range Drip Pan Set Chrome">Range Drip Pan Set Chrome</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Appliance Parts</span></td>
+              <td class="col-price">$35.85</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">01/19/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="9 in. Roller Cover 3/8 nap (6-Pack)" data-cat="Paint Supplies" data-variants="1" data-status="published" data-price="53.650000000000006" data-imported="2026-07-04">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="9 in. Roller Cover 3/8 nap (6-Pack)">9 in. Roller Cover 3/8 nap (6-Pack)</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Paint Supplies</span></td>
+              <td class="col-price">$53.65</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">07/04/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="2 in. Angled Sash Brush" data-cat="Paint Supplies" data-variants="1" data-status="published" data-price="85.80000000000001" data-imported="2026-04-04">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="2 in. Angled Sash Brush">2 in. Angled Sash Brush</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Paint Supplies</span></td>
+              <td class="col-price">$85.80</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/04/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="23 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="3" data-status="review" data-price="106.5" data-imported="2026-07-10">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="23 × 64 in. Vinyl Cordless Plus Mini Blind">23 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span><span class="badge-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Scout AI</span></td>
+              <td class="col-price">$106.50 &ndash; $251.10</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-review"></span><span class="status-dot-label">In Review</span></span></td>
+              <td class="col-imported">07/10/2026</td>
+              <td style="width:110px"><button class="row-action action-approve" title="Approve category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><button class="row-action action-reject" title="Reject category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="29 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="3" data-status="published" data-price="24.05" data-imported="2026-04-03">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="29 × 64 in. Vinyl Cordless Plus Mini Blind">29 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$24.05 &ndash; $39.25</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/03/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="35 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="" data-variants="2" data-status="uncategorized" data-price="60.0" data-imported="2025-11-28">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="35 × 64 in. Vinyl Cordless Plus Mini Blind">35 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">2 variants</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$60.00 &ndash; $119.35</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">11/28/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="39 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="rejected" data-price="4.0" data-imported="2026-06-01">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="39 × 64 in. Vinyl Cordless Plus Mini Blind">39 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$4.00</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-rejected"></span><span class="status-dot-label">Rejected</span></span></td>
+              <td class="col-imported">06/01/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="43 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="3" data-status="published" data-price="46.5" data-imported="2026-02-07">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="43 × 64 in. Vinyl Cordless Plus Mini Blind">43 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$46.50 &ndash; $91.43</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">02/07/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="47 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="published" data-price="103.60000000000001" data-imported="2026-01-16">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="47 × 64 in. Vinyl Cordless Plus Mini Blind">47 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$103.60</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">01/16/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="52 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="published" data-price="82.30000000000001" data-imported="2026-04-23">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="52 × 64 in. Vinyl Cordless Plus Mini Blind">52 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$82.30</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/23/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="58 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="published" data-price="108.30000000000001" data-imported="2026-04-14">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="58 × 64 in. Vinyl Cordless Plus Mini Blind">58 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$108.30</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/14/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="64 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="published" data-price="82.80000000000001" data-imported="2026-01-19">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="64 × 64 in. Vinyl Cordless Plus Mini Blind">64 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$82.80</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">01/19/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="70 × 64 in. Vinyl Cordless Plus Mini Blind" data-cat="" data-variants="1" data-status="uncategorized" data-price="49.900000000000006" data-imported="2025-12-25">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="70 × 64 in. Vinyl Cordless Plus Mini Blind">70 × 64 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$49.90</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">12/25/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="27 × 60 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="published" data-price="59.6" data-imported="2026-06-09">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="27 × 60 in. Vinyl Cordless Plus Mini Blind">27 × 60 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$59.60</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">06/09/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="31 × 60 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="published" data-price="25.700000000000003" data-imported="2026-03-03">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="31 × 60 in. Vinyl Cordless Plus Mini Blind">31 × 60 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$25.70</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">03/03/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="33 × 60 in. Vinyl Cordless Plus Mini Blind" data-cat="Mini Blinds - Vinyl" data-variants="1" data-status="rejected" data-price="22.400000000000002" data-imported="2026-03-11">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="33 × 60 in. Vinyl Cordless Plus Mini Blind">33 × 60 in. Vinyl Cordless Plus Mini Blind</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Mini Blinds - Vinyl</span></td>
+              <td class="col-price">$22.40</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-rejected"></span><span class="status-dot-label">Rejected</span></span></td>
+              <td class="col-imported">03/11/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Keyed Entry Knob in Antique Brass" data-cat="Latches - Door" data-variants="1" data-status="published" data-price="9.65" data-imported="2026-01-14">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Keyed Entry Knob in Antique Brass">Keyed Entry Knob in Antique Brass</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Latches - Door</span></td>
+              <td class="col-price">$9.65</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">01/14/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Deadbolt Single Cylinder Satin Nickel" data-cat="Latches - Door" data-variants="2" data-status="published" data-price="21.1" data-imported="2026-07-04">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Deadbolt Single Cylinder Satin Nickel">Deadbolt Single Cylinder Satin Nickel</span><div class="product-meta">2 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Latches - Door</span></td>
+              <td class="col-price">$21.10 &ndash; $31.68</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">07/04/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="1/2 in. PEX Crimp Ring (Bag of 25)" data-cat="Copper Pipe &amp; Fittings" data-variants="3" data-status="published" data-price="6.45" data-imported="2026-02-08">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="1/2 in. PEX Crimp Ring (Bag of 25)">1/2 in. PEX Crimp Ring (Bag of 25)</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Copper Pipe & Fittings</span></td>
+              <td class="col-price">$6.45 &ndash; $14.67</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">02/08/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Compression Union 5/8 in." data-cat="Angle Stops, Valves &amp; Supplies" data-variants="1" data-status="published" data-price="20.8" data-imported="2026-06-04">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Compression Union 5/8 in.">Compression Union 5/8 in.</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Angle Stops, Valves & Supplies</span></td>
+              <td class="col-price">$20.80</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">06/04/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="CO Alarm Plug-In with Battery Backup" data-cat="" data-variants="1" data-status="uncategorized" data-price="73.65" data-imported="2025-11-02">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="CO Alarm Plug-In with Battery Backup">CO Alarm Plug-In with Battery Backup</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="cat-none">&mdash;</span></td>
+              <td class="col-price">$73.65</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Uncategorized</span></span></td>
+              <td class="col-imported">11/02/2025</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="Toilet Seat Elongated Slow-Close White" data-cat="Toilet Repair" data-variants="3" data-status="published" data-price="16.95" data-imported="2026-04-26">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="Toilet Seat Elongated Slow-Close White">Toilet Seat Elongated Slow-Close White</span><div class="product-meta">3 variants</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Toilet Repair</span></td>
+              <td class="col-price">$16.95 &ndash; $32.00</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/26/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="GFCI Receptacle 20A Ivory" data-cat="Electrical - Wiring Devices" data-variants="1" data-status="published" data-price="59.85" data-imported="2026-04-06">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="GFCI Receptacle 20A Ivory">GFCI Receptacle 20A Ivory</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Electrical - Wiring Devices</span></td>
+              <td class="col-price">$59.85</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">04/06/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-name="BR30 LED Bulb 65W Equivalent (6-Pack)" data-cat="Light Bulbs - LED" data-variants="1" data-status="published" data-price="15.4" data-imported="2026-06-18">
+              <td><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td><div class="product-cell"><div class="product-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div><span class="product-name" title="BR30 LED Bulb 65W Equivalent (6-Pack)">BR30 LED Bulb 65W Equivalent (6-Pack)</span><div class="product-meta">1 variant</div></div></div></td>
+              <td class="cat-col"><span class="badge-neutral">Light Bulbs - LED</span></td>
+              <td class="col-price">$15.40</td>
+              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Published</span></span></td>
+              <td class="col-imported">06/18/2026</td>
+              <td style="width:110px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
           </tbody>
         </table>
         </div>
         <div class="pagination">
-          <span class="pagination-info">Page 1 of 1,036</span>
+          <span class="pagination-info" id="page-info">Page 1 of 2</span>
           <div class="pagination-controls">
             <div class="pagination-rows">
               <span>Rows per page</span>
-              <select class="pagination-rows-select">
-                <option>10</option>
-                <option>25</option>
+              <select class="pagination-rows-select" id="rows-select" onchange="setPageSize(this.value)">
                 <option>50</option>
+                <option>100</option>
               </select>
             </div>
             <div class="pagination-buttons">
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-first" onclick="setPage(1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4L5 8l4 4"/><path d="M12 4L8 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-prev" onclick="setPage(page - 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-next" onclick="setPage(page + 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-last" onclick="setPage(totalPages())">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4"/><path d="M7 4l4 4-4 4"/></svg>
               </button>
             </div>
@@ -746,14 +1351,172 @@
         </div>
       </div>
 
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-state-title">No products found</div>
+        <div class="empty-state-desc">No loaded products match your current search and filters. Try adjusting or clearing them.</div>
+        <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
+      </div>
+
     </div>
   </div>
 
   <script>
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m7 14.5 5-5 5 5"/>',
+      desc: '<path d="m7 9.5 5 5 5-5"/>'
+    };
+    let activeTab = 'all';
+    let catFilter = null;
+    let sortState = { col: 'name', dir: 'asc' };
+    let page = 1;
+    let pageSize = 50;
+    let visible = [];
+    const selected = new Set();
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-bar .tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      document.querySelectorAll('.stat-card-colored[data-tab]').forEach(c => c.classList.toggle('active', c.dataset.tab === tab));
+      onFilterChange();
+    }
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      if (opening) showFilterMenu('root');
+    }
+    function showFilterMenu(which) {
+      ['root', 'cat'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+    function setCatFilter(v) {
+      catFilter = v;
+      document.getElementById('chip-cat-value').textContent = v;
+      document.getElementById('chip-cat').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#menu-cat .dropdown-item[data-cat]').forEach(i => {
+        i.classList.toggle('selected', i.dataset.cat === v);
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      onFilterChange();
+    }
+    function clearCatFilter() {
+      catFilter = null;
+      document.getElementById('chip-cat').style.display = 'none';
+      document.getElementById('filter-clear').style.display = 'none';
+      document.querySelectorAll('#menu-cat .dropdown-item[data-cat]').forEach(i => i.classList.remove('selected'));
+      onFilterChange();
+    }
+    function clearFilters() {
+      document.getElementById('prod-search').value = '';
+      clearCatFilter();
+      setTab('all');
+    }
+    function clearSelection() {
+      selected.clear();
+      syncSelectionUI();
+    }
+
+    function rowsAll() { return [...document.querySelectorAll('#prod-table tbody tr')]; }
+    function matches(r, q) {
+      const tabOk = activeTab === 'all' || r.dataset.status === activeTab;
+      const searchOk = !q || (r.dataset.name + ' ' + r.dataset.cat).toLowerCase().includes(q);
+      const catOk = catFilter === null || r.dataset.cat === catFilter;
+      return tabOk && searchOk && catOk;
+    }
+    function cmp(a, b) {
+      let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+      if (sortState.col === 'variants' || sortState.col === 'price') { av = +av; bv = +bv; }
+      else { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+      const c = av < bv ? -1 : av > bv ? 1 : 0;
+      return sortState.dir === 'asc' ? c : -c;
+    }
+    function setSort(col) {
+      if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      else sortState = { col, dir: ['variants','price','imported'].includes(col) ? 'desc' : 'asc' };
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) { th.classList.add('sorted'); icon.innerHTML = ARROWS[sortState.dir]; }
+        else { th.classList.remove('sorted'); icon.innerHTML = ARROWS.neutral; }
+      });
+      onFilterChange();
+    }
+    function totalPages() { return Math.max(1, Math.ceil(visible.length / pageSize)); }
+    function setPage(p) { page = Math.min(Math.max(1, p), totalPages()); render(); }
+    function setPageSize(n) { pageSize = +n; page = 1; render(); }
+    function onFilterChange() { page = 1; render(); }
+
+    function render() {
+      const q = document.getElementById('prod-search').value.toLowerCase();
+      visible = rowsAll().filter(r => matches(r, q)).sort(cmp);
+      const tbody = document.querySelector('#prod-table tbody');
+      visible.forEach(r => tbody.appendChild(r));
+      rowsAll().forEach(r => r.style.display = 'none');
+      const start = (page - 1) * pageSize;
+      const pageRows = visible.slice(start, start + pageSize);
+      pageRows.forEach(r => r.style.display = '');
+      const any = visible.length > 0;
+      document.getElementById('view-list').style.display = any ? '' : 'none';
+      document.getElementById('empty-state').style.display = any ? 'none' : '';
+      document.querySelector('.bulk-bar').style.display = any ? '' : 'none';
+      document.getElementById('page-info').textContent = 'Page ' + page + ' of ' + totalPages();
+      document.getElementById('pg-first').disabled = page <= 1;
+      document.getElementById('pg-prev').disabled = page <= 1;
+      document.getElementById('pg-next').disabled = page >= totalPages();
+      document.getElementById('pg-last').disabled = page >= totalPages();
+      document.getElementById('page-check-label').textContent = 'Select page (' + pageRows.length + ' item' + (pageRows.length !== 1 ? 's' : '') + ')';
+      syncSelectionUI();
+    }
+
+    function itemKey(r) { return r.dataset.name; }
+    function syncSelectionUI() {
+      rowsAll().forEach(r => {
+        const sel = selected.has(itemKey(r));
+        r.classList.toggle('selected', sel);
+        const cb = r.querySelector('.checkbox');
+        if (cb) cb.checked = sel;
+      });
+      const n = selected.size;
+      document.getElementById('selected-label').style.display = n ? '' : 'none';
+      document.getElementById('selected-label').textContent = n ? n + ' selected' : '';
+      document.getElementById('bulk-action-btns').style.display = n ? '' : 'none';
+      document.getElementById('clear-sel-btn').style.display = n ? '' : 'none';
+      const pageRows = visible.slice((page - 1) * pageSize, page * pageSize);
+      const allPage = pageRows.length > 0 && pageRows.every(r => selected.has(itemKey(r)));
+      document.getElementById('page-check').checked = allPage;
+      document.getElementById('head-check').checked = allPage;
+    }
+    function toggleItem(cb) {
+      const r = cb.closest('tr');
+      if (cb.checked) selected.add(itemKey(r)); else selected.delete(itemKey(r));
+      syncSelectionUI();
+    }
+    function togglePage(on) {
+      visible.slice((page - 1) * pageSize, page * pageSize).forEach(r => {
+        if (on) selected.add(itemKey(r)); else selected.delete(itemKey(r));
+      });
+      syncSelectionUI();
+    }
+    function selectAllItems() {
+      rowsAll().forEach(r => selected.add(itemKey(r)));
+      syncSelectionUI();
+    }
+
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    document.querySelector('.stat-card-colored[data-tab="all"]').classList.add('active');
+    document.querySelector('th[data-col="name"]').classList.add('sorted');
+    document.querySelector('th[data-col="name"] .sort-icon').innerHTML = ARROWS.asc;
+    render();
   </script>
 </body>
 </html>

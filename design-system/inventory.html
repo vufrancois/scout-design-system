@@ -193,8 +193,8 @@
 
     /* Toolbar: search + filter tabs + top pagination */
     .toolbar {
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
     }
     .search-wrap {
       position: relative; display: flex; align-items: center; width: 240px;
@@ -354,6 +354,83 @@
     }
     .grid-card-footer .item-price { min-width: 0; text-align: left; }
     .grid-card-actions { display: flex; gap: 2px; }
+
+    .item-card.stock-low::before, .grid-card.stock-low::before { background: var(--amber); }
+    .badge-stock-low { background: var(--amber-soft); color: #92400e; }
+    .badge-neutral {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: var(--radius-pill);
+      font-size: 12px; font-weight: 500; color: var(--muted-foreground);
+      background: var(--muted); border: 1px solid var(--border); white-space: nowrap;
+    }
+    .item-card.selected, .grid-card.selected { border-color: var(--primary); background: var(--accent); }
+    .tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: var(--radius-pill); font-size: 11px; font-weight: 600;
+      background: rgba(0,0,0,0.08); color: var(--muted-foreground);
+    }
+    .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
+    .icon-amber { color: var(--amber) !important; }
+
+    /* Filter bar */
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 200px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+    .bulk-selected-label { font-size: 13px; font-weight: 600; color: var(--primary); }
+    .bulk-actions { display: flex; align-items: center; gap: 8px; }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -488,7 +565,7 @@
           </div>
           <div class="page-header-text">
             <h1>Inventory</h1>
-            <p>10,360 items</p>
+            <p>Track stock levels across your catalog and locations.</p>
           </div>
         </div>
         <div class="page-header-actions">
@@ -511,32 +588,84 @@
         </div>
       </div>
 
-      <!-- Toolbar: search + stock filter tabs + top pagination -->
+      <!-- Filter tabs -->
+      <div class="tab-bar" style="margin-bottom:16px">
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">All Stock <span class="tab-count">26</span></button>
+        <button class="tab-item" data-tab="in" onclick="setTab('in')">
+          <svg class="tab-icon icon-emerald" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+          In Stock <span class="tab-count">19</span>
+        </button>
+        <button class="tab-item" data-tab="low" onclick="setTab('low')">
+          <svg class="tab-icon icon-amber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          Low Stock <span class="tab-count">4</span>
+        </button>
+        <button class="tab-item" data-tab="out" onclick="setTab('out')">
+          <svg class="tab-icon icon-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+          Out of Stock <span class="tab-count">3</span>
+        </button>
+      </div>
+
+      <!-- Toolbar -->
       <div class="toolbar">
-        <div class="search-wrap">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input class="search-field" placeholder="Search inventory..." />
-        </div>
-        <div class="tab-bar">
-          <button class="tab-item active">All Stock</button>
-          <button class="tab-item">
-            <svg class="tab-icon icon-emerald" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-            In Stock
-          </button>
-          <button class="tab-item">
-            <svg class="tab-icon icon-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
-            Out of Stock
-          </button>
-        </div>
-        <div class="toolbar-pagination">
-          <span>Page 1 of 864</span>
-          <div class="pagination-buttons">
-            <button class="pagination-btn" disabled>
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="filter-chip" id="chip-loc" style="display:none">
+            <span class="filter-chip-attr">Location</span>
+            <span class="filter-chip-value" id="chip-loc-value"></span>
+            <button class="filter-chip-remove" onclick="clearLocFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
-            <button class="pagination-btn">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+          </span>
+          <span class="filter-chip" id="chip-cat" style="display:none">
+            <span class="filter-chip-attr">Category</span>
+            <span class="filter-chip-value" id="chip-cat-value"></span>
+            <button class="filter-chip-remove" onclick="clearCatFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
+          </span>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+              Add filter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div id="menu-root">
+                <div class="dropdown-item" onclick="showFilterMenu('cat')">Category <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+                <div class="dropdown-item" onclick="showFilterMenu('loc')">Location <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+              </div>
+              <div id="menu-cat" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-cat="Pins" onclick="setCatFilter('Pins')">Pins</div>
+                <div class="dropdown-item" data-cat="Locks" onclick="setCatFilter('Locks')">Locks</div>
+                <div class="dropdown-item" data-cat="Tools" onclick="setCatFilter('Tools')">Tools</div>
+                <div class="dropdown-item" data-cat="Accessories" onclick="setCatFilter('Accessories')">Accessories</div>
+              </div>
+              <div id="menu-loc" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-loc="Baton Rouge Warehouse" onclick="setLocFilter('Baton Rouge Warehouse')">Baton Rouge Warehouse</div>
+                <div class="dropdown-item" data-loc="Houston Depot" onclick="setLocFilter('Houston Depot')">Houston Depot</div>
+                <div class="dropdown-item" data-loc="New Orleans Hub" onclick="setLocFilter('New Orleans Hub')">New Orleans Hub</div>
+                <div class="dropdown-item" data-loc="Dallas Storefront" onclick="setLocFilter('Dallas Storefront')">Dallas Storefront</div>
+              </div>
+            </div>
+          </div>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input class="search-field" id="inv-search" placeholder="Search name or SKU..." oninput="onFilterChange()" />
+          </div>
+          <div class="toolbar-pagination">
+            <span id="page-info">Page 1 of 3</span>
+            <div class="pagination-buttons">
+              <button class="pagination-btn" id="pg-prev" onclick="setPage(page - 1)">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
+              </button>
+              <button class="pagination-btn" id="pg-next" onclick="setPage(page + 1)">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -544,160 +673,481 @@
       <!-- Bulk selection bar -->
       <div class="bulk-bar">
         <label class="bulk-bar-left">
-          <input type="checkbox" class="checkbox" />
-          Select page (12 items)
+          <input type="checkbox" class="checkbox" id="page-check" onchange="togglePage(this.checked)" />
+          <span id="page-check-label">Select page (12 items)</span>
+          <span class="bulk-selected-label" id="selected-label" style="display:none"></span>
         </label>
-        <button class="toolbar-btn">Select all 10,360 items</button>
+        <div class="bulk-actions">
+          <span id="bulk-action-btns" style="display:none">
+            <button class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export</button>
+            <button class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Update stock</button>
+          </span>
+          <button class="toolbar-btn" id="select-all-btn" onclick="selectAllItems()">Select all 26 items</button>
+        </div>
       </div>
 
       <!-- Inventory item cards -->
       <div class="item-list" id="view-list">
 
-        <div class="item-card stock-in">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="7506817-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="#1 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="2148" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
               <div class="item-name">#1 Bottom Pin (Pack of 100)</div>
               <div class="item-sku"><span>SKU:</span>7506817-d6qq</div>
             </div>
             <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
               <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>2,148</span>
+              <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>2,148 in stock</span>
             </div>
             <div class="item-price">$8.44</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
-        <div class="item-card stock-in">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="7506806-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="#1 Master Pin (Pack of 100)" data-cat="Pins" data-qty="2507" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
               <div class="item-name">#1 Master Pin (Pack of 100)</div>
               <div class="item-sku"><span>SKU:</span>7506806-d6qq</div>
             </div>
             <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
               <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>2,507</span>
+              <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>2,507 in stock</span>
             </div>
             <div class="item-price">$8.44</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
-        <div class="item-card stock-in">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="7506810-d6qq" data-locations="New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="#2 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="1436" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
               <div class="item-name">#2 Bottom Pin (Pack of 100)</div>
               <div class="item-sku"><span>SKU:</span>7506810-d6qq</div>
             </div>
             <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
               <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>1,436</span>
+              <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,436 in stock</span>
             </div>
             <div class="item-price">$8.44</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
-        <div class="item-card stock-in">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="7506809-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="#2 Master Pin (Pack of 100)" data-cat="Pins" data-qty="1966" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
               <div class="item-name">#2 Master Pin (Pack of 100)</div>
               <div class="item-sku"><span>SKU:</span>7506809-d6qq</div>
             </div>
             <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
               <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>1,966</span>
+              <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,966 in stock</span>
             </div>
             <div class="item-price">$8.44</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
-        <div class="item-card stock-in">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="7506811-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="#3 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="998" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
-              <div class="item-name">#24 Cotton Cut-end Mop Head in White (Pack of 3)</div>
+              <div class="item-name">#3 Bottom Pin (Pack of 100)</div>
+              <div class="item-sku"><span>SKU:</span>7506811-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>998 in stock</span>
+            </div>
+            <div class="item-price">$8.44</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="7506812-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="#3 Master Pin (Pack of 100)" data-cat="Pins" data-qty="1204" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">#3 Master Pin (Pack of 100)</div>
+              <div class="item-sku"><span>SKU:</span>7506812-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,204 in stock</span>
+            </div>
+            <div class="item-price">$8.44</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="7506813-d6qq" data-locations="New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="#4 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="640" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">#4 Bottom Pin (Pack of 100)</div>
+              <div class="item-sku"><span>SKU:</span>7506813-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>640 in stock</span>
+            </div>
+            <div class="item-price">$8.44</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-low" data-sku="7506814-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="#4 Master Pin (Pack of 100)" data-cat="Pins" data-qty="22" data-state="low">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">#4 Master Pin (Pack of 100)</div>
+              <div class="item-sku"><span>SKU:</span>7506814-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>22 low stock</span>
+            </div>
+            <div class="item-price">$8.44</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-out" data-sku="7506815-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="#5 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="0" data-state="out">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">#5 Bottom Pin (Pack of 100)</div>
+              <div class="item-sku"><span>SKU:</span>7506815-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Out of stock</span>
+            </div>
+            <div class="item-price">$8.44</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="7506816-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="#5 Master Pin (Pack of 100)" data-cat="Pins" data-qty="754" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">#5 Master Pin (Pack of 100)</div>
+              <div class="item-sku"><span>SKU:</span>7506816-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Pins</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>754 in stock</span>
+            </div>
+            <div class="item-price">$8.44</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="7959604-d6qq" data-locations="New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="Grade 1 Deadbolt — Satin Chrome" data-cat="Locks" data-qty="312" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Grade 1 Deadbolt — Satin Chrome</div>
               <div class="item-sku"><span>SKU:</span>7959604-d6qq</div>
             </div>
             <div class="item-badges">
-              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>2,997</span>
+              <span class="badge-neutral">Locks</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>3 Variants</span>
+              <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>312 in stock</span>
             </div>
-            <div class="item-price">$16.80</div>
+            <div class="item-price">$42.10</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
-        <div class="item-card stock-in">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="10306584-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="Grade 2 Entry Lever" data-cat="Locks" data-qty="178" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
-              <div class="item-name">*CVR* 3-SIDED HANG BAG W/SHELVES</div>
+              <div class="item-name">Grade 2 Entry Lever</div>
               <div class="item-sku"><span>SKU:</span>10306584-d6qq</div>
             </div>
             <div class="item-badges">
-              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>3,996</span>
+              <span class="badge-neutral">Locks</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+              <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>3 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>178 in stock</span>
             </div>
-            <div class="item-price">$61.29</div>
+            <div class="item-price">$61.25</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
-        <div class="item-card stock-in">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="10306585-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="Interchangeable Core — SFIC 7-pin" data-cat="Locks" data-qty="84" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
-              <div class="item-name">*CVR* 8-PCKT ORGANIZER</div>
+              <div class="item-name">Interchangeable Core — SFIC 7-pin</div>
               <div class="item-sku"><span>SKU:</span>10306585-d6qq</div>
             </div>
             <div class="item-badges">
-              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>1,130</span>
+              <span class="badge-neutral">Locks</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+              <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>84 in stock</span>
             </div>
-            <div class="item-price">$62.91</div>
+            <div class="item-price">$23.90</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
-        <div class="item-card stock-out">
-            <input type="checkbox" class="checkbox" />
+        <div class="item-card stock-in" data-sku="10306590-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="Padlock — Weather Resistant 50mm" data-cat="Locks" data-qty="456" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
             <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
             <div class="item-info">
-              <div class="item-name">*CVR* 12-PCKT TOOL POUCH</div>
-              <div class="item-sku"><span>SKU:</span>10306586-d6qq</div>
+              <div class="item-name">Padlock — Weather Resistant 50mm</div>
+              <div class="item-sku"><span>SKU:</span>10306590-d6qq</div>
             </div>
             <div class="item-badges">
+              <span class="badge-neutral">Locks</span>
               <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-              <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
-              <span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg>0</span>
+              <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>456 in stock</span>
             </div>
-            <div class="item-price">$18.35</div>
+            <div class="item-price">$19.75</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-low" data-sku="10306591-d6qq" data-locations="New Orleans Hub|Dallas Storefront" data-name="Mortise Lock Body" data-cat="Locks" data-qty="12" data-state="low">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Mortise Lock Body</div>
+              <div class="item-sku"><span>SKU:</span>10306591-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Locks</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+              <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              <span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>12 low stock</span>
+            </div>
+            <div class="item-price">$88.00</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-out" data-sku="10306592-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="Rim Cylinder — Brass" data-cat="Locks" data-qty="0" data-state="out">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Rim Cylinder — Brass</div>
+              <div class="item-sku"><span>SKU:</span>10306592-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Locks</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>3 Locations</span>
+              <span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Out of stock</span>
+            </div>
+            <div class="item-price">$16.35</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="10306593-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="Euro Profile Cylinder" data-cat="Locks" data-qty="267" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Euro Profile Cylinder</div>
+              <div class="item-sku"><span>SKU:</span>10306593-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Locks</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+              <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>3 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>267 in stock</span>
+            </div>
+            <div class="item-price">$21.60</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-low" data-sku="10306594-d6qq" data-locations="Houston Depot|New Orleans Hub" data-name="Smart Lock — Keypad Entry" data-cat="Locks" data-qty="39" data-state="low">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Smart Lock — Keypad Entry</div>
+              <div class="item-sku"><span>SKU:</span>10306594-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Locks</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              <span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>39 low stock</span>
+            </div>
+            <div class="item-price">$129.99</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="10306600-d6qq" data-locations="New Orleans Hub|Dallas Storefront" data-name="Pinning Kit Tray" data-cat="Tools" data-qty="144" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Pinning Kit Tray</div>
+              <div class="item-sku"><span>SKU:</span>10306600-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Tools</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>144 in stock</span>
+            </div>
+            <div class="item-price">$34.50</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-low" data-sku="10306601-d6qq" data-locations="Dallas Storefront" data-name="Key Machine Cutter Wheel" data-cat="Tools" data-qty="8" data-state="low">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Key Machine Cutter Wheel</div>
+              <div class="item-sku"><span>SKU:</span>10306601-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Tools</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>1 Location</span>
+              <span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>8 low stock</span>
+            </div>
+            <div class="item-price">$52.80</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="10306602-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot" data-name="Plug Follower Set" data-cat="Tools" data-qty="130" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Plug Follower Set</div>
+              <div class="item-sku"><span>SKU:</span>10306602-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Tools</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>130 in stock</span>
+            </div>
+            <div class="item-price">$18.25</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="10306603-d6qq" data-locations="Houston Depot|New Orleans Hub" data-name="Tension Wrench Set" data-cat="Tools" data-qty="220" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Tension Wrench Set</div>
+              <div class="item-sku"><span>SKU:</span>10306603-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Tools</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>220 in stock</span>
+            </div>
+            <div class="item-price">$12.40</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="10306604-d6qq" data-locations="New Orleans Hub|Dallas Storefront" data-name="Key Gauge" data-cat="Tools" data-qty="95" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Key Gauge</div>
+              <div class="item-sku"><span>SKU:</span>10306604-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Tools</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>95 in stock</span>
+            </div>
+            <div class="item-price">$9.15</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="10306610-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="Key Blanks — SC1 (Pack of 50)" data-cat="Accessories" data-qty="3410" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Key Blanks — SC1 (Pack of 50)</div>
+              <div class="item-sku"><span>SKU:</span>10306610-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Accessories</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>3,410 in stock</span>
+            </div>
+            <div class="item-price">$14.20</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-in" data-sku="10306611-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="Key Rings (Pack of 100)" data-cat="Accessories" data-qty="1875" data-state="in">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Key Rings (Pack of 100)</div>
+              <div class="item-sku"><span>SKU:</span>10306611-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Accessories</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              <span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,875 in stock</span>
+            </div>
+            <div class="item-price">$6.80</div>
+            <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="item-card stock-out" data-sku="10306612-d6qq" data-locations="Houston Depot" data-name="Code Book — Master Keying" data-cat="Accessories" data-qty="0" data-state="out">
+            <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+            <div class="item-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="item-info">
+              <div class="item-name">Code Book — Master Keying</div>
+              <div class="item-sku"><span>SKU:</span>10306612-d6qq</div>
+            </div>
+            <div class="item-badges">
+              <span class="badge-neutral">Accessories</span>
+              <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+              <span class="badge badge-location" title="Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>1 Location</span>
+              <span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Out of stock</span>
+            </div>
+            <div class="item-price">$44.00</div>
             <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
         </div>
 
       </div>
 
-
-      <!-- Inventory item cards — grid view -->
+      <!-- Grid view -->
       <div class="item-grid" id="view-grid" style="display:none">
-          <div class="grid-card stock-in">
+          <div class="grid-card stock-in" data-sku="7506817-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="#1 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="2148" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>2,148</span></span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>2,148 in stock</span></span>
               <span class="grid-card-sku">7506817-d6qq</span>
             </div>
             <div class="grid-card-body">
               <div class="grid-card-name">#1 Bottom Pin (Pack of 100)</div>
               <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
                 <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
               </div>
               <div class="grid-card-footer">
                 <div class="item-price">$8.44</div>
@@ -708,18 +1158,19 @@
               </div>
             </div>
           </div>
-          <div class="grid-card stock-in">
+          <div class="grid-card stock-in" data-sku="7506806-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="#1 Master Pin (Pack of 100)" data-cat="Pins" data-qty="2507" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>2,507</span></span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>2,507 in stock</span></span>
               <span class="grid-card-sku">7506806-d6qq</span>
             </div>
             <div class="grid-card-body">
               <div class="grid-card-name">#1 Master Pin (Pack of 100)</div>
               <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
                 <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
               </div>
               <div class="grid-card-footer">
                 <div class="item-price">$8.44</div>
@@ -730,18 +1181,19 @@
               </div>
             </div>
           </div>
-          <div class="grid-card stock-in">
+          <div class="grid-card stock-in" data-sku="7506810-d6qq" data-locations="New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="#2 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="1436" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>1,436</span></span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,436 in stock</span></span>
               <span class="grid-card-sku">7506810-d6qq</span>
             </div>
             <div class="grid-card-body">
               <div class="grid-card-name">#2 Bottom Pin (Pack of 100)</div>
               <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
                 <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
               </div>
               <div class="grid-card-footer">
                 <div class="item-price">$8.44</div>
@@ -752,18 +1204,19 @@
               </div>
             </div>
           </div>
-          <div class="grid-card stock-in">
+          <div class="grid-card stock-in" data-sku="7506809-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="#2 Master Pin (Pack of 100)" data-cat="Pins" data-qty="1966" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>1,966</span></span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,966 in stock</span></span>
               <span class="grid-card-sku">7506809-d6qq</span>
             </div>
             <div class="grid-card-body">
               <div class="grid-card-name">#2 Master Pin (Pack of 100)</div>
               <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
                 <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
               </div>
               <div class="grid-card-footer">
                 <div class="item-price">$8.44</div>
@@ -774,21 +1227,160 @@
               </div>
             </div>
           </div>
-          <div class="grid-card stock-in">
+          <div class="grid-card stock-in" data-sku="7506811-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="#3 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="998" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>2,997</span></span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>998 in stock</span></span>
+              <span class="grid-card-sku">7506811-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">#3 Bottom Pin (Pack of 100)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$8.44</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="7506812-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="#3 Master Pin (Pack of 100)" data-cat="Pins" data-qty="1204" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,204 in stock</span></span>
+              <span class="grid-card-sku">7506812-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">#3 Master Pin (Pack of 100)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$8.44</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="7506813-d6qq" data-locations="New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="#4 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="640" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>640 in stock</span></span>
+              <span class="grid-card-sku">7506813-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">#4 Bottom Pin (Pack of 100)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$8.44</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-low" data-sku="7506814-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="#4 Master Pin (Pack of 100)" data-cat="Pins" data-qty="22" data-state="low">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>22 low stock</span></span>
+              <span class="grid-card-sku">7506814-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">#4 Master Pin (Pack of 100)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$8.44</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-out" data-sku="7506815-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="#5 Bottom Pin (Pack of 100)" data-cat="Pins" data-qty="0" data-state="out">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Out of stock</span></span>
+              <span class="grid-card-sku">7506815-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">#5 Bottom Pin (Pack of 100)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$8.44</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="7506816-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="#5 Master Pin (Pack of 100)" data-cat="Pins" data-qty="754" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>754 in stock</span></span>
+              <span class="grid-card-sku">7506816-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">#5 Master Pin (Pack of 100)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Pins</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$8.44</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="7959604-d6qq" data-locations="New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="Grade 1 Deadbolt — Satin Chrome" data-cat="Locks" data-qty="312" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>312 in stock</span></span>
               <span class="grid-card-sku">7959604-d6qq</span>
             </div>
             <div class="grid-card-body">
-              <div class="grid-card-name">#24 Cotton Cut-end Mop Head in White (Pack of 3)</div>
+              <div class="grid-card-name">Grade 1 Deadbolt — Satin Chrome</div>
               <div class="grid-card-badges">
-                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge-neutral">Locks</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>3 Variants</span>
+                <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
               </div>
               <div class="grid-card-footer">
-                <div class="item-price">$16.80</div>
+                <div class="item-price">$42.10</div>
                 <div class="grid-card-actions">
                   <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
                   <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
@@ -796,21 +1388,22 @@
               </div>
             </div>
           </div>
-          <div class="grid-card stock-in">
+          <div class="grid-card stock-in" data-sku="10306584-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="Grade 2 Entry Lever" data-cat="Locks" data-qty="178" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>3,996</span></span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>178 in stock</span></span>
               <span class="grid-card-sku">10306584-d6qq</span>
             </div>
             <div class="grid-card-body">
-              <div class="grid-card-name">*CVR* 3-SIDED HANG BAG W/SHELVES</div>
+              <div class="grid-card-name">Grade 2 Entry Lever</div>
               <div class="grid-card-badges">
-                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge-neutral">Locks</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+                <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>3 Locations</span>
               </div>
               <div class="grid-card-footer">
-                <div class="item-price">$61.29</div>
+                <div class="item-price">$61.25</div>
                 <div class="grid-card-actions">
                   <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
                   <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
@@ -818,21 +1411,22 @@
               </div>
             </div>
           </div>
-          <div class="grid-card stock-in">
+          <div class="grid-card stock-in" data-sku="10306585-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="Interchangeable Core — SFIC 7-pin" data-cat="Locks" data-qty="84" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>1,130</span></span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>84 in stock</span></span>
               <span class="grid-card-sku">10306585-d6qq</span>
             </div>
             <div class="grid-card-body">
-              <div class="grid-card-name">*CVR* 8-PCKT ORGANIZER</div>
+              <div class="grid-card-name">Interchangeable Core — SFIC 7-pin</div>
               <div class="grid-card-badges">
-                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge-neutral">Locks</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+                <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
               </div>
               <div class="grid-card-footer">
-                <div class="item-price">$62.91</div>
+                <div class="item-price">$23.90</div>
                 <div class="grid-card-actions">
                   <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
                   <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
@@ -840,21 +1434,22 @@
               </div>
             </div>
           </div>
-          <div class="grid-card stock-out">
+          <div class="grid-card stock-in" data-sku="10306590-d6qq" data-locations="Houston Depot|New Orleans Hub|Dallas Storefront|Baton Rouge Warehouse" data-name="Padlock — Weather Resistant 50mm" data-cat="Locks" data-qty="456" data-state="in">
             <div class="grid-card-media">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              <input type="checkbox" class="checkbox" />
-              <span class="grid-card-stock"><span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg>0</span></span>
-              <span class="grid-card-sku">10306586-d6qq</span>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>456 in stock</span></span>
+              <span class="grid-card-sku">10306590-d6qq</span>
             </div>
             <div class="grid-card-body">
-              <div class="grid-card-name">*CVR* 12-PCKT TOOL POUCH</div>
+              <div class="grid-card-name">Padlock — Weather Resistant 50mm</div>
               <div class="grid-card-badges">
+                <span class="badge-neutral">Locks</span>
                 <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
-                <span class="badge badge-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+                <span class="badge badge-location" title="Houston Depot, New Orleans Hub, Dallas Storefront, Baton Rouge Warehouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
               </div>
               <div class="grid-card-footer">
-                <div class="item-price">$18.35</div>
+                <div class="item-price">$19.75</div>
                 <div class="grid-card-actions">
                   <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
                   <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
@@ -862,23 +1457,464 @@
               </div>
             </div>
           </div>
+          <div class="grid-card stock-low" data-sku="10306591-d6qq" data-locations="New Orleans Hub|Dallas Storefront" data-name="Mortise Lock Body" data-cat="Locks" data-qty="12" data-state="low">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>12 low stock</span></span>
+              <span class="grid-card-sku">10306591-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Mortise Lock Body</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Locks</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+                <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$88.00</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-out" data-sku="10306592-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot" data-name="Rim Cylinder — Brass" data-cat="Locks" data-qty="0" data-state="out">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Out of stock</span></span>
+              <span class="grid-card-sku">10306592-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Rim Cylinder — Brass</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Locks</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>3 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$16.35</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="10306593-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="Euro Profile Cylinder" data-cat="Locks" data-qty="267" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>267 in stock</span></span>
+              <span class="grid-card-sku">10306593-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Euro Profile Cylinder</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Locks</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>2 Variants</span>
+                <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>3 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$21.60</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-low" data-sku="10306594-d6qq" data-locations="Houston Depot|New Orleans Hub" data-name="Smart Lock — Keypad Entry" data-cat="Locks" data-qty="39" data-state="low">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>39 low stock</span></span>
+              <span class="grid-card-sku">10306594-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Smart Lock — Keypad Entry</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Locks</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$129.99</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="10306600-d6qq" data-locations="New Orleans Hub|Dallas Storefront" data-name="Pinning Kit Tray" data-cat="Tools" data-qty="144" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>144 in stock</span></span>
+              <span class="grid-card-sku">10306600-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Pinning Kit Tray</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Tools</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$34.50</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-low" data-sku="10306601-d6qq" data-locations="Dallas Storefront" data-name="Key Machine Cutter Wheel" data-cat="Tools" data-qty="8" data-state="low">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock-low"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>8 low stock</span></span>
+              <span class="grid-card-sku">10306601-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Key Machine Cutter Wheel</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Tools</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>1 Location</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$52.80</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="10306602-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot" data-name="Plug Follower Set" data-cat="Tools" data-qty="130" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>130 in stock</span></span>
+              <span class="grid-card-sku">10306602-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Plug Follower Set</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Tools</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$18.25</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="10306603-d6qq" data-locations="Houston Depot|New Orleans Hub" data-name="Tension Wrench Set" data-cat="Tools" data-qty="220" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>220 in stock</span></span>
+              <span class="grid-card-sku">10306603-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Tension Wrench Set</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Tools</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$12.40</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="10306604-d6qq" data-locations="New Orleans Hub|Dallas Storefront" data-name="Key Gauge" data-cat="Tools" data-qty="95" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>95 in stock</span></span>
+              <span class="grid-card-sku">10306604-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Key Gauge</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Tools</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>2 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$9.15</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="10306610-d6qq" data-locations="Dallas Storefront|Baton Rouge Warehouse|Houston Depot|New Orleans Hub" data-name="Key Blanks — SC1 (Pack of 50)" data-cat="Accessories" data-qty="3410" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>3,410 in stock</span></span>
+              <span class="grid-card-sku">10306610-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Key Blanks — SC1 (Pack of 50)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Accessories</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Dallas Storefront, Baton Rouge Warehouse, Houston Depot, New Orleans Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$14.20</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-in" data-sku="10306611-d6qq" data-locations="Baton Rouge Warehouse|Houston Depot|New Orleans Hub|Dallas Storefront" data-name="Key Rings (Pack of 100)" data-cat="Accessories" data-qty="1875" data-state="in">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>1,875 in stock</span></span>
+              <span class="grid-card-sku">10306611-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Key Rings (Pack of 100)</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Accessories</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Baton Rouge Warehouse, Houston Depot, New Orleans Hub, Dallas Storefront"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>4 Locations</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$6.80</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-card stock-out" data-sku="10306612-d6qq" data-locations="Houston Depot" data-name="Code Book — Master Keying" data-cat="Accessories" data-qty="0" data-state="out">
+            <div class="grid-card-media">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="checkbox" class="checkbox" onchange="toggleItem(this)" />
+              <span class="grid-card-stock"><span class="badge badge-stock-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Out of stock</span></span>
+              <span class="grid-card-sku">10306612-d6qq</span>
+            </div>
+            <div class="grid-card-body">
+              <div class="grid-card-name">Code Book — Master Keying</div>
+              <div class="grid-card-badges">
+                <span class="badge-neutral">Accessories</span>
+                <span class="badge badge-variant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>1 Variant</span>
+                <span class="badge badge-location" title="Houston Depot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>1 Location</span>
+              </div>
+              <div class="grid-card-footer">
+                <div class="item-price">$44.00</div>
+                <div class="grid-card-actions">
+                  <button class="row-action" title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+                  <button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-state-title">No inventory items found</div>
+        <div class="empty-state-desc">No items match your current search and filters. Try adjusting or clearing them.</div>
+        <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
       </div>
 
     </div>
   </div>
 
   <script>
+    let currentView = 'list';
+    let activeTab = 'all';
+    let catFilter = null;
+    let locFilter = null;
+    let page = 1;
+    const pageSize = 12;
+    let visible = [];
+    const selected = new Set();
+
     function setView(view) {
-      document.getElementById('view-list').style.display = view === 'list' ? '' : 'none';
-      document.getElementById('view-grid').style.display = view === 'grid' ? '' : 'none';
+      currentView = view;
       document.getElementById('btn-view-list').classList.toggle('active', view === 'list');
       document.getElementById('btn-view-grid').classList.toggle('active', view === 'grid');
+      render();
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-bar .tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      onFilterChange();
+    }
+
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      if (opening) showFilterMenu('root');
+    }
+    function showFilterMenu(which) {
+      ['root', 'cat', 'loc'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+    function setCatFilter(v) {
+      catFilter = v;
+      document.getElementById('chip-cat-value').textContent = v;
+      document.getElementById('chip-cat').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#menu-cat .dropdown-item[data-cat]').forEach(i => {
+        const sel = i.dataset.cat === v;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      onFilterChange();
+    }
+    function setLocFilter(v) {
+      locFilter = v;
+      document.getElementById('chip-loc-value').textContent = v;
+      document.getElementById('chip-loc').style.display = '';
+      document.getElementById('filter-clear').style.display = '';
+      document.querySelectorAll('#menu-loc .dropdown-item[data-loc]').forEach(i => {
+        const sel = i.dataset.loc === v;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
+      document.getElementById('filter-menu').style.display = 'none';
+      onFilterChange();
+    }
+    function clearLocFilter() {
+      locFilter = null;
+      document.getElementById('chip-loc').style.display = 'none';
+      updateFilterClear();
+      document.querySelectorAll('#menu-loc .dropdown-item[data-loc]').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      onFilterChange();
+    }
+    function updateFilterClear() {
+      document.getElementById('filter-clear').style.display = (catFilter || locFilter) ? '' : 'none';
+    }
+    function clearCatFilter() {
+      catFilter = null;
+      document.getElementById('chip-cat').style.display = 'none';
+      updateFilterClear();
+      document.querySelectorAll('#menu-cat .dropdown-item[data-cat]').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
+      onFilterChange();
+    }
+    function clearFilters() {
+      document.getElementById('inv-search').value = '';
+      clearCatFilter();
+      clearLocFilter();
+      setTab('all');
+    }
+
+    function listItems() { return [...document.querySelectorAll('#view-list .item-card')]; }
+    function gridItems() { return [...document.querySelectorAll('#view-grid .grid-card')]; }
+
+    function matches(el, q) {
+      const tabOk = activeTab === 'all' || el.dataset.state === activeTab;
+      const searchOk = !q || (el.dataset.name + ' ' + el.dataset.sku).toLowerCase().includes(q);
+      const catOk = catFilter === null || el.dataset.cat === catFilter;
+      const locOk = locFilter === null || el.dataset.locations.split('|').includes(locFilter);
+      return tabOk && searchOk && catOk && locOk;
+    }
+
+    function totalPages() { return Math.max(1, Math.ceil(visible.length / pageSize)); }
+    function setPage(p) { page = Math.min(Math.max(1, p), totalPages()); render(); }
+    function onFilterChange() { page = 1; render(); }
+
+    function render() {
+      const q = document.getElementById('inv-search').value.toLowerCase();
+      const items = currentView === 'list' ? listItems() : gridItems();
+      const other = currentView === 'list' ? gridItems() : listItems();
+      other.forEach(el => el.style.display = 'none');
+      visible = items.filter(el => matches(el, q));
+      items.forEach(el => el.style.display = 'none');
+      const start = (page - 1) * pageSize;
+      const pageItems = visible.slice(start, start + pageSize);
+      pageItems.forEach(el => el.style.display = '');
+      const any = visible.length > 0;
+      document.getElementById('view-list').style.display = currentView === 'list' && any ? '' : 'none';
+      document.getElementById('view-grid').style.display = currentView === 'grid' && any ? '' : 'none';
+      document.getElementById('empty-state').style.display = any ? 'none' : '';
+      document.querySelector('.bulk-bar').style.display = any ? '' : 'none';
+      document.getElementById('page-info').textContent = 'Page ' + page + ' of ' + totalPages();
+      document.getElementById('pg-prev').disabled = page <= 1;
+      document.getElementById('pg-next').disabled = page >= totalPages();
+      document.getElementById('page-check-label').textContent = 'Select page (' + pageItems.length + ' item' + (pageItems.length !== 1 ? 's' : '') + ')';
+      syncSelectionUI();
+    }
+
+    function syncSelectionUI() {
+      [...listItems(), ...gridItems()].forEach(el => {
+        const sel = selected.has(el.dataset.sku);
+        el.classList.toggle('selected', sel);
+        const cb = el.querySelector('.checkbox');
+        if (cb) cb.checked = sel;
+      });
+      const n = selected.size;
+      document.getElementById('selected-label').style.display = n ? '' : 'none';
+      document.getElementById('selected-label').textContent = n ? n + ' selected' : '';
+      document.getElementById('bulk-action-btns').style.display = n ? '' : 'none';
+      const q = document.getElementById('inv-search').value.toLowerCase();
+      const pageItems = visible.slice((page - 1) * pageSize, page * pageSize);
+      const allPage = pageItems.length > 0 && pageItems.every(el => selected.has(el.dataset.sku));
+      document.getElementById('page-check').checked = allPage;
+    }
+
+    function toggleItem(cb) {
+      const sku = cb.closest('[data-sku]').dataset.sku;
+      if (cb.checked) selected.add(sku); else selected.delete(sku);
+      syncSelectionUI();
+    }
+
+    function togglePage(on) {
+      const pageItems = visible.slice((page - 1) * pageSize, page * pageSize);
+      pageItems.forEach(el => { if (on) selected.add(el.dataset.sku); else selected.delete(el.dataset.sku); });
+      syncSelectionUI();
+    }
+
+    function selectAllItems() {
+      listItems().forEach(el => selected.add(el.dataset.sku));
+      syncSelectionUI();
     }
 
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    render();
   </script>
 </body>
 </html>

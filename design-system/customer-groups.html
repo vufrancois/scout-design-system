@@ -387,8 +387,6 @@
     }
     .group-card:hover { box-shadow: var(--shadow-sm); }
     .group-card-head { display: flex; align-items: flex-start; gap: 12px; }
-    .group-card-head .avatar-lg { flex-shrink: 0; }
-    .group-card-head .avatar-lg svg { width: 18px; height: 18px; }
     .group-card-title { flex: 1; min-width: 0; }
     .group-card-name { font-size: 15px; font-weight: 600; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .group-card-desc { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -468,7 +466,7 @@
     <div class="sidebar-group">
       <div class="sidebar-group-label">Price Management</div>
       <a class="sidebar-item active" href="customer-groups.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Customer Groups
       </a>
       <a class="sidebar-item" href="price-lists.html">
@@ -540,7 +538,7 @@
       <div class="page-header">
         <div class="page-header-left">
           <div class="page-header-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
           <div class="page-header-text">
             <h1>Customer Groups</h1>
@@ -691,7 +689,6 @@
       <div class="entity-grid" id="view-grid" style="display:none">
           <div class="group-card" data-id="cg1" data-name="Demo" data-orgcount="2" data-props="8" data-created="2026-06-22" data-orgs="Demo Inc.|CLK Properties">
             <div class="group-card-head">
-              <span class="avatar avatar-lg" style="background:var(--rose)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
               <div class="group-card-title">
                 <div class="group-card-name">Demo</div>
                 <div class="group-card-desc" title="Demo group for internal walkthroughs">Demo group for internal walkthroughs</div>
@@ -703,7 +700,6 @@
           </div>
           <div class="group-card" data-id="cg2" data-name="Demo 3 - No CTB" data-orgcount="3" data-props="9" data-created="2026-06-10" data-orgs="Demo Inc.|CLK Properties|Scout E2E Organization">
             <div class="group-card-head">
-              <span class="avatar avatar-lg" style="background:var(--violet)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
               <div class="group-card-title">
                 <div class="group-card-name">Demo 3 - No CTB</div>
                 <div class="group-card-desc" title="Every organization except ChadwellTestBuyer">Every organization except ChadwellTestBuyer</div>
@@ -715,7 +711,6 @@
           </div>
           <div class="group-card" data-id="cg3" data-name="Only CTB" data-orgcount="1" data-props="3" data-created="2026-05-28" data-orgs="ChadwellTestBuyer">
             <div class="group-card-head">
-              <span class="avatar avatar-lg" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
               <div class="group-card-title">
                 <div class="group-card-name">Only CTB</div>
                 <div class="group-card-desc" title="ChadwellTestBuyer accounts only">ChadwellTestBuyer accounts only</div>
@@ -727,7 +722,6 @@
           </div>
           <div class="group-card" data-id="cg4" data-name="All Orgs" data-orgcount="4" data-props="12" data-created="2026-05-12" data-orgs="ChadwellTestBuyer|Demo Inc.|CLK Properties|Scout E2E Organization">
             <div class="group-card-head">
-              <span class="avatar avatar-lg" style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
               <div class="group-card-title">
                 <div class="group-card-name">All Orgs</div>
                 <div class="group-card-desc" title="Every active organization on Scout">Every active organization on Scout</div>
@@ -739,7 +733,6 @@
           </div>
           <div class="group-card" data-id="cg5" data-name="Test Group" data-orgcount="2" data-props="2" data-created="2026-04-30" data-orgs="Scout E2E Organization|ChadwellTestBuyer">
             <div class="group-card-head">
-              <span class="avatar avatar-lg" style="background:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
               <div class="group-card-title">
                 <div class="group-card-name">Test Group</div>
                 <div class="group-card-desc" title="Sandbox group for QA test runs">Sandbox group for QA test runs</div>

@@ -24,7 +24,7 @@ The Properties column previously showed 0 for every group. Groups now carry plau
 "Add filter → Organization" lists the demo organizations; picking one shows only the groups containing it, as a removable attribute–value chip with "Clear all". This mirrors — and cross-links with — the Customer group filter on Price Lists.
 
 ### 7. Row/card actions + view parity
-Promoted Edit + kebab actions on both table rows and cards. The one-line compact card was restructured into a stacked group card — avatar tile, name + description, member avatar stack, and a "N properties · Created MM/DD/YYYY" meta line — so the card presents the same fields as the table row, per the view-parity rule.
+Promoted Edit + kebab actions on both table rows and cards. The one-line compact card was restructured into a stacked group card — name + description, member avatar stack, and a "N properties · Created MM/DD/YYYY" meta line (no avatar tile: groups have no identity image) — so the card presents the same fields as the table row, per the view-parity rule.
 
 ## Design system additions
 

@@ -15,8 +15,9 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | Products | [products.md](products.md) |
 | Quotes | [quotes.md](quotes.md) |
 | Insights | [insights.md](insights.md) |
+| Orders | [orders.md](orders.md) |
 
-Remaining views: Orders.
+All 14 views enhanced — the per-view UX pass is complete.
 
 ## Format
 

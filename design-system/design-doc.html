@@ -635,6 +635,13 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Without a subtitle the title vertically centers against the icon; with one, both top-align.</li>
       </ul>
 
+      <h3>Tooltip</h3>
+      <ul>
+        <li>Dark bubble (<code>--foreground</code> background, <code>--background</code> text, 12px/500, <code>--radius-sm</code>, small arrow), appearing instantly on hover above the target. Implemented via a <code>data-tip</code> attribute — no JS.</li>
+        <li><strong>Affordance:</strong> badges and pills carrying a styled tooltip show a 13px muted info glyph after the label, so hoverability is discoverable.</li>
+        <li><strong>When to use which:</strong> native <code>title</code> tooltips are for supplementary detail (full dates behind relative times, full text behind truncation). <strong>Load-bearing sub-state</strong> — a payment sub-step, an actor/provenance note — uses the styled Tooltip so it's discoverable and instant.</li>
+      </ul>
+
       <h3>Empty State</h3>
       <ul>
         <li>Shown inside the table/list container when zero items match: 48px muted icon circle + 15px/600 title + 13px muted description (max 360px) + optional recovery action (outline button, e.g. "Clear filters").</li>
@@ -693,6 +700,8 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Three variants: navigation tabs, tabs with count badges, filter tabs (wrapping).</li>
         <li>Active state: <code>--primary</code> background with <code>--primary-foreground</code> text.</li>
         <li>Use for both page navigation and content filtering.</li>
+        <li><strong>One dimension per tab bar:</strong> status tabs model exactly one axis (e.g. fulfillment stage). Secondary dimensions (payment state, offer type) are filters, not tabs; partial variants fold into their stage; exceptions (returns) are row badges, not tabs.</li>
+        <li><strong>Multi-actor pipelines condense to whose-turn-is-it states:</strong> exactly one amber "your action" state; consecutive other-party steps group into one state (sub-step in the tooltip); same-outcome-different-actor variants collapse into one state with the actor as provenance; automatic events are transitions, never statuses. Example — the 10-step purchase-order pipeline reads as Needs Tax Input &rarr; With Buyer &rarr; Paid &rarr; Captured.</li>
       </ul>
 
       <h3>Stat Cards</h3>

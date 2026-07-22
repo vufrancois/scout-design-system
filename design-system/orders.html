@@ -220,10 +220,7 @@
     .tab-item.active .tab-icon { opacity: 1; }
 
     /* Toolbar */
-    .toolbar {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
-    }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
     .toolbar-group { display: flex; align-items: center; gap: 8px; }
     .toolbar-btn {
       display: inline-flex; align-items: center; gap: 6px;
@@ -335,6 +332,120 @@
     .stat-card-colored.stat-violet .stat-card-icon { color: var(--violet); }
     .stat-card-colored.stat-rose .stat-card-icon { color: var(--rose); }
     .stat-card-colored.stat-gray .stat-card-icon { color: var(--muted-foreground); }
+
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
+
+    .row-action {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      border: none; background: none; color: var(--muted-foreground);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .row-action:hover { background: var(--muted); color: var(--foreground); }
+    .row-action svg { width: 16px; height: 16px; }
+    .cell-meta { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; font-weight: 400; }
+    tr.selected td { background: var(--accent); }
+    .checkbox { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    .status-dot.dot-fulfill { background: var(--amber); }
+    .status-dot.dot-ship { background: var(--sky); }
+    .status-dot.dot-transit { background: var(--violet); }
+    .status-dot.dot-delivered { background: var(--emerald); }
+    .status-dot.dot-completed { background: var(--muted-foreground); }
+    .status-dot.dot-return { background: var(--rose); }
+    .return-pill { margin-left: 6px; }
+    .track-link { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--primary); text-decoration: none; font-weight: 500; cursor: pointer; }
+    .track-link svg { width: 13px; height: 13px; }
+    .track-none { color: var(--muted-foreground); }
+    .stat-card-colored[data-tab], .stat-card-colored[data-pay] { cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s, background 0.15s; }
+    .stat-card-colored[data-tab]:hover, .stat-card-colored[data-pay]:hover { box-shadow: var(--shadow-sm); }
+    .stat-card-colored.active.stat-amber { border-color: var(--amber); background: var(--amber-soft); }
+    .stat-card-colored.active.stat-sky { border-color: var(--sky); background: var(--sky-soft); }
+    .stat-card-colored.active.stat-emerald { border-color: var(--emerald); background: var(--emerald-soft); }
+    .stat-card-colored.active.stat-violet { border-color: var(--violet); background: var(--violet-soft); }
+
+    @media (max-width: 1280px) { .col-tracking { display: none; } }
+    @media (max-width: 1100px) { .col-date { display: none; } }
+
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 200px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+
+    .bulk-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .bulk-bar-left { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--foreground); }
+    .bulk-selected-label { font-size: 13px; font-weight: 600; color: var(--primary); }
+    .bulk-actions { display: flex; align-items: center; gap: 8px; }
+
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 56px 20px; text-align: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+    .empty-state .toolbar-btn { margin-top: 10px; }
+    /* Tooltip */
+    [data-tip] { position: relative; }
+    .tip-icon { width: 13px; height: 13px; color: var(--muted-foreground); margin-left: -3px; flex-shrink: 0; }
+    [data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute; bottom: calc(100% + 7px); left: 50%; transform: translateX(-50%);
+      background: var(--foreground); color: var(--background);
+      font-size: 12px; font-weight: 500; line-height: 1.4;
+      padding: 5px 10px; border-radius: var(--radius-sm);
+      white-space: nowrap; z-index: 30; box-shadow: var(--shadow-md); pointer-events: none;
+    }
+    [data-tip]:hover::before {
+      content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: var(--foreground);
+      z-index: 30; pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -474,287 +585,470 @@
 
       <!-- Color-coded stat cards — design system component -->
       <div class="stat-grid">
-        <div class="stat-card-colored stat-amber">
+        <div class="stat-card-colored stat-amber" data-tab="fulfill" onclick="setTab('fulfill')">
           <div class="stat-card-header">
             <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Awaiting Fulfillment</span>
-            <div class="icon-container icon-container-sm" style="background:var(--amber-soft)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-            </div>
           </div>
-          <div class="stat-card-count">15</div>
+          <div class="stat-card-count">7</div>
           <div class="stat-card-desc">Ready to fulfill</div>
-          <button class="stat-card-action">View Orders →</button>
         </div>
-        <div class="stat-card-colored stat-sky">
+        <div class="stat-card-colored stat-sky" data-tab="ship" onclick="setTab('ship')">
           <div class="stat-card-header">
             <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>Awaiting Shipping</span>
-            <div class="icon-container icon-container-sm" style="background:var(--sky-soft)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            </div>
-          </div>
-          <div class="stat-card-count">4</div>
-          <div class="stat-card-desc">Fulfilled, ready to ship</div>
-          <button class="stat-card-action">View Orders →</button>
-        </div>
-        <div class="stat-card-colored stat-emerald">
-          <div class="stat-card-header">
-            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>Awaiting Delivery</span>
-            <div class="icon-container icon-container-sm" style="background:var(--emerald-soft)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            </div>
           </div>
           <div class="stat-card-count">3</div>
-          <div class="stat-card-desc">In transit</div>
-          <button class="stat-card-action">View Orders →</button>
+          <div class="stat-card-desc">Fulfilled, ready to ship</div>
         </div>
-        <div class="stat-card-colored stat-violet">
+        <div class="stat-card-colored stat-emerald" data-tab="transit" onclick="setTab('transit')">
+          <div class="stat-card-header">
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>Awaiting Delivery</span>
+          </div>
+          <div class="stat-card-count">4</div>
+          <div class="stat-card-desc">In transit</div>
+        </div>
+        <div class="stat-card-colored stat-violet" data-pay="buyer" onclick="setPayFilter('buyer')">
           <div class="stat-card-header">
             <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>Awaiting Payment</span>
-            <div class="icon-container icon-container-sm" style="background:var(--violet-soft)">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a5fef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-            </div>
           </div>
-          <div class="stat-card-count">47</div>
-          <div class="stat-card-desc">Payment pending</div>
-          <button class="stat-card-action">View Orders →</button>
+          <div class="stat-card-count">48</div>
+          <div class="stat-card-desc">With buyer &middot; not yet paid</div>
         </div>
       </div>
 
-      <!-- Tab bar — Filter Tabs (wrapping) component -->
+      <!-- Tab bar -->
       <div class="tab-bar">
-        <button class="tab-item active">
+        <button class="tab-item active" data-tab="all" onclick="setTab('all')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-          All
+          All <span class="tab-count">24</span>
         </button>
-        <button class="tab-item">
+        <button class="tab-item" data-tab="fulfill" onclick="setTab('fulfill')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-          Not Fulfilled
+          To Fulfill <span class="tab-count">7</span>
         </button>
-        <button class="tab-item">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/></svg>
-          Partially Fulfilled
+        <button class="tab-item" data-tab="ship" onclick="setTab('ship')">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+          To Ship <span class="tab-count">3</span>
         </button>
-        <button class="tab-item">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-          Fulfilled
+        <button class="tab-item" data-tab="transit" onclick="setTab('transit')">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          In Transit <span class="tab-count">4</span>
         </button>
-        <button class="tab-item">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-          Partially Shipped
-        </button>
-        <button class="tab-item">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-          Shipped
-        </button>
-        <button class="tab-item">
+        <button class="tab-item" data-tab="delivered" onclick="setTab('delivered')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          Delivered
+          Delivered <span class="tab-count">5</span>
         </button>
-        <button class="tab-item">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-          Awaiting Payment
-        </button>
-        <button class="tab-item">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-          Active Return
-        </button>
-        <button class="tab-item">
+        <button class="tab-item" data-tab="completed" onclick="setTab('completed')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-          Completed
+          Completed <span class="tab-count">5</span>
         </button>
       </div>
 
       <!-- Toolbar -->
       <div class="toolbar">
-        <div class="toolbar-group">
-          <button class="toolbar-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-            Date range
-          </button>
-          <button class="toolbar-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-            Payment
-          </button>
-        </div>
-        <div class="toolbar-group">
-          <div class="search-wrap">
-            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input class="search-field" placeholder="Search orders..." />
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="filter-chip" id="chip-pay" style="display:none">
+            <span class="filter-chip-attr">Payment</span>
+            <span class="filter-chip-value" id="chip-pay-value"></span>
+            <button class="filter-chip-remove" onclick="clearPayFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <span class="filter-chip" id="chip-date" style="display:none">
+            <span class="filter-chip-attr">Created</span>
+            <span class="filter-chip-value" id="chip-date-value"></span>
+            <button class="filter-chip-remove" onclick="clearDateFilter()" title="Remove filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
+              Add filter
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="filter-menu" style="display:none">
+              <div id="menu-root">
+                <div class="dropdown-item" onclick="showFilterMenu('pay')">Payment <span style="color:var(--muted-foreground)">&rsaquo;</span></div>
+              </div>
+              <div id="menu-pay" style="display:none">
+                <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-pay="tax" onclick="setPayFilter('tax')">Needs Tax Input</div>
+                <div class="dropdown-item" data-pay="buyer" onclick="setPayFilter('buyer')">With Buyer</div>
+                <div class="dropdown-item" data-pay="paid" onclick="setPayFilter('paid')">Paid</div>
+                <div class="dropdown-item" data-pay="captured" onclick="setPayFilter('captured')">Captured</div>
+              </div>
+            </div>
           </div>
-          <button class="toolbar-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
-            View
-          </button>
-          <button class="toolbar-btn-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-          </button>
+          <div class="filter-menu-wrap">
+            <button class="toolbar-btn" onclick="toggleDateMenu()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+              Date range
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="filter-menu" id="date-menu" style="display:none">
+              <div class="dropdown-item" data-days="7" onclick="setDateFilter(7, 'Last 7 days')">Last 7 days</div>
+              <div class="dropdown-item" data-days="30" onclick="setDateFilter(30, 'Last 30 days')">Last 30 days</div>
+              <div class="dropdown-item" data-days="90" onclick="setDateFilter(90, 'Last 90 days')">Last 90 days</div>
+              <div class="dropdown-item" data-days="365" onclick="setDateFilter(365, 'Last 12 months')">Last 12 months</div>
+            </div>
+          </div>
+          <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
+        </div>
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input class="search-field" id="order-search" placeholder="Search orders..." oninput="onFilterChange()" />
+        </div>
+      </div>
+
+      <!-- Bulk selection bar -->
+      <div class="bulk-bar">
+        <label class="bulk-bar-left">
+          <input type="checkbox" class="checkbox" id="page-check" onchange="togglePage(this.checked)" />
+          <span id="page-check-label">Select page</span>
+          <span class="bulk-selected-label" id="selected-label" style="display:none"></span>
+        </label>
+        <div class="bulk-actions">
+          <span id="bulk-action-btns" style="display:none">
+            <button class="toolbar-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export</button>
+            <button class="toolbar-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Mark Fulfilled</button>
+          </span>
+          <button class="toolbar-btn toolbar-btn-ghost" id="clear-sel-btn" style="display:none" onclick="clearSelection()">Clear selection</button>
+          <button class="toolbar-btn" onclick="selectAllItems()">Select all loaded</button>
         </div>
       </div>
 
       <!-- Data table -->
-      <div class="table-card">
+      <div class="table-card" id="view-list">
         <div class="table-scroll">
-        <table>
+        <table id="order-table">
           <thead>
             <tr>
-              <th>Order</th>
-              <th>Property</th>
-              <th>Order Total</th>
-              <th>Items</th>
-              <th>Date</th>
-              <th>Payment</th>
-              <th>Payment Method</th>
-              <th>Fulfillment</th>
-              <th>Tracking</th>
-              <th>Status</th>
+              <th style="width:40px"><input type="checkbox" class="checkbox" id="head-check" onchange="togglePage(this.checked)" /></th>
+              <th class="sortable" data-col="id" onclick="setSort('id')">Order<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="property" onclick="setSort('property')">Property<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="total" onclick="setSort('total')">Order Total<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="units" onclick="setSort('units')">Units<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="payment" onclick="setSort('payment')">Payment<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="sortable" data-col="stage" onclick="setSort('stage')">Status<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th class="col-tracking">Tracking</th>
+              <th class="sortable col-date" data-col="date" onclick="setSort('date')">Date<svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th>
+              <th style="width:48px"></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr data-id="390" data-stage="transit" data-property="Oakeigh Apartments" data-total="3177.53" data-units="17" data-payment="buyer" data-date="2026-06-01">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
               <td class="id-cell">#390</td>
-              <td>Cobblestone at Essen</td>
-              <td>$1,907.75 USD</td>
-              <td>3</td>
-              <td>07/13/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td><a class="text-link">https://www....</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+              <td>Oakeigh Apartments<div class="cell-meta">CLK Properties</div></td>
+              <td>$3,177.53 USD</td>
+              <td>17<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting delivery validation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-transit"></span><span class="status-dot-label">In Transit</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">06/01/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#389</td>
-              <td>Cobblestone at Essen</td>
-              <td>$941.64 USD</td>
-              <td>3</td>
-              <td>07/13/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td><a class="text-link">https://www....</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="377" data-stage="fulfill" data-property="Cobblestone at Essen" data-total="3915.79" data-units="2" data-payment="tax" data-date="2026-04-15">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#377</td>
+              <td>Cobblestone at Essen<div class="cell-meta">Demo Inc.</div></td>
+              <td>$3,915.79 USD</td>
+              <td>2<div class="cell-meta">1 item</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">04/15/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#387</td>
-              <td>Cypress Lake Apartments</td>
-              <td>$561.08 USD</td>
-              <td>1</td>
-              <td>07/13/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td class="cell-muted">-</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="369" data-stage="fulfill" data-property="The Star" data-total="2351.13" data-units="4" data-payment="tax" data-date="2026-05-03">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#369</td>
+              <td>The Star<div class="cell-meta">Demo Inc.</div></td>
+              <td>$2,351.13 USD</td>
+              <td>4<div class="cell-meta">2 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">05/03/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#385</td>
-              <td>Cobblestone at Essen</td>
-              <td>$2,117.93 USD</td>
-              <td>3</td>
-              <td>07/13/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td><a class="text-link">https://www....</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="357" data-stage="transit" data-property="NRG Stadium" data-total="4445.03" data-units="29" data-payment="paid" data-date="2026-07-10">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#357</td>
+              <td>NRG Stadium<div class="cell-meta">ChadwellTestBuyer</div></td>
+              <td>$4,445.03 USD</td>
+              <td>29<div class="cell-meta">6 items</div></td>
+              <td><span class="status-dot-item" data-tip="Buyer paid"><span class="status-dot dot-transit"></span><span class="status-dot-label">Paid</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-transit"></span><span class="status-dot-label">In Transit</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">07/10/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#375</td>
-              <td>Cypress Lake Apartments</td>
-              <td>$1,652.17 USD</td>
-              <td>1</td>
-              <td>07/10/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td class="cell-muted">-</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="348" data-stage="completed" data-property="Cypress Lake Apartments" data-total="303.98" data-units="26" data-payment="captured" data-date="2026-04-06">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#348</td>
+              <td>Cypress Lake Apartments<div class="cell-meta">CLK Properties</div></td>
+              <td>$303.98 USD</td>
+              <td>26<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-completed"></span><span class="status-dot-label">Completed</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">04/06/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#374</td>
-              <td>Cypress Lake Apartments</td>
-              <td>$3,566.81 USD</td>
-              <td>2</td>
-              <td>07/10/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td class="cell-muted">-</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="346" data-stage="completed" data-property="The Star" data-total="2820.42" data-units="4" data-payment="captured" data-date="2026-06-18">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#346</td>
+              <td>The Star<div class="cell-meta">Demo Inc.</div></td>
+              <td>$2,820.42 USD</td>
+              <td>4<div class="cell-meta">1 item</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-completed"></span><span class="status-dot-label">Completed</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">06/18/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#372</td>
-              <td>Magnolia Place Apartments</td>
-              <td>$80.39 USD</td>
-              <td>1</td>
-              <td>07/10/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Placed</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-error"></span><span class="status-dot-label">Not fulfilled</span></span></td>
-              <td class="cell-muted">-</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="342" data-stage="ship" data-property="Sherwood Acres" data-total="1781.35" data-units="12" data-payment="buyer" data-date="2026-06-08">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#342</td>
+              <td>Sherwood Acres<div class="cell-meta">CLK Properties</div></td>
+              <td>$1,781.35 USD</td>
+              <td>12<div class="cell-meta">2 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting invoice validation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">06/08/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#373</td>
-              <td>Magnolia Place Apartments</td>
-              <td>$987.37 USD</td>
-              <td>2</td>
-              <td>07/10/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-inactive"></span><span class="status-dot-label">Placed</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-pending"></span><span class="status-dot-label">Partially fulfilled</span></span></td>
-              <td class="cell-muted">-</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="338" data-stage="fulfill" data-property="NRG Stadium" data-total="2060.41" data-units="14" data-payment="buyer" data-date="2026-05-24">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#338</td>
+              <td>NRG Stadium<div class="cell-meta">ChadwellTestBuyer</div></td>
+              <td>$2,060.41 USD</td>
+              <td>14<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting payment confirmation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">05/24/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#362</td>
-              <td>Sherwood Acres</td>
-              <td>$779.00 USD</td>
-              <td>1</td>
-              <td>07/10/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td class="cell-muted">-</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="329" data-stage="delivered" data-property="Cypress Lake Apartments" data-total="2209.26" data-units="13" data-payment="paid" data-date="2026-07-16">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#329</td>
+              <td>Cypress Lake Apartments<div class="cell-meta">CLK Properties</div></td>
+              <td>$2,209.26 USD</td>
+              <td>13<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Marked as paid by vendor"><span class="status-dot dot-transit"></span><span class="status-dot-label">Paid</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Delivered</span></span><span class="status-dot-item return-pill"><span class="status-dot dot-return"></span><span class="status-dot-label">Return</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">07/16/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr>
-              <td class="id-cell">#361</td>
-              <td>Oakeigh Apartments</td>
-              <td>$729.00 USD</td>
-              <td>1</td>
-              <td>07/10/2026</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Validated</span></span></td>
-              <td><a class="table-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Purchase Order</a></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-active"></span><span class="status-dot-label">Delivered</span></span></td>
-              <td class="cell-muted">-</td>
-              <td><span class="status-dot-item"><span class="status-dot dot-warning"></span><span class="status-dot-label">Pending</span></span></td>
+            <tr data-id="327" data-stage="delivered" data-property="Cobblestone at Essen" data-total="1328.51" data-units="13" data-payment="captured" data-date="2026-07-03">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#327</td>
+              <td>Cobblestone at Essen<div class="cell-meta">Demo Inc.</div></td>
+              <td>$1,328.51 USD</td>
+              <td>13<div class="cell-meta">3 items</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Delivered</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">07/03/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="323" data-stage="transit" data-property="The Superdome" data-total="4582.07" data-units="26" data-payment="paid" data-date="2026-06-26">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#323</td>
+              <td>The Superdome<div class="cell-meta">ChadwellTestBuyer</div></td>
+              <td>$4,582.07 USD</td>
+              <td>26<div class="cell-meta">6 items</div></td>
+              <td><span class="status-dot-item" data-tip="Buyer paid"><span class="status-dot dot-transit"></span><span class="status-dot-label">Paid</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-transit"></span><span class="status-dot-label">In Transit</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">06/26/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="316" data-stage="fulfill" data-property="Oakeigh Apartments" data-total="2648.63" data-units="24" data-payment="buyer" data-date="2026-06-05">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#316</td>
+              <td>Oakeigh Apartments<div class="cell-meta">CLK Properties</div></td>
+              <td>$2,648.63 USD</td>
+              <td>24<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting delivery validation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">06/05/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="308" data-stage="fulfill" data-property="Sherwood Acres" data-total="2922.83" data-units="6" data-payment="buyer" data-date="2026-05-28">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#308</td>
+              <td>Sherwood Acres<div class="cell-meta">CLK Properties</div></td>
+              <td>$2,922.83 USD</td>
+              <td>6<div class="cell-meta">2 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting invoice validation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">05/28/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="302" data-stage="delivered" data-property="Sherwood Acres" data-total="2013.96" data-units="11" data-payment="buyer" data-date="2026-05-01">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#302</td>
+              <td>Sherwood Acres<div class="cell-meta">CLK Properties</div></td>
+              <td>$2,013.96 USD</td>
+              <td>11<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting payment confirmation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Delivered</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">05/01/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="299" data-stage="ship" data-property="Cobblestone at Essen" data-total="764.56" data-units="5" data-payment="paid" data-date="2026-06-13">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#299</td>
+              <td>Cobblestone at Essen<div class="cell-meta">Demo Inc.</div></td>
+              <td>$764.56 USD</td>
+              <td>5<div class="cell-meta">1 item</div></td>
+              <td><span class="status-dot-item" data-tip="Marked as paid by vendor"><span class="status-dot dot-transit"></span><span class="status-dot-label">Paid</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">06/13/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="288" data-stage="completed" data-property="Magnolia Place Apartments" data-total="1111.49" data-units="10" data-payment="captured" data-date="2026-04-20">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#288</td>
+              <td>Magnolia Place Apartments<div class="cell-meta">Demo Inc.</div></td>
+              <td>$1,111.49 USD</td>
+              <td>10<div class="cell-meta">2 items</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-completed"></span><span class="status-dot-label">Completed</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">04/20/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="274" data-stage="delivered" data-property="Magnolia Heights Apartments" data-total="2323.12" data-units="7" data-payment="captured" data-date="2026-04-13">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#274</td>
+              <td>Magnolia Heights Apartments<div class="cell-meta">Demo Inc.</div></td>
+              <td>$2,323.12 USD</td>
+              <td>7<div class="cell-meta">1 item</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Delivered</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">04/13/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="261" data-stage="fulfill" data-property="Bayou Crossing Apartments" data-total="1976.58" data-units="11" data-payment="tax" data-date="2026-06-24">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#261</td>
+              <td>Bayou Crossing Apartments<div class="cell-meta">Demo Inc.</div></td>
+              <td>$1,976.58 USD</td>
+              <td>11<div class="cell-meta">3 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">06/24/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="251" data-stage="delivered" data-property="NRG Stadium" data-total="1527.28" data-units="22" data-payment="paid" data-date="2026-05-03">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#251</td>
+              <td>NRG Stadium<div class="cell-meta">ChadwellTestBuyer</div></td>
+              <td>$1,527.28 USD</td>
+              <td>22<div class="cell-meta">5 items</div></td>
+              <td><span class="status-dot-item" data-tip="Buyer paid"><span class="status-dot dot-transit"></span><span class="status-dot-label">Paid</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Delivered</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">05/03/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="246" data-stage="ship" data-property="Riverwalk Residences" data-total="3219.77" data-units="6" data-payment="buyer" data-date="2026-07-04">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#246</td>
+              <td>Riverwalk Residences<div class="cell-meta">Demo Inc.</div></td>
+              <td>$3,219.77 USD</td>
+              <td>6<div class="cell-meta">1 item</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting delivery validation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">07/04/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="234" data-stage="completed" data-property="Cobblestone at Essen" data-total="4225.57" data-units="24" data-payment="captured" data-date="2026-04-08">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#234</td>
+              <td>Cobblestone at Essen<div class="cell-meta">Demo Inc.</div></td>
+              <td>$4,225.57 USD</td>
+              <td>24<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-completed"></span><span class="status-dot-label">Completed</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">04/08/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="232" data-stage="completed" data-property="Sherwood Acres" data-total="3523.77" data-units="17" data-payment="captured" data-date="2026-07-08">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#232</td>
+              <td>Sherwood Acres<div class="cell-meta">CLK Properties</div></td>
+              <td>$3,523.77 USD</td>
+              <td>17<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-completed"></span><span class="status-dot-label">Completed</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">07/08/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="224" data-stage="transit" data-property="Riverwalk Residences" data-total="978.56" data-units="15" data-payment="captured" data-date="2026-06-23">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#224</td>
+              <td>Riverwalk Residences<div class="cell-meta">Demo Inc.</div></td>
+              <td>$978.56 USD</td>
+              <td>15<div class="cell-meta">4 items</div></td>
+              <td><span class="status-dot-item" data-tip="Payment captured"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Captured</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-transit"></span><span class="status-dot-label">In Transit</span></span></td>
+              <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
+              <td class="col-date">06/23/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            </tr>
+            <tr data-id="210" data-stage="fulfill" data-property="The Star" data-total="3019.96" data-units="37" data-payment="buyer" data-date="2026-04-06">
+              <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
+              <td class="id-cell">#210</td>
+              <td>The Star<div class="cell-meta">Demo Inc.</div></td>
+              <td>$3,019.96 USD</td>
+              <td>37<div class="cell-meta">6 items</div></td>
+              <td><span class="status-dot-item" data-tip="Awaiting invoice validation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
+              <td class="col-tracking"><span class="track-none">&mdash;</span></td>
+              <td class="col-date">04/06/2026</td>
+              <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
           </tbody>
         </table>
         </div>
         <div class="pagination">
-          <span class="pagination-info">Page 1 of 5</span>
+          <span class="pagination-info" id="page-info">Page 1 of 3</span>
           <div class="pagination-controls">
             <div class="pagination-rows">
               <span>Rows per page</span>
-              <select class="pagination-rows-select">
+              <select class="pagination-rows-select" id="rows-select" onchange="setPageSize(this.value)">
                 <option>10</option>
                 <option>25</option>
                 <option>50</option>
               </select>
             </div>
             <div class="pagination-buttons">
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-first" onclick="setPage(1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4L5 8l4 4"/><path d="M12 4L8 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn" disabled>
+              <button class="pagination-btn" id="pg-prev" onclick="setPage(page - 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-next" onclick="setPage(page + 1)">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
               </button>
-              <button class="pagination-btn">
+              <button class="pagination-btn" id="pg-last" onclick="setPage(totalPages())">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l4 4-4 4"/><path d="M7 4l4 4-4 4"/></svg>
               </button>
             </div>
@@ -762,14 +1056,193 @@
         </div>
       </div>
 
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-state-title">No orders found</div>
+        <div class="empty-state-desc">No orders match your current search and filters. Try adjusting or clearing them.</div>
+        <button class="toolbar-btn" onclick="clearFilters()">Clear filters</button>
+      </div>
+
     </div>
   </div>
 
   <script>
+    const ARROWS = {
+      neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',
+      asc: '<path d="m7 14.5 5-5 5 5"/>',
+      desc: '<path d="m7 9.5 5 5 5-5"/>'
+    };
+    const TODAY = '2026-07-21';
+    let activeTab = 'all';
+    let payFilter = null;
+    let dateFilter = null;
+    let sortState = { col: 'date', dir: 'desc' };
+    let page = 1;
+    let pageSize = 10;
+    let visible = [];
+    const selected = new Set();
+
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-bar .tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      document.querySelectorAll('.stat-card-colored[data-tab]').forEach(c => c.classList.toggle('active', c.dataset.tab === tab));
+      onFilterChange();
+    }
+    function toggleFilterMenu() {
+      const m = document.getElementById('filter-menu');
+      const opening = m.style.display === 'none';
+      m.style.display = opening ? '' : 'none';
+      document.getElementById('date-menu').style.display = 'none';
+      if (opening) showFilterMenu('root');
+    }
+    function showFilterMenu(which) {
+      ['root', 'pay'].forEach(k => {
+        document.getElementById('menu-' + k).style.display = k === which ? '' : 'none';
+      });
+    }
+    function toggleDateMenu() {
+      const m = document.getElementById('date-menu');
+      m.style.display = m.style.display === 'none' ? '' : 'none';
+      document.getElementById('filter-menu').style.display = 'none';
+    }
+    function isoDaysAgo(days) {
+      const d = new Date(TODAY + 'T00:00:00');
+      d.setDate(d.getDate() - days);
+      return d.toISOString().slice(0, 10);
+    }
+    const PAY_LABELS = { tax: 'Needs Tax Input', buyer: 'With Buyer', paid: 'Paid', captured: 'Captured' };
+    function setPayFilter(v) {
+      payFilter = v;
+      document.getElementById('chip-pay-value').textContent = PAY_LABELS[v];
+      document.getElementById('chip-pay').style.display = '';
+      document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => i.classList.toggle('selected', i.dataset.pay === v));
+      document.querySelectorAll('.stat-card-colored[data-pay]').forEach(c => c.classList.toggle('active', c.dataset.pay === v));
+      document.getElementById('filter-menu').style.display = 'none';
+      updateFilterUI(); onFilterChange();
+    }
+    function clearPayFilter() {
+      payFilter = null;
+      document.getElementById('chip-pay').style.display = 'none';
+      document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => i.classList.remove('selected'));
+      document.querySelectorAll('.stat-card-colored[data-pay]').forEach(c => c.classList.remove('active'));
+      updateFilterUI(); onFilterChange();
+    }
+    function setDateFilter(days, label) {
+      dateFilter = days;
+      document.getElementById('chip-date-value').textContent = label;
+      document.getElementById('chip-date').style.display = '';
+      document.querySelectorAll('#date-menu .dropdown-item').forEach(i => i.classList.toggle('selected', +i.dataset.days === days));
+      document.getElementById('date-menu').style.display = 'none';
+      updateFilterUI(); onFilterChange();
+    }
+    function clearDateFilter() {
+      dateFilter = null;
+      document.getElementById('chip-date').style.display = 'none';
+      document.querySelectorAll('#date-menu .dropdown-item').forEach(i => i.classList.remove('selected'));
+      updateFilterUI(); onFilterChange();
+    }
+    function updateFilterUI() {
+      document.getElementById('filter-clear').style.display = (payFilter || dateFilter !== null) ? '' : 'none';
+    }
+    function clearFilters() {
+      document.getElementById('order-search').value = '';
+      clearPayFilter();
+      clearDateFilter();
+      setTab('all');
+    }
+    function clearSelection() { selected.clear(); syncSelectionUI(); }
+
+    function rowsAll() { return [...document.querySelectorAll('#order-table tbody tr')]; }
+    function matches(r, q) {
+      const tabOk = activeTab === 'all' || r.dataset.stage === activeTab;
+      const searchOk = !q || r.textContent.toLowerCase().includes(q);
+      const payOk = payFilter === null || r.dataset.payment === payFilter;
+      const dateOk = dateFilter === null || r.dataset.date >= isoDaysAgo(dateFilter);
+      return tabOk && searchOk && payOk && dateOk;
+    }
+    function cmp(a, b) {
+      let av = a.dataset[sortState.col], bv = b.dataset[sortState.col];
+      if (['total','units','id'].includes(sortState.col)) { av = +av; bv = +bv; }
+      else { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+      const c = av < bv ? -1 : av > bv ? 1 : 0;
+      return sortState.dir === 'asc' ? c : -c;
+    }
+    function setSort(col) {
+      if (sortState.col === col) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+      else sortState = { col, dir: ['total','units','date','id'].includes(col) ? 'desc' : 'asc' };
+      document.querySelectorAll('th.sortable').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if (th.dataset.col === sortState.col) { th.classList.add('sorted'); icon.innerHTML = ARROWS[sortState.dir]; }
+        else { th.classList.remove('sorted'); icon.innerHTML = ARROWS.neutral; }
+      });
+      onFilterChange();
+    }
+    function totalPages() { return Math.max(1, Math.ceil(visible.length / pageSize)); }
+    function setPage(p) { page = Math.min(Math.max(1, p), totalPages()); render(); }
+    function setPageSize(n) { pageSize = +n; page = 1; render(); }
+    function onFilterChange() { page = 1; render(); }
+
+    function render() {
+      const q = document.getElementById('order-search').value.toLowerCase();
+      visible = rowsAll().filter(r => matches(r, q)).sort(cmp);
+      const tbody = document.querySelector('#order-table tbody');
+      visible.forEach(r => tbody.appendChild(r));
+      rowsAll().forEach(r => r.style.display = 'none');
+      const pageRows = visible.slice((page - 1) * pageSize, page * pageSize);
+      pageRows.forEach(r => r.style.display = '');
+      const any = visible.length > 0;
+      document.getElementById('view-list').style.display = any ? '' : 'none';
+      document.getElementById('empty-state').style.display = any ? 'none' : '';
+      document.querySelector('.bulk-bar').style.display = any ? '' : 'none';
+      document.getElementById('page-info').textContent = 'Page ' + page + ' of ' + totalPages();
+      document.getElementById('pg-first').disabled = page <= 1;
+      document.getElementById('pg-prev').disabled = page <= 1;
+      document.getElementById('pg-next').disabled = page >= totalPages();
+      document.getElementById('pg-last').disabled = page >= totalPages();
+      document.getElementById('page-check-label').textContent = 'Select page (' + pageRows.length + ' order' + (pageRows.length !== 1 ? 's' : '') + ')';
+      syncSelectionUI();
+    }
+    function syncSelectionUI() {
+      rowsAll().forEach(r => {
+        const sel = selected.has(r.dataset.id);
+        r.classList.toggle('selected', sel);
+        const cb = r.querySelector('.checkbox');
+        if (cb) cb.checked = sel;
+      });
+      const n = selected.size;
+      document.getElementById('selected-label').style.display = n ? '' : 'none';
+      document.getElementById('selected-label').textContent = n ? n + ' selected' : '';
+      document.getElementById('bulk-action-btns').style.display = n ? '' : 'none';
+      document.getElementById('clear-sel-btn').style.display = n ? '' : 'none';
+      const pageRows = visible.slice((page - 1) * pageSize, page * pageSize);
+      const allPage = pageRows.length > 0 && pageRows.every(r => selected.has(r.dataset.id));
+      document.getElementById('page-check').checked = allPage;
+      document.getElementById('head-check').checked = allPage;
+    }
+    function toggleItem(cb) {
+      const r = cb.closest('tr');
+      if (cb.checked) selected.add(r.dataset.id); else selected.delete(r.dataset.id);
+      syncSelectionUI();
+    }
+    function togglePage(on) {
+      visible.slice((page - 1) * pageSize, page * pageSize).forEach(r => {
+        if (on) selected.add(r.dataset.id); else selected.delete(r.dataset.id);
+      });
+      syncSelectionUI();
+    }
+    function selectAllItems() { rowsAll().forEach(r => selected.add(r.dataset.id)); syncSelectionUI(); }
+
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    document.querySelector('th[data-col="date"]').classList.add('sorted');
+    document.querySelector('th[data-col="date"] .sort-icon').innerHTML = ARROWS.desc;
+    render();
   </script>
 </body>
 </html>

@@ -403,6 +403,7 @@
       color: var(--popover-foreground); transition: background 0.1s;
     }
     .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
     .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
     .toolbar-btn-dashed:hover { color: var(--foreground); }
     .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
@@ -674,7 +675,7 @@
                 <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
                 <div class="dropdown-item" data-pay="unpaid" onclick="setPayFilter('unpaid')">Awaiting Payment</div>
                 <div class="dropdown-item" data-pay="tax" onclick="setPayFilter('tax')">Needs Tax Input</div>
-                <div class="dropdown-item" data-pay="unpaid" onclick="setPayFilter('unpaid')">With Buyer</div>
+                <div class="dropdown-item" data-pay="buyer" onclick="setPayFilter('buyer')">With Buyer</div>
                 <div class="dropdown-item" data-pay="paid" onclick="setPayFilter('paid')">Paid</div>
                 <div class="dropdown-item" data-pay="captured" onclick="setPayFilter('captured')">Captured</div>
               </div>
@@ -1119,7 +1120,11 @@
       payFilter = v;
       document.getElementById('chip-pay-value').textContent = PAY_LABELS[v];
       document.getElementById('chip-pay').style.display = '';
-      document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => i.classList.toggle('selected', i.dataset.pay === v));
+      document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => {
+        const sel = i.dataset.pay === v;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
       document.querySelectorAll('.stat-card-colored[data-pay]').forEach(c => c.classList.toggle('active', c.dataset.pay === v));
       document.getElementById('filter-menu').style.display = 'none';
       updateFilterUI(); onFilterChange();
@@ -1127,7 +1132,10 @@
     function clearPayFilter() {
       payFilter = null;
       document.getElementById('chip-pay').style.display = 'none';
-      document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => i.classList.remove('selected'));
+      document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
       document.querySelectorAll('.stat-card-colored[data-pay]').forEach(c => c.classList.remove('active'));
       updateFilterUI(); onFilterChange();
     }
@@ -1135,14 +1143,21 @@
       dateFilter = days;
       document.getElementById('chip-date-value').textContent = label;
       document.getElementById('chip-date').style.display = '';
-      document.querySelectorAll('#date-menu .dropdown-item').forEach(i => i.classList.toggle('selected', +i.dataset.days === days));
+      document.querySelectorAll('#date-menu .dropdown-item').forEach(i => {
+        const sel = +i.dataset.days === days;
+        i.classList.toggle('selected', sel);
+        i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
+      });
       document.getElementById('date-menu').style.display = 'none';
       updateFilterUI(); onFilterChange();
     }
     function clearDateFilter() {
       dateFilter = null;
       document.getElementById('chip-date').style.display = 'none';
-      document.querySelectorAll('#date-menu .dropdown-item').forEach(i => i.classList.remove('selected'));
+      document.querySelectorAll('#date-menu .dropdown-item').forEach(i => {
+        i.classList.remove('selected');
+        i.innerHTML = i.textContent.replace('\u2713','').trim();
+      });
       updateFilterUI(); onFilterChange();
     }
     function updateFilterUI() {

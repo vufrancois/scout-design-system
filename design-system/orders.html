@@ -1121,7 +1121,7 @@
       document.getElementById('chip-pay-value').textContent = PAY_LABELS[v];
       document.getElementById('chip-pay').style.display = '';
       document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => {
-        const sel = i.dataset.pay === v;
+        const sel = v === 'unpaid' ? (i.dataset.pay === 'tax' || i.dataset.pay === 'buyer') : i.dataset.pay === v;
         i.classList.toggle('selected', sel);
         i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
       });

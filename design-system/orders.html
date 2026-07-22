@@ -606,12 +606,12 @@
           <div class="stat-card-count">4</div>
           <div class="stat-card-desc">In transit</div>
         </div>
-        <div class="stat-card-colored stat-violet" data-pay="buyer" onclick="setPayFilter('buyer')">
+        <div class="stat-card-colored stat-violet" data-pay="unpaid" onclick="setPayFilter('unpaid')">
           <div class="stat-card-header">
-            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>Payment With Buyer</span>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>Awaiting Payment</span>
           </div>
-          <div class="stat-card-count">8</div>
-          <div class="stat-card-desc">Awaiting validation or payment</div>
+          <div class="stat-card-count">11</div>
+          <div class="stat-card-desc">Needs tax input or with buyer</div>
         </div>
       </div>
 
@@ -672,8 +672,9 @@
               </div>
               <div id="menu-pay" style="display:none">
                 <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
+                <div class="dropdown-item" data-pay="unpaid" onclick="setPayFilter('unpaid')">Awaiting Payment</div>
                 <div class="dropdown-item" data-pay="tax" onclick="setPayFilter('tax')">Needs Tax Input</div>
-                <div class="dropdown-item" data-pay="buyer" onclick="setPayFilter('buyer')">With Buyer</div>
+                <div class="dropdown-item" data-pay="unpaid" onclick="setPayFilter('unpaid')">With Buyer</div>
                 <div class="dropdown-item" data-pay="paid" onclick="setPayFilter('paid')">Paid</div>
                 <div class="dropdown-item" data-pay="captured" onclick="setPayFilter('captured')">Captured</div>
               </div>
@@ -1113,7 +1114,7 @@
       d.setDate(d.getDate() - days);
       return d.toISOString().slice(0, 10);
     }
-    const PAY_LABELS = { tax: 'Needs Tax Input', buyer: 'With Buyer', paid: 'Paid', captured: 'Captured' };
+    const PAY_LABELS = { unpaid: 'Awaiting Payment', tax: 'Needs Tax Input', buyer: 'With Buyer', paid: 'Paid', captured: 'Captured' };
     function setPayFilter(v) {
       payFilter = v;
       document.getElementById('chip-pay-value').textContent = PAY_LABELS[v];
@@ -1159,7 +1160,7 @@
     function matches(r, q) {
       const tabOk = activeTab === 'all' || r.dataset.stage === activeTab;
       const searchOk = !q || r.textContent.toLowerCase().includes(q);
-      const payOk = payFilter === null || r.dataset.payment === payFilter;
+      const payOk = payFilter === null || (payFilter === 'unpaid' ? ['tax','buyer'].includes(r.dataset.payment) : r.dataset.payment === payFilter);
       const dateOk = dateFilter === null || r.dataset.date >= isoDaysAgo(dateFilter);
       return tabOk && searchOk && payOk && dateOk;
     }

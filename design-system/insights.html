@@ -179,12 +179,20 @@
     .stat-card-colored.stat-emerald::before { background: var(--emerald); }
     .stat-card-colored.stat-violet::before { background: var(--violet); }
     .stat-card-header { display: flex; align-items: center; justify-content: space-between; }
-    .stat-card-title { font-size: 15px; font-weight: 500; color: var(--foreground); }
+    .stat-card-title { font-size: 13px; font-weight: 600; color: var(--foreground); display: inline-flex; align-items: center; gap: 6px; }
+    .stat-card-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .stat-card-colored.stat-orange::before { background: var(--orange); }
+    .stat-card-colored.stat-orange .stat-card-count { color: var(--orange); }
+    .stat-card-colored.stat-orange .stat-card-icon { color: var(--orange); }
+    .stat-card-colored.stat-amber .stat-card-icon { color: var(--amber); }
+    .stat-card-colored.stat-sky .stat-card-icon { color: var(--sky); }
+    .stat-card-colored.stat-violet .stat-card-icon { color: var(--violet); }
+    .stat-card-colored.stat-emerald .stat-card-icon { color: var(--emerald); }
     .icon-container-sm {
       width: 36px; height: 36px; border-radius: var(--radius-md);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .stat-card-count { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-top: 4px; }
+    .stat-card-count { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
     .stat-card-colored.stat-amber .stat-card-count { color: var(--amber); }
     .stat-card-colored.stat-sky .stat-card-count { color: var(--sky); }
     .stat-card-colored.stat-emerald .stat-card-count { color: var(--emerald); }
@@ -335,6 +343,47 @@
     .feed-title { font-size: 14px; font-weight: 600; color: var(--foreground); }
     .feed-desc { font-size: 13px; color: var(--muted-foreground); }
     .feed-time { font-size: 12px; color: var(--muted-foreground); flex-shrink: 0; white-space: nowrap; }
+
+    /* Page header */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .page-header-left { display: flex; align-items: center; gap: 16px; }
+    .page-header-icon {
+      width: 48px; height: 48px; border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+      background: var(--sky-soft); flex-shrink: 0;
+    }
+    .page-header-icon svg { width: 24px; height: 24px; stroke: var(--sky); }
+    .page-header-text h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+    .page-header-text p { font-size: 14px; color: var(--muted-foreground); }
+
+    .section-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--muted-foreground); margin: 0 0 10px;
+    }
+    .queue-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 1280px) { .queue-grid { grid-template-columns: repeat(2, 1fr); } }
+    .age-hot { color: var(--amber); font-weight: 600; }
+    .compact-right { margin-left: auto; text-align: right; }
+    .compact-meta { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    .status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card-colored.compact { flex-direction: row; align-items: center; gap: 12px; padding: 14px 16px; }
+    .stat-card-colored.compact .stat-card-count { font-size: 22px; margin-left: auto; }
+    .stat-card-colored.compact .stat-card-desc { display: none; }
+
+    /* Deltas */
+    .delta {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; font-weight: 700; padding: 2px 8px;
+      border-radius: var(--radius-pill); white-space: nowrap;
+    }
+    .metric-tile .delta.delta-pos { background: rgba(255,255,255,0.92); color: #047857; }
+    .metric-tile .delta.delta-neg { background: rgba(255,255,255,0.92); color: #be123c; }
+    .trend-pos { color: #047857; font-weight: 600; }
+    .trend-neg { color: #be123c; font-weight: 600; }
+    .metric-rose { background: var(--rose); }
   </style>
 </head>
 <body>
@@ -461,43 +510,77 @@
     <!-- Page content -->
     <div class="page-content">
 
+      <!-- Page header -->
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          </div>
+          <div class="page-header-text">
+            <h1>Insights</h1>
+            <p>How your business is performing at a glance.</p>
+          </div>
+        </div>
+        <div class="segmented segmented-text" id="range-toggle">
+          <button data-range="7d" onclick="setRange('7d')">7D</button>
+          <button data-range="30d" class="active" onclick="setRange('30d')">30D</button>
+          <button data-range="90d" onclick="setRange('90d')">90D</button>
+        </div>
+      </div>
+
+
       <!-- Stat cards -->
-      <div class="stat-grid">
+      <div class="section-label">Needs your action</div>
+      <div class="queue-grid">
         <div class="stat-card-colored stat-amber">
           <div class="stat-card-header">
-            <span class="stat-card-title">Orders to Fulfill</span>
-            <div class="icon-container-sm" style="background:var(--amber-soft);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></div>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Orders to Fulfill</span>
           </div>
           <div class="stat-card-count">7</div>
-          <div class="stat-card-desc">Awaiting fulfillment</div>
-          <button class="stat-card-action">View Orders &rarr;</button>
+          <div class="stat-card-desc">Awaiting fulfillment &middot; oldest 3d</div>
+          <button class="stat-card-action" onclick="location.href='orders.html'">View Orders &rarr;</button>
         </div>
         <div class="stat-card-colored stat-sky">
           <div class="stat-card-header">
-            <span class="stat-card-title">Orders to Ship</span>
-            <div class="icon-container-sm" style="background:var(--sky-soft);color:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>Orders to Ship</span>
           </div>
           <div class="stat-card-count">3</div>
-          <div class="stat-card-desc">Ready for shipping</div>
-          <button class="stat-card-action">View Orders &rarr;</button>
+          <div class="stat-card-desc">Ready for shipping &middot; oldest 1d</div>
+          <button class="stat-card-action" onclick="location.href='orders.html'">View Orders &rarr;</button>
+        </div>
+        <div class="stat-card-colored stat-orange">
+          <div class="stat-card-header">
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending Quotes</span>
+          </div>
+          <div class="stat-card-count">6</div>
+          <div class="stat-card-desc">Awaiting your quote &middot; <span class="age-hot">oldest 46d</span></div>
+          <button class="stat-card-action" onclick="location.href='quotes.html'">View Quotes &rarr;</button>
         </div>
         <div class="stat-card-colored stat-violet">
           <div class="stat-card-header">
-            <span class="stat-card-title">Awaiting Payment</span>
-            <div class="icon-container-sm" style="background:var(--violet-soft);color:var(--violet)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></div>
+            <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>Reviews to Answer</span>
           </div>
-          <div class="stat-card-count">48</div>
-          <div class="stat-card-desc">Payment pending</div>
-          <button class="stat-card-action">View Orders &rarr;</button>
+          <div class="stat-card-count">3</div>
+          <div class="stat-card-desc">Awaiting reply &middot; oldest 5d</div>
+          <button class="stat-card-action" onclick="location.href='reviews.html'">View Reviews &rarr;</button>
         </div>
-        <div class="stat-card-colored stat-emerald">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Completed Orders</span>
-            <div class="icon-container-sm" style="background:var(--emerald-soft);color:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div>
+      </div>
+
+      <div class="section-label">Pipeline status</div>
+      <div class="status-grid">
+        <div class="stat-card-colored stat-violet compact">
+          <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>Awaiting Payment</span>
+          <div class="compact-right">
+            <div class="stat-card-count">48</div>
+            <div class="compact-meta">$41.2K outstanding</div>
           </div>
-          <div class="stat-card-count">2</div>
-          <div class="stat-card-desc">Successfully shipped</div>
-          <button class="stat-card-action">View Orders &rarr;</button>
+        </div>
+        <div class="stat-card-colored stat-emerald compact">
+          <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>Completed &middot; <span data-range-label>30D</span></span>
+          <div class="compact-right">
+            <div class="stat-card-count" id="completed-count">2</div>
+            <div class="compact-meta" id="completed-value">$1,724.90 collected</div>
+          </div>
         </div>
       </div>
 
@@ -509,16 +592,10 @@
               <div class="insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg></div>
               <div>
                 <div class="insight-title">Orders History</div>
-                <div class="insight-sub">Track your order volume over time</div>
+                <div class="insight-sub" id="oh-summary">Loading&hellip;</div>
               </div>
             </div>
             <div class="insight-controls">
-              <div class="segmented segmented-text">
-                <button>7D</button>
-                <button class="active">30D</button>
-                <button>90D</button>
-              </div>
-              <span class="date-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>06/17/2026 &ndash; 07/16/2026</span>
             </div>
           </div>
           <div class="tile-row">
@@ -532,9 +609,9 @@
             </div>
           </div>
           <div class="bar-chart">
-            <div class="bar-chart-y"><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div>
+            <div class="bar-chart-y" id="bar-y"><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div>
             <div class="bar-chart-plot">
-              <div class="bar-chart-bars">
+              <div class="bar-chart-bars" id="bars">
               <div class="bar" style="height:50.0%"></div>
               <div class="bar" style="height:0.0%"></div>
               <div class="bar" style="height:0.0%"></div>
@@ -565,7 +642,7 @@
               <div class="bar" style="height:0.0%"></div>
               <div class="bar" style="height:0.0%"></div>
               </div>
-              <div class="bar-chart-x">
+              <div class="bar-chart-x" id="bar-x">
               <span>06/18</span>
               <span>06/22</span>
               <span>06/26</span>
@@ -584,28 +661,22 @@
               <div class="insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
               <div><div class="insight-title">Revenue &amp; Growth Summary</div></div>
             </div>
-            <div class="insight-controls">
-              <div class="segmented segmented-text">
-                <button class="active">30D</button>
-                <button>60D</button>
-                <button>90D</button>
-              </div>
             </div>
-          </div>
           <div class="metric-tile metric-emerald metric-hero">
-            <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Total Revenue <span class="metric-tile-chip">30D</span></div>
-            <div class="metric-tile-value">$6,044.05</div>
+            <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Total Revenue <span class="metric-tile-chip" data-range-label>30D</span></div>
+            <div class="metric-tile-value" id="rev-value">$6,044.05</div>
+            <div><span class="delta delta-neg" id="rev-delta">&#9660; 58.5% vs prior period</span></div>
           </div>
           <div class="metric-split">
-            <div class="metric-tile metric-primary">
-              <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>MoM Growth</div>
-              <div class="metric-tile-value">-58.5%</div>
-              <div class="metric-tile-note">vs prior month</div>
+            <div class="metric-tile metric-rose" id="growth-tile">
+              <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>Growth</div>
+              <div class="metric-tile-value" id="growth-value">&#9660; 58.5%</div>
+              <div class="metric-tile-note">vs prior <span data-range-label>30D</span></div>
             </div>
             <div class="metric-tile metric-navy">
               <div class="metric-tile-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Avg. Order Value</div>
-              <div class="metric-tile-value">$863.44</div>
-              <div class="metric-tile-note">last 30D</div>
+              <div class="metric-tile-value" id="aov-value">$863.44</div>
+              <div class="metric-tile-note">last <span data-range-label>30D</span> &middot; <span class="delta delta-neg" id="aov-delta">&#9660; 12.1%</span></div>
             </div>
           </div>
         </div>
@@ -776,10 +847,81 @@
   </div>
 
   <script>
+    const RANGES = {
+      '7d': {
+        chip: '7D', dates: '07/15/2026 &ndash; 07/21/2026',
+        orders: 3, ordersDelta: 50.0,
+        completed: 1, completedValue: '$954.20 collected',
+        revenue: '$1,412.55', revDelta: 8.2,
+        growth: 8.2, aov: '$470.85', aovDelta: 4.6,
+        yMax: 4, bars: [1,0,0,1,0,0,1],
+        xLabels: ['07/15','07/17','07/19','07/21']
+      },
+      '30d': {
+        chip: '30D', dates: '06/22/2026 &ndash; 07/21/2026',
+        orders: 7, ordersDelta: -36.4,
+        completed: 2, completedValue: '$1,724.90 collected',
+        revenue: '$6,044.05', revDelta: -58.5,
+        growth: -58.5, aov: '$863.44', aovDelta: -12.1,
+        yMax: 4, bars: [2,0,0,0,2,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1],
+        xLabels: ['06/22','06/26','06/30','07/04','07/08','07/12','07/16','07/21']
+      },
+      '90d': {
+        chip: '90D', dates: '04/23/2026 &ndash; 07/21/2026',
+        orders: 33, ordersDelta: 22.2,
+        completed: 9, completedValue: '$8,412.65 collected',
+        revenue: '$28,930.40', revDelta: 12.4,
+        growth: 12.4, aov: '$876.68', aovDelta: 3.8,
+        yMax: 8, bars: [2,4,1,3,0,2,5,1,0,3,2,6,1,0,2,3,1,4,0,2,1,3,2,0,1,2,4,1,3,2],
+        xLabels: ['04/23','05/05','05/17','05/29','06/10','06/22','07/04','07/21']
+      }
+    };
+
+    function fmtDelta(v) {
+      const arrow = v >= 0 ? '\u25B2' : '\u25BC';
+      return arrow + ' ' + Math.abs(v).toFixed(1) + '%';
+    }
+
+    function setRange(r) {
+      const d = RANGES[r];
+      document.querySelectorAll('#range-toggle button').forEach(b => b.classList.toggle('active', b.dataset.range === r));
+      document.querySelectorAll('[data-range-label]').forEach(el => el.textContent = d.chip);
+
+      // orders history
+      const trendCls = d.ordersDelta >= 0 ? 'trend-pos' : 'trend-neg';
+      document.getElementById('oh-summary').innerHTML =
+        '<strong>' + d.orders + '</strong> order' + (d.orders !== 1 ? 's' : '') + ' this period &middot; ' +
+        '<span class="' + trendCls + '">' + fmtDelta(d.ordersDelta) + ' vs prior</span>';
+      const yTicks = [d.yMax, d.yMax * 0.75, d.yMax * 0.5, d.yMax * 0.25, 0];
+      document.getElementById('bar-y').innerHTML = yTicks.map(t => '<span>' + (Number.isInteger(t) ? t : t.toFixed(1)) + '</span>').join('');
+      document.getElementById('bars').innerHTML = d.bars.map(v => '<div class="bar" style="height:' + (v / d.yMax * 100).toFixed(1) + '%"></div>').join('');
+      document.getElementById('bar-x').innerHTML = d.xLabels.map(l => '<span>' + l + '</span>').join('');
+
+      // revenue + deltas
+      document.getElementById('rev-value').textContent = d.revenue;
+      const rd = document.getElementById('rev-delta');
+      rd.className = 'delta ' + (d.revDelta >= 0 ? 'delta-pos' : 'delta-neg');
+      rd.textContent = fmtDelta(d.revDelta) + ' vs prior period';
+
+      const gt = document.getElementById('growth-tile');
+      gt.classList.remove('metric-rose', 'metric-emerald');
+      gt.classList.add(d.growth >= 0 ? 'metric-emerald' : 'metric-rose');
+      document.getElementById('growth-value').textContent = fmtDelta(d.growth);
+
+      document.getElementById('completed-count').textContent = d.completed;
+      document.getElementById('completed-value').textContent = d.completedValue;
+      document.getElementById('aov-value').textContent = d.aov;
+      const ad = document.getElementById('aov-delta');
+      ad.className = 'delta ' + (d.aovDelta >= 0 ? 'delta-pos' : 'delta-neg');
+      ad.textContent = fmtDelta(d.aovDelta);
+    }
+
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
       document.querySelector('.main').classList.toggle('expanded');
     }
+
+    setRange('30d');
   </script>
 </body>
 </html>

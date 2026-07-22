@@ -704,6 +704,14 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li><strong>Metric Tile vs. Stat Card:</strong> Metric Tiles (solid color, white text) are for performance aggregates — revenue, spend, top account. Stat Cards (outlined, tinted count) are for countable status breakdowns that mirror tabs. Never use solid tiles for a status breakdown or outlined cards for a KPI.</li>
       </ul>
 
+      <h3>Dashboards &amp; Deltas</h3>
+      <ul>
+        <li><strong>Deltas are always directional:</strong> &#9650; + emerald for positive, &#9660; + rose for negative — the arrow matches the sign, and a negative number never sits on a neutral or positive-looking surface. Growth Metric Tiles take their background from the sign (emerald / rose).</li>
+        <li><strong>One time scope per page:</strong> analytics pages carry a single header-level time toggle (7D / 30D / 90D) that drives every chart, metric, chip, and date range on the page. Per-card time toggles are forbidden — two cards must never disagree about the period.</li>
+        <li><strong>Action before status:</strong> dashboard top cards separate "needs your action" (dominant cards with CTAs) from passive pipeline status (compact cards, no CTA). A CTA on a card asserts the user should act — completed or third-party states never get one.</li>
+        <li>Charts state their own conclusion: a summary line in the chart header ("<strong>7</strong> orders this period &middot; &#9660; 36.4% vs prior") so the reader gets the answer without decoding bars.</li>
+      </ul>
+
       <h3>Modal</h3>
       <ul>
         <li>Backdrop: <code>rgba(0,0,0,0.5)</code> with <code>backdrop-filter: blur(4px)</code>.</li>

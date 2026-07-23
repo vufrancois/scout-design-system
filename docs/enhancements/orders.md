@@ -24,7 +24,7 @@ Payment Method and the redundant third "Status" column were dropped, leaving one
 Sorting lives on the column headers (all data columns sortable, newest first by default); the toolbar keeps only filters and search.
 
 ### 6. Standard playbook + reconciled numbers
-Live tabs with counts over a 24-order sample spanning every stage, functional search/filters, live pagination (10/page), bulk selection (**Export** and **Mark Fulfilled**), empty state, and clickable stat cards synced to tabs (duplicate icon bubbles and redundant "View Orders →" CTAs removed). Card counts now agree with the Insights dashboard: 7 to fulfill · 3 to ship · 4 in transit · 48 awaiting payment.
+Live tabs with counts over a 24-order sample spanning every stage, functional search/filters, live pagination (10/page), bulk selection (**Export** and **Mark Fulfilled**), empty state, and clickable stat cards synced to tabs (duplicate icon bubbles and redundant "View Orders →" CTAs removed). Card counts now agree with the Insights dashboard and the loaded sample: 7 to fulfill · 3 to ship · 4 in transit · 11 awaiting payment ($29,087.94 outstanding). The Awaiting Payment card and filter group everything before Paid, with the menu highlighting the constituent states.
 
 ## Design system additions
 

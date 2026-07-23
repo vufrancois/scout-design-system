@@ -16,8 +16,9 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | Quotes | [quotes.md](quotes.md) |
 | Insights | [insights.md](insights.md) |
 | Orders | [orders.md](orders.md) |
+| Dark mode + responsive (all pages) | [dark-mode-responsive.md](dark-mode-responsive.md) |
 
-All 14 views enhanced — the per-view UX pass is complete.
+All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass.
 
 ## Format
 

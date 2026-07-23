@@ -36,6 +36,9 @@
     }
     .dark {
       --background: #080f2e; --foreground: #f5f5f5;
+      --violet-soft: #251c47; --rose-soft: #3b1a2e; --amber-soft: #3a2a0e;
+      --emerald-soft: #0d3327; --sky-soft: #122d52; --orange-soft: #3a2210;
+
       --primary: #172d77; --primary-foreground: #ffffff;
       --secondary: #0d1a4a; --secondary-foreground: #f5f5f5;
       --muted: #122361; --muted-foreground: #a1a1aa;
@@ -633,6 +636,13 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <ul>
         <li>Dashboard card header: 32px muted icon tile + 15px/600 title (+ optional 13px muted subtitle) left; controls right (segmented toggle, date chip).</li>
         <li>Without a subtitle the title vertically centers against the icon; with one, both top-align.</li>
+      </ul>
+
+      <h3>Theming &amp; Responsive</h3>
+      <ul>
+        <li><strong>Dark mode:</strong> every app page supports dark via <code>body.dark</code> + the token overrides (including dark variants of the <code>-soft</code> accent colors). A sun/moon toggle in the topbar persists the choice in <code>localStorage</code> across pages. Component fixes ride on <code>body.dark</code> rules — primary-colored <em>text</em> (sorted headers, links, checks) lightens to <code>--blue-300</code>; tinted badges switch to translucent accent backgrounds with lightened text.</li>
+        <li><strong>Breakpoints:</strong> 1280px (low-priority table columns drop), 1024px (sidebar becomes a tap-to-dismiss overlay drawer, grids go 2-up, page padding tightens), 720px (grids stack to one column).</li>
+        <li><strong>Overflow containment:</strong> <code>.main</code> carries <code>min-width: 0</code> so wide tables scroll inside their cards instead of stretching the page; the document itself never scrolls horizontally.</li>
       </ul>
 
       <h3>Tooltip</h3>

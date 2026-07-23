@@ -482,6 +482,73 @@
     .stat-card-colored.stat-violet .stat-card-icon { color: var(--violet); }
     .stat-card-colored.stat-rose .stat-card-icon { color: var(--rose); }
     .stat-card-colored.stat-gray .stat-card-icon { color: var(--muted-foreground); }
+
+    /* ============ Dark theme ============ */
+    body.dark {
+      --background: #080f2e; --foreground: #f5f5f5;
+      --secondary: #0d1a4a; --secondary-foreground: #f5f5f5;
+      --muted: #122361; --muted-foreground: #a1a1aa;
+      --accent: #122361; --accent-foreground: #dbe1fe;
+      --border: #1e3a8a; --input: #1e3a8a; --ring: #3d52e0;
+      --card: #0d1a4a; --card-foreground: #f5f5f5;
+      --popover: #0d1a4a; --popover-foreground: #f5f5f5;
+      --surface-soft: #080f2e;
+      --violet-soft: #251c47; --rose-soft: #3b1a2e; --amber-soft: #3a2a0e;
+      --emerald-soft: #0d3327; --sky-soft: #122d52; --orange-soft: #3a2210;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.25);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    body.dark .tab-count { background: rgba(255,255,255,0.1); color: var(--muted-foreground); }
+    body.dark .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
+    body.dark .tab-item.active { background: #2740b8; }
+    body.dark thead th.sorted, body.dark .table-card thead th.sorted { color: #8da0fb; }
+    body.dark .dropdown-item .check,
+    body.dark .bulk-selected-label,
+    body.dark .track-link, body.dark .table-link, body.dark .text-link,
+    body.dark .stat-cta { color: #8da0fb; }
+    body.dark .segmented button.active { background: var(--card); color: #8da0fb; }
+    body.dark .checkbox { accent-color: #3d52e0; }
+    body.dark .toolbar-btn.btn-primary-fill { background: #2740b8; border-color: #2740b8; }
+    body.dark .badge-stock { background: rgba(16,185,129,0.16); color: #34d399; }
+    body.dark .badge-stock-low { background: rgba(245,158,11,0.16); color: #fbbf24; }
+    body.dark .badge-stock-out { background: rgba(224,89,155,0.18); color: #f9a8d4; }
+    body.dark .trend-pos { color: #34d399; }
+    body.dark .trend-neg { color: #f9a8d4; }
+    body.dark .metric-tile .delta.delta-pos { background: rgba(255,255,255,0.16); color: #6ee7b7; }
+    body.dark .metric-tile .delta.delta-neg { background: rgba(255,255,255,0.16); color: #f9a8d4; }
+    body.dark .badge-return { color: #f9a8d4; }
+    body.dark .badge-ai { color: #b7a5f7; }
+    body.dark [data-tip]:hover::after { background: #f5f5f5; color: #0d1a4a; }
+    body.dark [data-tip]:hover::before { border-top-color: #f5f5f5; }
+    body.dark .avatar { border-color: var(--card); }
+    body.dark .notif-dot { border-color: var(--background); }
+
+    /* ============ Responsive chrome ============ */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.collapsed { transform: translateX(0); box-shadow: 0 0 48px rgba(0,0,0,0.35); }
+      .main, .main.expanded { margin-left: 0; }
+      .page-content { padding: 20px 16px; }
+      .topbar { padding: 12px 16px; }
+      .table-card { overflow-x: auto; }
+    }
+
+    /* Responsive grids */
+    @media (max-width: 1024px) {
+      .stat-grid, .entity-grid, .item-grid, .queue-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .insight-row { grid-template-columns: 1fr !important; }
+      .metric-row { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (max-width: 720px) {
+      .stat-grid, .entity-grid, .item-grid, .queue-grid, .status-grid,
+      .metric-row, .pl-grid, .promo-grid, .attr-tiles { grid-template-columns: 1fr !important; }
+    }
+
+    /* Overflow containment */
+    .main { min-width: 0; }
+    .table-scroll, .table-wrap { overflow-x: auto; }
+    .table-card { overflow-x: auto; }
   </style>
 </head>
 <body>
@@ -595,6 +662,10 @@
         <div class="topbar-title">Products</div>
       </div>
       <div class="topbar-actions">
+        <button class="topbar-icon-btn" id="theme-btn" title="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
         <button class="topbar-icon-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
         </button>
@@ -1526,6 +1597,25 @@
     document.querySelector('th[data-col="name"]').classList.add('sorted');
     document.querySelector('th[data-col="name"] .sort-icon').innerHTML = ARROWS.asc;
     render();
+
+    function applyTheme() {
+      const dark = localStorage.getItem('scout-theme') === 'dark';
+      document.body.classList.toggle('dark', dark);
+      const b = document.getElementById('theme-btn');
+      if (b) {
+        b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+        b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+      }
+    }
+    function toggleTheme() {
+      localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark');
+      applyTheme();
+    }
+    applyTheme();
+
+    document.querySelector('.main').addEventListener('click', () => {
+      if (window.innerWidth <= 1024 && document.querySelector('.sidebar').classList.contains('collapsed')) toggleSidebar();
+    });
   </script>
 </body>
 </html>

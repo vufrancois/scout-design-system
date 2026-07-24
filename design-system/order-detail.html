@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order #515 — Scout Demo</title>
+  <style>
+    /* ========================================
+       SCOUT TOKENS (shared)
+       ======================================== */
+    :root {
+      --blue-50: #eef2ff; --blue-100: #dbe1fe; --blue-200: #b8c4fd;
+      --blue-300: #8da0fb; --blue-400: #6277f5; --blue-500: #3d52e0;
+      --blue-600: #2740b8; --blue-700: #172d77; --blue-800: #122361;
+      --blue-900: #0d1a4a; --blue-950: #080f2e;
+      --violet: #8a5fef; --violet-soft: #f0ebfe;
+      --rose: #e0599b; --rose-soft: #fce8f1;
+      --amber: #f59e0b; --amber-soft: #fef3cd;
+      --emerald: #10b981; --emerald-soft: #d1fae5;
+      --sky: #3b82f6; --sky-soft: #dbeafe;
+      --orange: #f97316; --orange-soft: #ffedd5;
+      --background: #ffffff; --foreground: #111111;
+      --primary: #172d77; --primary-foreground: #ffffff;
+      --secondary: #f5f5f5; --secondary-foreground: #111111;
+      --muted: #f5f5f5; --muted-foreground: #6b7280;
+      --accent: #eef2ff; --accent-foreground: #172d77;
+      --destructive: #ef4444; --destructive-foreground: #ffffff;
+      --border: #e5e7eb; --input: #e5e7eb; --ring: #172d77;
+      --card: #ffffff; --card-foreground: #111111;
+      --popover: #ffffff; --popover-foreground: #111111;
+      --success: #10b981; --warning: #f59e0b;
+      --surface-soft: #f8f9fa;
+      --surface-dark: #0d1a4a; --surface-dark-foreground: #ffffff; --surface-dark-muted: #a1a1aa;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --radius-xs: 4px; --radius-sm: 6px; --radius-md: 8px;
+      --radius-lg: 12px; --radius-xl: 16px; --radius-pill: 9999px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--surface-soft); color: var(--foreground);
+      line-height: 1.5; display: flex; min-height: 100vh;
+    }
+
+    /* ========================================
+       SIDEBAR (Dark / Vendor)
+       ======================================== */
+    .sidebar {
+      width: 240px; min-height: 100vh; background: var(--surface-dark);
+      color: var(--surface-dark-foreground); padding: 20px 12px;
+      display: flex; flex-direction: column; flex-shrink: 0;
+      position: fixed; left: 0; top: 0; bottom: 0; z-index: 50;
+      transition: transform 0.25s ease; overflow-y: auto;
+    }
+    .sidebar.collapsed { transform: translateX(-100%); }
+    .main { transition: margin-left 0.25s ease; }
+    .main.expanded { margin-left: 0; }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 12px 24px; font-size: 15px; font-weight: 600;
+    }
+    .sidebar-logo-icon {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      background: var(--primary); display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    .sidebar-group { margin-bottom: 24px; }
+    .sidebar-group-label {
+      font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--surface-dark-muted); padding: 0 12px; margin-bottom: 4px;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: var(--radius-md);
+      font-size: 14px; font-weight: 500; color: var(--surface-dark-foreground);
+      text-decoration: none; cursor: pointer; transition: background 0.15s;
+    }
+    .sidebar-item:hover { background: rgba(255,255,255,0.08); }
+    .sidebar-item.active { background: rgba(255,255,255,0.12); }
+    .sidebar-item svg { width: 20px; height: 20px; opacity: 0.8; flex-shrink: 0; }
+    .sidebar-badge {
+      margin-left: auto; font-size: 11px; font-weight: 600;
+      background: var(--destructive); color: #fff;
+      border-radius: var(--radius-pill); padding: 1px 7px; min-width: 20px; text-align: center;
+    }
+    .sidebar-footer {
+      margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 12px;
+    }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500;
+    }
+    .sidebar-avatar {
+      width: 28px; height: 28px; border-radius: var(--radius-sm);
+      background: var(--primary); display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    .sidebar-more {
+      background: none; border: none; color: var(--surface-dark-muted);
+      cursor: pointer; padding: 4px; border-radius: var(--radius-xs);
+    }
+    .sidebar-more:hover { background: rgba(255,255,255,0.08); }
+
+    /* ========================================
+       MAIN CONTENT
+       ======================================== */
+    .main { flex: 1; margin-left: 240px; min-height: 100vh; }
+
+    /* Top bar */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px; background: var(--background);
+      border-bottom: 1px solid var(--border); gap: 16px;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .sidebar-toggle {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      border: 1px solid var(--border); background: var(--background);
+      color: var(--foreground); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .sidebar-toggle:hover { background: var(--accent); }
+    .sidebar-toggle svg { width: 18px; height: 18px; }
+    .topbar-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 500; color: var(--muted-foreground);
+    }
+    .topbar-actions { display: flex; align-items: center; gap: 12px; }
+    .topbar-icon-btn {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      border: none; background: none; color: var(--muted-foreground);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      position: relative; transition: background 0.15s;
+    }
+    .topbar-icon-btn:hover { background: var(--muted); }
+    .topbar-icon-btn svg { width: 20px; height: 20px; }
+    .notif-dot {
+      position: absolute; top: 6px; right: 8px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--emerald); border: 2px solid var(--background);
+    }
+
+    /* Page content */
+    .page-content { padding: 32px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* Breadcrumbs (topbar) */
+    .breadcrumbs { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .breadcrumbs a { color: var(--muted-foreground); text-decoration: none; font-weight: 500; }
+    .breadcrumbs a:hover { color: var(--foreground); }
+    .breadcrumbs .crumb-sep { color: var(--muted-foreground); }
+    .breadcrumbs .crumb-current { color: var(--foreground); font-weight: 600; }
+
+    /* Detail header (avatar variant) */
+    .detail-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .detail-head { display: flex; align-items: center; gap: 20px; padding: 24px 20px; }
+    .detail-avatar {
+      position: relative; width: 72px; height: 72px; border-radius: 50%;
+      background: var(--rose); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 24px; font-weight: 700;
+    }
+    .presence-dot {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--emerald); border: 3px solid var(--background);
+    }
+    .detail-title-block { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .detail-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .detail-badges .badge-neutral { max-width: 340px; overflow: hidden; text-overflow: ellipsis; }
+    .detail-name { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; color: var(--foreground); }
+    .detail-meta {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 14px; color: var(--muted-foreground);
+    }
+    .detail-meta svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* Status badge dots */
+    .status-dot-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 3px 10px; border: 1px solid var(--border); border-radius: var(--radius-pill);
+      background: var(--background); align-self: flex-start;
+    }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.dot-active { background: var(--emerald); }
+    .status-dot-label { font-size: 13px; color: var(--foreground); }
+
+    /* Attribute highlight tiles */
+    .attr-tiles {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      padding: 0 20px 20px;
+    }
+    .attr-tile {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--muted); border-radius: var(--radius-md); padding: 16px;
+    }
+    .attr-tile-icon {
+      width: 40px; height: 40px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .attr-tile-icon svg { width: 20px; height: 20px; }
+    .attr-tile-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .attr-tile-value { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .attr-tile-value a { color: inherit; text-decoration: none; }
+    .attr-tile-value a:hover { text-decoration: underline; }
+
+    /* Section card */
+    .section-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+    }
+    .section-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .insight-title-wrap { display: flex; align-items: flex-start; gap: 12px; }
+    .insight-title-wrap:not(:has(.insight-sub)) { align-items: center; }
+    .insight-icon {
+      width: 40px; height: 40px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      background: var(--violet-soft); color: var(--violet);
+    }
+    .insight-icon svg { width: 20px; height: 20px; }
+    .insight-title { font-size: 16px; font-weight: 600; color: var(--foreground); }
+    .insight-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+
+    /* Toolbar */
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .search-wrap { position: relative; display: flex; align-items: center; width: 240px; }
+    .search-icon { position: absolute; left: 12px; color: var(--muted-foreground); pointer-events: none; }
+    .search-field {
+      height: 36px; width: 100%; padding: 0 12px 0 36px;
+      border-radius: var(--radius-md); border: 1px solid var(--border);
+      font-size: 13px; font-family: inherit; background: var(--background);
+      color: var(--foreground); outline: none; transition: border-color 0.15s;
+    }
+    .search-field::placeholder { color: var(--muted-foreground); }
+    .search-field:focus { border-color: var(--ring); }
+
+    /* Table */
+    .table-wrap { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 16px; text-align: left; white-space: nowrap;
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--muted-foreground); background: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr { transition: background 0.1s; }
+    tbody tr:hover { background: var(--accent); }
+    tbody td { padding: 12px 16px; font-size: 14px; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* Pagination */
+    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 0; margin-top: 4px; }
+    .pagination-info { font-size: 13px; color: var(--muted-foreground); }
+    .pagination-controls { display: flex; align-items: center; gap: 16px; }
+    .pagination-rows { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-foreground); }
+    .pagination-rows-select {
+      height: 28px; padding: 2px 24px 2px 8px; border-radius: var(--radius-sm);
+      font-size: 13px; font-family: inherit; background: var(--background);
+      color: var(--foreground); border: 1px solid var(--border);
+      appearance: none; cursor: pointer;
+    }
+    .pagination-buttons { display: flex; gap: 4px; }
+    .pagination-btn {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--background); color: var(--foreground);
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .pagination-btn:hover:not(:disabled) { background: var(--accent); }
+    .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination-btn svg { width: 16px; height: 16px; }
+
+    /* Sortable headers */
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--foreground); }
+    .sort-icon { width: 12px; height: 12px; vertical-align: -2px; margin-left: 4px; }
+    thead th.sorted, .table-card thead th.sorted { color: var(--primary); }
+
+    .buyer-cell { display: flex; align-items: center; gap: 10px; }
+    .buyer-cell .avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #fff;
+    }
+    .email-cell { color: var(--muted-foreground); }
+    .badge-neutral {
+      display: inline-block; vertical-align: middle;
+      padding: 2px 10px; border-radius: var(--radius-pill);
+      font-size: 12px; font-weight: 500; line-height: 1.6; color: var(--muted-foreground);
+      background: var(--muted); border: 1px solid var(--border); white-space: nowrap;
+    }
+
+    /* Filter bar */
+    .filter-chip {
+      display: inline-flex; align-items: stretch; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); font-size: 13px; overflow: hidden;
+    }
+    .filter-chip-attr {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--muted-foreground); border-right: 1px solid var(--border);
+    }
+    .filter-chip-value {
+      display: inline-flex; align-items: center; padding: 0 12px;
+      color: var(--foreground); font-weight: 500;
+    }
+    .filter-chip-remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; border: none; border-left: 1px solid var(--border);
+      background: none; color: var(--muted-foreground); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip-remove:hover { background: var(--muted); color: var(--foreground); }
+    .filter-chip-remove svg { width: 14px; height: 14px; }
+    .filter-menu-wrap { position: relative; }
+    .filter-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      min-width: 200px; z-index: 20;
+      border-radius: var(--radius-lg); overflow: hidden; background: var(--popover);
+      border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    }
+    .dropdown-item {
+      padding: 10px 14px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--popover-foreground); transition: background 0.1s;
+    }
+    .dropdown-item:hover, .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
+    .dropdown-item .check { font-size: 14px; color: var(--primary); }
+    .toolbar-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      background: var(--background); color: var(--foreground);
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+    }
+    .toolbar-btn:hover { background: var(--accent); }
+    .toolbar-btn svg { width: 16px; height: 16px; }
+    .toolbar-btn-dashed { border-style: dashed; color: var(--muted-foreground); }
+    .toolbar-btn-dashed:hover { color: var(--foreground); }
+    .toolbar-btn-ghost { border: none; background: none; color: var(--muted-foreground); }
+    .toolbar-btn-ghost:hover { background: var(--muted); color: var(--foreground); }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 20px; text-align: center; gap: 6px;
+    }
+    .empty-state-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--muted); color: var(--muted-foreground);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+    }
+    .empty-state-icon svg { width: 22px; height: 22px; }
+    .empty-state-title { font-size: 15px; font-weight: 600; color: var(--foreground); }
+    .empty-state-desc { font-size: 13px; color: var(--muted-foreground); max-width: 360px; }
+
+    /* ============ Dark theme ============ */
+    body.dark {
+      --background: #080f2e; --foreground: #f5f5f5;
+      --secondary: #0d1a4a; --secondary-foreground: #f5f5f5;
+      --muted: #122361; --muted-foreground: #a1a1aa;
+      --accent: #122361; --accent-foreground: #dbe1fe;
+      --border: #1e3a8a; --input: #1e3a8a; --ring: #3d52e0;
+      --card: #0d1a4a; --card-foreground: #f5f5f5;
+      --popover: #0d1a4a; --popover-foreground: #f5f5f5;
+      --surface-soft: #080f2e;
+      --violet-soft: #251c47; --rose-soft: #3b1a2e; --amber-soft: #3a2a0e;
+      --emerald-soft: #0d3327; --sky-soft: #122d52; --orange-soft: #3a2210;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.25);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    body.dark .tab-count { background: rgba(255,255,255,0.1); color: var(--muted-foreground); }
+    body.dark .tab-item.active .tab-count { background: rgba(255,255,255,0.2); color: var(--primary-foreground); }
+    body.dark .tab-item.active { background: #2740b8; }
+    body.dark thead th.sorted, body.dark .table-card thead th.sorted { color: #8da0fb; }
+    body.dark .dropdown-item .check,
+    body.dark .bulk-selected-label,
+    body.dark .track-link, body.dark .table-link, body.dark .text-link,
+    body.dark .stat-cta { color: #8da0fb; }
+    body.dark .segmented button.active { background: var(--card); color: #8da0fb; }
+    body.dark .checkbox { accent-color: #3d52e0; }
+    body.dark .toolbar-btn.btn-primary-fill { background: #2740b8; border-color: #2740b8; }
+    body.dark .badge-stock { background: rgba(16,185,129,0.16); color: #34d399; }
+    body.dark .badge-stock-low { background: rgba(245,158,11,0.16); color: #fbbf24; }
+    body.dark .badge-stock-out { background: rgba(224,89,155,0.18); color: #f9a8d4; }
+    body.dark .trend-pos { color: #34d399; }
+    body.dark .trend-neg { color: #f9a8d4; }
+    body.dark .metric-tile .delta.delta-pos { background: rgba(255,255,255,0.16); color: #6ee7b7; }
+    body.dark .metric-tile .delta.delta-neg { background: rgba(255,255,255,0.16); color: #f9a8d4; }
+    body.dark .badge-return { color: #f9a8d4; }
+    body.dark .badge-ai { color: #b7a5f7; }
+    body.dark [data-tip]:hover::after { background: #f5f5f5; color: #0d1a4a; }
+    body.dark [data-tip]:hover::before { border-top-color: #f5f5f5; }
+    body.dark .avatar { border-color: var(--card); }
+    body.dark .notif-dot { border-color: var(--background); }
+
+    /* ============ Responsive chrome ============ */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.collapsed { transform: translateX(0); box-shadow: 0 0 48px rgba(0,0,0,0.35); }
+      .main, .main.expanded { margin-left: 0; }
+      .page-content { padding: 20px 16px; }
+      .topbar { padding: 12px 16px; }
+      .table-card { overflow-x: auto; }
+    }
+
+    /* Responsive grids */
+    @media (max-width: 1024px) {
+      .stat-grid, .entity-grid, .item-grid, .queue-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .insight-row { grid-template-columns: 1fr !important; }
+      .metric-row { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (max-width: 720px) {
+      .stat-grid, .entity-grid, .item-grid, .queue-grid, .status-grid,
+      .metric-row, .pl-grid, .promo-grid, .attr-tiles { grid-template-columns: 1fr !important; }
+    }
+
+    /* Overflow containment */
+    .main { min-width: 0; }
+    .table-scroll, .table-wrap { overflow-x: auto; }
+    .table-card { overflow-x: auto; }
+
+    .row-action {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      border: none; background: none; color: var(--muted-foreground);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.15s;
+    }
+    .row-action:hover { background: var(--muted); color: var(--foreground); }
+    .row-action svg { width: 16px; height: 16px; }
+    .avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #fff;
+    }
+    /* ===== Order detail layout ===== */
+    .detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+    @media (max-width: 1100px) { .detail-layout { grid-template-columns: 1fr; } }
+    .detail-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+    .panel {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+    }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .panel-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .panel-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .panel-badges .status-dot-item { align-self: center; }
+
+    /* Order header */
+    .order-id-row { display: flex; align-items: center; gap: 8px; }
+    .order-id { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+    .order-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 4px; }
+    .btn-danger-outline {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer;
+      background: var(--background); color: var(--destructive);
+      border: 1px solid var(--destructive); transition: all 0.15s;
+    }
+    .btn-danger-outline:hover { background: var(--rose-soft); }
+    .btn-danger-outline svg { width: 15px; height: 15px; }
+
+    /* ===== Stepper ===== */
+    .stepper { display: flex; align-items: flex-start; overflow-x: auto; padding: 4px 0; }
+    .step { flex: 1; min-width: 84px; display: flex; flex-direction: column; align-items: center; position: relative; }
+    .step:not(:last-child)::after {
+      content: ''; position: absolute; top: 19px; left: calc(50% + 26px); right: calc(-50% + 26px);
+      height: 2px; background: var(--border);
+    }
+    .step.done:not(:last-child)::after { background: var(--emerald); }
+    .step-dot {
+      width: 40px; height: 40px; border-radius: 50%; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--card); border: 2px solid var(--border); color: var(--muted-foreground);
+    }
+    .step-dot svg { width: 18px; height: 18px; }
+    .step.done .step-dot { background: var(--emerald); border-color: var(--emerald); color: #fff; }
+    .step.current .step-dot { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+    .step-label { font-size: 12px; font-weight: 600; margin-top: 8px; text-align: center; color: var(--foreground); }
+    .step.upcoming .step-label { color: var(--muted-foreground); font-weight: 500; }
+    .step-actor { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); margin-top: 2px; }
+    .step.current .step-actor { color: var(--amber); font-weight: 700; }
+
+    /* ===== Line items ===== */
+    .line-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
+    .line-item + .line-item { border-top: 1px solid var(--border); }
+    .line-thumb {
+      width: 48px; height: 48px; border-radius: var(--radius-md); flex-shrink: 0;
+      background: var(--muted); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; color: var(--muted-foreground);
+    }
+    .line-thumb svg { width: 22px; height: 22px; }
+    .line-info { flex: 1; min-width: 0; }
+    .line-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .line-sku { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; color: var(--muted-foreground); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+    .line-variant { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    .line-price { font-size: 13px; color: var(--muted-foreground); white-space: nowrap; }
+    .line-qty { font-size: 13px; color: var(--muted-foreground); white-space: nowrap; }
+    .line-total { font-size: 14px; font-weight: 600; white-space: nowrap; min-width: 80px; text-align: right; }
+
+    /* ===== Totals ===== */
+    .totals { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .totals-row { display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
+    .totals-label { color: var(--muted-foreground); display: inline-flex; align-items: center; gap: 4px; }
+    .totals-label svg { width: 14px; height: 14px; }
+    .totals-value { color: var(--foreground); }
+    .totals-row.grand { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 2px; }
+    .totals-row.grand .totals-label, .totals-row.grand .totals-value { font-weight: 700; color: var(--foreground); font-size: 15px; }
+
+    /* ===== Rail cards ===== */
+    .doc-row {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--sky-soft); border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+    .doc-row svg.doc-ico { width: 18px; height: 18px; color: var(--sky); flex-shrink: 0; }
+    .doc-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--foreground); }
+    .doc-date { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; }
+    .rail-rows { display: flex; flex-direction: column; }
+    .rail-row { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding: 12px 0; font-size: 13px; align-items: start; }
+    .rail-row + .rail-row { border-top: 1px solid var(--border); }
+    .rail-label { color: var(--muted-foreground); }
+    .rail-value { color: var(--foreground); display: flex; align-items: flex-start; gap: 8px; min-width: 0; overflow-wrap: anywhere; }
+    .rail-value .avatar { width: 22px; height: 22px; font-size: 9px; }
+
+    /* Activity feed */
+    .feed-item { display: flex; gap: 12px; padding: 10px 0; }
+    .feed-item + .feed-item { border-top: 1px solid var(--border); }
+    .feed-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); margin-top: 5px; flex-shrink: 0; }
+    .feed-body { flex: 1; min-width: 0; }
+    .feed-title { font-size: 13px; font-weight: 600; }
+    .feed-meta { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; }
+    .feed-time { font-size: 12px; color: var(--muted-foreground); white-space: nowrap; }
+
+    /* ===== Full-screen takeover ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200; background: rgba(8, 15, 46, 0.55);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      width: 100%; max-width: 640px; max-height: 88vh;
+      display: flex; flex-direction: column; box-shadow: var(--shadow-md);
+    }
+    .modal-head { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-size: 15px; font-weight: 600; flex: 1; }
+    .modal-close {
+      width: 32px; height: 32px; border: none; background: none; cursor: pointer;
+      color: var(--foreground); display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-md);
+    }
+    .modal-close:hover { background: var(--muted); }
+    .modal-close svg { width: 18px; height: 18px; }
+    .esc-chip {
+      font-size: 11px; font-weight: 600; color: var(--muted-foreground);
+      border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px 7px;
+      background: var(--muted);
+    }
+    .modal-body { flex: 1; overflow-y: auto; padding: 0 20px; }
+
+    .form-row {
+      display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 20px;
+      padding: 20px 0; border-bottom: 1px solid var(--border); align-items: center;
+    }
+    @media (max-width: 720px) { .form-row { grid-template-columns: 1fr; gap: 10px; } }
+    .form-label { font-size: 14px; font-weight: 600; }
+    .form-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+    .select {
+      width: 100%; height: 38px; padding: 0 32px 0 12px; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%236b7280" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>') no-repeat right 10px center;
+      color: var(--foreground); appearance: none; cursor: pointer;
+    }
+    .select:focus { outline: none; border-color: var(--ring); }
+    .fulfill-item {
+      display: flex; align-items: center; gap: 14px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--muted); padding: 14px 16px; margin-top: 12px;
+    }
+    .stock-num { font-size: 12px; color: var(--muted-foreground); border-left: 1px solid var(--border); padding-left: 14px; }
+    .stock-num strong { display: block; font-size: 13px; color: var(--foreground); font-weight: 600; margin-top: 1px; }
+    .stock-delta { color: #be123c; font-weight: 600; }
+    body.dark .stock-delta { color: #f9a8d4; }
+    .qty-input {
+      width: 56px; height: 34px; text-align: center; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); color: var(--foreground);
+    }
+    .qty-input:focus { outline: none; border-color: var(--ring); }
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+      padding: 14px 20px; border-top: 1px solid var(--border);
+    }
+
+    .status-dot.dot-fulfill { background: var(--amber); }
+    .status-dot.dot-tax { background: var(--amber); }
+    .tip-icon { width: 13px; height: 13px; color: var(--muted-foreground); margin-left: -3px; flex-shrink: 0; }
+    [data-tip] { position: relative; }
+    [data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute; bottom: calc(100% + 7px); left: 50%; transform: translateX(-50%);
+      background: var(--foreground); color: var(--background);
+      font-size: 12px; font-weight: 500; line-height: 1.4;
+      padding: 5px 10px; border-radius: var(--radius-sm);
+      white-space: nowrap; z-index: 30; box-shadow: var(--shadow-md); pointer-events: none;
+    }
+    [data-tip]:hover::before {
+      content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: var(--foreground);
+      z-index: 30; pointer-events: none;
+    }
+    body.dark [data-tip]:hover::after { background: #f5f5f5; color: #0d1a4a; }
+    body.dark [data-tip]:hover::before { border-top-color: #f5f5f5; }
+    .btn-primary-fill { background: var(--primary) !important; color: var(--primary-foreground) !important; border-color: var(--primary) !important; font-weight: 600; }
+    body.dark .btn-primary-fill { background: #2740b8 !important; border-color: #2740b8 !important; }
+    .switch {
+      appearance: none; width: 36px; height: 20px; border-radius: var(--radius-pill);
+      background: var(--border); position: relative; cursor: pointer;
+      transition: background 0.15s; vertical-align: middle; flex-shrink: 0;
+    }
+    .switch::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; box-shadow: var(--shadow-xs); transition: transform 0.15s;
+    }
+    .switch:checked { background: var(--primary); }
+    .switch:checked::after { transform: translateX(16px); }
+
+    .text-input {
+      width: 100%; height: 38px; padding: 0 12px; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); color: var(--foreground);
+    }
+    .text-input:focus { outline: none; border-color: var(--ring); }
+    .text-input::placeholder { color: var(--muted-foreground); }
+    .slip-row {
+      display: flex; align-items: center; gap: 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--muted); padding: 14px 16px;
+    }
+    .slip-title { font-size: 13px; font-weight: 600; }
+    .slip-desc { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; }
+    .fact-rows { border-top: 1px solid var(--border); margin-top: 4px; }
+    .fact-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; padding: 12px 0; font-size: 13px; }
+    .fact-row + .fact-row { border-top: 1px solid var(--border); }
+    .fact-label { color: var(--muted-foreground); }
+    .fact-value { color: var(--foreground); }
+    .panel-actions {
+      display: flex; align-items: center; gap: 8px;
+      border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px;
+    }
+    .panel-actions .spacer { flex: 1; }
+    .status-dot.dot-ship { background: var(--sky); }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">S</div>
+      Scout Demo Vendor
+    </div>
+
+    <div class="sidebar-group">
+      <a class="sidebar-item active" href="orders.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="M4 10h16"/><path d="M10 4v16"/></svg>
+        Orders
+      </a>
+      <a class="sidebar-item" href="insights.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        Insights
+      </a>
+      <a class="sidebar-item" href="quotes.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+        Quotes
+      </a>
+      <a class="sidebar-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        Messages
+        <span class="sidebar-badge">4</span>
+      </a>
+    </div>
+
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Product Management</div>
+      <a class="sidebar-item" href="products.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        Products
+      </a>
+      <a class="sidebar-item" href="inventory.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect width="10" height="8" x="7" y="8" rx="1"/></svg>
+        Inventory
+      </a>
+    </div>
+
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Customer Management</div>
+      <a class="sidebar-item" href="properties.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>
+        Properties
+      </a>
+      <a class="sidebar-item" href="organizations.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Organizations
+      </a>
+    </div>
+
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Price Management</div>
+      <a class="sidebar-item" href="customer-groups.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Customer Groups
+      </a>
+      <a class="sidebar-item" href="price-lists.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Price Lists
+      </a>
+    </div>
+
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Marketing</div>
+      <a class="sidebar-item" href="promotions.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        Promotions
+      </a>
+      <a class="sidebar-item" href="campaigns.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6Z"/><path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"/></svg>
+        Campaigns
+      </a>
+      <a class="sidebar-item" href="reviews.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.16.756a.53.53 0 0 1 .294.904l-3.733 3.64a.53.53 0 0 0-.152.469l.882 5.14a.53.53 0 0 1-.77.559L12.3 16.12a.53.53 0 0 0-.493 0l-4.616 2.426a.53.53 0 0 1-.77-.56l.881-5.139a.53.53 0 0 0-.152-.468L3.42 8.924a.53.53 0 0 1 .294-.906l5.165-.755a.53.53 0 0 0 .4-.29l2.31-4.679Z"/></svg>
+        Reviews
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <a class="sidebar-item" href="#" style="flex:1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings
+      </a>
+    </div>
+
+    <div style="padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">DEMO</div>
+        Vu
+      </div>
+      <button class="sidebar-more">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <nav class="breadcrumbs">
+          <a href="orders.html">Orders</a>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">#515</span>
+        </nav>
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-icon-btn" id="theme-btn" title="Toggle theme" onclick="toggleTheme()">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <button class="topbar-icon-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        </button>
+        <button class="topbar-icon-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="page-content">
+
+      <!-- Order header -->
+      <div class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div class="order-id-row">
+            <span class="order-id">#515</span>
+            <button class="row-action" style="width:24px;height:24px" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+          </div>
+          <div class="order-sub">07/23/2026 &middot; 9:33 AM &middot; Default Sales Channel</div>
+        </div>
+        <div class="panel-badges" id="header-pills">
+            <span class="status-dot-item" data-tip="Order placed 07/23/2026"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+            <span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+            <button class="btn-danger-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Order</button>
+        </div>
+      </div>
+
+      <!-- Order progress -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">Order Progress</span>
+          <span class="status-dot-item" id="progress-badge"><span class="status-dot dot-fulfill"></span><span class="status-dot-label" id="progress-label">1 of 8 &middot; Next: Fulfill Items</span></span>
+        </div>
+        <div class="stepper">
+            <div class="step" data-step="placed">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+              <div class="step-label">Placed</div>
+              <div class="step-actor">Auto</div>
+            </div>
+            <div class="step" data-step="fulfilled">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
+              <div class="step-label">Fulfilled</div>
+              <div class="step-actor">You</div>
+            </div>
+            <div class="step" data-step="shipped">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
+              <div class="step-label">Shipped</div>
+              <div class="step-actor">You</div>
+            </div>
+            <div class="step" data-step="delivered">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div>
+              <div class="step-label">Delivered</div>
+              <div class="step-actor">You</div>
+            </div>
+            <div class="step" data-step="tax">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></div>
+              <div class="step-label">Sales Tax</div>
+              <div class="step-actor">You</div>
+            </div>
+            <div class="step" data-step="validated">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+              <div class="step-label">Validated</div>
+              <div class="step-actor">Buyer</div>
+            </div>
+            <div class="step" data-step="paid">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></div>
+              <div class="step-label">Paid</div>
+              <div class="step-actor">Buyer</div>
+            </div>
+            <div class="step" data-step="completed">
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></div>
+              <div class="step-label">Completed</div>
+              <div class="step-actor">You</div>
+            </div>
+        </div>
+      </div>
+
+      <div class="detail-layout">
+        <div class="detail-col">
+
+          <!-- Summary -->
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Summary</span>
+            </div>
+          <div class="line-item">
+            <div class="line-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="line-info">
+              <div class="line-name">700 W Compact Microwave in Black</div>
+              <div class="line-sku">10101352 <button class="row-action" style="width:24px;height:24px" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+              <div class="line-variant">Default</div>
+            </div>
+            <span class="line-price">$105.57</span>
+            <span class="line-qty">&times; 2</span>
+            <span class="line-total">$211.14</span>
+          </div>
+            <div class="totals">
+              <div class="totals-row"><span class="totals-label">Item Total</span><span class="totals-value">$211.14</span></div>
+              <div class="totals-row"><span class="totals-label">Shipping Total <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span><span class="totals-value">$25.00</span></div>
+              <div class="totals-row"><span class="totals-label">Discount Total</span><span class="totals-value">&mdash;</span></div>
+              <div class="totals-row grand"><span class="totals-label">Order Total</span><span class="totals-value">$236.14 USD</span></div>
+              <div class="totals-row"><span class="totals-label">Total captured</span><span class="totals-value">$0.00 USD</span></div>
+            </div>
+          </div>
+
+          <!-- Payments -->
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Payments</span>
+              <div class="panel-badges">
+                <span class="badge-neutral">Purchase Order</span>
+                <span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+              </div>
+            </div>
+            <div class="totals" style="border-top:none;padding-top:0">
+              <div class="totals-row"><span class="totals-label">Total paid by buyer</span><span class="totals-value">$0.00 USD</span></div>
+              <div class="totals-row"><span class="totals-label">Total pending</span><span class="totals-value">$236.14 USD</span></div>
+            </div>
+          </div>
+
+          <!-- Unfulfilled items -->
+          <div class="panel" id="panel-unfulfilled">
+            <div class="panel-head">
+              <span class="panel-title">Unfulfilled Items <span class="count-pill" style="display:none"></span></span>
+              <div class="panel-badges">
+                <span class="badge-neutral">Requires shipping</span>
+                <span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span>
+              </div>
+            </div>
+          <div class="line-item">
+            <div class="line-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+            <div class="line-info">
+              <div class="line-name">700 W Compact Microwave in Black</div>
+              <div class="line-sku">10101352 <button class="row-action" style="width:24px;height:24px" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+              <div class="line-variant">Default</div>
+            </div>
+            <span class="line-price">$105.57</span>
+            <span class="line-qty">&times; 2</span>
+            <span class="line-total">$211.14</span>
+          </div>
+            <div style="display:flex;justify-content:flex-end;border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+              <button class="toolbar-btn btn-primary-fill" onclick="openFulfill()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                Fulfill Items
+              </button>
+            </div>
+          </div>
+
+
+          <!-- Fulfillment #1 (Fulfilled state) -->
+          <div class="panel" id="panel-fulfillment" style="display:none">
+            <div class="panel-head">
+              <span class="panel-title">Fulfillment #1</span>
+              <div class="panel-badges">
+                <span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span>
+                <button class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Packing Slip</button>
+              </div>
+            </div>
+            <div class="line-item" style="padding-top:0">
+              <div class="line-thumb" style="width:40px;height:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+              <div class="line-info">
+                <div class="line-name">700 W Compact Microwave in Black</div>
+                <div class="line-sku">10101352 &middot; Default</div>
+              </div>
+              <span class="line-qty">&times; 2</span>
+            </div>
+            <div class="fact-rows">
+              <div class="fact-row"><span class="fact-label">Shipping from</span><span class="fact-value"><a class="table-link" style="display:inline" href="inventory.html">New Orleans Hub</a></span></div>
+              <div class="fact-row"><span class="fact-label">Provider</span><span class="fact-value">Manual</span></div>
+              <div class="fact-row"><span class="fact-label">Tracking</span><span class="fact-value" style="color:var(--muted-foreground)">&mdash;</span></div>
+            </div>
+            <div class="panel-actions">
+              <button class="btn-danger-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Fulfillment</button>
+              <span class="spacer"></span>
+              <button class="toolbar-btn">Mark as Delivered</button>
+              <button class="toolbar-btn btn-primary-fill" onclick="openShip()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                Mark as Shipped
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <div class="detail-col">
+
+          <!-- Documents -->
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Documents</span>
+            </div>
+            <div class="doc-row">
+              <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+              <div style="flex:1;min-width:0">
+                <div class="doc-name">Purchase Order #PO-515-160</div>
+                <div class="doc-date">07/23/2026</div>
+              </div>
+              <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+            </div>
+          </div>
+
+          <!-- Buyer -->
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Buyer</span>
+            </div>
+            <div class="rail-rows">
+              <div class="rail-row"><span class="rail-label">Buyer</span><span class="rail-value"><span class="avatar" style="background:var(--emerald)">AG</span>Alicia Grant</span></div>
+              <div class="rail-row"><span class="rail-label">Contact</span><span class="rail-value">alicia.grant@demoinc.com <button class="row-action" style="width:24px;height:24px" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></span></div>
+              <div class="rail-row"><span class="rail-label">Organization</span><span class="rail-value"><a href="organization-detail.html" class="table-link" style="display:inline">Demo Inc.</a></span></div>
+              <div class="rail-row"><span class="rail-label">Property</span><span class="rail-value"><span class="avatar" style="background:var(--violet)">MP</span><a href="property-detail.html" class="table-link" style="display:inline">Magnolia Place Apartments</a></span></div>
+              <div class="rail-row"><span class="rail-label">Shipping</span><span class="rail-value">4201 Veterans Memorial Blvd, Metairie, LA 70006 <button class="row-action" style="width:24px;height:24px" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></span></div>
+              <div class="rail-row"><span class="rail-label">Billing</span><span class="rail-value" style="color:var(--muted-foreground)">Same as shipping</span></div>
+            </div>
+          </div>
+
+          <!-- Activity -->
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Activity</span>
+            </div>
+            <div id="activity-feed">
+            <div class="feed-item">
+              <span class="feed-dot"></span>
+              <div class="feed-body">
+                <div class="feed-title">Order placed</div>
+                <div class="feed-meta">$236.14 USD &middot; 2 items</div>
+              </div>
+              <span class="feed-time">1m ago</span>
+            </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Fulfillment modal -->
+  <div class="modal-overlay" id="fulfill-modal" onclick="if(event.target===this)closeFulfill()">
+    <div class="modal">
+      <div class="modal-head">
+        <span class="modal-title">Fulfill Items &middot; Order #515</span>
+        <span class="esc-chip">esc</span>
+        <button class="modal-close" onclick="closeFulfill()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div>
+            <div class="form-label">Location</div>
+            <div class="form-desc">Choose which location you want to fulfill items from.</div>
+          </div>
+          <select class="select">
+            <option>New Orleans Hub</option>
+            <option>Baton Rouge Warehouse</option>
+            <option>Houston Depot</option>
+            <option>Dallas Storefront</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div>
+            <div class="form-label">Shipping method</div>
+            <div class="form-desc">Defaults to the method the buyer selected.</div>
+          </div>
+          <select class="select">
+            <option>Expedited &mdash; $25.00</option>
+            <option>Standard &mdash; $12.00</option>
+            <option>Freight &mdash; quoted</option>
+          </select>
+        </div>
+        <div class="form-row" style="grid-template-columns:1fr;align-items:start">
+          <div>
+            <div class="form-label">Items to fulfill</div>
+            <div class="form-desc">Choose items and quantities to fulfill.</div>
+            <div class="fulfill-item">
+              <div class="line-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+              <div class="line-info">
+                <div class="line-name">700 W Compact Microwave in Black</div>
+                <div class="line-sku">10101352</div>
+                <div class="line-variant">Default</div>
+              </div>
+              <div class="stock-num">Available<strong>941</strong></div>
+              <div class="stock-num">In stock<strong>944 <span class="stock-delta">&minus;2</span></strong></div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <input class="qty-input" value="2" />
+                <span style="font-size:13px;color:var(--muted-foreground)">/ 2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row" style="border-bottom:none">
+          <div>
+            <div class="form-label">Send notification</div>
+            <div class="form-desc">Notify the buyer about the created fulfillment.</div>
+          </div>
+          <div style="display:flex;justify-content:flex-end"><input type="checkbox" class="switch" checked /></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="toolbar-btn" onclick="closeFulfill()">Cancel</button>
+        <button class="toolbar-btn btn-primary-fill">Create Fulfillment</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Mark as Shipped modal -->
+  <div class="modal-overlay" id="ship-modal" onclick="if(event.target===this)closeShip()">
+    <div class="modal">
+      <div class="modal-head">
+        <span class="modal-title">Mark as Shipped &middot; Fulfillment #1</span>
+        <span class="esc-chip">esc</span>
+        <button class="modal-close" onclick="closeShip()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div>
+            <div class="form-label">Tracking URL</div>
+            <div class="form-desc">Optional &mdash; shared with the buyer for delivery tracking.</div>
+          </div>
+          <input class="text-input" placeholder="https://carrier.com/track/&hellip;" />
+        </div>
+        <div class="form-row" style="grid-template-columns:1fr;border-bottom:none;align-items:start">
+          <div>
+            <div class="form-label">Packing Slip</div>
+            <div class="form-desc" style="margin-bottom:12px">Attach a packing slip to this fulfillment.</div>
+            <div class="slip-row">
+              <div style="flex:1;min-width:0">
+                <div class="slip-title">No packing slip generated</div>
+                <div class="slip-desc">Generate a packing slip for this fulfillment.</div>
+              </div>
+              <button class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Generate Packing Slip</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="toolbar-btn" onclick="closeShip()">Cancel</button>
+        <button class="toolbar-btn btn-primary-fill">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('collapsed');
+      document.querySelector('.main').classList.toggle('expanded');
+    }
+
+    const pillHTML = (dot, label, tip) => '<span class="status-dot-item"' + (tip ? ' data-tip="' + tip + '"' : '') + '><span class="status-dot ' + dot + '"></span><span class="status-dot-label">' + label + '</span>' + (tip ? '<svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' : '') + '</span>';
+    const feedHTML = items => items.map(i => '<div class="feed-item"><span class="feed-dot"></span><div class="feed-body"><div class="feed-title">' + i[0] + '</div><div class="feed-meta">' + i[1] + '</div></div><span class="feed-time">' + i[2] + '</span></div>').join('');
+
+    const STATES = {
+      placed: {
+        doneSteps: ['placed'], current: 'fulfilled',
+        pills: [['dot-fulfill','To Fulfill','Order placed 07/23/2026'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
+        progress: '1 of 8 \u00B7 Next: Fulfill Items',
+        panels: { unfulfilled: true, fulfillment: false },
+        feed: [['Order placed','$236.14 USD \u00B7 2 items','1m ago']]
+      },
+      fulfilled: {
+        doneSteps: ['placed','fulfilled'], current: 'shipped',
+        pills: [['dot-ship','To Ship','Fulfilled 07/23/2026 \u00B7 awaiting shipment'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
+        progress: '2 of 8 \u00B7 Next: Mark as Shipped',
+        panels: { unfulfilled: false, fulfillment: true },
+        feed: [['Items fulfilled','2 items \u00B7 Fulfillment #1','1m ago'], ['Order placed','$236.14 USD \u00B7 2 items','3m ago']]
+      }
+    };
+
+    function renderState() {
+      const key = (location.hash || '').replace('#', '') || 'placed';
+      const s = STATES[key] || STATES.placed;
+      document.getElementById('header-pills').querySelectorAll('.status-dot-item').forEach(p => p.remove());
+      const cancelBtn = document.getElementById('header-pills').firstElementChild;
+      document.getElementById('header-pills').insertAdjacentHTML('afterbegin', s.pills.map(p => pillHTML(p[0], p[1], p[2])).join(''));
+      document.querySelectorAll('.stepper .step').forEach(st => {
+        st.classList.remove('done', 'current', 'upcoming');
+        if (s.doneSteps.includes(st.dataset.step)) st.classList.add('done');
+        else if (st.dataset.step === s.current) st.classList.add('current');
+        else st.classList.add('upcoming');
+      });
+      document.getElementById('progress-label').innerHTML = s.progress;
+      document.getElementById('panel-unfulfilled').style.display = s.panels.unfulfilled ? '' : 'none';
+      document.getElementById('panel-fulfillment').style.display = s.panels.fulfillment ? '' : 'none';
+      document.getElementById('activity-feed').innerHTML = feedHTML(s.feed);
+    }
+
+    function openShip() { document.getElementById('ship-modal').classList.add('open'); }
+    function closeShip() { document.getElementById('ship-modal').classList.remove('open'); }
+
+    function openFulfill() { document.getElementById('fulfill-modal').classList.add('open'); }
+    function closeFulfill() { document.getElementById('fulfill-modal').classList.remove('open'); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFulfill(); closeShip(); } });
+
+    function applyTheme() {
+      const dark = localStorage.getItem('scout-theme') === 'dark';
+      document.body.classList.toggle('dark', dark);
+      const b = document.getElementById('theme-btn');
+      if (b) {
+        b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+        b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+      }
+    }
+    function toggleTheme() {
+      localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark');
+      applyTheme();
+    renderState();
+    }
+    applyTheme();
+    renderState();
+    window.addEventListener('hashchange', renderState);
+    document.querySelector('.main').addEventListener('click', () => {
+      if (window.innerWidth <= 1024 && document.querySelector('.sidebar').classList.contains('collapsed')) toggleSidebar();
+    });
+  </script>
+</body>
+</html>

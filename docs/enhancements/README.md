@@ -17,8 +17,9 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | Insights | [insights.md](insights.md) |
 | Orders | [orders.md](orders.md) |
 | Dark mode + responsive (all pages) | [dark-mode-responsive.md](dark-mode-responsive.md) |
+| Order Detail (in progress) | [order-detail.md](order-detail.md) |
 
-All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass.
+All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass. Current phase: Order Detail sub-pages, built state by state.
 
 ## Format
 

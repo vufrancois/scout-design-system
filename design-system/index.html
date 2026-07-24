@@ -1271,6 +1271,78 @@
     .stat-card-colored.stat-violet .stat-card-icon { color: var(--violet); }
     .stat-card-colored.stat-rose .stat-card-icon { color: var(--rose); }
     .stat-card-colored.stat-gray .stat-card-icon { color: var(--muted-foreground); }
+
+    /* ===== Order flow & forms ===== */
+    .stepper { display: flex; align-items: flex-start; overflow-x: auto; padding: 4px 0; }
+    .step { flex: 1; min-width: 84px; display: flex; flex-direction: column; align-items: center; position: relative; }
+    .step:not(:last-child)::after {
+      content: ''; position: absolute; top: 19px; left: calc(50% + 26px); right: calc(-50% + 26px);
+      height: 2px; background: var(--border);
+    }
+    .step.done:not(:last-child)::after { background: var(--emerald); }
+    .step-dot {
+      width: 40px; height: 40px; border-radius: 50%; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--card); border: 2px solid var(--border); color: var(--muted-foreground);
+    }
+    .step-dot svg { width: 18px; height: 18px; }
+    .step.done .step-dot { background: var(--emerald); border-color: var(--emerald); color: #fff; }
+    .step.current .step-dot { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+    .step-label { font-size: 12px; font-weight: 600; margin-top: 8px; text-align: center; color: var(--foreground); }
+    .step.upcoming .step-label { color: var(--muted-foreground); font-weight: 500; }
+    .step-actor { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); margin-top: 2px; }
+    .step.current .step-actor { color: var(--amber); font-weight: 700; }
+
+    .line-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
+    .line-item + .line-item { border-top: 1px solid var(--border); }
+    .line-thumb {
+      width: 48px; height: 48px; border-radius: var(--radius-md); flex-shrink: 0;
+      background: var(--muted); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; color: var(--muted-foreground);
+    }
+    .line-thumb svg { width: 22px; height: 22px; }
+    .line-info { flex: 1; min-width: 0; }
+    .line-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .line-sku { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    .line-variant { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    .line-price, .line-qty { font-size: 13px; color: var(--muted-foreground); white-space: nowrap; }
+    .line-total { font-size: 14px; font-weight: 600; white-space: nowrap; min-width: 80px; text-align: right; }
+
+    .totals { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .totals-row { display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
+    .totals-label { color: var(--muted-foreground); }
+    .totals-value { color: var(--foreground); }
+    .totals-row.grand { border-top: 1px solid var(--border); padding-top: 12px; }
+    .totals-row.grand .totals-label, .totals-row.grand .totals-value { font-weight: 700; font-size: 15px; color: var(--foreground); }
+
+    .doc-row {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--sky-soft); border-radius: var(--radius-md); padding: 12px 14px;
+    }
+    .doc-row svg.doc-ico { width: 18px; height: 18px; color: var(--sky); flex-shrink: 0; }
+    .doc-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; }
+    .doc-date { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; }
+
+    .form-row {
+      display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 20px;
+      padding: 20px 0; border-bottom: 1px solid var(--border); align-items: center;
+    }
+    @media (max-width: 720px) { .form-row { grid-template-columns: 1fr; gap: 10px; } }
+    .form-label { font-size: 14px; font-weight: 600; }
+    .form-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+    .select {
+      width: 100%; height: 38px; padding: 0 32px 0 12px; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%236b7280" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>') no-repeat right 10px center;
+      color: var(--foreground); appearance: none; cursor: pointer;
+    }
+    .select:focus { outline: none; border-color: var(--ring); }
+    .qty-input {
+      width: 56px; height: 34px; text-align: center; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      background: var(--background); color: var(--foreground);
+    }
+    .qty-input:focus { outline: none; border-color: var(--ring); }
   </style>
 </head>
 <body>
@@ -1334,6 +1406,7 @@
           <a onclick="scrollToSection('list-item-card')">List Item Card</a>
           <a onclick="scrollToSection('segmented-toggle')">Segmented Toggle</a>
           <a onclick="scrollToSection('marketing-card')">Marketing Card</a>
+          <a onclick="scrollToSection('order-flow')">Order Flow</a>
           <a onclick="scrollToSection('metric-tile')">Metric Tile</a>
           <a onclick="scrollToSection('insight-card')">Insight Card</a>
           <a onclick="scrollToSection('activity-feed')">Activity Feed</a>
@@ -2682,6 +2755,81 @@
               <div class="progress"><div class="progress-fill" style="width:84%"></div></div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ORDER FLOW & FORMS ===================== -->
+    <section class="section" id="order-flow">
+      <div class="section-header">
+        <h2 class="section-title">Order Flow &amp; Forms</h2>
+        <p class="section-desc">Components for detail pages and task flows: the progress Stepper (with whose-turn actor captions), Line Items with a Totals block, Document rows, and modal form rows with Select and quantity inputs.</p>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Stepper</h3>
+        <p class="subsection-desc">Pipeline progress with done (emerald) / current (amber = action color) / upcoming states. Every node carries an actor caption — Auto, You, or Buyer — so the tracker answers whose turn it is. Current step's caption goes amber.</p>
+        <div class="stepper">
+          <div class="step done"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="step-label">Placed</div><div class="step-actor">Auto</div></div>
+          <div class="step current"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><div class="step-label">Fulfilled</div><div class="step-actor">You</div></div>
+          <div class="step upcoming"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div><div class="step-label">Shipped</div><div class="step-actor">You</div></div>
+          <div class="step upcoming"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div><div class="step-label">Delivered</div><div class="step-actor">You</div></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Line Item + Totals</h3>
+        <p class="subsection-desc">48px thumb, 14px/600 name, mono SKU, muted variant; price &times; qty and bold row total right-aligned. The Totals block ends in an emphasized grand-total row; monetary values follow the currency rules.</p>
+        <div class="line-item">
+          <div class="line-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+          <div class="line-info">
+            <div class="line-name">700 W Compact Microwave in Black</div>
+            <div class="line-sku">10101352</div>
+            <div class="line-variant">Default</div>
+          </div>
+          <span class="line-price">$105.57</span>
+          <span class="line-qty">&times; 2</span>
+          <span class="line-total">$211.14</span>
+        </div>
+        <div class="totals">
+          <div class="totals-row"><span class="totals-label">Item Total</span><span class="totals-value">$211.14</span></div>
+          <div class="totals-row"><span class="totals-label">Shipping Total</span><span class="totals-value">$25.00</span></div>
+          <div class="totals-row grand"><span class="totals-label">Order Total</span><span class="totals-value">$236.14 USD</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Document Row</h3>
+        <p class="subsection-desc">Soft-sky surface, file icon, 13px/600 name with MM/DD/YYYY date meta, ghost download action.</p>
+        <div class="doc-row">
+          <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+          <div style="flex:1;min-width:0">
+            <div class="doc-name">Purchase Order #PO-515-160</div>
+            <div class="doc-date">07/23/2026</div>
+          </div>
+          <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <h3 class="subsection-title">Form Rows</h3>
+        <p class="subsection-desc">Modal task-flow anatomy: 14px/600 label with muted description left, control right (stacks under 720px). Select is 38px with an inline chevron; quantity input is a 56px centered field.</p>
+        <div class="form-row">
+          <div>
+            <div class="form-label">Location</div>
+            <div class="form-desc">Choose which location you want to fulfill items from.</div>
+          </div>
+          <select class="select">
+            <option>New Orleans Hub</option>
+            <option>Baton Rouge Warehouse</option>
+          </select>
+        </div>
+        <div class="form-row" style="border-bottom:none">
+          <div>
+            <div class="form-label">Quantity</div>
+            <div class="form-desc">Bounded by the ordered quantity.</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end"><input class="qty-input" value="2" /><span style="font-size:13px;color:var(--muted-foreground)">/ 2</span></div>
         </div>
       </div>
     </section>

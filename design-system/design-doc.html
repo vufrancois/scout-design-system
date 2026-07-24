@@ -652,6 +652,37 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li><strong>When to use which:</strong> native <code>title</code> tooltips are for supplementary detail (full dates behind relative times, full text behind truncation). <strong>Load-bearing sub-state</strong> — a payment sub-step, an actor/provenance note — uses the styled Tooltip so it's discoverable and instant.</li>
       </ul>
 
+      <h3>Stepper</h3>
+      <ul>
+        <li>Pipeline progress for detail pages: 40px nodes with connector lines; done = emerald fill + check, current = amber ring + soft fill (amber = action color), upcoming = muted outline.</li>
+        <li>Every node carries an <strong>actor caption</strong> (Auto / You / Buyer, 10px uppercase) — the stepper answers whose turn it is, per the whose-turn-is-it rule. The current node's caption reads amber.</li>
+        <li>The detail page is where full step granularity lives; lists show the condensed states. A progress badge beside the stepper title summarizes: "1 of 8 &middot; Next: Fulfill Items" (Title Case).</li>
+      </ul>
+
+      <h3>Line Item &amp; Totals</h3>
+      <ul>
+        <li>Line Item: 48px bordered muted thumb, 14px/600 name (truncates), mono SKU with copy action, muted variant line; price &times; qty muted, bold right-aligned row total. Rows divide with 1px borders.</li>
+        <li>Totals block: label muted / value right rows; the grand-total row is separated by a border and bolded at 15px with the ISO suffix (<code>$236.14 USD</code>). Secondary rows (captured, pending) stay regular weight.</li>
+      </ul>
+
+      <h3>Document Row</h3>
+      <ul>
+        <li>File attachments render on a soft-sky surface: sky file icon, 13px/600 name, MM/DD/YYYY date meta, ghost download action. Section title is plain — no count pill.</li>
+      </ul>
+
+      <h3>Form Rows &amp; Selects</h3>
+      <ul>
+        <li>Task-flow forms (inside modals) use rows: label (14px/600) + muted description left, control right in a 230px column; rows divide with 1px borders and stack under 720px.</li>
+        <li>Select: 38px, full-width of its column, inline chevron, <code>--ring</code> focus border. Quantity input: 56px centered field with the bound shown beside it ("/ 2"). Stock deltas render rose ("944 &minus;2").</li>
+        <li>Task flows use the standard <strong>centered Modal</strong> (max 640px, dim overlay, esc chip + X in the header, pinned footer actions right) — not full-screen takeovers.</li>
+      </ul>
+
+      <h3>Detail Page Layout</h3>
+      <ul>
+        <li>Two-column: main content + 360px rail (documents, parties, activity), 16px gap, stacking to one column under 1100px. Header and progress panels span full width above the split.</li>
+        <li>Rail fact lists use label/value rows (120px label column); parties link to their detail pages; addresses carry a copy action.</li>
+      </ul>
+
       <h3>Empty State</h3>
       <ul>
         <li>Shown inside the table/list container when zero items match: 48px muted icon circle + 15px/600 title + 13px muted description (max 360px) + optional recovery action (outline button, e.g. "Clear filters").</li>
@@ -734,8 +765,15 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <h3>Modal</h3>
       <ul>
         <li>Backdrop: <code>rgba(0,0,0,0.5)</code> with <code>backdrop-filter: blur(4px)</code>.</li>
-        <li>Max width: 480px. Radius: <code>--radius-lg</code>. Shadow: <code>--shadow-lg</code>.</li>
+        <li>Max width: 480px for confirmations; up to 640px for task-flow forms (esc chip + X in the header, form rows in the body, pinned footer). Radius: <code>--radius-lg</code>. Shadow: <code>--shadow-lg</code>.</li>
         <li>Footer buttons align right, with secondary action first (left) and primary action last (right).</li>
+      </ul>
+
+      <h3>Drawer</h3>
+      <ul>
+        <li>Right-side panel: 420px, <code>--card</code> surface, 1px left border, dim overlay, slides in with a 0.2s ease transform. Closes on X, esc, or overlay click.</li>
+        <li>Anatomy: header (title + status pills + close), scrolling body of fact rows, footer with a primary "open full page" action plus at most one contextual action.</li>
+        <li><strong>Modal vs. Drawer:</strong> a <strong>Modal</strong> is for committing a short transaction — complete-or-cancel task flows (fulfill, mark shipped, tax input) where everything needed lives inside the form. A <strong>Drawer</strong> is for <em>inspecting without navigating</em> — peeking at a row from a list while keeping your place — or editing while referencing the page behind it. Never use both patterns for the same job; full-screen takeovers are not used.</li>
       </ul>
 
       <h3>Toast</h3>

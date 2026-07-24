@@ -92,6 +92,12 @@ Summary's Total captured row gains an amber **Awaiting Confirmation** badge with
 ### 24. Completing the order is real — and it toasts
 Confirming Complete Order now performs the actual transition: the modal closes, the page moves to `#completed` (stepper fills to 8 of 8, the strip turns emerald, Cancel Order vanishes), the view scrolls to the top so the change is visible, and a new **Toast** component slides in bottom-right — emerald check, "Order #515 completed · $253.03 USD captured · all 8 steps done," auto-dismissing after 4s. The demo's final click closes the loop instead of dead-ending; Toast is now available for any mutation feedback across the app.
 
+### 25. Lifecycle Matrix — list and detail on one ruler
+An audit of every Orders-list stage × payment combo against the detail states surfaced rows the workflow forbids (payment outrunning fulfillment: To Ship + Paid, In Transit + Captured, pre-delivery buyer states) plus two vocabulary orphans ("Marked as paid by vendor", stray invoice-validation tooltips). Fixes, reconciled to the cent:
+- **Lifecycle Matrix codified** (design doc + a live version in the gallery linking to each detail state): workflow step → fulfillment pill × payment pill → whose turn → detail hash, with the **gating rule** "payment never outruns fulfillment — before Delivered the payment pill is always Needs Tax Input."
+- **Demo data reconciled to the matrix**: 7 pre-delivery buyer rows retagged to Needs Tax Input (the Awaiting Payment group stays exactly 11 orders), 4 prepaid rows moved to Delivered stage (payment distribution untouched), tooltips normalized; tabs and stat cards updated to the new stage counts (6/2/1/10/5). Every row now lands on a detail state whose pills match the row clicked — zero violations on re-audit.
+- **Shared ruler in the peek drawer**: a Progress row ("6 of 8 · Waiting: buyer confirms payment") derived from the same matrix, so the list measures progress exactly like the detail page.
+
 ## Design system additions (running)
 
 - **Stepper** (gallery + design doc) — done/current/upcoming states, connector lines, actor captions per the whose-turn-is-it rule; progress badge shows the count only
@@ -102,9 +108,17 @@ Confirming Complete Order now performs the actual transition: the modal closes, 
 - **Detail Page Layout** (design doc) — main + 360px rail, stacking under 1100px; rail fact rows with linked parties and copyable addresses
 - **Modal-over-takeover rule** (design doc) — task flows use the centered Modal; full-screen takeovers avoided
 - **Drawer component + Modal-vs-Drawer rule** (design doc) — 420px right panel for inspect-without-navigating; Modal commits transactions, Drawer peeks/references; never both for one job. Prototyped as the **order peek drawer** on the Orders list (row click → summary, pills, contextual action, Open Full Order)
+- **Next-Task Strip** (gallery + design doc) — see item 15; action/wait/done tones with the primary-actions-never-nest rule
+- **Radio Cards** (gallery + design doc) — mode selection inside task-flow Modals; selected card gets primary border + accent fill; Select when options exceed four
+- **Toast** (gallery + design doc) — bottom-right mutation feedback, 250ms slide, 4s auto-dismiss; "toasts confirm, they never ask"
+- **Document Row type accents** (gallery + design doc) — sky PO / emerald Invoice / violet Receipt, plus the one inline secondary line rule (accent action or muted locked note, never both)
+- **Buyer-turn Stepper node** (gallery + design doc) — sky current ring when the actor is the Buyer; amber strictly means "you act"
+- **Badge-in-totals** (gallery + design doc) — inline pill qualifying a money row (amber Awaiting Confirmation / emerald Confirmed by Vendor)
+- **Lifecycle Matrix** (gallery + design doc) — canonical step → pills → actor → detail-state table with the payment-never-outruns-fulfillment gating rule
 - Gallery gained an **"Order Flow & Forms"** section with live examples of all of the above
 
 ## Fixes along the way
 
 - Missing base component CSS on the new page (`.row-action`, unscoped `.avatar`) — the recurring page-clone pitfall, now on a standing checklist
+- Cancel Order scoped to `#placed` only — once items are fulfilled the order-level cancel disappears; the destructive escape becomes stage-appropriate (Cancel Fulfillment while unshipped, none once goods are in motion)
 - Header badge alignment: pills inherited `align-self: flex-start` from cloned detail-header CSS, breaking vertical centering next to buttons — scoped override added

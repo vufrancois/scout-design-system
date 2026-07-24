@@ -1396,6 +1396,7 @@
         feed: [['Order placed','$236.14 USD \u00B7 2 items','1m ago']]
       },
       fulfilled: {
+        noCancel: true,
         doneSteps: ['placed','fulfilled'], current: 'shipped',
         pills: [['dot-ship','To Ship','Fulfilled 07/23/2026 \u00B7 awaiting shipment'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
         progress: '2 of 8',
@@ -1405,6 +1406,7 @@
         feed: [['Items fulfilled','2 items \u00B7 Fulfillment #1','1m ago'], ['Order placed','$236.14 USD \u00B7 2 items','3m ago']]
       },
       shipped: {
+        noCancel: true,
         doneSteps: ['placed','fulfilled','shipped'], current: 'delivered',
         pills: [['dot-transit','In Transit','Shipped 07/23/2026 \u00B7 with carrier'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
         progress: '3 of 8',
@@ -1414,6 +1416,7 @@
         feed: [['Items shipped','2 items \u00B7 Fulfillment #1','Just now'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','3m ago'], ['Order placed','$236.14 USD \u00B7 2 items','5m ago']]
       },
       delivered: {
+        noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
         pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-tax','Needs Tax Input','Blocks the buyer\u2019s delivery validation']],
         progress: '4 of 8',
@@ -1425,6 +1428,7 @@
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','6m ago']]
       },
       tax: {
+        noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered','tax'], current: 'validated', currentActor: 'buyer',
         pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','With Buyer','Awaiting delivery validation']],
         progress: '5 of 8',
@@ -1438,6 +1442,7 @@
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','8m ago']]
       },
       validated: {
+        noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered','tax','validated'], current: 'paid', currentActor: 'buyer',
         pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','With Buyer','Delivery validated \u00B7 awaiting payment confirmation']],
         progress: '6 of 8',
@@ -1452,6 +1457,7 @@
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','9m ago']]
       },
       paid: {
+        noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered','tax','validated','paid'], current: 'completed',
         pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-transit','Paid','Buyer confirmed payment \u00B7 awaiting your capture']],
         progress: '7 of 8',

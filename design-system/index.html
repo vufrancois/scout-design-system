@@ -1314,6 +1314,60 @@
     .task-title { font-size: 14px; font-weight: 600; }
     .task-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
 
+    .step.current.buyer .step-dot { border-color: var(--sky); color: var(--sky); background: var(--sky-soft); }
+    .step.current.buyer .step-actor { color: var(--sky); font-weight: 700; }
+
+    .radio-card {
+      display: flex; align-items: flex-start; gap: 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 13px 16px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .radio-card + .radio-card { margin-top: 10px; }
+    .radio-card.selected { border-color: var(--primary); background: var(--accent); }
+    .radio-card input { accent-color: var(--primary); margin-top: 2px; cursor: pointer; }
+    .radio-card-title { font-size: 14px; font-weight: 600; }
+    .radio-card-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+    body.dark .radio-card.selected { border-color: #3d52e0; }
+
+    .toast-demo {
+      display: flex; align-items: center; gap: 12px; max-width: 360px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg); padding: 14px 18px;
+    }
+    .toast-icon {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: var(--emerald-soft); color: var(--emerald);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .toast-icon svg { width: 16px; height: 16px; }
+    .toast-title { font-size: 14px; font-weight: 600; }
+    .toast-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+
+    .badge-await {
+      display: inline-flex; align-items: center; margin-left: 8px; padding: 2px 8px;
+      border-radius: 999px; font-size: 11px; font-weight: 600;
+      background: var(--amber-soft); color: #92610a;
+    }
+    body.dark .badge-await { color: #fbbf24; }
+    .badge-await.badge-done { background: var(--emerald-soft); color: #047857; }
+    body.dark .badge-await.badge-done { color: #34d399; }
+
+    .doc-row + .doc-row { margin-top: 10px; }
+    .doc-row.emerald { background: var(--emerald-soft); }
+    .doc-row.emerald svg.doc-ico { color: var(--emerald); }
+    .doc-row.violet { background: var(--violet-soft); }
+    .doc-row.violet svg.doc-ico { color: var(--violet); }
+    .doc-replace, .doc-locked {
+      width: 100%; display: flex; align-items: center; gap: 6px; margin-top: 4px;
+      padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08);
+      font-size: 12px; font-weight: 500; background: none; font-family: inherit;
+      border-left: none; border-right: none; border-bottom: none;
+    }
+    .doc-replace { color: var(--emerald); cursor: pointer; }
+    .doc-locked { color: var(--muted-foreground); }
+    body.dark .doc-replace, body.dark .doc-locked { border-top-color: rgba(255,255,255,0.12); }
+    .doc-replace svg, .doc-locked svg { width: 13px; height: 13px; }
+
     .line-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
     .line-item + .line-item { border-top: 1px solid var(--border); }
     .line-thumb {
@@ -2789,12 +2843,18 @@
 
       <div class="comp-card" style="margin-bottom:16px">
         <h3 class="subsection-title">Stepper</h3>
-        <p class="subsection-desc">Pipeline progress with done (emerald) / current (amber = action color) / upcoming states. Every node carries an actor caption — Auto, You, or Buyer — so the tracker answers whose turn it is. Current step's caption goes amber.</p>
+        <p class="subsection-desc">Pipeline progress with done (emerald) / current / upcoming states. Every node carries an actor caption — Auto, You, or Buyer — so the tracker answers whose turn it is. The current ring is <strong>amber when it's your move, sky when the actor is the Buyer</strong> (amber strictly means "you act"); the caption matches.</p>
         <div class="stepper">
           <div class="step done"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="step-label">Placed</div><div class="step-actor">Auto</div></div>
           <div class="step current"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><div class="step-label">Fulfilled</div><div class="step-actor">You</div></div>
           <div class="step upcoming"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div><div class="step-label">Shipped</div><div class="step-actor">You</div></div>
           <div class="step upcoming"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div><div class="step-label">Delivered</div><div class="step-actor">You</div></div>
+        </div>
+        <div class="stepper" style="margin-top:8px">
+          <div class="step done"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="step-label">Sales Tax</div><div class="step-actor">You</div></div>
+          <div class="step current buyer"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="step-label">Validated</div><div class="step-actor">Buyer</div></div>
+          <div class="step upcoming"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></div><div class="step-label">Paid</div><div class="step-actor">Buyer</div></div>
+          <div class="step upcoming"><div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></div><div class="step-label">Completed</div><div class="step-actor">You</div></div>
         </div>
       </div>
 
@@ -2826,6 +2886,47 @@
       </div>
 
       <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Lifecycle Matrix</h3>
+        <p class="subsection-desc">The canonical map from workflow step to list pills to detail state. Gating rule: <strong>payment never outruns fulfillment</strong> &mdash; before Delivered the payment pill is always Needs Tax Input. Each state links to the live detail page.</p>
+        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-md)">
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead><tr><th style="text-align:left;padding:9px 14px;color:var(--muted-foreground);font-size:12px;font-weight:500">Step</th><th style="text-align:left;padding:9px 14px;color:var(--muted-foreground);font-size:12px;font-weight:500">Fulfillment</th><th style="text-align:left;padding:9px 14px;color:var(--muted-foreground);font-size:12px;font-weight:500">Payment</th><th style="text-align:left;padding:9px 14px;color:var(--muted-foreground);font-size:12px;font-weight:500">Whose turn</th><th style="text-align:left;padding:9px 14px;color:var(--muted-foreground);font-size:12px;font-weight:500">Detail state</th></tr></thead>
+            <tbody>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">1 &middot; Placed</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">To Fulfill</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax Input</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#placed" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#placed</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">2 &middot; Fulfilled</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--sky)"></span><span class="status-dot-label">To Ship</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax Input</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#fulfilled" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#fulfilled</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">3 &middot; Shipped</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--violet)"></span><span class="status-dot-label">In Transit</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax Input</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#shipped" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#shipped</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">4 &middot; Delivered</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax Input</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#delivered" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#delivered</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">5 &middot; Sales Tax set</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--sky)"></span><span class="status-dot-label">With Buyer</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">Buyer</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#tax" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#tax</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">6 &middot; Validated</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--sky)"></span><span class="status-dot-label">With Buyer</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">Buyer</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#validated" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#validated</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">7 &middot; Buyer Paid</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--violet)"></span><span class="status-dot-label">Paid</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#paid" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#paid</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">7 &middot; Captured</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Captured</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#captured" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#captured</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">8 &middot; Completed</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Completed</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Captured</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">—</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#completed" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#completed</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Radio Cards</h3>
+        <p class="subsection-desc">Mutually exclusive modes inside a task-flow Modal (e.g. tax by rate / amount / none). Each card: native radio + 14px/600 title + muted description; the selected card gets the primary border and accent fill. The chosen mode drives the form below it.</p>
+        <label class="radio-card selected"><input type="radio" name="rc-demo" checked /><span><span class="radio-card-title" style="display:block">Tax rate (%)</span><span class="radio-card-desc" style="display:block">Apply a percentage to the item subtotal.</span></span></label>
+        <label class="radio-card"><input type="radio" name="rc-demo" /><span><span class="radio-card-title" style="display:block">Tax amount ($)</span><span class="radio-card-desc" style="display:block">Enter the exact sales tax in dollars.</span></span></label>
+        <label class="radio-card"><input type="radio" name="rc-demo" /><span><span class="radio-card-title" style="display:block">No tax ($0)</span><span class="radio-card-desc" style="display:block">This order has no sales tax.</span></span></label>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Toast</h3>
+        <p class="subsection-desc">Confirmation feedback after a mutation lands (order completed, record saved). Fixed bottom-right, slides up 250ms, auto-dismisses after 4s; one at a time. 32px tonal icon circle + 14px/600 title + muted detail line carrying the numbers that changed.</p>
+        <div class="toast-demo">
+          <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div style="flex:1;min-width:0">
+            <div class="toast-title">Order #515 completed</div>
+            <div class="toast-desc">$253.03 USD captured &middot; all 8 steps done</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
         <h3 class="subsection-title">Line Item + Totals</h3>
         <p class="subsection-desc">48px thumb, 14px/600 name, mono SKU, muted variant; price &times; qty and bold row total right-aligned. The Totals block ends in an emphasized grand-total row; monetary values follow the currency rules.</p>
         <div class="line-item">
@@ -2843,12 +2944,14 @@
           <div class="totals-row"><span class="totals-label">Item Total</span><span class="totals-value">$211.14</span></div>
           <div class="totals-row"><span class="totals-label">Shipping Total</span><span class="totals-value">$25.00</span></div>
           <div class="totals-row grand"><span class="totals-label">Order Total</span><span class="totals-value">$236.14 USD</span></div>
+          <div class="totals-row"><span class="totals-label">Total captured <span class="badge-await">Awaiting Confirmation</span></span><span class="totals-value">$236.14 USD</span></div>
+          <div class="totals-row"><span class="totals-label">Total captured <span class="badge-await badge-done">Confirmed by Vendor</span></span><span class="totals-value">$236.14 USD</span></div>
         </div>
       </div>
 
       <div class="comp-card" style="margin-bottom:16px">
         <h3 class="subsection-title">Document Row</h3>
-        <p class="subsection-desc">Soft-sky surface, file icon, 13px/600 name with MM/DD/YYYY date meta, ghost download action.</p>
+        <p class="subsection-desc">One soft surface per document type &mdash; sky Purchase Order, emerald Invoice, violet Receipt &mdash; with file icon, 13px/600 name, MM/DD/YYYY date meta, ghost download action. A row can carry one inline secondary line: an action ("Replace invoice") or a muted locked note explaining why it can't change.</p>
         <div class="doc-row">
           <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
           <div style="flex:1;min-width:0">
@@ -2856,6 +2959,24 @@
             <div class="doc-date">07/23/2026</div>
           </div>
           <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+        </div>
+        <div class="doc-row emerald" style="flex-wrap:wrap">
+          <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+          <div style="flex:1;min-width:0">
+            <div class="doc-name">Invoice #102</div>
+            <div class="doc-date">07/23/2026</div>
+          </div>
+          <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+          <button class="doc-replace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>Replace invoice</button>
+        </div>
+        <div class="doc-row violet" style="flex-wrap:wrap">
+          <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+          <div style="flex:1;min-width:0">
+            <div class="doc-name">Receipt of Goods #ROG-515-83</div>
+            <div class="doc-date">07/23/2026</div>
+          </div>
+          <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+          <div class="doc-locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Locked &mdash; order paid</div>
         </div>
       </div>
 

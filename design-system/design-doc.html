@@ -655,7 +655,8 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <h3>Stepper</h3>
       <ul>
         <li>Pipeline progress for detail pages: 40px nodes with connector lines; done = emerald fill + check, current = amber ring + soft fill (amber = action color), upcoming = muted outline.</li>
-        <li>Every node carries an <strong>actor caption</strong> (Auto / You / Buyer, 10px uppercase) — the stepper answers whose turn it is, per the whose-turn-is-it rule. The current node's caption reads amber.</li>
+        <li>Every node carries an <strong>actor caption</strong> (Auto / You / Buyer, 10px uppercase) — the stepper answers whose turn it is, per the whose-turn-is-it rule. The current node's caption matches its ring color.</li>
+        <li><strong>Buyer-turn current node:</strong> when the current step's actor is the Buyer, the ring and caption render sky instead of amber — amber strictly means "you act." The whose-turn color language holds across stepper, pills, and the Next-Task Strip.</li>
         <li>The detail page is where full step granularity lives; lists show the condensed states. A progress badge beside the stepper title shows the count only ("4 of 8") — the next action is named by the Next-Task Strip, not repeated here.</li>
       </ul>
 
@@ -670,11 +671,14 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <ul>
         <li>Line Item: 48px bordered muted thumb, 14px/600 name (truncates), mono SKU with copy action, muted variant line; price &times; qty muted, bold right-aligned row total. Rows divide with 1px borders.</li>
         <li>Totals block: label muted / value right rows; the grand-total row is separated by a border and bolded at 15px with the ISO suffix (<code>$236.14 USD</code>). Secondary rows (captured, pending) stay regular weight.</li>
+        <li><strong>Badge-in-totals:</strong> a totals row's label can carry one inline pill qualifying the money's state — amber ("Awaiting Confirmation") while staged, emerald ("Confirmed by Vendor") once settled. 11px/600, pill radius, soft fill; never more than one per row.</li>
       </ul>
 
       <h3>Document Row</h3>
       <ul>
-        <li>File attachments render on a soft-sky surface: sky file icon, 13px/600 name, MM/DD/YYYY date meta, ghost download action. Section title is plain — no count pill.</li>
+        <li>File attachments render on a soft tonal surface: file icon, 13px/600 name, MM/DD/YYYY date meta, ghost download action. Section title is plain — no count pill.</li>
+        <li><strong>Type accents:</strong> one surface color per document type — sky Purchase Order, emerald Invoice, violet Receipt of Goods — so the rail scans by kind before you read a name.</li>
+        <li>A row may carry one inline secondary line under a hairline divider: either an action in the accent color ("Replace invoice") or a muted locked note stating why it can't change ("Locked — order paid"). Never both.</li>
       </ul>
 
       <h3>Form Rows &amp; Selects</h3>
@@ -682,6 +686,41 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Task-flow forms (inside modals) use rows: label (14px/600) + muted description left, control right in a 230px column; rows divide with 1px borders and stack under 720px.</li>
         <li>Select: 38px, full-width of its column, inline chevron, <code>--ring</code> focus border. Quantity input: 56px centered field with the bound shown beside it ("/ 2"). Stock deltas render rose ("944 &minus;2").</li>
         <li>Task flows use the standard <strong>centered Modal</strong> (max 640px, dim overlay, esc chip + X in the header, pinned footer actions right) — not full-screen takeovers.</li>
+      </ul>
+
+      <h3>Lifecycle Matrix</h3>
+      <p>The single source of truth tying the Orders list to the order detail. Every legal state is one row; a list row's fulfillment pill &times; payment pill must match a row here, and its order link lands on that row's detail state.</p>
+      <table class="token-table">
+        <thead><tr><th>Workflow step</th><th>Fulfillment pill</th><th>Payment pill</th><th>Whose turn</th><th>Detail state</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Placed</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block"></span>To Fulfill</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block"></span>Needs Tax Input</span></td><td>You</td><td><code>#placed</code></td></tr>
+          <tr><td>2 · Fulfilled</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--sky);display:inline-block"></span>To Ship</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block"></span>Needs Tax Input</span></td><td>You</td><td><code>#fulfilled</code></td></tr>
+          <tr><td>3 · Shipped</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--violet);display:inline-block"></span>In Transit</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block"></span>Needs Tax Input</span></td><td>You</td><td><code>#shipped</code></td></tr>
+          <tr><td>4 · Delivered</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Delivered</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block"></span>Needs Tax Input</span></td><td>You</td><td><code>#delivered</code></td></tr>
+          <tr><td>5 · Sales Tax set</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Delivered</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--sky);display:inline-block"></span>With Buyer</span> <span style="color:var(--muted-foreground)">(awaiting delivery validation)</span></td><td>Buyer</td><td><code>#tax</code></td></tr>
+          <tr><td>6 · Validated</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Delivered</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--sky);display:inline-block"></span>With Buyer</span> <span style="color:var(--muted-foreground)">(awaiting payment confirmation)</span></td><td>Buyer</td><td><code>#validated</code></td></tr>
+          <tr><td>7 · Buyer Paid</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Delivered</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--violet);display:inline-block"></span>Paid</span></td><td>You</td><td><code>#paid</code></td></tr>
+          <tr><td>7 · Captured</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Delivered</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Captured</span></td><td>You</td><td><code>#captured</code></td></tr>
+          <tr><td>8 · Completed</td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Completed</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Captured</span></td><td>—</td><td><code>#completed</code></td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Gating rule:</strong> the payment pipeline can never outrun fulfillment &mdash; before Delivered, the payment pill is always <strong>Needs Tax Input</strong>; With Buyer, Paid, and Captured all require Delivered. Any list row violating this is a data bug.</li>
+        <li>The two With Buyer steps share one pill and differ by tooltip &mdash; the Stepper and Next-Task Strip on the detail page carry the granularity.</li>
+        <li>Exception flags (e.g. an Active Return) ride alongside these pills; they never replace them.</li>
+      </ul>
+
+      <h3>Radio Cards</h3>
+      <ul>
+        <li>For choosing one of 2&ndash;4 <strong>modes inside a task-flow Modal</strong> (tax by rate / amount / none): full-width cards with a native radio, 14px/600 title, muted one-line description. Selected card gets the primary border + accent fill.</li>
+        <li>The chosen mode drives the form below it (labels, placeholders, visibility) and its live calculation. Use a Select instead when options exceed four or need no descriptions.</li>
+      </ul>
+
+      <h3>Toast</h3>
+      <ul>
+        <li>Confirmation feedback after a mutation lands (order completed, record saved): fixed bottom-right, slides up over 250ms, auto-dismisses after 4s, one at a time.</li>
+        <li>Anatomy: 32px tonal icon circle (emerald check for success) + 14px/600 title naming the object and what happened + muted detail line carrying the numbers that changed ("$253.03 USD captured &middot; all 8 steps done").</li>
+        <li>Toasts confirm; they never ask. Anything needing a decision is a Modal, and anything needing durable visibility belongs on the page (Next-Task Strip, badges), not in a toast.</li>
       </ul>
 
       <h3>Detail Page Layout</h3>

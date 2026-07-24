@@ -35,8 +35,23 @@ The reference made "Mark as delivered" the primary button while the next step wa
 
 ### 9. Mark as Shipped modal
 The full-screen takeover became the standard centered Modal: Tracking URL form row (optional, with helper text) and a Packing Slip block with a "No packing slip generated" empty-state row + Generate action, Cancel/Save footer. Added a **text input** to the form component family.
-## State 3 — Shipped ⏳
-## State 4 — Delivered ⏳
+## State 3 — Shipped ✅
+
+### 10. Shipped state
+Three steps done, **Delivered** is the current amber step ("3 of 8 · Next: Mark as Delivered"). Header reads **In Transit** (the order-level stage, matching the Orders list) while the Fulfillment panel's pill reads **Shipped** (the fulfillment-level fact) — both violet, one vocabulary. Post-shipment the panel drops Cancel Fulfillment and Mark as Shipped; **Mark as Delivered is promoted to primary**, continuing the primary-action-follows-the-stepper rule. Activity gains "Items shipped · Just now". In Transit rows on the Orders list deep-link to `#shipped`.
+
+### 11. Confirmation modal for irreversible actions
+Mark as Delivered opens a small confirm dialog per the Modal spec (440px, title "Are you sure?", consequence sentence, Cancel + Continue with primary last) — the reference's pattern, rebuilt on our Modal anatomy. Wired from both the Fulfilled state's skip-ahead button and the Shipped state's primary.
+## State 4 — Delivered ✅
+
+### 12. Delivered state + Action Required alert
+Four steps done, **Sales Tax** is the amber current step ("4 of 8 · Next: Input Sales Tax"). A new **Alert banner** sits between Summary and Payments: dashed border, icon tile, "Action Required · Input Sales Tax" with the consequence ("The buyer cannot validate this delivery until you add sales tax") and the primary CTA. One deliberate change from the reference: the banner is **amber, not red** — in our system amber consistently means "your move" while red/rose means destructive or failed; a blocked-but-healthy order is the former. The fulfillment panel reads **Delivered** (emerald) with its action row gone entirely.
+
+### 13. Input Sales Tax modal — radio cards + live math
+The takeover became our centered Modal, and it's fully functional: a new **Radio Card group** (Tax rate % / Tax amount $ / No tax, selected card gets the primary border + accent fill) switches the input's label and placeholder; the input drives a live calc line ("Subtotal $211.14 → tax $17.42") and a Totals block ("New order total $253.56 USD"); **Send to Buyer stays disabled** until the input is valid (or No tax is chosen). Disabled button state joined the button spec.
+
+### 14. Activity feed collapse
+The feed follows the reference's "Show 1 more activity" pattern: mid-feed items collapse behind a muted toggle that expands in place — the newest and oldest entries stay visible, the middle folds.
 ## State 5 — Sales Tax ⏳
 ## State 6 — Validated / Confirm Payment ⏳
 ## State 7 — Buyer Paid ⏳

@@ -663,6 +663,45 @@
     }
     .panel-actions .spacer { flex: 1; }
     .status-dot.dot-ship { background: var(--sky); }
+    .status-dot.dot-transit { background: var(--violet); }
+    .status-dot.dot-delivered { background: var(--emerald); }
+
+    /* Alert banner */
+    .alert {
+      display: flex; align-items: center; gap: 14px;
+      border: 1px dashed var(--amber); background: var(--amber-soft);
+      border-radius: var(--radius-lg); padding: 14px 18px;
+    }
+    .alert-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-md); flex-shrink: 0;
+      background: var(--card); color: var(--amber); border: 1px solid var(--amber);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .alert-icon svg { width: 18px; height: 18px; }
+    .alert-body { flex: 1; min-width: 0; }
+    .alert-title { font-size: 14px; font-weight: 600; }
+    .alert-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+
+    /* Radio cards */
+    .radio-card {
+      display: flex; align-items: flex-start; gap: 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 13px 16px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .radio-card + .radio-card { margin-top: 10px; }
+    .radio-card.selected { border-color: var(--primary); background: var(--accent); }
+    .radio-card input { accent-color: var(--primary); margin-top: 2px; cursor: pointer; }
+    .radio-card-title { font-size: 14px; font-weight: 600; }
+    .radio-card-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+    body.dark .radio-card.selected { border-color: #3d52e0; }
+
+    .calc-note { font-size: 13px; color: var(--muted-foreground); margin-top: 8px; }
+    .toolbar-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .feed-more {
+      font-size: 13px; font-weight: 500; color: var(--muted-foreground);
+      cursor: pointer; padding: 8px 0 8px 20px; display: block; background: none; border: none; font-family: inherit;
+    }
+    .feed-more:hover { color: var(--foreground); }
   </style>
 </head>
 <body>
@@ -891,6 +930,17 @@
             </div>
           </div>
 
+
+          <!-- Action required alert -->
+          <div class="alert" id="alert-tax" style="display:none">
+            <div class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Action Required &middot; Input Sales Tax</div>
+              <div class="alert-desc">The buyer cannot validate this delivery until you add sales tax.</div>
+            </div>
+            <button class="toolbar-btn btn-primary-fill" onclick="openTax()">Input Sales Tax</button>
+          </div>
+
           <!-- Payments -->
           <div class="panel">
             <div class="panel-head">
@@ -940,7 +990,7 @@
             <div class="panel-head">
               <span class="panel-title">Fulfillment #1</span>
               <div class="panel-badges">
-                <span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span>
+                <span class="status-dot-item" id="fulfill-pill"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span>
                 <button class="toolbar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Packing Slip</button>
               </div>
             </div>
@@ -958,10 +1008,10 @@
               <div class="fact-row"><span class="fact-label">Tracking</span><span class="fact-value" style="color:var(--muted-foreground)">&mdash;</span></div>
             </div>
             <div class="panel-actions">
-              <button class="btn-danger-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Fulfillment</button>
+              <button class="btn-danger-outline" id="btn-cancel-fulfill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Fulfillment</button>
               <span class="spacer"></span>
-              <button class="toolbar-btn">Mark as Delivered</button>
-              <button class="toolbar-btn btn-primary-fill" onclick="openShip()">
+              <button class="toolbar-btn" id="btn-mark-delivered" onclick="openConfirm()">Mark as Delivered</button>
+              <button class="toolbar-btn btn-primary-fill" id="btn-mark-shipped" onclick="openShip()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
                 Mark as Shipped
               </button>
@@ -1129,6 +1179,76 @@
     </div>
   </div>
 
+
+  <!-- Confirm modal -->
+  <div class="modal-overlay" id="confirm-modal" onclick="if(event.target===this)closeConfirm()">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-head" style="border-bottom:none;padding-bottom:0">
+        <span class="modal-title">Are you sure?</span>
+        <button class="modal-close" onclick="closeConfirm()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body" style="padding:8px 20px 4px">
+        <p style="font-size:14px;color:var(--muted-foreground);line-height:1.5">You are about to mark this fulfillment as delivered. This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer" style="border-top:none">
+        <button class="toolbar-btn" onclick="closeConfirm()">Cancel</button>
+        <button class="toolbar-btn btn-primary-fill" onclick="closeConfirm()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Input Sales Tax modal -->
+  <div class="modal-overlay" id="tax-modal" onclick="if(event.target===this)closeTax()">
+    <div class="modal">
+      <div class="modal-head">
+        <span class="modal-title">Input Sales Tax &middot; Order #515</span>
+        <span class="esc-chip">esc</span>
+        <button class="modal-close" onclick="closeTax()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--muted-foreground);padding:14px 0 16px;line-height:1.5">Choose a tax rate or enter an exact amount. The buyer sees this amount before paying, and it unblocks delivery validation.</p>
+        <label class="radio-card selected" data-mode="rate" onclick="setTaxMode('rate')">
+          <input type="radio" name="tax-mode" checked />
+          <span>
+            <span class="radio-card-title" style="display:block">Tax rate (%)</span>
+            <span class="radio-card-desc" style="display:block">Apply a percentage to the order subtotal.</span>
+          </span>
+        </label>
+        <label class="radio-card" data-mode="amount" onclick="setTaxMode('amount')">
+          <input type="radio" name="tax-mode" />
+          <span>
+            <span class="radio-card-title" style="display:block">Tax amount ($)</span>
+            <span class="radio-card-desc" style="display:block">Enter the exact sales tax in dollars.</span>
+          </span>
+        </label>
+        <label class="radio-card" data-mode="none" onclick="setTaxMode('none')">
+          <input type="radio" name="tax-mode" />
+          <span>
+            <span class="radio-card-title" style="display:block">No tax ($0)</span>
+            <span class="radio-card-desc" style="display:block">This order has no sales tax.</span>
+          </span>
+        </label>
+        <div id="tax-input-row" style="margin-top:18px">
+          <div class="form-label" id="tax-input-label">Rate (%)</div>
+          <input class="text-input" id="tax-value" placeholder="e.g. 8.25" style="margin-top:8px" oninput="updateTax()" />
+          <div class="calc-note" id="tax-calc">Subtotal $211.14 &rarr; tax $0.00</div>
+        </div>
+        <div class="totals" style="margin:16px 0 20px">
+          <div class="totals-row"><span class="totals-label">Sales tax</span><span class="totals-value" id="tax-line">$0.00</span></div>
+          <div class="totals-row grand"><span class="totals-label">New order total</span><span class="totals-value" id="tax-total">$236.14 USD</span></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="toolbar-btn" onclick="closeTax()">Cancel</button>
+        <button class="toolbar-btn btn-primary-fill" id="tax-send" disabled>
+          Send to Buyer
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     function toggleSidebar() {
       document.querySelector('.sidebar').classList.toggle('collapsed');
@@ -1151,7 +1271,27 @@
         pills: [['dot-ship','To Ship','Fulfilled 07/23/2026 \u00B7 awaiting shipment'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
         progress: '2 of 8 \u00B7 Next: Mark as Shipped',
         panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-ship','To Ship'], cancel: true, shipped: true, deliveredPrimary: false },
         feed: [['Items fulfilled','2 items \u00B7 Fulfillment #1','1m ago'], ['Order placed','$236.14 USD \u00B7 2 items','3m ago']]
+      },
+      shipped: {
+        doneSteps: ['placed','fulfilled','shipped'], current: 'delivered',
+        pills: [['dot-transit','In Transit','Shipped 07/23/2026 \u00B7 with carrier'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
+        progress: '3 of 8 \u00B7 Next: Mark as Delivered',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-transit','Shipped'], cancel: false, shipped: false, deliveredPrimary: true, deliveredShown: true },
+        feed: [['Items shipped','2 items \u00B7 Fulfillment #1','Just now'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','3m ago'], ['Order placed','$236.14 USD \u00B7 2 items','5m ago']]
+      },
+      delivered: {
+        doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-tax','Needs Tax Input','Blocks the buyer\u2019s delivery validation']],
+        progress: '4 of 8 \u00B7 Next: Input Sales Tax',
+        panels: { unfulfilled: false, fulfillment: true },
+        alert: true,
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false, shipped: false, deliveredPrimary: false, deliveredShown: false },
+        feed: [['Items delivered','2 items \u00B7 Fulfillment #1','Just now'], ['Items shipped','2 items \u00B7 Fulfillment #1','2m ago']],
+        feedHidden: [['Items fulfilled','2 items \u00B7 Fulfillment #1','4m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','6m ago']]
       }
     };
 
@@ -1170,15 +1310,68 @@
       document.getElementById('progress-label').innerHTML = s.progress;
       document.getElementById('panel-unfulfilled').style.display = s.panels.unfulfilled ? '' : 'none';
       document.getElementById('panel-fulfillment').style.display = s.panels.fulfillment ? '' : 'none';
-      document.getElementById('activity-feed').innerHTML = feedHTML(s.feed);
+      document.getElementById('alert-tax').style.display = s.alert ? '' : 'none';
+      let feedHtml = feedHTML(s.feed);
+      if (s.feedHidden && s.feedHidden.length) {
+        feedHtml += '<button class="feed-more" id="feed-more" onclick="expandFeed()">Show ' + s.feedHidden.length + ' more activit' + (s.feedHidden.length === 1 ? 'y' : 'ies') + '</button>';
+        feedHtml += '<div id="feed-hidden" style="display:none">' + feedHTML(s.feedHidden) + '</div>';
+      }
+      if (s.feedTail) feedHtml += feedHTML(s.feedTail);
+      document.getElementById('activity-feed').innerHTML = feedHtml;
+      if (s.fulfillment) {
+        const f = s.fulfillment;
+        document.getElementById('fulfill-pill').innerHTML = '<span class="status-dot ' + f.pill[0] + '"></span><span class="status-dot-label">' + f.pill[1] + '</span>';
+        document.getElementById('btn-cancel-fulfill').style.display = f.cancel ? '' : 'none';
+        document.getElementById('btn-mark-shipped').style.display = f.shipped ? '' : 'none';
+        const del = document.getElementById('btn-mark-delivered');
+        del.classList.toggle('btn-primary-fill', f.deliveredPrimary);
+        del.style.display = f.deliveredShown === false ? 'none' : '';
+        document.querySelector('#panel-fulfillment .panel-actions').style.display = (f.cancel || f.shipped || f.deliveredShown !== false) ? '' : 'none';
+      }
     }
 
     function openShip() { document.getElementById('ship-modal').classList.add('open'); }
+    function expandFeed() {
+      document.getElementById('feed-hidden').style.display = '';
+      document.getElementById('feed-more').style.display = 'none';
+    }
+    const SUBTOTAL = 211.14, ORDER_TOTAL = 236.14;
+    let taxMode = 'rate';
+    function money2(v) { return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function setTaxMode(m) {
+      taxMode = m;
+      document.querySelectorAll('.radio-card').forEach(c => {
+        const sel = c.dataset.mode === m;
+        c.classList.toggle('selected', sel);
+        c.querySelector('input').checked = sel;
+      });
+      document.getElementById('tax-input-row').style.display = m === 'none' ? 'none' : '';
+      document.getElementById('tax-input-label').textContent = m === 'rate' ? 'Rate (%)' : 'Amount ($)';
+      document.getElementById('tax-value').placeholder = m === 'rate' ? 'e.g. 8.25' : 'e.g. 17.42';
+      updateTax();
+    }
+    function updateTax() {
+      const raw = parseFloat(document.getElementById('tax-value').value);
+      let tax = 0, valid = false;
+      if (taxMode === 'none') { tax = 0; valid = true; }
+      else if (!isNaN(raw) && raw >= 0) {
+        tax = taxMode === 'rate' ? SUBTOTAL * raw / 100 : raw;
+        valid = raw > 0;
+      }
+      document.getElementById('tax-calc').innerHTML = 'Subtotal ' + money2(SUBTOTAL) + ' \u2192 tax ' + money2(tax);
+      document.getElementById('tax-line').textContent = money2(tax);
+      document.getElementById('tax-total').textContent = money2(ORDER_TOTAL + tax) + ' USD';
+      document.getElementById('tax-send').disabled = !valid;
+    }
+    function openTax() { document.getElementById('tax-modal').classList.add('open'); }
+    function closeTax() { document.getElementById('tax-modal').classList.remove('open'); }
+    function openConfirm() { document.getElementById('confirm-modal').classList.add('open'); }
+    function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
     function closeShip() { document.getElementById('ship-modal').classList.remove('open'); }
 
     function openFulfill() { document.getElementById('fulfill-modal').classList.add('open'); }
     function closeFulfill() { document.getElementById('fulfill-modal').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFulfill(); closeShip(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFulfill(); closeShip(); closeConfirm(); closeTax(); } });
 
     function applyTheme() {
       const dark = localStorage.getItem('scout-theme') === 'dark';

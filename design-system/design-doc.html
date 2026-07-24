@@ -656,7 +656,14 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <ul>
         <li>Pipeline progress for detail pages: 40px nodes with connector lines; done = emerald fill + check, current = amber ring + soft fill (amber = action color), upcoming = muted outline.</li>
         <li>Every node carries an <strong>actor caption</strong> (Auto / You / Buyer, 10px uppercase) — the stepper answers whose turn it is, per the whose-turn-is-it rule. The current node's caption reads amber.</li>
-        <li>The detail page is where full step granularity lives; lists show the condensed states. A progress badge beside the stepper title summarizes: "1 of 8 &middot; Next: Fulfill Items" (Title Case).</li>
+        <li>The detail page is where full step granularity lives; lists show the condensed states. A progress badge beside the stepper title shows the count only ("4 of 8") — the next action is named by the Next-Task Strip, not repeated here.</li>
+      </ul>
+
+      <h3>Next-Task Strip</h3>
+      <ul>
+        <li>Detail pages with a lifecycle get exactly one <strong>Next-Task Strip</strong>, fixed directly below the Stepper in every state. It is the single home of the page's primary action — <strong>primary actions never nest inside panels</strong>; panels keep secondary, contextual actions only (cancel, packing slip, tracking edit). The panel is where you verify; the strip is where you act.</li>
+        <li>Three tones: <strong>action</strong> (amber dashed border + amber-soft fill, icon tile, "Action Required &middot; [Task]" title, one-line consequence, primary CTA right) when it's the vendor's turn; <strong>wait</strong> (neutral border, clock icon, "Waiting on [Actor] &middot; [Step]", no CTA) when another actor owns the step; <strong>done</strong> (emerald) when the lifecycle is complete.</li>
+        <li>The strip's CTA opens the same task-flow Modal the milestone requires — it is the Stepper's current step made actionable. Waiting states are stated explicitly, never left as a page with no button.</li>
       </ul>
 
       <h3>Line Item &amp; Totals</h3>

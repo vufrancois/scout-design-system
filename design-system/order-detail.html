@@ -491,6 +491,9 @@
     .step.upcoming .step-label { color: var(--muted-foreground); font-weight: 500; }
     .step-actor { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); margin-top: 2px; }
     .step.current .step-actor { color: var(--amber); font-weight: 700; }
+    .step.current.buyer .step-dot { border-color: var(--sky); color: var(--sky); background: var(--sky-soft); }
+    .step.current.buyer .step-label { color: var(--foreground); }
+    .step.current.buyer .step-actor { color: var(--sky); }
 
     /* ===== Line items ===== */
     .line-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
@@ -524,7 +527,56 @@
       background: var(--sky-soft); border-radius: var(--radius-md);
       padding: 12px 14px;
     }
+    .doc-row + .doc-row { margin-top: 10px; }
     .doc-row svg.doc-ico { width: 18px; height: 18px; color: var(--sky); flex-shrink: 0; }
+    .doc-row.emerald { background: var(--emerald-soft); }
+    .doc-row.emerald svg.doc-ico { color: var(--emerald); }
+    .doc-row.violet { background: var(--violet-soft2, #ede9fe); }
+    .doc-row.violet svg.doc-ico { color: var(--violet); }
+    body.dark .doc-row.violet { background: var(--violet-soft); }
+    .doc-replace {
+      width: 100%; display: flex; align-items: center; gap: 6px; margin-top: 4px;
+      padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08);
+      font-size: 12px; font-weight: 500; color: var(--emerald);
+      background: none; border-left: none; border-right: none; border-bottom: none;
+      cursor: pointer; font-family: inherit;
+    }
+    body.dark .doc-replace { border-top-color: rgba(255,255,255,0.12); }
+    .doc-replace svg { width: 13px; height: 13px; }
+    .doc-locked {
+      width: 100%; display: flex; align-items: center; gap: 6px; margin-top: 4px;
+      padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08);
+      font-size: 12px; font-weight: 500; color: var(--muted-foreground);
+    }
+    body.dark .doc-locked { border-top-color: rgba(255,255,255,0.12); }
+    .doc-locked svg { width: 13px; height: 13px; }
+    .badge-await {
+      display: inline-flex; align-items: center; margin-left: 8px; padding: 2px 8px;
+      border-radius: 999px; font-size: 11px; font-weight: 600;
+      background: var(--amber-soft); color: #92610a;
+    }
+    body.dark .badge-await { color: #fbbf24; }
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 300;
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg, 0 10px 30px rgba(0,0,0,0.12)); padding: 14px 18px; max-width: 360px;
+      opacity: 0; transform: translateY(12px); pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .toast-icon {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: var(--emerald-soft); color: var(--emerald);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .toast-icon svg { width: 16px; height: 16px; }
+    .toast-title { font-size: 14px; font-weight: 600; }
+    .toast-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+
+    .badge-await.badge-done { background: var(--emerald-soft); color: #047857; }
+    body.dark .badge-await.badge-done { color: #34d399; }
     .doc-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--foreground); }
     .doc-date { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; }
     .rail-rows { display: flex; flex-direction: column; }
@@ -666,21 +718,26 @@
     .status-dot.dot-transit { background: var(--violet); }
     .status-dot.dot-delivered { background: var(--emerald); }
 
-    /* Alert banner */
-    .alert {
-      display: flex; align-items: center; gap: 14px;
-      border: 1px dashed var(--amber); background: var(--amber-soft);
+    /* Next-task strip */
+    .task-strip {
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
       border-radius: var(--radius-lg); padding: 14px 18px;
     }
-    .alert-icon {
+    .task-strip.action { border: 1px dashed var(--amber); background: var(--amber-soft); }
+    .task-strip.wait { border: 1px solid var(--border); background: var(--card); }
+    .task-strip.done { border: 1px solid var(--emerald); background: var(--emerald-soft); }
+    .task-icon {
       width: 36px; height: 36px; border-radius: var(--radius-md); flex-shrink: 0;
-      background: var(--card); color: var(--amber); border: 1px solid var(--amber);
+      background: var(--card); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
     }
-    .alert-icon svg { width: 18px; height: 18px; }
-    .alert-body { flex: 1; min-width: 0; }
-    .alert-title { font-size: 14px; font-weight: 600; }
-    .alert-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+    .task-strip.action .task-icon { color: var(--amber); border-color: var(--amber); }
+    .task-strip.wait .task-icon { color: var(--muted-foreground); }
+    .task-strip.done .task-icon { color: var(--emerald); border-color: var(--emerald); }
+    .task-icon svg { width: 18px; height: 18px; }
+    .task-body { flex: 1; min-width: 0; }
+    .task-title { font-size: 14px; font-weight: 600; }
+    .task-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
 
     /* Radio cards */
     .radio-card {
@@ -700,7 +757,9 @@
     .feed-more {
       font-size: 13px; font-weight: 500; color: var(--muted-foreground);
       cursor: pointer; padding: 8px 0 8px 20px; display: block; background: none; border: none; font-family: inherit;
+      width: 100%; text-align: left; border-top: 1px solid var(--border);
     }
+    .feed-more + .feed-item { border-top: 1px solid var(--border); }
     .feed-more:hover { color: var(--foreground); }
   </style>
 </head>
@@ -848,7 +907,7 @@
         <div class="panel-badges" id="header-pills">
             <span class="status-dot-item" data-tip="Order placed 07/23/2026"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
             <span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
-            <button class="btn-danger-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Order</button>
+            <button class="btn-danger-outline" id="btn-cancel-order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Order</button>
         </div>
       </div>
 
@@ -856,7 +915,7 @@
       <div class="panel">
         <div class="panel-head">
           <span class="panel-title">Order Progress</span>
-          <span class="status-dot-item" id="progress-badge"><span class="status-dot dot-fulfill"></span><span class="status-dot-label" id="progress-label">1 of 8 &middot; Next: Fulfill Items</span></span>
+          <span class="status-dot-item" id="progress-badge"><span class="status-dot dot-fulfill"></span><span class="status-dot-label" id="progress-label">1 of 8</span></span>
         </div>
         <div class="stepper">
             <div class="step" data-step="placed">
@@ -902,6 +961,16 @@
         </div>
       </div>
 
+      <!-- Next task -->
+      <div class="task-strip action" id="task-strip">
+        <div class="task-icon" id="task-icon"></div>
+        <div class="task-body">
+          <div class="task-title" id="task-title"></div>
+          <div class="task-desc" id="task-desc"></div>
+        </div>
+        <button class="toolbar-btn btn-primary-fill" id="task-cta"></button>
+      </div>
+
       <div class="detail-layout">
         <div class="detail-col">
 
@@ -925,21 +994,12 @@
               <div class="totals-row"><span class="totals-label">Item Total</span><span class="totals-value">$211.14</span></div>
               <div class="totals-row"><span class="totals-label">Shipping Total <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span><span class="totals-value">$25.00</span></div>
               <div class="totals-row"><span class="totals-label">Discount Total</span><span class="totals-value">&mdash;</span></div>
-              <div class="totals-row grand"><span class="totals-label">Order Total</span><span class="totals-value">$236.14 USD</span></div>
-              <div class="totals-row"><span class="totals-label">Total captured</span><span class="totals-value">$0.00 USD</span></div>
+              <div class="totals-row" id="sum-tax-row" style="display:none"><span class="totals-label">Sales Tax (vendor)</span><span class="totals-value">$16.89</span></div>
+              <div class="totals-row grand"><span class="totals-label">Order Total</span><span class="totals-value" id="sum-grand">$236.14 USD</span></div>
+              <div class="totals-row"><span class="totals-label">Total captured <span class="badge-await" id="sum-captured-badge" style="display:none">Awaiting Confirmation</span></span><span class="totals-value" id="sum-captured">$0.00 USD</span></div>
             </div>
           </div>
 
-
-          <!-- Action required alert -->
-          <div class="alert" id="alert-tax" style="display:none">
-            <div class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></div>
-            <div class="alert-body">
-              <div class="alert-title">Action Required &middot; Input Sales Tax</div>
-              <div class="alert-desc">The buyer cannot validate this delivery until you add sales tax.</div>
-            </div>
-            <button class="toolbar-btn btn-primary-fill" onclick="openTax()">Input Sales Tax</button>
-          </div>
 
           <!-- Payments -->
           <div class="panel">
@@ -947,12 +1007,19 @@
               <span class="panel-title">Payments</span>
               <div class="panel-badges">
                 <span class="badge-neutral">Purchase Order</span>
-                <span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+                <span class="status-dot-item" id="pay-pill" data-tip="Awaiting your tax input"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
               </div>
             </div>
             <div class="totals" style="border-top:none;padding-top:0">
-              <div class="totals-row"><span class="totals-label">Total paid by buyer</span><span class="totals-value">$0.00 USD</span></div>
-              <div class="totals-row"><span class="totals-label">Total pending</span><span class="totals-value">$236.14 USD</span></div>
+              <div class="totals-row"><span class="totals-label">Total paid by buyer</span><span class="totals-value" id="pay-paid">$0.00 USD</span></div>
+              <div class="totals-row" id="pay-pending-row"><span class="totals-label">Total pending</span><span class="totals-value" id="pay-pending">$236.14 USD</span></div>
+            </div>
+            <div class="panel-actions" id="pay-capture" style="display:none">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:600">Purchase Order</div>
+                <div style="font-size:13px;color:var(--muted-foreground);margin-top:1px" id="pay-capture-desc">Waiting for the buyer to confirm payment before you can capture</div>
+              </div>
+              <button class="toolbar-btn" id="btn-mark-paid" disabled>Mark as Paid</button>
             </div>
           </div>
 
@@ -976,12 +1043,6 @@
             <span class="line-qty">&times; 2</span>
             <span class="line-total">$211.14</span>
           </div>
-            <div style="display:flex;justify-content:flex-end;border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-              <button class="toolbar-btn btn-primary-fill" onclick="openFulfill()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-                Fulfill Items
-              </button>
-            </div>
           </div>
 
 
@@ -1009,12 +1070,6 @@
             </div>
             <div class="panel-actions">
               <button class="btn-danger-outline" id="btn-cancel-fulfill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Fulfillment</button>
-              <span class="spacer"></span>
-              <button class="toolbar-btn" id="btn-mark-delivered" onclick="openConfirm()">Mark as Delivered</button>
-              <button class="toolbar-btn btn-primary-fill" id="btn-mark-shipped" onclick="openShip()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-                Mark as Shipped
-              </button>
             </div>
           </div>
 
@@ -1030,6 +1085,24 @@
               <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
               <div style="flex:1;min-width:0">
                 <div class="doc-name">Purchase Order #PO-515-160</div>
+                <div class="doc-date">07/23/2026</div>
+              </div>
+              <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+            </div>
+            <div class="doc-row emerald" id="doc-invoice" style="display:none;flex-wrap:wrap">
+              <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+              <div style="flex:1;min-width:0">
+                <div class="doc-name">Invoice #102</div>
+                <div class="doc-date">07/23/2026</div>
+              </div>
+              <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+              <button class="doc-replace" id="doc-replace-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>Replace invoice</button>
+              <div class="doc-locked" id="doc-locked" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Locked &mdash; order paid</div>
+            </div>
+            <div class="doc-row violet" id="doc-receipt" style="display:none">
+              <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+              <div style="flex:1;min-width:0">
+                <div class="doc-name">Receipt of Goods #ROG-515-83</div>
                 <div class="doc-date">07/23/2026</div>
               </div>
               <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
@@ -1180,6 +1253,49 @@
   </div>
 
 
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <div style="flex:1;min-width:0">
+      <div class="toast-title" id="toast-title">Order #515 completed</div>
+      <div class="toast-desc" id="toast-desc">$253.03 USD captured</div>
+    </div>
+  </div>
+
+  <!-- Complete Order confirm modal -->
+  <div class="modal-overlay" id="complete-modal" onclick="if(event.target===this)closeCompleteConfirm()">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-head" style="border-bottom:none;padding-bottom:0">
+        <span class="modal-title">Complete Order</span>
+        <button class="modal-close" onclick="closeCompleteConfirm()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body" style="padding:8px 20px 4px">
+        <p style="font-size:14px;color:var(--muted-foreground);line-height:1.5">Order #515 will be marked as complete. This closes the order and cannot be undone.</p>
+      </div>
+      <div class="modal-footer" style="border-top:none">
+        <button class="toolbar-btn" onclick="closeCompleteConfirm()">Cancel</button>
+        <button class="toolbar-btn btn-primary-fill" onclick="completeOrder()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mark as Paid confirm modal -->
+  <div class="modal-overlay" id="paid-modal" onclick="if(event.target===this)closePaidConfirm()">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-head" style="border-bottom:none;padding-bottom:0">
+        <span class="modal-title">Mark as Paid</span>
+        <button class="modal-close" onclick="closePaidConfirm()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body" style="padding:8px 20px 4px">
+        <p style="font-size:14px;color:var(--muted-foreground);line-height:1.5">Payment of $253.03 USD will be marked as paid. This confirms the buyer&rsquo;s bank transfer was received and cannot be undone.</p>
+      </div>
+      <div class="modal-footer" style="border-top:none">
+        <button class="toolbar-btn" onclick="closePaidConfirm()">Cancel</button>
+        <button class="toolbar-btn btn-primary-fill" onclick="closePaidConfirm()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Confirm modal -->
   <div class="modal-overlay" id="confirm-modal" onclick="if(event.target===this)closeConfirm()">
     <div class="modal" style="max-width:440px">
@@ -1212,7 +1328,7 @@
           <input type="radio" name="tax-mode" checked />
           <span>
             <span class="radio-card-title" style="display:block">Tax rate (%)</span>
-            <span class="radio-card-desc" style="display:block">Apply a percentage to the order subtotal.</span>
+            <span class="radio-card-desc" style="display:block">Apply a percentage to the item subtotal.</span>
           </span>
         </label>
         <label class="radio-card" data-mode="amount" onclick="setTaxMode('amount')">
@@ -1235,6 +1351,8 @@
           <div class="calc-note" id="tax-calc">Subtotal $211.14 &rarr; tax $0.00</div>
         </div>
         <div class="totals" style="margin:16px 0 20px">
+          <div class="totals-row"><span class="totals-label">Item Total</span><span class="totals-value">$211.14</span></div>
+          <div class="totals-row"><span class="totals-label">Shipping Total</span><span class="totals-value">$25.00</span></div>
           <div class="totals-row"><span class="totals-label">Sales tax</span><span class="totals-value" id="tax-line">$0.00</span></div>
           <div class="totals-row grand"><span class="totals-label">New order total</span><span class="totals-value" id="tax-total">$236.14 USD</span></div>
         </div>
@@ -1258,40 +1376,127 @@
     const pillHTML = (dot, label, tip) => '<span class="status-dot-item"' + (tip ? ' data-tip="' + tip + '"' : '') + '><span class="status-dot ' + dot + '"></span><span class="status-dot-label">' + label + '</span>' + (tip ? '<svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' : '') + '</span>';
     const feedHTML = items => items.map(i => '<div class="feed-item"><span class="feed-dot"></span><div class="feed-body"><div class="feed-title">' + i[0] + '</div><div class="feed-meta">' + i[1] + '</div></div><span class="feed-time">' + i[2] + '</span></div>').join('');
 
+    const TASK_ICONS = {
+      fulfill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+      ship: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
+      deliver: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
+      tax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>',
+      wait: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+      paid: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
+      done: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>'
+    };
+
     const STATES = {
       placed: {
         doneSteps: ['placed'], current: 'fulfilled',
         pills: [['dot-fulfill','To Fulfill','Order placed 07/23/2026'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
-        progress: '1 of 8 \u00B7 Next: Fulfill Items',
+        progress: '1 of 8',
         panels: { unfulfilled: true, fulfillment: false },
+        task: { tone: 'action', icon: 'fulfill', title: 'Action Required \u00B7 Fulfill Items', desc: '2 items are waiting to be fulfilled.', cta: ['Fulfill Items', 'openFulfill()'] },
         feed: [['Order placed','$236.14 USD \u00B7 2 items','1m ago']]
       },
       fulfilled: {
         doneSteps: ['placed','fulfilled'], current: 'shipped',
         pills: [['dot-ship','To Ship','Fulfilled 07/23/2026 \u00B7 awaiting shipment'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
-        progress: '2 of 8 \u00B7 Next: Mark as Shipped',
+        progress: '2 of 8',
         panels: { unfulfilled: false, fulfillment: true },
-        fulfillment: { pill: ['dot-ship','To Ship'], cancel: true, shipped: true, deliveredPrimary: false },
+        fulfillment: { pill: ['dot-ship','To Ship'], cancel: true },
+        task: { tone: 'action', icon: 'ship', title: 'Action Required \u00B7 Mark as Shipped', desc: 'Add tracking and mark Fulfillment #1 as shipped.', cta: ['Mark as Shipped', 'openShip()'] },
         feed: [['Items fulfilled','2 items \u00B7 Fulfillment #1','1m ago'], ['Order placed','$236.14 USD \u00B7 2 items','3m ago']]
       },
       shipped: {
         doneSteps: ['placed','fulfilled','shipped'], current: 'delivered',
         pills: [['dot-transit','In Transit','Shipped 07/23/2026 \u00B7 with carrier'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
-        progress: '3 of 8 \u00B7 Next: Mark as Delivered',
+        progress: '3 of 8',
         panels: { unfulfilled: false, fulfillment: true },
-        fulfillment: { pill: ['dot-transit','Shipped'], cancel: false, shipped: false, deliveredPrimary: true, deliveredShown: true },
+        fulfillment: { pill: ['dot-transit','Shipped'], cancel: false },
+        task: { tone: 'action', icon: 'deliver', title: 'Action Required \u00B7 Mark as Delivered', desc: 'Confirm the buyer received Fulfillment #1.', cta: ['Mark as Delivered', 'openConfirm()'] },
         feed: [['Items shipped','2 items \u00B7 Fulfillment #1','Just now'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','3m ago'], ['Order placed','$236.14 USD \u00B7 2 items','5m ago']]
       },
       delivered: {
         doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
         pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-tax','Needs Tax Input','Blocks the buyer\u2019s delivery validation']],
-        progress: '4 of 8 \u00B7 Next: Input Sales Tax',
+        progress: '4 of 8',
         panels: { unfulfilled: false, fulfillment: true },
-        alert: true,
-        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false, shipped: false, deliveredPrimary: false, deliveredShown: false },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'tax', title: 'Action Required \u00B7 Input Sales Tax', desc: 'The buyer cannot validate this delivery until you add sales tax.', cta: ['Input Sales Tax', 'openTax()'] },
         feed: [['Items delivered','2 items \u00B7 Fulfillment #1','Just now'], ['Items shipped','2 items \u00B7 Fulfillment #1','2m ago']],
         feedHidden: [['Items fulfilled','2 items \u00B7 Fulfillment #1','4m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','6m ago']]
+      },
+      tax: {
+        doneSteps: ['placed','fulfilled','shipped','delivered','tax'], current: 'validated', currentActor: 'buyer',
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','With Buyer','Awaiting delivery validation']],
+        progress: '5 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Validate Delivery', desc: 'The buyer is reviewing the delivery and sales tax \u2014 $16.89 (8%) stays editable until they validate.', cta: ['Edit Tax', 'editTax()', 'ghost'] },
+        taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
+        payPill: ['dot-ship','With Buyer','Awaiting delivery validation'],
+        feed: [['Sales tax sent to buyer','$16.89 (8%)','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','2m ago']],
+        feedHidden: [['Items shipped','2 items \u00B7 Fulfillment #1','4m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','6m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','8m ago']]
+      },
+      validated: {
+        doneSteps: ['placed','fulfilled','shipped','delivered','tax','validated'], current: 'paid', currentActor: 'buyer',
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','With Buyer','Delivery validated \u00B7 awaiting payment confirmation']],
+        progress: '6 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Confirm Payment', desc: 'The buyer validated delivery and is reviewing the invoice. Payment confirmation unlocks capture.', cta: null },
+        taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
+        payPill: ['dot-ship','With Buyer','Delivery validated \u00B7 awaiting payment confirmation'],
+        docs3: true, capture: true, captureDesc: 'Waiting for the buyer to confirm payment before you can capture', captureBtn: true,
+        feed: [['Delivery validated','2 items \u00B7 by the buyer','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','3m ago']],
+        feedHidden: [['Sales tax sent to buyer','$16.89 (8%)','2m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','5m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','7m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','9m ago']]
+      },
+      paid: {
+        doneSteps: ['placed','fulfilled','shipped','delivered','tax','validated','paid'], current: 'completed',
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-transit','Paid','Buyer confirmed payment \u00B7 awaiting your capture']],
+        progress: '7 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'paid', title: 'Action Required \u00B7 Mark as Paid', desc: 'The buyer confirmed payment \u2014 confirm once the bank transfer is received to capture $253.03.', cta: ['Mark as Paid', 'openPaidConfirm()'] },
+        taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
+        payPill: ['dot-transit','Paid','Buyer confirmed payment \u00B7 awaiting your capture'],
+        docs3: true, capture: true, captureDesc: 'Click to confirm when the bank transfer is received.', captureBtn: false,
+        invoiceLocked: true, capturedBadge: true, captured: '$253.03 USD',
+        feed: [['Buyer confirmed payment','$253.03 USD','Just now'], ['Delivery validated','2 items \u00B7 by the buyer','4m ago']],
+        feedHidden: [['Sales tax sent to buyer','$16.89 (8%)','6m ago'], ['Items delivered','2 items \u00B7 Fulfillment #1','7m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','9m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','11m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','13m ago']]
+      },
+      captured: {
+        doneSteps: ['placed','fulfilled','shipped','delivered','tax','validated','paid'], current: 'completed',
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-delivered','Captured','Payment captured 07/23/2026']],
+        progress: '7 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'done', title: 'Action Required \u00B7 Complete Order', desc: 'All items delivered and payment captured \u2014 completing closes out the order.', cta: ['Complete Order', 'openCompleteConfirm()'] },
+        taxRow: true, orderTotal: '$253.03 USD',
+        paid: '$253.03 USD', hidePending: true,
+        payPill: ['dot-delivered','Captured','Payment captured 07/23/2026'],
+        docs3: true, invoiceLocked: true, noCancel: true,
+        capturedBadge: true, capturedBadgeTone: 'done', capturedBadgeText: 'Confirmed by Vendor', captured: '$253.03 USD',
+        feed: [['Payment captured','$253.03 USD','Just now'], ['Buyer confirmed payment','$253.03 USD','4m ago']],
+        feedHidden: [['Delivery validated','2 items \u00B7 by the buyer','6m ago'], ['Sales tax sent to buyer','$16.89 (8%)','8m ago'], ['Items delivered','2 items \u00B7 Fulfillment #1','9m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','11m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','13m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','15m ago']]
+      },
+      completed: {
+        doneSteps: ['placed','fulfilled','shipped','delivered','tax','validated','paid','completed'], current: null,
+        pills: [['dot-delivered','Completed','Completed 07/23/2026']],
+        progress: '8 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'done', icon: 'done', title: 'Order Complete', desc: 'All 8 steps are done \u2014 payment captured and delivery validated.', cta: null },
+        taxRow: true, orderTotal: '$253.03 USD',
+        paid: '$253.03 USD', hidePending: true,
+        payPill: ['dot-delivered','Captured','Payment captured 07/23/2026'],
+        docs3: true, invoiceLocked: true, noCancel: true,
+        capturedBadge: true, capturedBadgeTone: 'done', capturedBadgeText: 'Confirmed by Vendor', captured: '$253.03 USD',
+        feed: [['Order completed','Closed by you','Just now'], ['Payment captured','$253.03 USD','2m ago']],
+        feedHidden: [['Buyer confirmed payment','$253.03 USD','6m ago'], ['Delivery validated','2 items \u00B7 by the buyer','8m ago'], ['Sales tax sent to buyer','$16.89 (8%)','10m ago'], ['Items delivered','2 items \u00B7 Fulfillment #1','11m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','13m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','15m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','17m ago']]
       }
     };
 
@@ -1302,19 +1507,55 @@
       const cancelBtn = document.getElementById('header-pills').firstElementChild;
       document.getElementById('header-pills').insertAdjacentHTML('afterbegin', s.pills.map(p => pillHTML(p[0], p[1], p[2])).join(''));
       document.querySelectorAll('.stepper .step').forEach(st => {
-        st.classList.remove('done', 'current', 'upcoming');
+        st.classList.remove('done', 'current', 'upcoming', 'buyer');
         if (s.doneSteps.includes(st.dataset.step)) st.classList.add('done');
-        else if (st.dataset.step === s.current) st.classList.add('current');
+        else if (st.dataset.step === s.current) { st.classList.add('current'); if (s.currentActor === 'buyer') st.classList.add('buyer'); }
         else st.classList.add('upcoming');
       });
       document.getElementById('progress-label').innerHTML = s.progress;
       document.getElementById('panel-unfulfilled').style.display = s.panels.unfulfilled ? '' : 'none';
       document.getElementById('panel-fulfillment').style.display = s.panels.fulfillment ? '' : 'none';
-      document.getElementById('alert-tax').style.display = s.alert ? '' : 'none';
+      const t = s.task;
+      const strip = document.getElementById('task-strip');
+      strip.className = 'task-strip ' + t.tone;
+      document.getElementById('task-icon').innerHTML = TASK_ICONS[t.icon];
+      document.getElementById('task-title').textContent = t.title;
+      document.getElementById('task-desc').textContent = t.desc;
+      const cta = document.getElementById('task-cta');
+      if (t.cta) {
+        cta.style.display = '';
+        cta.textContent = t.cta[0];
+        cta.setAttribute('onclick', t.cta[1]);
+        cta.className = 'toolbar-btn' + (t.cta[2] === 'ghost' ? '' : ' btn-primary-fill');
+      } else {
+        cta.style.display = 'none';
+      }
+      document.getElementById('sum-tax-row').style.display = s.taxRow ? '' : 'none';
+      document.getElementById('sum-grand').textContent = s.orderTotal || '$236.14 USD';
+      document.getElementById('pay-pending').textContent = s.pending || '$236.14 USD';
+      document.getElementById('doc-invoice').style.display = s.docs3 ? '' : 'none';
+      document.getElementById('doc-receipt').style.display = s.docs3 ? '' : 'none';
+      document.getElementById('pay-capture').style.display = s.capture ? '' : 'none';
+      document.getElementById('pay-capture-desc').textContent = s.captureDesc || '';
+      document.getElementById('btn-mark-paid').style.display = s.captureBtn ? '' : 'none';
+      document.getElementById('doc-replace-btn').style.display = s.invoiceLocked ? 'none' : '';
+      document.getElementById('doc-locked').style.display = s.invoiceLocked ? '' : 'none';
+      const cb = document.getElementById('sum-captured-badge');
+      cb.style.display = s.capturedBadge ? '' : 'none';
+      cb.className = 'badge-await' + (s.capturedBadgeTone === 'done' ? ' badge-done' : '');
+      cb.textContent = s.capturedBadgeText || 'Awaiting Confirmation';
+      document.getElementById('sum-captured').textContent = s.captured || '$0.00 USD';
+      document.getElementById('pay-paid').textContent = s.paid || '$0.00 USD';
+      document.getElementById('pay-pending-row').style.display = s.hidePending ? 'none' : '';
+      document.getElementById('btn-cancel-order').style.display = s.noCancel ? 'none' : '';
+      const pp = document.getElementById('pay-pill');
+      const ppData = s.payPill || ['dot-tax','Needs Tax Input','Awaiting your tax input'];
+      pp.setAttribute('data-tip', ppData[2]);
+      pp.innerHTML = '<span class="status-dot ' + ppData[0] + '"></span><span class="status-dot-label">' + ppData[1] + '</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
+      curState = s;
       let feedHtml = feedHTML(s.feed);
       if (s.feedHidden && s.feedHidden.length) {
         feedHtml += '<button class="feed-more" id="feed-more" onclick="expandFeed()">Show ' + s.feedHidden.length + ' more activit' + (s.feedHidden.length === 1 ? 'y' : 'ies') + '</button>';
-        feedHtml += '<div id="feed-hidden" style="display:none">' + feedHTML(s.feedHidden) + '</div>';
       }
       if (s.feedTail) feedHtml += feedHTML(s.feedTail);
       document.getElementById('activity-feed').innerHTML = feedHtml;
@@ -1322,18 +1563,15 @@
         const f = s.fulfillment;
         document.getElementById('fulfill-pill').innerHTML = '<span class="status-dot ' + f.pill[0] + '"></span><span class="status-dot-label">' + f.pill[1] + '</span>';
         document.getElementById('btn-cancel-fulfill').style.display = f.cancel ? '' : 'none';
-        document.getElementById('btn-mark-shipped').style.display = f.shipped ? '' : 'none';
-        const del = document.getElementById('btn-mark-delivered');
-        del.classList.toggle('btn-primary-fill', f.deliveredPrimary);
-        del.style.display = f.deliveredShown === false ? 'none' : '';
-        document.querySelector('#panel-fulfillment .panel-actions').style.display = (f.cancel || f.shipped || f.deliveredShown !== false) ? '' : 'none';
+        document.querySelector('#panel-fulfillment .panel-actions').style.display = f.cancel ? '' : 'none';
       }
     }
 
     function openShip() { document.getElementById('ship-modal').classList.add('open'); }
+    let curState;
     function expandFeed() {
-      document.getElementById('feed-hidden').style.display = '';
-      document.getElementById('feed-more').style.display = 'none';
+      document.getElementById('activity-feed').innerHTML =
+        feedHTML(curState.feed.concat(curState.feedHidden, curState.feedTail || []));
     }
     const SUBTOTAL = 211.14, ORDER_TOTAL = 236.14;
     let taxMode = 'rate';
@@ -1364,6 +1602,26 @@
       document.getElementById('tax-send').disabled = !valid;
     }
     function openTax() { document.getElementById('tax-modal').classList.add('open'); }
+    function editTax() { setTaxMode('rate'); document.getElementById('tax-value').value = '8'; updateTax(); openTax(); }
+    let toastTimer;
+    function showToast(title, desc) {
+      document.getElementById('toast-title').textContent = title;
+      document.getElementById('toast-desc').textContent = desc;
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+    }
+    function completeOrder() {
+      closeCompleteConfirm();
+      location.hash = '#completed';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast('Order #515 completed', '$253.03 USD captured \u00B7 all 8 steps done');
+    }
+    function openCompleteConfirm() { document.getElementById('complete-modal').classList.add('open'); }
+    function closeCompleteConfirm() { document.getElementById('complete-modal').classList.remove('open'); }
+    function openPaidConfirm() { document.getElementById('paid-modal').classList.add('open'); }
+    function closePaidConfirm() { document.getElementById('paid-modal').classList.remove('open'); }
     function closeTax() { document.getElementById('tax-modal').classList.remove('open'); }
     function openConfirm() { document.getElementById('confirm-modal').classList.add('open'); }
     function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
@@ -1371,7 +1629,7 @@
 
     function openFulfill() { document.getElementById('fulfill-modal').classList.add('open'); }
     function closeFulfill() { document.getElementById('fulfill-modal').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFulfill(); closeShip(); closeConfirm(); closeTax(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFulfill(); closeShip(); closeConfirm(); closeTax(); closePaidConfirm(); closeCompleteConfirm(); } });
 
     function applyTheme() {
       const dark = localStorage.getItem('scout-theme') === 'dark';

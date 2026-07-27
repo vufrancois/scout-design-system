@@ -1,9 +1,9 @@
-# Order Detail — UX Enhancement Summary (in progress)
+# Order Detail — UX Enhancement Summary
 
 **View:** [order-detail.html](https://scout-design-system-beta.vercel.app/order-detail.html)
-**Date:** started 07/23/2026 · **Status:** all 8 workflow states built (9 page states incl. `#captured`), lifecycle navigable end to end
+**Date:** 07/23–07/24/2026 · **Status:** ✅ complete — all 8 workflow steps built as 9 page states (incl. `#captured`), lifecycle navigable end to end and reconciled with the Orders list
 
-Recreation of the Orders detail sub-pages using the component library, state by state through the order workflow: Placed → Fulfilled → Shipped → Delivered → Sales Tax → Validated → Paid → Completed. This log accumulates as each state's screens land.
+Recreation of the Orders detail sub-pages using the component library, state by state through the order workflow: Placed → Fulfilled → Shipped → Delivered → Sales Tax → Validated → Paid → Completed. This log reads chronologically — each state was built from the vendor's reference screens, then reconciled system-wide (item 25).
 
 ## State 1 — Not Fulfilled ✅
 
@@ -35,6 +35,7 @@ The reference made "Mark as delivered" the primary button while the next step wa
 
 ### 9. Mark as Shipped modal
 The full-screen takeover became the standard centered Modal: Tracking URL form row (optional, with helper text) and a Packing Slip block with a "No packing slip generated" empty-state row + Generate action, Cancel/Save footer. Added a **text input** to the form component family.
+
 ## State 3 — Shipped ✅
 
 ### 10. Shipped state
@@ -42,6 +43,7 @@ Three steps done, **Delivered** is the current amber step ("3 of 8 · Next: Mark
 
 ### 11. Confirmation modal for irreversible actions
 Mark as Delivered opens a small confirm dialog per the Modal spec (440px, title "Are you sure?", consequence sentence, Cancel + Continue with primary last) — the reference's pattern, rebuilt on our Modal anatomy. Wired from both the Fulfilled state's skip-ahead button and the Shipped state's primary.
+
 ## State 4 — Delivered ✅
 
 ### 12. Delivered state + Action Required alert
@@ -88,6 +90,7 @@ Summary's Total captured row gains an amber **Awaiting Confirmation** badge with
 ### 23. Completed — the done tone lands
 `#completed`: all 8 steps emerald, "8 of 8," single **Completed** header pill, and the strip's **done tone** debuts for real: "Order Complete · All 8 steps are done — payment captured and delivery validated." No CTA anywhere; the page reads as a record, not a task. Activity leads "Order completed · Closed by you" folding six mid-items. Orders list: captured rows #327/#274 → `#captured`, all five Completed rows → `#completed` (drawer matches). **The full 8-state lifecycle is now navigable end to end.**
 
+## Closing the loop
 
 ### 24. Completing the order is real — and it toasts
 Confirming Complete Order now performs the actual transition: the modal closes, the page moves to `#completed` (stepper fills to 8 of 8, the strip turns emerald, Cancel Order vanishes), the view scrolls to the top so the change is visible, and a new **Toast** component slides in bottom-right — emerald check, "Order #515 completed · $253.03 USD captured · all 8 steps done," auto-dismissing after 4s. The demo's final click closes the loop instead of dead-ending; Toast is now available for any mutation feedback across the app.
@@ -101,17 +104,15 @@ An audit of every Orders-list stage × payment combo against the detail states s
 ## Design system additions (running)
 
 - **Stepper** (gallery + design doc) — done/current/upcoming states, connector lines, actor captions per the whose-turn-is-it rule; progress badge shows the count only
-- **Next-Task Strip** (gallery + design doc) — action/wait/done tones, fixed below the Stepper on lifecycle detail pages; rule: primary actions never nest inside panels, and waiting states are stated explicitly
 - **Line Item + Totals** (gallery + design doc) — thumb/name/mono-SKU/variant anatomy, price × qty, emphasized grand-total row
-- **Document Row** (gallery + design doc) — soft-sky file row with date meta and download action; no count pill on section titles
 - **Form Rows & Selects** (gallery + design doc) — label + description / control rows for modal task flows, 38px Select, quantity input with bound, rose stock deltas
 - **Detail Page Layout** (design doc) — main + 360px rail, stacking under 1100px; rail fact rows with linked parties and copyable addresses
 - **Modal-over-takeover rule** (design doc) — task flows use the centered Modal; full-screen takeovers avoided
 - **Drawer component + Modal-vs-Drawer rule** (design doc) — 420px right panel for inspect-without-navigating; Modal commits transactions, Drawer peeks/references; never both for one job. Prototyped as the **order peek drawer** on the Orders list (row click → summary, pills, contextual action, Open Full Order)
-- **Next-Task Strip** (gallery + design doc) — see item 15; action/wait/done tones with the primary-actions-never-nest rule
+- **Next-Task Strip** (gallery + design doc) — action/wait/done tones, fixed below the Stepper on lifecycle detail pages (item 15); rules: primary actions never nest inside panels, waiting states are stated explicitly
 - **Radio Cards** (gallery + design doc) — mode selection inside task-flow Modals; selected card gets primary border + accent fill; Select when options exceed four
 - **Toast** (gallery + design doc) — bottom-right mutation feedback, 250ms slide, 4s auto-dismiss; "toasts confirm, they never ask"
-- **Document Row type accents** (gallery + design doc) — sky PO / emerald Invoice / violet Receipt, plus the one inline secondary line rule (accent action or muted locked note, never both)
+- **Document Row** (gallery + design doc) — soft tonal file row with date meta and download action, **type accents** (sky PO / emerald Invoice / violet Receipt) and the one-inline-secondary-line rule (accent action or muted locked note, never both); no count pill on section titles
 - **Buyer-turn Stepper node** (gallery + design doc) — sky current ring when the actor is the Buyer; amber strictly means "you act"
 - **Badge-in-totals** (gallery + design doc) — inline pill qualifying a money row (amber Awaiting Confirmation / emerald Confirmed by Vendor)
 - **Lifecycle Matrix** (gallery + design doc) — canonical step → pills → actor → detail-state table with the payment-never-outruns-fulfillment gating rule
@@ -121,4 +122,7 @@ An audit of every Orders-list stage × payment combo against the detail states s
 
 - Missing base component CSS on the new page (`.row-action`, unscoped `.avatar`) — the recurring page-clone pitfall, now on a standing checklist
 - Cancel Order scoped to `#placed` only — once items are fulfilled the order-level cancel disappears; the destructive escape becomes stage-appropriate (Cancel Fulfillment while unshipped, none once goods are in motion)
+- Tax modal totals itemize **Item Total + Shipping Total** above Sales tax, so the new order total's composition is visible (shipping is in the total, not the tax base); bottom margin added so the grand row clears the footer divider
+- `dot-delivered` status-dot color class was referenced before it existed — emerald definition added (pill dots rendered invisible)
+- Activity-feed dividers survived the collapse: the "Show N more" toggle row carries its own dividers and expansion re-renders the feed flat (the hidden-wrapper approach broke the adjacent-sibling border rule)
 - Header badge alignment: pills inherited `align-self: flex-start` from cloned detail-header CSS, breaking vertical centering next to buttons — scoped override added

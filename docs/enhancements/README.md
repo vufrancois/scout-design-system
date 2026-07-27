@@ -17,9 +17,9 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | Insights | [insights.md](insights.md) |
 | Orders | [orders.md](orders.md) |
 | Dark mode + responsive (all pages) | [dark-mode-responsive.md](dark-mode-responsive.md) |
-| Order Detail (in progress) | [order-detail.md](order-detail.md) |
+| Order Detail (8-state lifecycle) | [order-detail.md](order-detail.md) |
 
-All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass. Current phase: Order Detail sub-pages, built state by state.
+All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass. The **Order Detail phase is also complete**: one stateful detail page covering the full 8-step order workflow as 9 URL states (`#placed` → `#completed`), every Orders-list row deep-linking to its matching state, and a codified **Lifecycle Matrix** keeping list pills, detail states, and demo data reconciled. New components from the phase: Stepper (actor captions + buyer-turn nodes), Next-Task Strip, Line Item + Totals (badge-in-totals), Document Row (type accents), Form Rows, Radio Cards, Toast, Drawer, plus the Modal-over-takeover and primary-actions-never-nest rules.
 
 ## Format
 

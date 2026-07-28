@@ -485,6 +485,9 @@
       background: var(--card); border: 2px solid var(--border); color: var(--muted-foreground);
     }
     .step-dot svg { width: 18px; height: 18px; }
+    .stepper .step { cursor: pointer; }
+    .stepper .step .step-dot { transition: transform 0.12s ease, box-shadow 0.12s ease; }
+    .stepper .step:hover .step-dot { transform: scale(1.08); box-shadow: 0 0 0 4px var(--muted); }
     .step.done .step-dot { background: var(--emerald); border-color: var(--emerald); color: #fff; }
     .step.current .step-dot { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
     .step-label { font-size: 12px; font-weight: 600; margin-top: 8px; text-align: center; color: var(--foreground); }
@@ -1654,6 +1657,10 @@
     applyTheme();
     renderState();
     window.addEventListener('hashchange', renderState);
+    document.querySelectorAll('.stepper .step').forEach(st => {
+      st.title = 'View this state';
+      st.addEventListener('click', () => { location.hash = '#' + st.dataset.step; });
+    });
     document.querySelector('.main').addEventListener('click', () => {
       if (window.innerWidth <= 1024 && document.querySelector('.sidebar').classList.contains('collapsed')) toggleSidebar();
     });

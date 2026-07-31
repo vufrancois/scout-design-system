@@ -756,6 +756,22 @@
     body.dark .radio-card.selected { border-color: #3d52e0; }
 
     .calc-note { font-size: 13px; color: var(--muted-foreground); margin-top: 8px; }
+    .file-drop {
+      margin-top: 16px; padding: 26px 20px; text-align: center; cursor: pointer;
+      border: 1.5px dashed var(--border); border-radius: var(--radius-md);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .file-drop:hover { border-color: var(--primary); background: var(--accent); }
+    .file-drop-icon {
+      width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 10px;
+      background: var(--primary); color: var(--primary-foreground);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .file-drop-icon svg { width: 18px; height: 18px; }
+    .file-drop-title { font-size: 14px; font-weight: 600; }
+    .file-drop-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+    .file-drop.selected { border-style: solid; border-color: var(--emerald); background: var(--emerald-soft); cursor: default; }
+    .file-drop.selected .file-drop-icon { background: var(--emerald); }
     .toolbar-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .feed-more {
       font-size: 13px; font-weight: 500; color: var(--muted-foreground);
@@ -909,7 +925,7 @@
         </div>
         <div class="panel-badges" id="header-pills">
             <span class="status-dot-item" data-tip="Order placed 07/23/2026"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
-            <span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+            <span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
             <button class="btn-danger-outline" id="btn-cancel-order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel Order</button>
         </div>
       </div>
@@ -971,6 +987,7 @@
           <div class="task-title" id="task-title"></div>
           <div class="task-desc" id="task-desc"></div>
         </div>
+        <button class="toolbar-btn" id="task-cta2" style="display:none"></button>
         <button class="toolbar-btn btn-primary-fill" id="task-cta"></button>
       </div>
 
@@ -1010,7 +1027,7 @@
               <span class="panel-title">Payments</span>
               <div class="panel-badges">
                 <span class="badge-neutral">Purchase Order</span>
-                <span class="status-dot-item" id="pay-pill" data-tip="Awaiting your tax input"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+                <span class="status-dot-item" id="pay-pill" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-tax"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
               </div>
             </div>
             <div class="totals" style="border-top:none;padding-top:0">
@@ -1256,6 +1273,35 @@
   </div>
 
 
+  <!-- Upload Invoice modal -->
+  <div class="modal-overlay" id="invoice-modal" onclick="if(event.target===this)closeInvoice()">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-head">
+        <span class="modal-title">Upload Invoice &middot; Order #515</span>
+        <span class="esc-chip">esc</span>
+        <button class="modal-close" onclick="closeInvoice()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--muted-foreground);padding:14px 0 16px;line-height:1.5">Upload the final invoice for this order. The buyer sees it alongside the sales tax and cannot validate delivery without it.</p>
+        <div class="form-label">Invoice reference number</div>
+        <input class="text-input" id="inv-ref" placeholder="e.g. INV-10482" style="margin-top:8px" oninput="updateInvoice()" />
+        <div class="calc-note">Enter the invoice number shown on the PDF. Accounting will use this number.</div>
+        <div class="file-drop" id="inv-drop" onclick="chooseInvoiceFile()">
+          <div class="file-drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg></div>
+          <div class="file-drop-title" id="inv-drop-title">Drop invoice PDF</div>
+          <div class="file-drop-sub" id="inv-drop-sub">or click to choose &middot; up to 10 MB</div>
+        </div>
+        <div style="height:20px"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="toolbar-btn" onclick="closeInvoice()">Cancel</button>
+        <button class="toolbar-btn btn-primary-fill" id="inv-upload-btn" disabled onclick="uploadInvoice()">
+          Upload Invoice
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast">
     <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
@@ -1385,6 +1431,7 @@
       deliver: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
       tax: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>',
       wait: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+      invoice: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>',
       paid: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
       done: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>'
     };
@@ -1392,7 +1439,7 @@
     const STATES = {
       placed: {
         doneSteps: ['placed'], current: 'fulfilled',
-        pills: [['dot-fulfill','To Fulfill','Order placed 07/23/2026'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
+        pills: [['dot-fulfill','To Fulfill','Order placed 07/23/2026'], ['dot-tax','Needs Tax &amp; Invoice','Awaiting your tax input and invoice']],
         progress: '1 of 8',
         panels: { unfulfilled: true, fulfillment: false },
         task: { tone: 'action', icon: 'fulfill', title: 'Action Required \u00B7 Fulfill Items', desc: '2 items are waiting to be fulfilled.', cta: ['Fulfill Items', 'openFulfill()'] },
@@ -1401,7 +1448,7 @@
       fulfilled: {
         noCancel: true,
         doneSteps: ['placed','fulfilled'], current: 'shipped',
-        pills: [['dot-ship','To Ship','Fulfilled 07/23/2026 \u00B7 awaiting shipment'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
+        pills: [['dot-ship','To Ship','Fulfilled 07/23/2026 \u00B7 awaiting shipment'], ['dot-tax','Needs Tax &amp; Invoice','Awaiting your tax input and invoice']],
         progress: '2 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-ship','To Ship'], cancel: true },
@@ -1411,7 +1458,7 @@
       shipped: {
         noCancel: true,
         doneSteps: ['placed','fulfilled','shipped'], current: 'delivered',
-        pills: [['dot-transit','In Transit','Shipped 07/23/2026 \u00B7 with carrier'], ['dot-tax','Needs Tax Input','Awaiting your tax input']],
+        pills: [['dot-transit','In Transit','Shipped 07/23/2026 \u00B7 with carrier'], ['dot-tax','Needs Tax &amp; Invoice','Awaiting your tax input and invoice']],
         progress: '3 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-transit','Shipped'], cancel: false },
@@ -1421,11 +1468,11 @@
       delivered: {
         noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
-        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-tax','Needs Tax Input','Blocks the buyer\u2019s delivery validation']],
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-tax','Needs Tax &amp; Invoice','Blocks the buyer\u2019s delivery validation']],
         progress: '4 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
-        task: { tone: 'action', icon: 'tax', title: 'Action Required \u00B7 Input Sales Tax', desc: 'The buyer cannot validate this delivery until you add sales tax.', cta: ['Input Sales Tax', 'openTax()'] },
+        task: { tone: 'action', icon: 'invoice', title: 'Action Required \u00B7 Upload Invoice', desc: 'The buyer cannot validate this delivery until you add the invoice.', cta: ['Upload Invoice', 'openInvoice()'], cta2: ['Input Sales Tax', 'openTax()'] },
         feed: [['Items delivered','2 items \u00B7 Fulfillment #1','Just now'], ['Items shipped','2 items \u00B7 Fulfillment #1','2m ago']],
         feedHidden: [['Items fulfilled','2 items \u00B7 Fulfillment #1','4m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','6m ago']]
@@ -1433,13 +1480,13 @@
       tax: {
         noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered','tax'], current: 'validated', currentActor: 'buyer',
-        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','With Buyer','Awaiting delivery validation']],
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','Invoice Validation','Buyer is validating delivery and QCing the invoice']],
         progress: '5 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
-        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Validate Delivery', desc: 'The buyer is reviewing the delivery and sales tax \u2014 $16.89 (8%) stays editable until they validate.', cta: ['Edit Tax', 'editTax()', 'ghost'] },
+        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Invoice Validation', desc: 'The buyer is validating delivery and QCing the invoice \u2014 $16.89 (8%) stays editable until they validate.', cta: ['Edit Tax', 'editTax()', 'ghost'] },
         taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
-        payPill: ['dot-ship','With Buyer','Awaiting delivery validation'],
+        payPill: ['dot-ship','Invoice Validation','Buyer is validating delivery and QCing the invoice'],
         feed: [['Sales tax sent to buyer','$16.89 (8%)','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','2m ago']],
         feedHidden: [['Items shipped','2 items \u00B7 Fulfillment #1','4m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','6m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','8m ago']]
@@ -1447,13 +1494,13 @@
       validated: {
         noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered','tax','validated'], current: 'paid', currentActor: 'buyer',
-        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','With Buyer','Delivery validated \u00B7 awaiting payment confirmation']],
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','Invoice Posted','Invoice validated and on the books \u00B7 awaiting payment']],
         progress: '6 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
-        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Confirm Payment', desc: 'The buyer validated delivery and is reviewing the invoice. Payment confirmation unlocks capture.', cta: null },
+        task: { tone: 'wait', icon: 'wait', title: 'Invoice Posted \u00B7 Awaiting Payment', desc: 'The invoice is validated, QC\u2019d, and on the books \u2014 accounting will cut the check. Payment confirmation unlocks capture.', cta: null },
         taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
-        payPill: ['dot-ship','With Buyer','Delivery validated \u00B7 awaiting payment confirmation'],
+        payPill: ['dot-ship','Invoice Posted','Invoice validated and on the books \u00B7 awaiting payment'],
         docs3: true, capture: true, captureDesc: 'Waiting for the buyer to confirm payment before you can capture', captureBtn: true,
         feed: [['Delivery validated','2 items \u00B7 by the buyer','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','3m ago']],
         feedHidden: [['Sales tax sent to buyer','$16.89 (8%)','2m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','5m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','7m ago']],
@@ -1515,11 +1562,16 @@
       document.getElementById('header-pills').querySelectorAll('.status-dot-item').forEach(p => p.remove());
       const cancelBtn = document.getElementById('header-pills').firstElementChild;
       document.getElementById('header-pills').insertAdjacentHTML('afterbegin', s.pills.map(p => pillHTML(p[0], p[1], p[2])).join(''));
+      const STEP_DATES = { placed: '07/23/2026', fulfilled: '07/23/2026', shipped: '07/23/2026', delivered: '07/23/2026', tax: '07/23/2026', validated: '07/23/2026', paid: '07/23/2026', completed: '07/23/2026' };
       document.querySelectorAll('.stepper .step').forEach(st => {
         st.classList.remove('done', 'current', 'upcoming', 'buyer');
-        if (s.doneSteps.includes(st.dataset.step)) st.classList.add('done');
+        const done = s.doneSteps.includes(st.dataset.step);
+        if (done) st.classList.add('done');
         else if (st.dataset.step === s.current) { st.classList.add('current'); if (s.currentActor === 'buyer') st.classList.add('buyer'); }
         else st.classList.add('upcoming');
+        const actorEl = st.querySelector('.step-actor');
+        if (!actorEl.dataset.role) actorEl.dataset.role = actorEl.textContent;
+        actorEl.textContent = done ? (STEP_DATES[st.dataset.step] || actorEl.dataset.role) : actorEl.dataset.role;
       });
       document.getElementById('progress-label').innerHTML = s.progress;
       document.getElementById('panel-unfulfilled').style.display = s.panels.unfulfilled ? '' : 'none';
@@ -1538,6 +1590,14 @@
         cta.className = 'toolbar-btn' + (t.cta[2] === 'ghost' ? '' : ' btn-primary-fill');
       } else {
         cta.style.display = 'none';
+      }
+      const cta2 = document.getElementById('task-cta2');
+      if (t.cta2) {
+        cta2.style.display = '';
+        cta2.textContent = t.cta2[0];
+        cta2.setAttribute('onclick', t.cta2[1]);
+      } else {
+        cta2.style.display = 'none';
       }
       document.getElementById('sum-tax-row').style.display = s.taxRow ? '' : 'none';
       document.getElementById('sum-grand').textContent = s.orderTotal || '$236.14 USD';
@@ -1558,7 +1618,7 @@
       document.getElementById('pay-pending-row').style.display = s.hidePending ? 'none' : '';
       document.getElementById('btn-cancel-order').style.display = s.noCancel ? 'none' : '';
       const pp = document.getElementById('pay-pill');
-      const ppData = s.payPill || ['dot-tax','Needs Tax Input','Awaiting your tax input'];
+      const ppData = s.payPill || ['dot-tax','Needs Tax &amp; Invoice','Awaiting your tax input and invoice'];
       pp.setAttribute('data-tip', ppData[2]);
       pp.innerHTML = '<span class="status-dot ' + ppData[0] + '"></span><span class="status-dot-label">' + ppData[1] + '</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
       curState = s;
@@ -1610,6 +1670,27 @@
       document.getElementById('tax-total').textContent = money2(ORDER_TOTAL + tax) + ' USD';
       document.getElementById('tax-send').disabled = !valid;
     }
+    let invFileChosen = false;
+    function openInvoice() { document.getElementById('invoice-modal').classList.add('open'); }
+    function closeInvoice() { document.getElementById('invoice-modal').classList.remove('open'); }
+    function chooseInvoiceFile() {
+      if (invFileChosen) return;
+      invFileChosen = true;
+      const drop = document.getElementById('inv-drop');
+      drop.classList.add('selected');
+      drop.querySelector('.file-drop-icon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      document.getElementById('inv-drop-title').textContent = 'invoice-515.pdf';
+      document.getElementById('inv-drop-sub').textContent = '182 KB \u00B7 ready to upload';
+      updateInvoice();
+    }
+    function updateInvoice() {
+      const ref = document.getElementById('inv-ref').value.trim();
+      document.getElementById('inv-upload-btn').disabled = !(ref && invFileChosen);
+    }
+    function uploadInvoice() {
+      closeInvoice();
+      showToast('Invoice uploaded', document.getElementById('inv-ref').value.trim() + ' \u00B7 attached to Order #515');
+    }
     function openTax() { document.getElementById('tax-modal').classList.add('open'); }
     function editTax() { setTaxMode('rate'); document.getElementById('tax-value').value = '8'; updateTax(); openTax(); }
     let toastTimer;
@@ -1638,7 +1719,7 @@
 
     function openFulfill() { document.getElementById('fulfill-modal').classList.add('open'); }
     function closeFulfill() { document.getElementById('fulfill-modal').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFulfill(); closeShip(); closeConfirm(); closeTax(); closePaidConfirm(); closeCompleteConfirm(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFulfill(); closeShip(); closeConfirm(); closeTax(); closePaidConfirm(); closeCompleteConfirm(); closeInvoice(); } });
 
     function applyTheme() {
       const dark = localStorage.getItem('scout-theme') === 'dark';

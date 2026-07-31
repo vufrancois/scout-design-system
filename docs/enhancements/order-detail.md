@@ -101,6 +101,20 @@ An audit of every Orders-list stage × payment combo against the detail states s
 - **Demo data reconciled to the matrix**: 7 pre-delivery buyer rows retagged to Needs Tax Input (the Awaiting Payment group stays exactly 11 orders), 4 prepaid rows moved to Delivered stage (payment distribution untouched), tooltips normalized; tabs and stat cards updated to the new stage counts (6/2/1/10/5). Every row now lands on a detail state whose pills match the row clicked — zero violations on re-audit.
 - **Shared ruler in the peek drawer**: a Progress row ("6 of 8 · Waiting: buyer confirms payment") derived from the same matrix, so the list measures progress exactly like the detail page.
 
+## Addendum — post-ship refinements (07/31/2026)
+
+### 26. Stepper: dates + navigation
+Completed steps replace their actor caption with the completion date (MM/DD/YYYY) — the role caption returns automatically on steps not yet done. Stepper nodes are also clickable (pointer + hover ring, "View this state") as demo navigation between the 9 states.
+
+### 27. "Needs Tax Input" → "Needs Tax & Invoice"
+The pre-delivery payment status renamed across all surfaces (list pills, filter menu, Awaiting Payment card, detail pills, matrix, doc rules); tooltips read "Awaiting your tax input and invoice." Internal filter values unchanged.
+
+### 28. Upload Invoice flow + File Drop component
+The `#delivered` strip becomes "Action Required · Upload Invoice" with dual CTAs (Input Sales Tax secondary, Upload Invoice primary — the strip gained a secondary-action slot). The Upload Invoice modal normalizes the reference takeover: reference-number input with accounting helper text, and a new **File Drop** component (dashed zone → emerald selected state with filename) — upload disabled until both reference and file are present, confirming toasts "Invoice uploaded · INV-… attached."
+
+### 29. Payment pipeline: "With Buyer" split into Invoice Validation / Invoice Posted
+Two new named statuses replace the catch-all: **Invoice Validation** (`#tax` — buyer QCs the invoice against what was ordered and delivered, alongside ROG validation) and **Invoice Posted** (`#validated` — validated, QC'd, on the books for accounting to cut the check). Both stay sky (their-side color); the matrix relabels two cells with no stage moves or count changes (Awaiting Payment group still 11); the list filter splits into two entries; the `#validated` strip now reads honestly: "Invoice Posted · Awaiting Payment."
+
 ## Design system additions (running)
 
 - **Stepper** (gallery + design doc) — done/current/upcoming states, connector lines, actor captions per the whose-turn-is-it rule; progress badge shows the count only
@@ -116,6 +130,7 @@ An audit of every Orders-list stage × payment combo against the detail states s
 - **Buyer-turn Stepper node** (gallery + design doc) — sky current ring when the actor is the Buyer; amber strictly means "you act"
 - **Badge-in-totals** (gallery + design doc) — inline pill qualifying a money row (amber Awaiting Confirmation / emerald Confirmed by Vendor)
 - **Lifecycle Matrix** (gallery + design doc) — canonical step → pills → actor → detail-state table with the payment-never-outruns-fulfillment gating rule
+- **File Drop** (page-local, pending cascade) — dashed click/drop zone with primary upload icon, emerald selected state with filename + size
 - Gallery gained an **"Order Flow & Forms"** section with live examples of all of the above
 
 ## Fixes along the way

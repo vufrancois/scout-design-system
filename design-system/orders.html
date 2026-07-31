@@ -713,7 +713,7 @@
             <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>Awaiting Payment</span>
           </div>
           <div class="stat-card-count">11</div>
-          <div class="stat-card-desc">Needs tax input or with buyer</div>
+          <div class="stat-card-desc">Needs tax &amp; invoice, in validation, or posted</div>
         </div>
       </div>
 
@@ -775,8 +775,9 @@
               <div id="menu-pay" style="display:none">
                 <div class="dropdown-item" onclick="showFilterMenu('root')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>
                 <div class="dropdown-item" data-pay="unpaid" onclick="setPayFilter('unpaid')">Awaiting Payment</div>
-                <div class="dropdown-item" data-pay="tax" onclick="setPayFilter('tax')">Needs Tax Input</div>
-                <div class="dropdown-item" data-pay="buyer" onclick="setPayFilter('buyer')">With Buyer</div>
+                <div class="dropdown-item" data-pay="tax" onclick="setPayFilter('tax')">Needs Tax &amp; Invoice</div>
+                <div class="dropdown-item" data-pay="buyer" onclick="setPayFilter('buyer')">Invoice Validation</div>
+                <div class="dropdown-item" data-pay="posted" onclick="setPayFilter('posted')">Invoice Posted</div>
                 <div class="dropdown-item" data-pay="paid" onclick="setPayFilter('paid')">Paid</div>
                 <div class="dropdown-item" data-pay="captured" onclick="setPayFilter('captured')">Captured</div>
               </div>
@@ -845,7 +846,7 @@
               <td>Oakeigh Apartments<div class="cell-meta">CLK Properties</div></td>
               <td>$3,177.53 USD</td>
               <td>17<div class="cell-meta">4 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-transit"></span><span class="status-dot-label">In Transit</span></span></td>
               <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
               <td class="col-date">06/01/2026</td>
@@ -857,7 +858,7 @@
               <td>Cobblestone at Essen<div class="cell-meta">Demo Inc.</div></td>
               <td>$3,915.79 USD</td>
               <td>2<div class="cell-meta">1 item</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">04/15/2026</td>
@@ -869,7 +870,7 @@
               <td>The Star<div class="cell-meta">Demo Inc.</div></td>
               <td>$2,351.13 USD</td>
               <td>4<div class="cell-meta">2 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">05/03/2026</td>
@@ -917,7 +918,7 @@
               <td>Sherwood Acres<div class="cell-meta">CLK Properties</div></td>
               <td>$1,781.35 USD</td>
               <td>12<div class="cell-meta">2 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">06/08/2026</td>
@@ -929,7 +930,7 @@
               <td>NRG Stadium<div class="cell-meta">ChadwellTestBuyer</div></td>
               <td>$2,060.41 USD</td>
               <td>14<div class="cell-meta">4 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">05/24/2026</td>
@@ -977,7 +978,7 @@
               <td>Oakeigh Apartments<div class="cell-meta">CLK Properties</div></td>
               <td>$2,648.63 USD</td>
               <td>24<div class="cell-meta">4 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Delivered</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">06/05/2026</td>
@@ -989,19 +990,19 @@
               <td>Sherwood Acres<div class="cell-meta">CLK Properties</div></td>
               <td>$2,922.83 USD</td>
               <td>6<div class="cell-meta">2 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">05/28/2026</td>
               <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
             </tr>
-            <tr data-id="302" data-stage="delivered" data-property="Sherwood Acres" data-total="2013.96" data-units="11" data-payment="buyer" data-date="2026-05-01">
+            <tr data-id="302" data-stage="delivered" data-property="Sherwood Acres" data-total="2013.96" data-units="11" data-payment="posted" data-date="2026-05-01">
               <td style="width:40px"><input type="checkbox" class="checkbox" onchange="toggleItem(this)" /></td>
               <td class="id-cell"><a href="order-detail.html#validated" style="color:inherit;text-decoration:none">#302</a></td>
               <td>Sherwood Acres<div class="cell-meta">CLK Properties</div></td>
               <td>$2,013.96 USD</td>
               <td>11<div class="cell-meta">4 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting payment confirmation"><span class="status-dot dot-ship"></span><span class="status-dot-label">With Buyer</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Invoice validated and on the books · awaiting payment"><span class="status-dot dot-ship"></span><span class="status-dot-label">Invoice Posted</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-delivered"></span><span class="status-dot-label">Delivered</span></span></td>
               <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
               <td class="col-date">05/01/2026</td>
@@ -1049,7 +1050,7 @@
               <td>Bayou Crossing Apartments<div class="cell-meta">Demo Inc.</div></td>
               <td>$1,976.58 USD</td>
               <td>11<div class="cell-meta">3 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">06/24/2026</td>
@@ -1073,7 +1074,7 @@
               <td>Riverwalk Residences<div class="cell-meta">Demo Inc.</div></td>
               <td>$3,219.77 USD</td>
               <td>6<div class="cell-meta">1 item</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">07/04/2026</td>
@@ -1121,7 +1122,7 @@
               <td>The Star<div class="cell-meta">Demo Inc.</div></td>
               <td>$3,019.96 USD</td>
               <td>37<div class="cell-meta">6 items</div></td>
-              <td><span class="status-dot-item" data-tip="Awaiting your tax input"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax Input</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
+              <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
               <td><span class="status-dot-item"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">To Fulfill</span></span></td>
               <td class="col-tracking"><span class="track-none">&mdash;</span></td>
               <td class="col-date">04/06/2026</td>
@@ -1232,13 +1233,13 @@
       d.setDate(d.getDate() - days);
       return d.toISOString().slice(0, 10);
     }
-    const PAY_LABELS = { unpaid: 'Awaiting Payment', tax: 'Needs Tax Input', buyer: 'With Buyer', paid: 'Paid', captured: 'Captured' };
+    const PAY_LABELS = { unpaid: 'Awaiting Payment', tax: 'Needs Tax &amp; Invoice', buyer: 'Invoice Validation', posted: 'Invoice Posted', paid: 'Paid', captured: 'Captured' };
     function setPayFilter(v) {
       payFilter = v;
       document.getElementById('chip-pay-value').textContent = PAY_LABELS[v];
       document.getElementById('chip-pay').style.display = '';
       document.querySelectorAll('#menu-pay .dropdown-item[data-pay]').forEach(i => {
-        const sel = v === 'unpaid' ? (i.dataset.pay === 'tax' || i.dataset.pay === 'buyer') : i.dataset.pay === v;
+        const sel = v === 'unpaid' ? ['tax','buyer','posted'].includes(i.dataset.pay) : i.dataset.pay === v;
         i.classList.toggle('selected', sel);
         i.innerHTML = sel ? i.textContent.replace('\u2713','').trim() + ' <span class="check">\u2713</span>' : i.textContent.replace('\u2713','').trim();
       });
@@ -1292,7 +1293,7 @@
     function matches(r, q) {
       const tabOk = activeTab === 'all' || r.dataset.stage === activeTab;
       const searchOk = !q || r.textContent.toLowerCase().includes(q);
-      const payOk = payFilter === null || (payFilter === 'unpaid' ? ['tax','buyer'].includes(r.dataset.payment) : r.dataset.payment === payFilter);
+      const payOk = payFilter === null || (payFilter === 'unpaid' ? ['tax','buyer','posted'].includes(r.dataset.payment) : r.dataset.payment === payFilter);
       const dateOk = dateFilter === null || r.dataset.date >= isoDaysAgo(dateFilter);
       return tabOk && searchOk && payOk && dateOk;
     }
@@ -1375,7 +1376,7 @@
 
 
     const STAGE_LABELS = { fulfill: ['dot-fulfill','To Fulfill'], ship: ['dot-ship','To Ship'], transit: ['dot-transit','In Transit'], delivered: ['dot-delivered','Delivered'], completed: ['dot-completed','Completed'] };
-    const PEEK_PAY = { tax: ['dot-fulfill','Needs Tax Input'], buyer: ['dot-ship','With Buyer'], paid: ['dot-transit','Paid'], captured: ['dot-delivered','Captured'] };
+    const PEEK_PAY = { tax: ['dot-fulfill','Needs Tax &amp; Invoice'], buyer: ['dot-ship','Invoice Validation'], posted: ['dot-ship','Invoice Posted'], paid: ['dot-transit','Paid'], captured: ['dot-delivered','Captured'] };
 
     function pill(dot, label) {
       return '<span class="status-dot-item"><span class="status-dot ' + dot + '"></span><span class="status-dot-label">' + label + '</span></span>';
@@ -1401,7 +1402,8 @@
       let prog = PROG[d.stage];
       if (d.stage === 'delivered') {
         prog = d.payment === 'tax' ? ['4 of 8', 'Next: Input Sales Tax']
-          : d.payment === 'buyer' ? (ptip.indexOf('delivery validation') > -1 ? ['5 of 8', 'Waiting: buyer validates delivery'] : ['6 of 8', 'Waiting: buyer confirms payment'])
+          : d.payment === 'buyer' ? ['5 of 8', 'Buyer validating delivery & invoice']
+          : d.payment === 'posted' ? ['6 of 8', 'Invoice posted \u00B7 awaiting payment']
           : d.payment === 'paid' ? ['7 of 8', 'Next: Mark as Paid']
           : ['7 of 8', 'Next: Complete Order'];
       }
@@ -1414,7 +1416,7 @@
         '<div class="drawer-row"><span class="drawer-label">Date</span><span class="drawer-value">' + dateDisp + '</span></div>';
       const ctx = document.getElementById('peek-context-btn');
       ctx.style.display = d.stage === 'fulfill' ? '' : 'none';
-      document.getElementById('peek-open-btn').setAttribute('onclick', "location.href='order-detail.html#" + (d.stage === 'completed' ? 'completed' : d.stage === 'ship' ? 'fulfilled' : d.stage === 'transit' ? 'shipped' : d.stage === 'delivered' ? (d.payment === 'buyer' ? 'validated' : d.payment === 'paid' ? 'paid' : d.payment === 'captured' ? 'captured' : 'delivered') : 'placed') + "'");
+      document.getElementById('peek-open-btn').setAttribute('onclick', "location.href='order-detail.html#" + (d.stage === 'completed' ? 'completed' : d.stage === 'ship' ? 'fulfilled' : d.stage === 'transit' ? 'shipped' : d.stage === 'delivered' ? (d.payment === 'buyer' ? 'tax' : d.payment === 'posted' ? 'validated' : d.payment === 'paid' ? 'paid' : d.payment === 'captured' ? 'captured' : 'delivered') : 'placed') + "'");
       document.getElementById('peek-overlay').classList.add('open');
       document.getElementById('peek-drawer').classList.add('open');
     }

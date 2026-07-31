@@ -130,7 +130,7 @@ Two new named statuses replace the catch-all: **Invoice Validation** (`#tax` —
 - **Buyer-turn Stepper node** (gallery + design doc) — sky current ring when the actor is the Buyer; amber strictly means "you act"
 - **Badge-in-totals** (gallery + design doc) — inline pill qualifying a money row (amber Awaiting Confirmation / emerald Confirmed by Vendor)
 - **Lifecycle Matrix** (gallery + design doc) — canonical step → pills → actor → detail-state table with the payment-never-outruns-fulfillment gating rule
-- **File Drop** (page-local, pending cascade) — dashed click/drop zone with primary upload icon, emerald selected state with filename + size
+- **File Drop** (gallery + design doc) — dashed click/drop zone with primary upload icon, emerald selected state with filename + size; Modal submit stays disabled until required fields and the file are present
 - Gallery gained an **"Order Flow & Forms"** section with live examples of all of the above
 
 ## Fixes along the way

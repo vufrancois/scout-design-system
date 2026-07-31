@@ -1329,6 +1329,23 @@
     .radio-card-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
     body.dark .radio-card.selected { border-color: #3d52e0; }
 
+    .file-drop {
+      margin-top: 12px; padding: 26px 20px; text-align: center; cursor: pointer;
+      border: 1.5px dashed var(--border); border-radius: var(--radius-md);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .file-drop:hover { border-color: var(--primary); background: var(--accent); }
+    .file-drop-icon {
+      width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 10px;
+      background: var(--primary); color: var(--primary-foreground);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .file-drop-icon svg { width: 18px; height: 18px; }
+    .file-drop-title { font-size: 14px; font-weight: 600; }
+    .file-drop-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+    .file-drop.selected { border-style: solid; border-color: var(--emerald); background: var(--emerald-soft); cursor: default; }
+    .file-drop.selected .file-drop-icon { background: var(--emerald); }
+
     .toast-demo {
       display: flex; align-items: center; gap: 12px; max-width: 360px;
       background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
@@ -2912,6 +2929,21 @@
         <label class="radio-card selected"><input type="radio" name="rc-demo" checked /><span><span class="radio-card-title" style="display:block">Tax rate (%)</span><span class="radio-card-desc" style="display:block">Apply a percentage to the item subtotal.</span></span></label>
         <label class="radio-card"><input type="radio" name="rc-demo" /><span><span class="radio-card-title" style="display:block">Tax amount ($)</span><span class="radio-card-desc" style="display:block">Enter the exact sales tax in dollars.</span></span></label>
         <label class="radio-card"><input type="radio" name="rc-demo" /><span><span class="radio-card-title" style="display:block">No tax ($0)</span><span class="radio-card-desc" style="display:block">This order has no sales tax.</span></span></label>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">File Drop</h3>
+        <p class="subsection-desc">Upload zone for task-flow Modals (e.g. attaching an invoice): dashed click/drop target with a 40px primary icon circle, 14px/600 prompt, and muted constraints line ("or click to choose &middot; up to 10 MB"). Once a file is chosen the zone turns emerald with a check, filename, and size &mdash; the form's submit stays disabled until every required field and the file are present.</p>
+        <div class="file-drop">
+          <div class="file-drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg></div>
+          <div class="file-drop-title">Drop invoice PDF</div>
+          <div class="file-drop-sub">or click to choose &middot; up to 10 MB</div>
+        </div>
+        <div class="file-drop selected">
+          <div class="file-drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div class="file-drop-title">invoice-515.pdf</div>
+          <div class="file-drop-sub">182 KB &middot; ready to upload</div>
+        </div>
       </div>
 
       <div class="comp-card" style="margin-bottom:16px">

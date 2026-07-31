@@ -715,6 +715,13 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>The chosen mode drives the form below it (labels, placeholders, visibility) and its live calculation. Use a Select instead when options exceed four or need no descriptions.</li>
       </ul>
 
+      <h3>File Drop</h3>
+      <ul>
+        <li>Upload zone for task-flow Modals: dashed 1.5px border, centered 40px primary icon circle, 14px/600 prompt ("Drop invoice PDF"), muted constraints line naming the accepted type and size limit. Hover shows the primary border + accent fill.</li>
+        <li>Selected state: border goes solid emerald with emerald-soft fill, the icon circle becomes an emerald check, and the text lines show filename and size. One file per zone; re-selection replaces.</li>
+        <li>The Modal's primary action follows the disabled-until-valid rule &mdash; it stays disabled until every required field <em>and</em> the file are present.</li>
+      </ul>
+
       <h3>Toast</h3>
       <ul>
         <li>Confirmation feedback after a mutation lands (order completed, record saved): fixed bottom-right, slides up over 250ms, auto-dismisses after 4s, one at a time.</li>

@@ -1,0 +1,584 @@
+# DESIGN.md
+
+Usage rules, token reference, and implementation guidance for the Scout Design System. Generated from `design-system/design-doc.html` (the normative source).
+## Overview
+
+The Scout Design System provides a shared visual language across two applications: the **Buyer App** and the **Vendor/Admin Portal**. It is built on CSS custom properties as the token layer, with component implementations adapted per framework.
+
+The living component gallery is available on the Components tab. This document defines the rules for using those tokens and components.
+### Principles
+
+- **Token-first** — never hard-code colors, spacing, or radii. Always reference CSS custom properties.
+- **Semantic over literal** — use `--primary` not `--blue-700` in component styles. Literal scale values are for the token layer only.
+- **Theme-safe** — every component must work in both light and dark mode. Test both before shipping.
+- **Minimal overrides** — extend, don't override. If a component needs a new variant, add it to the system rather than one-off styling.
+
+## Application Architecture
+
+### Buyer App
+
+- **Framework:** Shadcn UI + Tailwind CSS
+- **Token integration:** CSS custom properties mapped to Shadcn's variable naming convention (`--primary`, `--secondary`, `--muted`, etc.)
+- **Tailwind preset:** Extend the default theme via a shared `tailwind-preset.ts` that references the CSS variables.
+
+### Vendor / Admin Portal
+
+- **Framework:** `@medusajs/ui`
+- **Token integration:** Override Medusa's default theme variables with Scout tokens at the CSS layer.
+- **Usage:** Use Medusa's built-in components where possible; only build custom components for Scout-specific patterns.
+
+Both apps share the same CSS custom property names. The token layer is the contract — component implementations can differ by framework.
+## Colors
+
+### Primary Scale
+
+Scout's primary blue is `#172d77` (blue-700). The full 11-step scale runs from `--blue-50` to `--blue-950`.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--blue-50` | #eef2ff | Accent backgrounds, hover states |
+| `--blue-100` | #dbe1fe | Light accent fills |
+| `--blue-200` | #b8c4fd | Borders on accent elements |
+| `--blue-300` | #8da0fb | Dark-mode link text |
+| `--blue-400` | #6277f5 | Hover states on primary |
+| `--blue-500` | #3d52e0 | Active states, rings |
+| `--blue-600` | #2740b8 | Pressed states |
+| `--blue-700` | #172d77 | **Primary** — buttons, links, active tabs |
+| `--blue-800` | #122361 | Dark surfaces |
+| `--blue-900` | #0d1a4a | Dark-mode card backgrounds |
+| `--blue-950` | #080f2e | Dark-mode page background |
+
+### Semantic Tokens
+
+Component code should only use semantic tokens. These automatically adapt between light and dark themes.
+
+| Token | Light | Dark | Usage |
+|---|---|---|---|
+| `--background` | #ffffff | #080f2e | Page background |
+| `--foreground` | #111111 | #f5f5f5 | Primary text |
+| `--primary` | #172d77 | #172d77 | Buttons, links, active states |
+| `--primary-foreground` | #ffffff | #ffffff | Text on primary backgrounds |
+| `--secondary` | #f5f5f5 | #0d1a4a | Secondary button fills |
+| `--muted` | #f5f5f5 | #122361 | Disabled fills, subtle backgrounds |
+| `--muted-foreground` | #6b7280 | #a1a1aa | Secondary text, placeholders |
+| `--accent` | #eef2ff | #122361 | Hover backgrounds, highlights |
+| `--border` | #e5e7eb | #1e3a8a | All borders |
+| `--card` | #ffffff | #0d1a4a | Card / elevated surface |
+| `--destructive` | #ef4444 | #ef4444 | Delete, error states |
+| `--success` | #10b981 | #10b981 | Success states |
+| `--warning` | #f59e0b | #f59e0b | Warning states |
+
+### Accent Palette
+
+Each accent has a vivid and soft (tint) variant. Use the soft variant for backgrounds and the vivid variant for text/icons on those backgrounds.
+
+| Name | Vivid | Soft | Usage |
+|---|---|---|---|
+| Violet | `#8a5fef` | `#f0ebfe` | Badges, categories |
+| Rose | `#e0599b` | `#fce8f1` | Urgent, attention |
+| Amber | `#f59e0b` | `#fef3cd` | Pending, awaiting action |
+| Emerald | `#10b981` | `#d1fae5` | Success, completed, delivered |
+| Sky | `#3b82f6` | `#dbeafe` | Info, shipping, in-progress |
+| Orange | `#f97316` | `#ffedd5` | Warnings, expiring |
+
+### Rules
+
+- Never use raw hex values in component code. Always use the CSS variable.
+- Use semantic tokens (`--primary`, `--border`) for UI chrome. Use accent tokens (`--amber`, `--emerald-soft`) for status indicators and badges.
+- The blue scale tokens (`--blue-50` through `--blue-950`) are for the token definition layer only. Components should use `--primary`, `--accent`, etc.
+
+## Typography
+
+Scout uses **Inter** as its primary typeface, with system-font fallbacks. Monospace uses JetBrains Mono.
+
+`font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-family: "JetBrains Mono", ui-monospace, monospace; /* code */`
+### Type Scale
+
+| Role | Size | Weight | Letter Spacing |
+|---|---|---|---|
+| Display / Page title | 36px | 800 | -1px |
+| Section heading (h2) | 28px | 700 | -0.5px |
+| Card title / h3 | 22px | 600 | -0.3px |
+| Subsection heading | 16px | 600 | normal |
+| Body | 14px | 400 | normal |
+| Small / meta | 13px | 500 | normal |
+| Caption | 12px | 400 | normal |
+| Micro / label | 11px | 600 | 0.05–0.08em |
+
+### Rules
+
+- Use negative letter-spacing on headings (22px+). Body text uses normal spacing.
+- Line height: 1.5 for body text, 1.2 for headings.
+- Font weight range: 400 (body), 500 (labels/buttons), 600 (subheadings), 700 (headings), 800 (display).
+- Never use font sizes below 11px.
+- Identifiers and codes (SKUs, order IDs, tokens) render in JetBrains Mono at 12px, `--muted-foreground`.
+
+## Spacing
+
+Scout uses a 4px base grid. All spacing values are multiples of 4.
+
+| Step | Value | Common Usage |
+|---|---|---|
+| 1 | 4px | Tight gaps (icon-to-text) |
+| 2 | 8px | Inner padding, compact gaps |
+| 3 | 12px | Default gap between siblings |
+| 4 | 16px | Card padding, section inner padding |
+| 5 | 20px | Comfortable card padding |
+| 6 | 24px | Page horizontal padding, section gaps |
+| 8 | 32px | Between subsections |
+| 10 | 40px | Between major sections |
+| 16 | 64px | Between page sections |
+| 24 | 96px | Page bottom padding |
+
+### Rules
+
+- Page content stretches to fill the viewport — never apply a max-width to the content area. It uses 32px padding on all sides; grids and tables flex to the available width.
+- Never use arbitrary pixel values. Stick to multiples of 4.
+- In Tailwind, use the default spacing scale: `p-1` (4px), `p-2` (8px), `p-3` (12px), etc.
+- Use `gap` over margins when spacing siblings in flex/grid containers.
+
+## Border Radius
+
+| Token | Value | Usage |
+|---|---|---|
+| `--radius-xs` | 4px | Badges, inline code, small elements |
+| `--radius-sm` | 6px | Buttons, inputs, pagination controls |
+| `--radius-md` | 8px | Cards, dropdowns, toolbar items |
+| `--radius-lg` | 12px | Modals, larger cards, stat cards |
+| `--radius-xl` | 16px | Feature sections, hero cards |
+| `--radius-pill` | 9999px | Pills, tabs, toggles, search bars |
+
+### Rules
+
+- Nesting: inner radius = outer radius minus padding. Example: card has `--radius-lg` (12px) with 16px padding, inner element uses `--radius-xs` (4px).
+- Maximum radius is 16px for rectangular elements. Only use `--radius-pill` for truly pill-shaped elements.
+
+## Shadows
+
+| Token | Usage |
+|---|---|
+| `--shadow-xs` | Active tab pills, toggles |
+| `--shadow-sm` | Cards at rest, inputs on focus |
+| `--shadow-md` | Dropdowns, popovers |
+| `--shadow-lg` | Modals, floating panels |
+| `--shadow-xl` | Toasts, system notifications |
+
+### Rules
+
+- Dark mode uses higher-opacity shadows. The tokens handle this automatically.
+- Elevation hierarchy: page surface (none) < card (xs/sm) < dropdown (md) < modal (lg) < toast (xl).
+
+## Theming
+
+Scout supports light and dark themes. The theme is controlled by adding the `.dark` class to the `<body>` element.
+
+`/* Light (default) */ <body> /* Dark */ <body class="dark">`
+### Implementation
+
+- All semantic tokens have both light and dark values defined in the CSS. Switching themes just swaps the variable values.
+- Never use `@media (prefers-color-scheme)` — theme is user-toggled, not system-derived.
+- When using Tailwind, map CSS variables to the Tailwind config. Use `hsl(var(--primary))` pattern or direct `var()` references.
+
+### Rules
+
+- Never use fixed colors like `white` or `#000` in component styles. Use `--background`, `--foreground`, etc.
+- Test every component in both themes before marking it complete.
+- Accent vivid colors (`--amber`, `--emerald`, etc.) stay the same across themes. Only semantic tokens change.
+
+## Icons
+
+**Lucide** (`lucide-react`) is the official icon library.
+
+### Sizing
+
+| Context | Size | Stroke Width |
+|---|---|---|
+| Inline with text (buttons, labels) | 16px | 2 |
+| Standalone (nav, toolbar icons) | 20px | 2 |
+| Feature / hero icons | 24px | 1.5 or 2 |
+| Icon containers (stat cards, page headers) | 24px icon in 40px container | 2 |
+
+### Rules
+
+- Always use `stroke-linecap="round"` and `stroke-linejoin="round"` (Lucide defaults).
+- Icon color should inherit from text color via `stroke="currentColor"`.
+- For colored icon containers, use the accent soft color as background and the vivid accent as stroke color.
+- Never use icons from other libraries. If Lucide doesn't have what you need, request an addition to the system.
+
+## Formatting
+
+Canonical rules for displaying currency, dates, and times. These apply across both apps — a value should never be formatted two different ways on two different screens.
+
+### Terminology
+
+- **Buyers** are the people who live at or purchase for properties. Never call them "users" anywhere in vendor-facing copy — table columns, avatar-stack labels, stats, and empty states all say Buyers.
+- **Customer** is reserved for organization-level concepts only (Customer Groups, Customer Management). An organization is a customer; the people at its properties are buyers.
+
+### Currency
+
+| Context | Format | Example |
+|---|---|---|
+| Default (prices, totals, line items) | Symbol prefix, no space, comma thousands, always 2 decimals | `$1,907.75` |
+| Vendor financial tables (orders, quotes, payouts) | Default + ISO code suffix | `$1,907.75 USD` |
+| Stat cards / dashboard aggregates only | Abbreviated, 1 decimal | `$45.3K`, `$1.2M` |
+| Negative amounts | Minus before symbol — never parentheses | `-$45.00` |
+| Zero | Show as a value — never "Free" in financial contexts | `$0.00` |
+
+### Currency Rules
+
+- Never drop cents on monetary values in tables or documents — `$561.08`, not `$561`.
+- No space between symbol and amount: `$1,907.75`, not `$ 1,907.75`.
+- The ISO code suffix (`USD`) appears wherever currency could vary — all Vendor portal financial tables use it.
+- Abbreviation (`$45.3K`) is only for at-a-glance aggregates; anything actionable or exact shows full precision.
+- Implementation: `Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })`.
+
+### Date & Time
+
+| Context | Format | Example |
+|---|---|---|
+| Standard date (tables, details) | `MM/DD/YYYY` — zero-padded | `07/13/2026` |
+| Date with time | `MM/DD/YYYY, h:mm AM/PM` | `07/13/2026, 2:30 PM` |
+| Recent activity (< 7 days) | Relative | `2h ago`, `Yesterday` |
+| Date range | En dash with spaces | `12/11/2026 – 12/13/2026` |
+
+### Date Rules
+
+- US numeric format everywhere: `MM/DD/YYYY`, always zero-padded (`06/03/2026`, not `6/3/2026`).
+- Spelled-out or abbreviated month names are reserved for prose and marketing copy — never in UI data displays.
+- Relative timestamps switch to the standard date after 7 days. Tooltips on relative timestamps show the full date + time.
+- 12-hour clock with AM/PM; minutes always shown (`2:00 PM`, not `2 PM`).
+- Implementation: `Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })`.
+
+## Charts
+
+Charts are implemented with the app's charting library; the design system governs colors and labels.
+
+- Categorical ramp, in series order: `--blue-800`, `--blue-500`, `--blue-300`, `--blue-200`, `--border`.
+- Single-series charts (bars, lines, areas) use `--blue-400`.
+- Axis/tick labels: 9–10px `--muted-foreground`; gridlines use `--border`.
+- Chart axis dates use `MM/DD` shorthand; full `MM/DD/YYYY` everywhere else.
+- Donut center: 26px/700 value + 11px muted caption. Legend: 8px dot, 13px label, right-aligned 600-weight value.
+
+## Components
+
+See the Components tab for the visual reference. Below are usage rules.
+
+### Buttons
+
+- Variants: primary, secondary, outline, destructive outline, ghost, destructive, link.
+- Destructive outline (red text, neutral border, red border on hover) for dangerous actions in toolbars and page headers; reserve the filled destructive variant for confirmation moments (modal confirm).
+- AI-powered actions use the standard outline variant with a sparkles icon (e.g. "Categorize with AI") — no dedicated AI button style.
+- Height: 40px default, 36px for compact contexts (toolbars), 48px for hero CTAs.
+- Always use `font-family: inherit` on buttons to prevent browser defaults.
+- Focus: 2px `--ring` outline offset 2px from the button (via double box-shadow). Applied on `:focus-visible` only — keyboard focus, not mouse clicks. Dark mode uses `--blue-400` for contrast.
+- Disabled: opacity 0.5, `cursor: not-allowed`, pointer events off. Never remove a disabled button from the layout — it holds its space.
+- Pressed: scale to 98% while active.
+- Loading: inline 14px spinner (2px stroke, currentColor) replaces the leading icon; button is disabled while loading and the label switches to the in-progress verb ("Saving...").
+- Leading icons: 16px with 8px gap. Icon-only buttons are square (40px, or 36px small) and require an `aria-label`.
+- Ghost icon actions: borderless 32px icon buttons for inline row/card actions (kebab menu, edit); 24px small variant for affordances beside text (copy an identifier). Muted color, `--muted` hover.
+
+### Inputs & Select
+
+- Height: 40px. Border: `1px solid var(--border)`.
+- Focus ring: `2px solid var(--ring)` with 2px offset.
+- Placeholder text uses `--muted-foreground`.
+
+### Checkbox
+
+- 16px square, `--radius-xs`, 1px `--border`. Checked: `--primary` fill with white checkmark.
+- Hover darkens the border to `--muted-foreground`. Disabled: 50% opacity, muted background.
+- Table bulk selection: leading 40px column, header checkbox selects all. With label: 8px gap, 14px text.
+
+### Switch
+
+- 36×20px pill; `--border` track, `--primary` when on, 16px white knob with xs shadow. Disabled: 50% opacity.
+- Use for immediate state changes (activating a price list, enabling a setting) — the change applies on toggle. Use a checkbox when the change requires a save action.
+- In tables: dedicated column (e.g. "Active"), vertically centered. Focus ring follows the button focus-visible pattern.
+
+### Progress
+
+- 4px pill track, `--muted` background, `--primary` fill. On colored surfaces: `rgba(255,255,255,0.3)` track with white fill.
+- Pair with an 11px muted percentage label below ("45% Processed").
+
+### Badges
+
+- Neutral (category pills): `--muted` background, 1px `--border`, pill radius, 12px/500 text in `--muted-foreground`. Truncate with ellipsis past 220px; vertically align middle in table cells.
+- Soft accents: accent-soft background + matching 6px dot for semantic states. See the accent palette in Colors.
+
+### List Item Card
+
+- Card-based alternative to table rows for rich list items (inventory, catalogs). White card, 1px `--border`, `--radius-lg`, `16px 20px` padding, `--shadow-sm` on hover.
+- 4px left accent bar signals status (emerald in stock, red out of stock) — same accent-bar language as color-coded stat cards and toasts. The accent bar appears in **both** the list and grid variants so status never drifts between views.
+- Anatomy, left to right: checkbox (inside the card), 48px thumbnail, name + monospace SKU, soft accent badge cluster, price, kebab menu.
+- 12px gap between cards. Pair with the bulk selection bar above the list.
+- **Grid variant:** media-first display mode of the same item, switched via the Segmented Toggle. Square (1:1) image area with body below (name, badges, price + actions footer). 4-column grid, 16px gap.
+- **Entity card (text-first grid):** for entities without imagery (properties, organizations). Status badge sits in the header row beside the name; meta line below; avatar stack footer. 3-column grid, 16px gap.
+- **Entity card — compact (horizontal):** densest flavor for simple groupings (customer groups). Single row: 36px solid-accent avatar with icon, name (truncates), trailing avatar stack + count. No status badge or meta line.
+- Overlay-on-media: controls floating on the image (checkbox top-left, status badge top-right, SKU chip bottom-left) get a `--background` fill and xs shadow, inset 12px.
+- Row actions: kebab menu always; at most one promoted quick-action (e.g. edit) placed beside it.
+
+### Avatars
+
+- Circular, 28px default (36px large), 2px `--background` border. Colors rotate through the accent palette; initials optional (11px/600 white).
+- Stack: -8px overlap, show at most 4 avatars then a `+N` overflow chip (`--muted` background, 10px/600). Pair with a muted count label ("20 users").
+
+### Star Rating
+
+- Filled Lucide stars in `--amber` (the palette's rating color); empty stars use `--border`. 16px default, 20px large, 2px gap.
+- Read-only display. Optional trailing value label (13px/600, 6px gap): `4.0`, `5.0 avg`.
+
+### Chips
+
+- Read-only stat chips for page headers — 40px height (button-height), `--radius-lg`, 13px/500, never interactive. Distinct from badges (smaller, inline) and filter chips (removable, in the toolbar).
+- Default: `--background` fill with 1px `--border`. Accent variant: accent-soft fill with matching border and dark accent text.
+- Content: leading 16px icon or inline star rating + short stat text ("3 reviews", "128 orders this week").
+- Date range chip: 34px display-only chip with calendar icon for dashboard card controls (`06/17/2026 – 07/16/2026`).
+
+### Metric Tile
+
+- Solid-accent KPI tiles for dashboards — single-tone fills (`--emerald`, `--primary`, `--blue-900`) with white text; never gradients.
+- Hero variant: centered, 34px value, optional pill chip for the time window ("30D"). Compact: left-aligned label + 28px value + 11px note.
+
+### Insight Card
+
+- Dashboard card header: 32px muted icon tile + 15px/600 title (+ optional 13px muted subtitle) left; controls right (segmented toggle, date chip).
+- Without a subtitle the title vertically centers against the icon; with one, both top-align.
+
+### Theming & Responsive
+
+- **Dark mode:** every app page supports dark via `body.dark` + the token overrides (including dark variants of the `-soft` accent colors). A sun/moon toggle in the topbar persists the choice in `localStorage` across pages. Component fixes ride on `body.dark` rules — primary-colored *text* (sorted headers, links, checks) lightens to `--blue-300`; tinted badges switch to translucent accent backgrounds with lightened text.
+- **Breakpoints:** 1280px (low-priority table columns drop), 1024px (sidebar becomes a tap-to-dismiss overlay drawer, grids go 2-up, page padding tightens), 720px (grids stack to one column).
+- **Overflow containment:** `.main` carries `min-width: 0` so wide tables scroll inside their cards instead of stretching the page; the document itself never scrolls horizontally.
+
+### Tooltip
+
+- Dark bubble (`--foreground` background, `--background` text, 12px/500, `--radius-sm`, small arrow), appearing instantly on hover above the target. Implemented via a `data-tip` attribute — no JS.
+- **Affordance:** badges and pills carrying a styled tooltip show a 13px muted info glyph after the label, so hoverability is discoverable.
+- **When to use which:** native `title` tooltips are for supplementary detail (full dates behind relative times, full text behind truncation). **Load-bearing sub-state** — a payment sub-step, an actor/provenance note — uses the styled Tooltip so it's discoverable and instant.
+
+### Stepper
+
+- Pipeline progress for detail pages: 40px nodes with connector lines; done = emerald fill + check, current = amber ring + soft fill (amber = action color), upcoming = muted outline.
+- Every node carries an **actor caption** (Auto / You / Buyer, 10px uppercase) — the stepper answers whose turn it is, per the whose-turn-is-it rule. The current node's caption matches its ring color.
+- **Buyer-turn current node:** when the current step's actor is the Buyer, the ring and caption render sky instead of amber — amber strictly means "you act." The whose-turn color language holds across stepper, pills, and the Next-Task Strip.
+- The detail page is where full step granularity lives; lists show the condensed states. A progress badge beside the stepper title shows the count only ("4 of 8") — the next action is named by the Next-Task Strip, not repeated here.
+
+### Next-Task Strip
+
+- Detail pages with a lifecycle get exactly one **Next-Task Strip**, fixed directly below the Stepper in every state. It is the single home of the page's primary action — **primary actions never nest inside panels**; panels keep secondary, contextual actions only (cancel, packing slip, tracking edit). The panel is where you verify; the strip is where you act.
+- Three tones: **action** (amber dashed border + amber-soft fill, icon tile, "Action Required · [Task]" title, one-line consequence, primary CTA right) when it's the vendor's turn; **wait** (neutral border, clock icon, "Waiting on [Actor] · [Step]", no CTA) when another actor owns the step; **done** (emerald) when the lifecycle is complete.
+- The strip's CTA opens the same task-flow Modal the milestone requires — it is the Stepper's current step made actionable. Waiting states are stated explicitly, never left as a page with no button.
+
+### Line Item & Totals
+
+- Line Item: 48px bordered muted thumb, 14px/600 name (truncates), mono SKU with copy action, muted variant line; price × qty muted, bold right-aligned row total. Rows divide with 1px borders.
+- Totals block: label muted / value right rows; the grand-total row is separated by a border and bolded at 15px with the ISO suffix (`$236.14 USD`). Secondary rows (captured, pending) stay regular weight.
+- **Badge-in-totals:** a totals row's label can carry one inline pill qualifying the money's state — amber ("Awaiting Confirmation") while staged, emerald ("Confirmed by Vendor") once settled. 11px/600, pill radius, soft fill; never more than one per row.
+
+### Document Row
+
+- File attachments render on a soft tonal surface: file icon, 13px/600 name, MM/DD/YYYY date meta, ghost download action. Section title is plain — no count pill.
+- **Type accents:** one surface color per document type — sky Purchase Order, emerald Invoice, violet Receipt of Goods — so the rail scans by kind before you read a name.
+- A row may carry one inline secondary line under a hairline divider: either an action in the accent color ("Replace invoice") or a muted locked note stating why it can't change ("Locked — order paid"). Never both.
+
+### Form Rows & Selects
+
+- Task-flow forms (inside modals) use rows: label (14px/600) + muted description left, control right in a 230px column; rows divide with 1px borders and stack under 720px.
+- Select: 38px, full-width of its column, inline chevron, `--ring` focus border. Quantity input: 56px centered field with the bound shown beside it ("/ 2"). Stock deltas render rose ("944 −2").
+- Task flows use the standard **centered Modal** (max 640px, dim overlay, esc chip + X in the header, pinned footer actions right) — not full-screen takeovers.
+
+### Lifecycle Matrix
+
+The single source of truth tying the Orders list to the order detail. Every legal state is one row; a list row's fulfillment pill × payment pill must match a row here, and its order link lands on that row's detail state.
+
+| Workflow step | Fulfillment pill | Payment pill | Whose turn | Detail state |
+|---|---|---|---|---|
+| 1 · Placed | To Fulfill | Needs Tax & Invoice | You | `#placed` |
+| 2 · Fulfilled | To Ship | Needs Tax & Invoice | You | `#fulfilled` |
+| 3 · Shipped | In Transit | Needs Tax & Invoice | You | `#shipped` |
+| 4 · Delivered | Delivered | Needs Tax & Invoice | You | `#delivered` |
+| 5 · Sales Tax set | Delivered | Invoice Validation (buyer QCs delivery + invoice) | Buyer | `#tax` |
+| 6 · Validated | Delivered | Invoice Posted (on the books · awaiting payment) | Buyer | `#validated` |
+| 7 · Buyer Paid | Delivered | Paid | You | `#paid` |
+| 7 · Captured | Delivered | Captured | You | `#captured` |
+| 8 · Completed | Completed | Captured | — | `#completed` |
+
+- **Gating rule:** the payment pipeline can never outrun fulfillment — before Delivered, the payment pill is always **Needs Tax & Invoice**; Invoice Validation, Invoice Posted, Paid, and Captured all require Delivered. Any list row violating this is a data bug.
+- Exception flags (e.g. an Active Return) ride alongside these pills; they never replace them.
+
+### Radio Cards
+
+- For choosing one of 2–4 **modes inside a task-flow Modal** (tax by rate / amount / none): full-width cards with a native radio, 14px/600 title, muted one-line description. Selected card gets the primary border + accent fill.
+- The chosen mode drives the form below it (labels, placeholders, visibility) and its live calculation. Use a Select instead when options exceed four or need no descriptions.
+
+### File Drop
+
+- Upload zone for task-flow Modals: dashed 1.5px border, centered 40px primary icon circle, 14px/600 prompt ("Drop invoice PDF"), muted constraints line naming the accepted type and size limit. Hover shows the primary border + accent fill.
+- Selected state: border goes solid emerald with emerald-soft fill, the icon circle becomes an emerald check, and the text lines show filename and size. One file per zone; re-selection replaces.
+- The Modal's primary action follows the disabled-until-valid rule — it stays disabled until every required field *and* the file are present.
+
+### Toast
+
+- Confirmation feedback after a mutation lands (order completed, record saved): fixed bottom-right, slides up over 250ms, auto-dismisses after 4s, one at a time.
+- Anatomy: 32px tonal icon circle (emerald check for success) + 14px/600 title naming the object and what happened + muted detail line carrying the numbers that changed ("$253.03 USD captured · all 8 steps done").
+- Toasts confirm; they never ask. Anything needing a decision is a Modal, and anything needing durable visibility belongs on the page (Next-Task Strip, badges), not in a toast.
+
+### Detail Page Layout
+
+- Two-column: main content + 360px rail (documents, parties, activity), 16px gap, stacking to one column under 1100px. Header and progress panels span full width above the split.
+- Rail fact lists use label/value rows (120px label column); parties link to their detail pages; addresses carry a copy action.
+
+### Empty State
+
+- Shown inside the table/list container when zero items match: 48px muted icon circle + 15px/600 title + 13px muted description (max 360px) + optional recovery action (outline button, e.g. "Clear filters").
+- Filtered-empty states always offer the recovery action; true-empty states (no data yet) offer the primary creation action instead.
+
+### Activity Feed
+
+- Bordered rows (`--radius-md`, 12px 16px padding, accent hover): 36px icon tile + 14px/600 title + 13px muted description + relative timestamp right.
+- Icon tile is muted by default; accent-soft (e.g. sky) for highlighted event types like new orders.
+- Timestamps follow the relative-time formatting rule ("1h ago", "Yesterday").
+
+### Marketing Card
+
+- Card for promotions and campaigns. 4px **top** accent bar maps to publishing status (Active = emerald, Scheduled = orange, Draft = gray, Ended = rose) — never decorative colors. Every lifecycle state a campaign can reach (Draft → Scheduled → Active → Ended) has a distinct accent + status dot.
+- 44px soft-accent icon tile carries entity identity (violet/sky/emerald rotate per entity); kebab top-right.
+- Promotion variant: monospace code + small copy button, offer line, then status badge + neutral attribute badges.
+- Campaign variant: name + optional muted description, status badge row, then neutral badges for limits and offers.
+- **Budget labels:** a campaign's budget always appears as a neutral badge naming type + unit — "Usage budget · 1,000 uses", "Spend budget · $10,000.00 USD", "Usage budget · No limit". Never a bare number: "1,000 uses" alone doesn't say whether the cap is uses or dollars.
+- Usage on active items: show a Progress bar labeled in the budget's own unit — "**347** of 1,000 uses" for usage budgets, "**$6,750.00** of $10,000.00 spent" for spend budgets — only when a limit exists. Uncapped items (promotions) show a plain count label ("**213** redemptions") — never a progress bar without a denominator. Ended items keep their final progress.
+- Dates are framed by state — Scheduled: "Starts MM/DD/YYYY"; Active: "Ends MM/DD/YYYY"; Ended: "Ended MM/DD/YYYY"; Draft: none. The full range lives in the badge's `title` tooltip.
+
+### Segmented Toggle
+
+- Compact toggle for mutually exclusive views. `--muted` container, 1px border, `--radius-md`, 2px padding. Two variants: icon-only (32×30px segments — list/grid switching) and text (12px/600 labels with 10px horizontal padding — time windows like 7D/30D/90D).
+- Segments: 32×30px, icon-only with a `title`/`aria-label`. Active segment lifts to `--background` with `--primary` icon and xs shadow.
+- Use for view switching only — filters belong in the Tab Bar, on/off settings in a switch.
+- **View parity:** when a page offers list and grid views of the same data, both views present the same fields — the card is the table row in card form, not a different design. Cards add at most a description line and an icon tile on top of the table's columns. Tabs, filters, search, and sorting apply identically to both views.
+
+### Cards
+
+- Background: `--card`. Border: `1px solid var(--border)`. Radius: `--radius-lg`.
+- Padding: 20–24px. Use consistent padding within a card grid.
+
+### Table
+
+- Header: `--muted` background, uppercase 11px labels.
+- Sortable columns: header shows stacked 12px chevrons (muted); the active column turns `--primary` with a single directional chevron (same stroke family as the neutral pair — never a stemmed arrow). Click toggles asc/desc; text and dates default to asc-first except dates and numeric ratings, which default desc-first.
+- Default ordering: work-queue tables sort attention-needed items first (e.g. "Needs reply"), then newest.
+- Long-text cells (reviews, descriptions): truncate with ellipsis at a fixed max-width (~280px); the full text is available via `title` tooltip. Never let free text wrap or stretch the table.
+- **Enum columns are badges:** columns with a small fixed set of values (Type, Role, Category) render each value as a neutral badge — never bare text. Entity references (names, organizations), free text, numbers, and dates stay plain; Status keeps the status-dot badge.
+- Rows: `--accent` on hover, `4px solid var(--primary)` left border on selected.
+- Bulk selection: leading 40px checkbox column; header checkbox selects all rows. For card lists, use the bulk selection bar instead: "Select page (N items)" checkbox left, "Select all N items" outline button right.
+- Row actions: trailing 48px column with a 32px ghost kebab button (ellipsis icon); menu opens on click.
+- Pagination placement: full pagination bar (page info + rows-per-page + 4 buttons) below tables; compact pagination (page info + prev/next) top-right of the toolbar for card lists.
+- **Condensing wide tables:** secondary attributes fold into the primary cell as a muted meta line (variants under the product name, SKU under an item name) before earning their own column. Tables with 6+ columns define a column-priority order and hide low-priority columns at narrow widths (via media queries) — horizontal scroll is the last resort, never the plan.
+- Pagination is live, not decorative: when a dataset exceeds the page size, the buttons and rows-per-page select work, the page resets to 1 whenever filters/search/sort change, and the same page slice drives both list and grid views.
+
+### Tabs
+
+- Three variants: navigation tabs, tabs with count badges, filter tabs (wrapping).
+- Active state: `--primary` background with `--primary-foreground` text.
+- Use for both page navigation and content filtering.
+- **One dimension per tab bar:** status tabs model exactly one axis (e.g. fulfillment stage). Secondary dimensions (payment state, offer type) are filters, not tabs; partial variants fold into their stage; exceptions (returns) are row badges, not tabs.
+- **Multi-actor pipelines condense to whose-turn-is-it states:** exactly one amber "your action" state; consecutive other-party steps group into one state (sub-step in the tooltip); same-outcome-different-actor variants collapse into one state with the actor as provenance; automatic events are transitions, never statuses. Example — the 10-step purchase-order pipeline reads as Needs Tax & Invoice → Invoice Validation → Invoice Posted → Paid → Captured.
+
+### Stat Cards
+
+- Two variants: neutral (icon + metric + label + CTA) and color-coded (4px **left** accent bar on a standard `--border` border + tinted count). Never color the full border — the accent bar carries the status color, same accent-bar language as inventory item cards and toasts. The 13px title leads with a 16px icon in the accent color, using the **same glyph as the card's tab** — mirroring the Metric Tile's icon-led header.
+- Neutral cards use accent-soft backgrounds for icon containers.
+- Color-coded cards map 1:1 to row statuses or workflow stages — same names and colors as the status dots, and the stage counts sum to the total.
+- On lifecycle pages the cards are **tab shortcuts**: hover lifts with a small shadow; the card whose tab is active gets its accent color as border + soft background tint.
+- **Metric Tile vs. Stat Card:** Metric Tiles (solid color, white text) are for performance aggregates — revenue, spend, top account. Stat Cards (outlined, tinted count) are for countable status breakdowns that mirror tabs. Never use solid tiles for a status breakdown or outlined cards for a KPI.
+
+### Dashboards & Deltas
+
+- **Deltas are always directional:** ▲ + emerald for positive, ▼ + rose for negative — the arrow matches the sign, and a negative number never sits on a neutral or positive-looking surface. Growth Metric Tiles take their background from the sign (emerald / rose).
+- **One time scope per page:** analytics pages carry a single header-level time toggle (7D / 30D / 90D) that drives every chart, metric, chip, and date range on the page. Per-card time toggles are forbidden — two cards must never disagree about the period.
+- **Action before status:** dashboard top cards separate "needs your action" (dominant cards with CTAs) from passive pipeline status (compact cards, no CTA). A CTA on a card asserts the user should act — completed or third-party states never get one.
+- Charts state their own conclusion: a summary line in the chart header ("**7** orders this period · ▼ 36.4% vs prior") so the reader gets the answer without decoding bars.
+
+### Modal
+
+- Backdrop: `rgba(0,0,0,0.5)` with `backdrop-filter: blur(4px)`.
+- Max width: 480px for confirmations; up to 640px for task-flow forms (esc chip + X in the header, form rows in the body, pinned footer). Radius: `--radius-lg`. Shadow: `--shadow-lg`.
+- Footer buttons align right, with secondary action first (left) and primary action last (right).
+
+### Drawer
+
+- Right-side panel: 420px, `--card` surface, 1px left border, dim overlay, slides in with a 0.2s ease transform. Closes on X, esc, or overlay click.
+- Anatomy: header (title + status pills + close), scrolling body of fact rows, footer with a primary "open full page" action plus at most one contextual action.
+- **Modal vs. Drawer:** a **Modal** is for committing a short transaction — complete-or-cancel task flows (fulfill, mark shipped, tax input) where everything needed lives inside the form. A **Drawer** is for *inspecting without navigating* — peeking at a row from a list while keeping your place — or editing while referencing the page behind it. Never use both patterns for the same job; full-screen takeovers are not used.
+
+### Toast
+
+- Left accent bar (4px wide) indicates type: default, success, warning, error, info.
+- Shadow: `--shadow-xl` for float-above-content feel.
+
+### Status Dots
+
+- Badge treatment: 8px circle + 13px label inside a pill — 1px `--border`, `--radius-pill`, `3px 10px` padding, `--background` fill.
+- Colors: emerald (active/validated/delivered), amber (pending/partially fulfilled), muted-foreground (inactive/placed), red (error/not fulfilled), sky (info), orange (warning/payment pending).
+- Order lifecycle mapping is documented in the Components tab under Status Dots → Order Lifecycle. Publishing lifecycle (Draft = gray, Scheduled = orange, Active = green) under Status Dots → Publishing Lifecycle — every status shows a dot, including Draft.
+
+### Skeletons
+
+- Base: `--muted` background with a shimmer sweep (1.6s ease-in-out loop). Shimmer is a translucent white gradient — `rgba(255,255,255,0.6)` light, `rgba(255,255,255,0.08)` dark.
+- Mirror the real content's layout: same dimensions, radius, and grid position as the component being loaded. Never a generic spinner for content areas.
+- Radius follows the element being mimicked: `--radius-xs` for text lines, `--radius-sm` for titles, 50% for avatars, `--radius-pill` for badges, component radius for cards/buttons.
+- Show 3–5 skeleton rows for tables, never the full page count. Keep header rows real — only body content shimmers.
+- Respect `prefers-reduced-motion`: the shimmer animation is disabled, leaving the static muted shape.
+- Use skeletons for initial loads; use inline spinners only for user-triggered actions (button submit, refresh).
+
+## Patterns
+
+### Sidebar
+
+- Width: 240px. Background: `--surface-dark` (dark blue). Text: `--surface-dark-foreground`.
+- Items: 40px height, `--radius-md`, 12px gap between icon and label.
+- Active item: lighter blue background (`rgba(255,255,255,0.1)`).
+- Notification badges: `--rose` background, white text, pill shape.
+
+### Search
+
+- Full-width with search icon (left-positioned). Pill border-radius.
+- Height: 44px. Transition on focus: border color shifts to `--ring`.
+
+### Breadcrumbs
+
+- On detail (drill-in) pages, the breadcrumb replaces the topbar title: muted parent link(s) → bold current entity.
+- Separator: `/` character in `--muted-foreground`.
+- Links use `--muted-foreground` with hover to `--foreground`.
+- Current page (last item): `--foreground`, `font-weight: 600`.
+
+### Toolbar
+
+- Horizontal flex bar with `justify-content: space-between`.
+- Left group: filter buttons. Right group: search + view controls.
+- Button height: 36px. Uses outline style with icon + text.
+- Icons: Lucide — calendar (date range), credit-card (payment), sliders-horizontal (view), refresh-cw (refresh).
+- Filter bar: applied filters render as segmented chips — attribute segment (muted text), value segment (500 weight), and a × remove segment, divided by 1px borders inside one `--radius-md` pill-less container.
+- "Add filter" trigger: toolbar button with a **dashed** border, muted text, leading filter icon and trailing chevron-down. Opens the standard dropdown menu; selected option uses accent background + check (never a leading dot).
+- "Clear all": ghost text button, visible only while at least one filter is applied.
+
+### Page Header
+
+- Colored icon container (40px, accent-soft background) + title (22px, weight 600) + subtitle (14px, muted).
+- The page header icon is always the **same glyph as the page's sidebar item** — only the treatment differs (accent-soft container + accent stroke vs. the sidebar's white stroke).
+- Use the accent palette to color-code different page types (e.g., sky for Orders, amber for Quotes).
+- With actions: buttons sit right of the title, vertically centered. Toolbar-style outline buttons; destructive actions use destructive outline; AI actions use outline + sparkles icon.
+- When a page header has actions, its single main action is a primary-filled button, placed last (e.g. Categorize with AI on Products, Import on Inventory). Never more than one primary per header; pages without a main action have no header buttons.
+
+### Detail Header
+
+- Header shell for drill-in pages: 48px muted *bordered* icon tile (not accent-soft — accents are reserved for page headers) + 22px/600 entity name + inline status badge.
+- Attribute rows below, divided by 1px borders: two-column grid, muted label left, value right. Values follow the formatting rules (dates, currency). Use attribute rows only for **3+ facts** — one or two short facts (e.g. Type) belong as neutral badges beside the status badge in the name row, never as a lone attribute table.
+- Pairs with a topbar breadcrumb back to the parent list page.
+- **Avatar variant** (entities with identity — properties, users): 72px solid-accent avatar with initials + 16px presence dot (emerald, 3px `--background` ring), 24px name, a badge row (status badge + neutral badges for short facts like type and address; long values truncate with the full text in the tooltip) (type, address).
+- **Highlight tiles**: for a few important or linkable attributes — `--muted` tile, 40px accent-soft icon container, 11px uppercase eyebrow label, 15px/600 value (links to related detail pages inherit color, underline on hover). Use plain attribute rows for longer flat attribute lists.
+
+### Section Card
+
+- Card hosting a titled sub-collection on a detail page: 16px/600 title + count pill (24px, `--muted`, 12px/600) left; controls (segmented view toggle, search) right.
+- The embedded table gets its own 1px border + `--radius-md` (the section card provides the outer chrome); pagination sits below the table inside the card.
+- Grid views embed the standard entity-card grid.

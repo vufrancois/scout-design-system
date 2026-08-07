@@ -45,8 +45,8 @@ Scout's primary blue is `#172d77` (blue-700). The full 11-step scale runs from `
 | `--blue-600` | #2740b8 | Pressed states |
 | `--blue-700` | #172d77 | **Primary** — buttons, links, active tabs |
 | `--blue-800` | #122361 | Dark surfaces |
-| `--blue-900` | #0d1a4a | Dark-mode card backgrounds |
-| `--blue-950` | #080f2e | Dark-mode page background |
+| `--blue-900` | #0d1a4a | Sidebar / brand navy surfaces |
+| `--blue-950` | #080f2e | Deep navy (brand gradients, sidebar hover) |
 
 ### Semantic Tokens
 
@@ -54,16 +54,16 @@ Component code should only use semantic tokens. These automatically adapt betwee
 
 | Token | Light | Dark | Usage |
 |---|---|---|---|
-| `--background` | #ffffff | #080f2e | Page background |
+| `--background` | #ffffff | #0b0d10 | Page background |
 | `--foreground` | #111111 | #f5f5f5 | Primary text |
 | `--primary` | #172d77 | #172d77 | Buttons, links, active states |
 | `--primary-foreground` | #ffffff | #ffffff | Text on primary backgrounds |
-| `--secondary` | #f5f5f5 | #0d1a4a | Secondary button fills |
-| `--muted` | #f5f5f5 | #122361 | Disabled fills, subtle backgrounds |
+| `--secondary` | #f5f5f5 | #14161b | Secondary button fills |
+| `--muted` | #f5f5f5 | #1a1d23 | Disabled fills, subtle backgrounds |
 | `--muted-foreground` | #6b7280 | #a1a1aa | Secondary text, placeholders |
-| `--accent` | #eef2ff | #122361 | Hover backgrounds, highlights |
-| `--border` | #e5e7eb | #1e3a8a | All borders |
-| `--card` | #ffffff | #0d1a4a | Card / elevated surface |
+| `--accent` | #eef2ff | #1a1d23 | Hover backgrounds, highlights |
+| `--border` | #e5e7eb | #24272e | All borders |
+| `--card` | #ffffff | #111318 | Card / elevated surface |
 | `--destructive` | #ef4444 | #ef4444 | Delete, error states |
 | `--success` | #10b981 | #10b981 | Success states |
 | `--warning` | #f59e0b | #f59e0b | Warning states |
@@ -178,6 +178,7 @@ Scout supports light and dark themes. The theme is controlled by adding the `.da
 ### Implementation
 
 - All semantic tokens have both light and dark values defined in the CSS. Switching themes just swaps the variable values.
+- **Dark surfaces are neutral graphite, not navy** (page #0b0d10, card #111318, border #24272e): color lives in accents, pills, and the primary blue — never in the canvas. The sidebar keeps its brand navy in both themes and is the one intentional blue surface.
 - Never use `@media (prefers-color-scheme)` — theme is user-toggled, not system-derived.
 - When using Tailwind, map CSS variables to the Tailwind config. Use `hsl(var(--primary))` pattern or direct `var()` references.
 

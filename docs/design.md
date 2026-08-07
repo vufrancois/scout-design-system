@@ -96,7 +96,8 @@ Scout uses **Inter** as its primary typeface, with system-font fallbacks. Monosp
 
 | Role | Size | Weight | Letter Spacing |
 |---|---|---|---|
-| Display / Page title | 36px | 800 | -1px |
+| Display (docs & marketing only) | 36px | 800 | -1px |
+| Page title (app) | 22px | 600 | -0.3px |
 | Section heading (h2) | 28px | 700 | -0.5px |
 | Card title / h3 | 22px | 600 | -0.3px |
 | Panel title (app cards) | 16px | 600 | normal |
@@ -571,8 +572,8 @@ The single source of truth tying the Orders list to the order detail. Every lega
 | Accent | Pages |
 |---|---|
 | Orange | Orders |
-| Amber | Quotes, Reviews |
-| Sky | Organizations, Price Lists, Insights |
+| Amber | Reviews |
+| Sky | Quotes, Organizations, Price Lists, Insights |
 | Violet | Products, Customer Groups |
 | Emerald | Inventory, Properties, Campaigns |
 | Rose | Promotions |

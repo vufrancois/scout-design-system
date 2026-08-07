@@ -327,6 +327,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
           <tr><td>Display / Page title</td><td>36px</td><td>800</td><td>-1px</td></tr>
           <tr><td>Section heading (h2)</td><td>28px</td><td>700</td><td>-0.5px</td></tr>
           <tr><td>Card title / h3</td><td>22px</td><td>600</td><td>-0.3px</td></tr>
+          <tr><td>Panel title (app cards)</td><td>16px</td><td>600</td><td>normal</td></tr>
           <tr><td>Subsection heading</td><td>16px</td><td>600</td><td>normal</td></tr>
           <tr><td>Body</td><td>14px</td><td>400</td><td>normal</td></tr>
           <tr><td>Small / meta</td><td>13px</td><td>500</td><td>normal</td></tr>
@@ -895,7 +896,20 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <ul>
         <li>Colored icon container (40px, accent-soft background) + title (22px, weight 600) + subtitle (14px, muted).</li>
         <li>The page header icon is always the <strong>same glyph as the page's sidebar item</strong> — only the treatment differs (accent-soft container + accent stroke vs. the sidebar's white stroke).</li>
-        <li>Use the accent palette to color-code different page types (e.g., sky for Orders, amber for Quotes).</li>
+        <li>Accents group related areas &mdash; they are not unique per page. Current mapping:</li>
+      </ul>
+      <table class="token-table">
+        <thead><tr><th>Accent</th><th>Pages</th></tr></thead>
+        <tbody>
+          <tr><td>Orange</td><td>Orders</td></tr>
+          <tr><td>Amber</td><td>Quotes, Reviews</td></tr>
+          <tr><td>Sky</td><td>Organizations, Price Lists, Insights</td></tr>
+          <tr><td>Violet</td><td>Products, Customer Groups</td></tr>
+          <tr><td>Emerald</td><td>Inventory, Properties, Campaigns</td></tr>
+          <tr><td>Rose</td><td>Promotions</td></tr>
+        </tbody>
+      </table>
+      <ul>
         <li>With actions: buttons sit right of the title, vertically centered. Toolbar-style outline buttons; destructive actions use destructive outline; AI actions use outline + sparkles icon.</li>
         <li>When a page header has actions, its single main action is a primary-filled button, placed last (e.g. Categorize with AI on Products, Import on Inventory). Never more than one primary per header; pages without a main action have no header buttons.</li>
       </ul>

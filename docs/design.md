@@ -99,6 +99,7 @@ Scout uses **Inter** as its primary typeface, with system-font fallbacks. Monosp
 | Display / Page title | 36px | 800 | -1px |
 | Section heading (h2) | 28px | 700 | -0.5px |
 | Card title / h3 | 22px | 600 | -0.3px |
+| Panel title (app cards) | 16px | 600 | normal |
 | Subsection heading | 16px | 600 | normal |
 | Body | 14px | 400 | normal |
 | Small / meta | 13px | 500 | normal |
@@ -565,7 +566,17 @@ The single source of truth tying the Orders list to the order detail. Every lega
 
 - Colored icon container (40px, accent-soft background) + title (22px, weight 600) + subtitle (14px, muted).
 - The page header icon is always the **same glyph as the page's sidebar item** — only the treatment differs (accent-soft container + accent stroke vs. the sidebar's white stroke).
-- Use the accent palette to color-code different page types (e.g., sky for Orders, amber for Quotes).
+- Accents group related areas — they are not unique per page. Current mapping:
+
+| Accent | Pages |
+|---|---|
+| Orange | Orders |
+| Amber | Quotes, Reviews |
+| Sky | Organizations, Price Lists, Insights |
+| Violet | Products, Customer Groups |
+| Emerald | Inventory, Properties, Campaigns |
+| Rose | Promotions |
+
 - With actions: buttons sit right of the title, vertically centered. Toolbar-style outline buttons; destructive actions use destructive outline; AI actions use outline + sparkles icon.
 - When a page header has actions, its single main action is a primary-filled button, placed last (e.g. Categorize with AI on Products, Import on Inventory). Never more than one primary per header; pages without a main action have no header buttons.
 

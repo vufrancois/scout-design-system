@@ -756,6 +756,62 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li><strong>Horizontal Bar Chart:</strong> ranked categories as 18px bars on a muted track (4px data-end radius), 140px label column with a legend dot, direct value labels right (tabular numerals), a 10px muted axis under the bars, and a total line anchoring the card. Bars distribute evenly across the card's height so paired chart cards stay balanced.</li>
       </ul>
 
+      <h3>Hero Search &amp; Search Modes</h3>
+      <ul>
+        <li>Storefront search is the Search component at hero scale: 58px pill, 20px leading icon, <code>--ring</code> focus ring with a soft glow. A compact 46px variant sits sticky above results grids (transparent row, no backdrop).</li>
+        <li>Search mode (Keyword / &#10022; AI) is a <strong>segmented control inside the field</strong>, never a floating chip; the AI mode wears the sparkles icon per the AI-action rule and swaps the placeholder to a natural-language prompt. Enter submits &mdash; no separate go button.</li>
+      </ul>
+
+      <h3>Category Tile &amp; Browse Modal</h3>
+      <ul>
+        <li>Category Tile: tonal sky&rarr;card gradient, 1px border, radius-lg; 16px/600 title top-left (max two lines, 64% width), artwork bottom-right (40% wide &mdash; an <code>&lt;img&gt;</code> or a tinted 1.25-stroke icon); hover lifts 2px with shadow-md. Grids run 5 &rarr; 4 &rarr; 2 across breakpoints. The <code>.sm</code> variant (15px title) is for subcategories.</li>
+        <li>Browse Modal: the wide Modal variant (1200px) for drilling into a category &mdash; header with 22px primary title, a &lsaquo; &rsaquo; n / N pager that wraps (arrow keys too), and close; scrollable body with a subcategory count and a 4-up tile grid; Esc and outside click close; body scroll locks.</li>
+        <li>Promo carousels on the storefront use Marketing Cards in a paged rail (3 / 2 / 1 per view) with dots + arrows and <strong>no autoplay</strong>.</li>
+      </ul>
+
+      <h3>Product Card</h3>
+      <ul>
+        <li><strong>Fixed-slot anatomy</strong> so every card in a row aligns: media (4:3, overlay badges bottom-left, compare toggle top-right) &rarr; vendor eyebrow (18px avatar + 12px muted name, one line) &rarr; title (15px/600, <strong>two lines always reserved</strong>) &rarr; price block of <strong>two fixed lines</strong> (24px price with <code>/ each</code> inline and unwrappable; compare-at strikethrough &middot; "Save 26%" as emerald text beneath, reserved even when empty) &rarr; two single-line meta rows sharing a 14px icon column (delivery promise, stock) &rarr; Add to Cart + wishlist pinned to the bottom.</li>
+        <li>Vocabulary: units read "/ each" (never EA / EACH); delivery promises are complete sentences, never truncated chips ("Overnight &middot; order by 2pm CST", "3&ndash;5 business days", "5&ndash;7 business days &middot; from vendor"); stock is In Stock / Low stock / Out of stock (out disables Add to Cart); vendors show an avatar + name, not a logo.</li>
+        <li>Compare toggle: 34px circle, primary-filled when selected, card border goes primary, tooltip below the button and right-anchored so it stays inside the media frame. Focus outline only for keyboard (<code>:focus-visible</code>).</li>
+        <li>Alternatives variant: the second price line carries "&minus;$8.92 / +$15.59 vs. this item" (emerald / rose) instead of compare-at pricing, and a footer reads "Matches 4 of 5 specs" with a Compare link.</li>
+      </ul>
+
+      <h3>Filter Rail &amp; Range Slider</h3>
+      <ul>
+        <li>Browse pages use a faceted <strong>Filter Rail</strong> (280px, card surface, sticky) rather than the lists' "Add filter" dropdown: title with an active-count badge and Clear all; collapsible facet sections with 11px uppercase heads; checkbox options with live counts that <strong>recount as other facets apply</strong> (zero-result options dim to 45%).</li>
+        <li>Range Slider: dual handles (18px, primary ring) on a 4px track with a primary fill between them; values above, bounds below; handles can't cross (20-unit gap); filters on release.</li>
+        <li>Under 1024px the rail becomes a 340px right drawer behind a "Filters &#9312;" button with a scrim.</li>
+      </ul>
+
+      <h3>Results Header &amp; Progressive Loading</h3>
+      <ul>
+        <li>Results open with breadcrumb &rarr; 22px title &rarr; live count ("9 results &middot; 1 filter applied"), stacked in the left column above the rail; the sort select rides beside the sticky search as an icon-led control (&#8645; glyph, options "Recommended", "Price Low to High"&hellip; &mdash; no "Sort by" label). Applied filters render as removable chips with Clear all, shown only when non-empty.</li>
+        <li><strong>Data tables paginate; browse grids load progressively.</strong> Auto-load the next page (12) when the user scrolls near the bottom, with a shimmer skeleton row; keep a persistent "Showing 36 of 74" progress line + bar; <strong>stop auto-loading after three pages and hand off to a "Show N more" button</strong> (keyboard/screen-reader reachable); show back-to-top after the first auto-load; any filter, sort, or search change resets to the first page. Never auto-load before the user has scrolled.</li>
+      </ul>
+
+      <h3>Compare Tray &amp; Comparison Table</h3>
+      <ul>
+        <li>Comparison is <strong>head-to-head: two products</strong>. The Compare Tray is a floating bottom-center pill collecting selections; its Compare action enables at two. Selection persists to the compare page.</li>
+        <li>Comparison Table: pinned 220px label column; product header columns (media, name, mono SKU, Add to cart, remove); rows grouped under Purchase / Product / Specification with 11px uppercase group heads; rows that differ are lightly shaded; a "Show differences only" Switch hides identical rows; rows where every value is "&mdash;" never render; objectively comparable rows mark the single clear winner with an emerald <strong>Best</strong> tag (price, delivery, pickup, capacity, noise, cycles, warranty). With one product selected, a dashed "Add another product" column links back to the listing. The header row scrolls with the table (no sticky); under 820px the table scrolls horizontally with the label column pinned.</li>
+        <li>Values are normalized before comparing (units "Each", one Brand row, no rows that are identical by construction such as Category).</li>
+      </ul>
+
+      <h3>Buy Box</h3>
+      <ul>
+        <li>Product page: gallery and buy box split 50/50 (stacking under 1024px); the gallery is a 1:1 main image with a 64px thumbnail strip. Navigation is the breadcrumb alone &mdash; no duplicate "Back" link.</li>
+        <li>Buy Box order: 22px title &rarr; fact rows (mono SKU, linked Category, Brand) &rarr; Delivery Options &rarr; Quantity Stepper &rarr; price block &rarr; action row &rarr; vendor panel &rarr; ratings. <strong>Exactly one primary</strong> (Add to cart); Buy now and Chat with seller are outline; Explore AI alternatives is outline + sparkles; wishlist and Compare are icon buttons.</li>
+        <li><strong>Quantity Stepper:</strong> 40px &minus;/+ with a 48px centered input, bounded (minus disabled at 1), updating a muted line total ("3 &times; $376.38 = $1,129.14").</li>
+        <li><strong>Delivery Options:</strong> a neutral panel (never a tinted "good" card &mdash; it's information), Shipping and Pickup columns with uppercase keys; emerald icon + ETA + bold cost where available, muted where not; pickup copy follows the Context Switcher ("Select a property to check pickup" / "Available &middot; 8 mi" / "Not available at this property").</li>
+        <li>Ratings appear as a compact row (stars &middot; summary &middot; "See reviews" outline button) &mdash; reviews live on their own page, never inline.</li>
+        <li>Product details are a full-width card below both columns with underline tabs (AI Summary &middot; Description &middot; Specifications &middot; Spec Sheets); content fills the card (two-column bullets and spec grid when wide). Alternatives render as a sortable <strong>grid</strong>, not a carousel &mdash; a sort control on a rail reorders items you can't see.</li>
+      </ul>
+
+      <h3>AI Block</h3>
+      <ul>
+        <li>AI-generated content sits in a tinted block: accent fill, blue-200 border (blue-600 in dark), radius-lg; header of a 26px primary icon tile with sparkles + 14px/600 primary title ("Scout AI Summary"); 14px bullets with primary markers (two columns when the block is wider than ~720px); a 12px muted provenance footnote ("Generated from&hellip; verify critical specs before ordering"). Section bands announcing AI content (e.g. "AI-powered alternatives") use the same tint with a 40px icon tile.</li>
+      </ul>
+
       <h3>Radio Cards</h3>
       <ul>
         <li>For choosing one of 2&ndash;4 <strong>modes inside a task-flow Modal</strong> (tax by rate / amount / none): full-width cards with a native radio, 14px/600 title, muted one-line description. Selected card gets the primary border + accent fill.</li>

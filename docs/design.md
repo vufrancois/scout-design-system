@@ -447,6 +447,54 @@ The single source of truth tying the Orders list to the order detail. Every lega
 - **Line Chart:** 220px SVG; recessive gridlines in `--border`; 10px muted axis labels (MM/DD on x); 2px blue-400 series with an 8% area fill; hover layer always on — dashed crosshair, 8px marker with a surface ring, tooltip (value + date). The delta pill beside the title is directional (emerald up / rose down) and names its comparison window in a tooltip.
 - **Horizontal Bar Chart:** ranked categories as 18px bars on a muted track (4px data-end radius), 140px label column with a legend dot, direct value labels right (tabular numerals), a 10px muted axis under the bars, and a total line anchoring the card. Bars distribute evenly across the card's height so paired chart cards stay balanced.
 
+### Hero Search & Search Modes
+
+- Storefront search is the Search component at hero scale: 58px pill, 20px leading icon, `--ring` focus ring with a soft glow. A compact 46px variant sits sticky above results grids (transparent row, no backdrop).
+- Search mode (Keyword / ✦ AI) is a **segmented control inside the field**, never a floating chip; the AI mode wears the sparkles icon per the AI-action rule and swaps the placeholder to a natural-language prompt. Enter submits — no separate go button.
+
+### Category Tile & Browse Modal
+
+- Category Tile: tonal sky→card gradient, 1px border, radius-lg; 16px/600 title top-left (max two lines, 64% width), artwork bottom-right (40% wide — an `<img>` or a tinted 1.25-stroke icon); hover lifts 2px with shadow-md. Grids run 5 → 4 → 2 across breakpoints. The `.sm` variant (15px title) is for subcategories.
+- Browse Modal: the wide Modal variant (1200px) for drilling into a category — header with 22px primary title, a ‹ › n / N pager that wraps (arrow keys too), and close; scrollable body with a subcategory count and a 4-up tile grid; Esc and outside click close; body scroll locks.
+- Promo carousels on the storefront use Marketing Cards in a paged rail (3 / 2 / 1 per view) with dots + arrows and **no autoplay**.
+
+### Product Card
+
+- **Fixed-slot anatomy** so every card in a row aligns: media (4:3, overlay badges bottom-left, compare toggle top-right) → vendor eyebrow (18px avatar + 12px muted name, one line) → title (15px/600, **two lines always reserved**) → price block of **two fixed lines** (24px price with `/ each` inline and unwrappable; compare-at strikethrough · "Save 26%" as emerald text beneath, reserved even when empty) → two single-line meta rows sharing a 14px icon column (delivery promise, stock) → Add to Cart + wishlist pinned to the bottom.
+- Vocabulary: units read "/ each" (never EA / EACH); delivery promises are complete sentences, never truncated chips ("Overnight · order by 2pm CST", "3–5 business days", "5–7 business days · from vendor"); stock is In Stock / Low stock / Out of stock (out disables Add to Cart); vendors show an avatar + name, not a logo.
+- Compare toggle: 34px circle, primary-filled when selected, card border goes primary, tooltip below the button and right-anchored so it stays inside the media frame. Focus outline only for keyboard (`:focus-visible`).
+- Alternatives variant: the second price line carries "−$8.92 / +$15.59 vs. this item" (emerald / rose) instead of compare-at pricing, and a footer reads "Matches 4 of 5 specs" with a Compare link.
+
+### Filter Rail & Range Slider
+
+- Browse pages use a faceted **Filter Rail** (280px, card surface, sticky) rather than the lists' "Add filter" dropdown: title with an active-count badge and Clear all; collapsible facet sections with 11px uppercase heads; checkbox options with live counts that **recount as other facets apply** (zero-result options dim to 45%).
+- Range Slider: dual handles (18px, primary ring) on a 4px track with a primary fill between them; values above, bounds below; handles can't cross (20-unit gap); filters on release.
+- Under 1024px the rail becomes a 340px right drawer behind a "Filters ①" button with a scrim.
+
+### Results Header & Progressive Loading
+
+- Results open with breadcrumb → 22px title → live count ("9 results · 1 filter applied"), stacked in the left column above the rail; the sort select rides beside the sticky search as an icon-led control (⇅ glyph, options "Recommended", "Price Low to High"… — no "Sort by" label). Applied filters render as removable chips with Clear all, shown only when non-empty.
+- **Data tables paginate; browse grids load progressively.** Auto-load the next page (12) when the user scrolls near the bottom, with a shimmer skeleton row; keep a persistent "Showing 36 of 74" progress line + bar; **stop auto-loading after three pages and hand off to a "Show N more" button** (keyboard/screen-reader reachable); show back-to-top after the first auto-load; any filter, sort, or search change resets to the first page. Never auto-load before the user has scrolled.
+
+### Compare Tray & Comparison Table
+
+- Comparison is **head-to-head: two products**. The Compare Tray is a floating bottom-center pill collecting selections; its Compare action enables at two. Selection persists to the compare page.
+- Comparison Table: pinned 220px label column; product header columns (media, name, mono SKU, Add to cart, remove); rows grouped under Purchase / Product / Specification with 11px uppercase group heads; rows that differ are lightly shaded; a "Show differences only" Switch hides identical rows; rows where every value is "—" never render; objectively comparable rows mark the single clear winner with an emerald **Best** tag (price, delivery, pickup, capacity, noise, cycles, warranty). With one product selected, a dashed "Add another product" column links back to the listing. The header row scrolls with the table (no sticky); under 820px the table scrolls horizontally with the label column pinned.
+- Values are normalized before comparing (units "Each", one Brand row, no rows that are identical by construction such as Category).
+
+### Buy Box
+
+- Product page: gallery and buy box split 50/50 (stacking under 1024px); the gallery is a 1:1 main image with a 64px thumbnail strip. Navigation is the breadcrumb alone — no duplicate "Back" link.
+- Buy Box order: 22px title → fact rows (mono SKU, linked Category, Brand) → Delivery Options → Quantity Stepper → price block → action row → vendor panel → ratings. **Exactly one primary** (Add to cart); Buy now and Chat with seller are outline; Explore AI alternatives is outline + sparkles; wishlist and Compare are icon buttons.
+- **Quantity Stepper:** 40px −/+ with a 48px centered input, bounded (minus disabled at 1), updating a muted line total ("3 × $376.38 = $1,129.14").
+- **Delivery Options:** a neutral panel (never a tinted "good" card — it's information), Shipping and Pickup columns with uppercase keys; emerald icon + ETA + bold cost where available, muted where not; pickup copy follows the Context Switcher ("Select a property to check pickup" / "Available · 8 mi" / "Not available at this property").
+- Ratings appear as a compact row (stars · summary · "See reviews" outline button) — reviews live on their own page, never inline.
+- Product details are a full-width card below both columns with underline tabs (AI Summary · Description · Specifications · Spec Sheets); content fills the card (two-column bullets and spec grid when wide). Alternatives render as a sortable **grid**, not a carousel — a sort control on a rail reorders items you can't see.
+
+### AI Block
+
+- AI-generated content sits in a tinted block: accent fill, blue-200 border (blue-600 in dark), radius-lg; header of a 26px primary icon tile with sparkles + 14px/600 primary title ("Scout AI Summary"); 14px bullets with primary markers (two columns when the block is wider than ~720px); a 12px muted provenance footnote ("Generated from… verify critical specs before ordering"). Section bands announcing AI content (e.g. "AI-powered alternatives") use the same tint with a 40px icon tile.
+
 ### Radio Cards
 
 - For choosing one of 2–4 **modes inside a task-flow Modal** (tax by rate / amount / none): full-width cards with a native radio, 14px/600 title, muted one-line description. Selected card gets the primary border + accent fill.

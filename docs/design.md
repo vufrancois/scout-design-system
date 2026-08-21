@@ -1,6 +1,6 @@
 # DESIGN.md
 
-Usage rules, token reference, and implementation guidance for the Scout Design System. Generated from `design-system/design-doc.html` (the normative source).
+Usage rules, token reference, and implementation guidance for the Scout Design System. Generated from `design-system/design-doc.html` (the normative source) by `tools/design_md.py`.
 ## Overview
 
 The Scout Design System provides a shared visual language across two applications: the **Buyer App** and the **Vendor/Admin Portal**. It is built on CSS custom properties as the token layer, with component implementations adapted per framework.
@@ -256,7 +256,8 @@ Canonical rules for displaying currency, dates, and times. These apply across bo
 
 Charts are implemented with the app's charting library; the design system governs colors and labels.
 
-- Categorical ramp, in series order: `--blue-800`, `--blue-500`, `--blue-300`, `--blue-200`, `--border`.
+- **Categorical palette** (identity, assigned in fixed series order, never cycled), validated for CVD separation on both surfaces: light `#2740b8 · #10b981 · #f59e0b · #8a5fef`, dark `#6277f5 · #059669 · #d97706 · #8a5fef`. More than four series fold into "Other." Bars always carry direct value labels (the light set's contrast relief).
+- Text never wears a series color — values, labels, and legends use text tokens; a dot or mark beside them carries identity. One axis per chart; never dual-axis.
 - Single-series charts (bars, lines, areas) use `--blue-400`.
 - Axis/tick labels: 9–10px `--muted-foreground`; gridlines use `--border`.
 - Chart axis dates use `MM/DD` shorthand; full `MM/DD/YYYY` everywhere else.
@@ -408,6 +409,43 @@ The single source of truth tying the Orders list to the order detail. Every lega
 
 - **Gating rule:** the payment pipeline can never outrun fulfillment — before Delivered, the payment pill is always **Needs Tax & Invoice**; Invoice Validation, Invoice Posted, Paid, and Captured all require Delivered. Any list row violating this is a data bug.
 - Exception flags (e.g. an Active Return) ride alongside these pills; they never replace them.
+
+### Buyer App Bar & Nav Chips
+
+- The Buyer App uses a **floating pill App Bar** (card surface, pill radius, shadow-md, sticky under a 14px gutter) instead of the vendor sidebar. Anatomy left→right: avatar ring (36px, 2px primary border, initials) + Scout wordmark (inline SVG on `currentColor`), Nav Chips, Context Switcher, icon buttons.
+- **Nav Chips:** 38px pills, 14px/500, 17px muted leading icon; active = muted fill + 600 weight + foreground icon; hover = accent. Dropdown chips carry a chevron that rotates 180° while open. Under 1100px labels collapse to icons; under 820px the wordmark hides.
+- **Icon buttons:** 40px circles; primary-filled only for notifications and cart (the two the reference filled); a status dot (emerald, 2px surface ring) marks unread.
+- All buyer components ship in `buyer/buyer-components.css` scoped under `.buyer`; pages add `buyer/buyer.css` for the reset and layout. One shared stylesheet — no per-page CSS clones.
+
+### Mega Menu
+
+- Dropdown under a nav chip: popover surface, radius-xl, shadow-lg, 12px padding, 14px below the bar. One column (min 300px) or two (min 620px; one column under 820px).
+- Item: 20px primary icon, 15px/600 title, 13px muted one-line description; accent hover. A **disabled item** goes muted and replaces its description with an upsell link ("Contact SCOUT to enable Budgets →") — never hide an unavailable destination, explain it.
+- One menu open at a time; outside click and Esc close.
+
+### Context Switcher
+
+- The buyer's scope (one property or all) has exactly **one control**, in the App Bar, labeled "Current Property:" with the selection beneath. Never duplicate it on a page.
+- Dropdown of context options (480px): 44px sky tile, 14px/600 name with an Active badge on the current one, address, city with a pin icon, units badge right; an aggregate "All properties" option leads with its description.
+- Selecting re-scopes the whole page (every count, chart, and CTA); action cards drop to a calm state when the chosen scope has nothing waiting.
+
+### Dashboard Hero
+
+- Brand gradient band (blue-800 → blue-600 → blue-500) with a clipped decorative layer (two soft white circles at 6%); 28px/700 greeting ("Welcome back, [first name]", falling back to "Welcome back") beside a 48px glass icon tile, 14px muted subtitle; segmented time toggle (7D / 30D / 90D) top-right.
+- KPI Stat Cards straddle the band's bottom edge (−76px). The band keeps its navy in dark mode — the one intentional blue surface, the same rule as the vendor sidebar.
+- Dashboard KPIs show plain currency (`$25,471.50`); the `USD` suffix stays reserved for financial tables.
+
+### Status Breakdown
+
+- Icon-titled card (36px tonal tile + 16px/600 title + header count pill) with a View All link; stacked tinted rows: 16px colored icon, 13px label with optional 11px meta, 14px/700 count, Tooltip ⓘ.
+- Rows follow the whose-turn colors and the Lifecycle Matrix vocabulary from the buyer's side — amber = the buyer's move (Invoice Validation, Approvals Pending), sky = with the other side, emerald = done. Sub-conditions ("Partially fulfilled") are meta lines inside their stage, never rows.
+- Exceptions (Canceled) get a rose row at the bottom of the stack — a lane, not a stage — with the meta "not counted in open orders"; it goes neutral at zero rather than disappearing.
+- Needs-your-action cards on buyer dashboards reuse the Insights stat-card anatomy exactly (16px colored icon + 13px title, 30px colored count, muted meta, full-width outline action), ordered by what gates what: Deliveries to Validate → Invoices to Validate → Approvals Pending.
+
+### Line Chart & Horizontal Bar Chart
+
+- **Line Chart:** 220px SVG; recessive gridlines in `--border`; 10px muted axis labels (MM/DD on x); 2px blue-400 series with an 8% area fill; hover layer always on — dashed crosshair, 8px marker with a surface ring, tooltip (value + date). The delta pill beside the title is directional (emerald up / rose down) and names its comparison window in a tooltip.
+- **Horizontal Bar Chart:** ranked categories as 18px bars on a muted track (4px data-end radius), 140px label column with a legend dot, direct value labels right (tabular numerals), a 10px muted axis under the bars, and a total line anchoring the card. Bars distribute evenly across the card's height so paired chart cards stay balanced.
 
 ### Radio Cards
 

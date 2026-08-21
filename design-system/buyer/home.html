@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home — Scout Buyer</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buyer.css">
+</head>
+<body class="buyer">
+
+<!-- ===== App Bar ===== -->
+<div class="app-bar-wrap">
+  <nav class="app-bar">
+    <div class="brand">
+      <span class="avatar-ring">AG</span>
+      <span class="wordmark"><svg class="logo" viewBox="0 0 592 116" xmlns="http://www.w3.org/2000/svg" aria-label="Scout"><path fill="currentColor" d="M368.921 24.0615C369.027 24.0452 369.13 24.0312 369.237 24.0193C394.599 21.02 413.592 34.7995 416.669 61.022C419.492 85.0688 410.296 111.346 382.626 114.34C358.328 118.032 337.745 104.403 334.506 79.5118C331.05 52.9541 339.398 28.8412 368.921 24.0615ZM377.059 98.6156C398.048 96.5091 401.22 71.0955 395.783 54.677C392.869 45.877 383.88 38.9518 374.268 39.9686C374.112 39.9852 373.956 40.0065 373.8 40.0327C349.315 42.1918 346.678 81.0129 362.884 94.4005C366.729 97.5713 371.668 99.1037 376.633 98.6665C376.776 98.6529 376.919 98.6359 377.059 98.6156Z"/><path fill="currentColor" d="M112.681 0.22147C116.656 -0.0887322 123.344 -0.0229021 127.331 0.116074C128.859 6.12993 130.114 37.4859 126.805 41.2283C124.225 41.0029 118.858 34.206 115.122 32.124L114.991 32.0522C107.163 33.4416 97.9848 39.7162 90.3365 42.5914C80.7606 46.1915 71.4784 49.9355 62.0854 53.9884C62.4117 54.9314 63.0516 56.7636 63.8188 57.3312C76.9084 66.4314 91.6422 66.3822 104.163 77.5225C115.962 88.0205 102.225 110.521 90.5078 114.174C85.4041 115.764 71.6144 115.414 65.3493 115.42L37.5858 115.417C28.8031 115.496 20.0195 115.439 11.2384 115.245C8.50338 115.162 1.40473 115.53 0.00704319 113.332C-0.0933617 111.956 0.899447 110.61 1.72667 109.576C11.6325 97.1926 55.4695 90.1437 59.7624 84.0178C59.9988 83.68 60.1714 83.0879 60.1096 82.6813C59.6097 79.3981 53.1218 76.3542 50.5789 74.4328C45.1303 70.3154 37.8755 65.6066 36.9074 58.2914C34.5996 40.8523 52.4088 36.4216 65.3277 32.2627C74.9917 29.1514 85.3738 26.6455 93.9114 21.0209C96.121 19.5654 98.016 18.4053 99.6486 16.2758C95.1379 11.5912 91.3425 8.37316 88.8751 2.31641C94.9191 0.817933 106.164 0.292952 112.681 0.22147Z"/><path fill="currentColor" d="M191.172 24.7498C199.619 23.243 212.635 26.1442 219.285 31.3122C226.233 36.7123 228.162 42.5031 229.396 50.843C223.509 50.954 217.43 50.8297 211.526 50.7801C209.668 42.0343 202.483 39.9536 194.379 40.0969C188.328 40.204 180.593 43.5644 181.313 50.7326C181.955 57.1098 190.137 59.5821 195.326 60.5729C204.947 62.6792 215.496 63.9047 223.542 70.0452C232.923 77.5981 232.858 95.513 225.098 104.283C217.59 112.768 209.801 114.396 199.064 115.312L198.904 115.322C183.008 116.247 163.38 110.878 161.197 92.2132C161.052 90.9734 160.992 89.6873 160.916 88.4399C165.59 88.7561 173.465 88.5616 178.381 88.5905C181.737 98.4897 188.534 100.313 198.262 99.8146C202.693 99.5875 207.148 98.1482 210.124 94.7187C213.315 91.3338 212.492 84.9961 208.399 82.6222C200.502 78.0433 189.943 77.7723 181.275 74.9559C177.204 73.6007 173.418 71.5051 170.107 68.7748C159.085 59.6623 160.482 39.1737 172.293 31.4479C178.989 27.0675 183.212 25.4596 191.172 24.7498Z"/><path fill="currentColor" d="M443.451 25.8357C446.294 25.7981 449.195 25.9048 452.038 25.976C452.025 26.4225 452.018 26.869 452.012 27.3159L452.025 62.4807C452.008 69.8903 451.649 77.1952 452.474 84.5778C453.754 97.0045 466.778 101.155 477.374 97.3965C487.321 93.8683 487.438 83.9654 487.394 75.0673C487.371 70.7804 487.401 66.4814 487.401 62.2314C487.441 50.3117 487.404 38.3914 487.291 26.472C491.568 25.5241 501.16 25.9085 505.886 26.0159C505.763 34.3774 505.889 43.058 505.896 51.4458C505.882 60.1178 506.601 85.7146 504.768 92.4529C503.431 97.3829 500.807 101.87 497.172 105.457C484.355 118.319 455.021 118.063 442.107 105.154C438.273 101.379 435.589 96.5896 434.378 91.3461C432.925 85.1461 433.371 71.4367 433.377 64.4333L433.427 26.2207C436.673 25.9065 440.168 25.9018 443.451 25.8357Z"/><path fill="currentColor" d="M277.918 24.5402C284.762 24.242 291.251 23.987 297.836 26.3658C312.619 31.7091 320.231 41.5451 321.455 57.0289L303.396 57.0126C303.23 56.4112 303.06 55.8107 302.887 55.2116C299.475 43.4033 290.055 38.1711 277.979 41.4507C263.42 45.8238 261.513 63.6629 262.869 76.4001C264.467 91.4088 275.194 103.105 290.988 98.1378C295.634 96.645 299.498 93.3734 301.74 89.0389C302.156 87.2665 302.808 85.4003 303.376 83.6574C308.328 83.4975 315.695 83.2322 320.551 83.5025C323.577 85.6047 317.933 97.5779 316.114 100.142C310.713 107.805 302.475 112.992 293.229 114.548C268.91 118.683 248.414 107.249 244.343 81.6825C242.146 67.882 243.493 50.1739 252.018 38.5621C258.271 30.0454 267.717 26.1411 277.918 24.5402Z"/><path fill="currentColor" d="M542.279 28.1452C547.913 27.9853 590.091 27.8633 591.354 28.9625C591.64 30.3735 591.644 41.5511 591.68 43.9629C583.103 44.0929 574.406 43.9555 565.793 44.0476C566.464 66.4005 565.237 90.0606 565.949 112.506C565.992 113.591 566.095 114.093 565.55 115.014C562.836 115.721 551.229 115.163 547.305 115.39L547.261 68.383C547.265 60.4348 547.125 51.8642 547.431 43.9742C538.604 43.9273 529.761 44.0968 520.945 43.9968C521.39 39.3221 521.244 33.4559 520.988 28.7816C524.982 27.9122 537.457 28.1515 542.279 28.1452Z""/></svg></span>
+    </div>
+    <div class="nav-chips">
+      <a class="nav-chip active" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
+      <a class="nav-chip" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
+      <a class="nav-chip" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="lbl">Messages</span></a>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel cols-2" id="menu-orders">
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span><span class="menu-item-title">Order Tracking</span><span class="menu-item-desc" style="display:block">Review orders and invoices</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span><span class="menu-item-title">Reviews</span><span class="menu-item-desc" style="display:block">Rate your purchases</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span><span class="menu-item-title">Quotes</span><span class="menu-item-desc" style="display:block">Requests &amp; negotiated pricing</span></span></a>
+          <div class="menu-item disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span><span class="menu-item-title">Budgets</span><a class="menu-item-link" href="#">Contact SCOUT to enable Budgets <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></span></div>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg><span><span class="menu-item-title">Order Approvals</span><span class="menu-item-desc" style="display:block">Approve pending requests</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span><span class="menu-item-title">Purchase History</span><span class="menu-item-desc" style="display:block">Your procurement history</span></span></a>
+          <span></span>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg><span><span class="menu-item-title">Funding Report</span><span class="menu-item-desc" style="display:block">Validated invoices awaiting payment</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-admin" onclick="toggleMenu('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span class="lbl">Admin</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-admin">
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg><span><span class="menu-item-title">Vendor Select</span><span class="menu-item-desc" style="display:block">Shop approved vendors</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h8"/><path d="M8 17h8"/></svg><span><span class="menu-item-title">Shopping Lists</span><span class="menu-item-desc" style="display:block">Product-level restrictions</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span><span class="menu-item-title">Organization</span><span class="menu-item-desc" style="display:block">Org settings &amp; properties</span></span></a>
+        </div>
+      </div>
+    </div>
+    <div class="menu-anchor ctx-switch" id="ctx-switch">
+      <button class="ctx-echo" onclick="toggleCtx()" title="Change property">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/></svg>
+        <span><span class="ctx-kicker" style="display:block">Current Property:</span><span class="ctx-name" id="echo-name" style="display:block">All properties</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="ctx-list" id="ctx-list"></div>
+    </div>
+    <div class="bar-actions">
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
+      <button class="icon-btn" title="Wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn primary" title="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
+    </div>
+  </nav>
+</div>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-title-block">
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg></div>
+      <div>
+        <h1 id="greeting">Welcome back</h1>
+        <p>Your procurement dashboard at a glance</p>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="seg" id="seg">
+        <button data-range="7" onclick="setRange(7)">7D</button>
+        <button data-range="30" class="active" onclick="setRange(30)">30D</button>
+        <button data-range="90" onclick="setRange(90)">90D</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="page stack-24">
+
+  <!-- KPI cards -->
+  <div class="kpi-grid">
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-card-title">Total Paid <svg class="tip-icon" data-tip="Captured payments in the selected period" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+        <span class="stat-card-icon tile-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+      </div>
+      <div class="stat-card-value" id="kpi-paid">$25,471.50</div>
+      <div class="stat-card-desc">Completed orders</div>
+      <div class="stat-card-foot">
+        <button class="switch" id="ship-switch" role="switch" aria-checked="true" onclick="toggleShipping()"></button>
+        <span>Include shipping <span id="ship-amt">($325.97)</span></span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-card-title">Completed Orders <svg class="tip-icon" data-tip="Orders closed out by the vendor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+        <span class="stat-card-icon tile-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span>
+      </div>
+      <div class="stat-card-value" id="kpi-completed">27</div>
+      <div class="stat-card-desc">Successfully fulfilled</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-card-title">Open Orders <svg class="tip-icon" data-tip="Placed but not yet completed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+        <span class="stat-card-icon tile-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+      </div>
+      <div class="stat-card-value" id="kpi-open">62</div>
+      <div class="stat-card-desc">In progress</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-card-title">Invoices <svg class="tip-icon" data-tip="Invoices not yet paid: in validation, posted, or awaiting capture" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+        <span class="stat-card-icon tile-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></span>
+      </div>
+      <div class="stat-card-value" id="kpi-invoices">16</div>
+      <div class="stat-card-desc">Pending payment</div>
+    </div>
+  </div>
+
+  <!-- Needs your action -->
+  <section>
+    <div class="section-label">Needs your action</div>
+    <div class="action-grid">
+      <div class="action-card">
+        <div class="ac-head"><span class="ac-title"><svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Deliveries to Validate</span></div>
+        <div class="ac-count" id="ac-rog">5</div>
+        <div class="ac-meta" id="ac-rog-meta">Confirm receipt of goods &middot; oldest 3d</div>
+        <a class="ac-action" href="#">Validate Deliveries &rarr;</a>
+      </div>
+      <div class="action-card">
+        <div class="ac-head"><span class="ac-title"><svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg>Invoices to Validate</span></div>
+        <div class="ac-count" id="ac-inv">11</div>
+        <div class="ac-meta" id="ac-inv-meta">Check invoices against delivery &middot; oldest 6d</div>
+        <a class="ac-action" href="#">Review Invoices &rarr;</a>
+      </div>
+      <div class="action-card">
+        <div class="ac-head"><span class="ac-title"><svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>Approvals Pending</span></div>
+        <div class="ac-count" id="ac-apr">1</div>
+        <div class="ac-meta" id="ac-apr-meta">Order request awaiting your approval &middot; 1d</div>
+        <a class="ac-action" href="#">Review Request &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Status breakdowns -->
+  <div class="bd-grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title"><span class="icon-tile tile-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>Open Orders <span class="bd-card-count" id="bd-open-total">62</span></span>
+        <a class="text-link" href="#">View All <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+      <div class="bd-rows">
+        <div class="bd-row c-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="bd-label">To Fulfill<span class="bd-meta" id="bd-open-m0">incl. 2 partially fulfilled</span></span><span class="bd-count" id="bd-open-0">36</span><svg class="tip-icon" data-tip="Vendor has not fulfilled all items yet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span class="bd-label">To Ship<span class="bd-meta" id="bd-open-m1">incl. 2 partially shipped</span></span><span class="bd-count" id="bd-open-1">11</span><svg class="tip-icon" data-tip="Fulfilled, awaiting shipment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span class="bd-label">In Transit<span class="bd-meta" id="bd-open-m2">incl. 4 partially delivered</span></span><span class="bd-count" id="bd-open-2">7</span><svg class="tip-icon" data-tip="Shipped, not yet fully delivered" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><span class="bd-label">Delivered<span class="bd-meta" id="bd-open-m3">5 awaiting your validation</span></span><span class="bd-count" id="bd-open-3">8</span><svg class="tip-icon" data-tip="All items delivered; order still open until completed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-rose" id="bd-cancel-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span class="bd-label">Canceled<span class="bd-meta" id="bd-cancel-meta">not counted in open orders</span></span><span class="bd-count" id="bd-cancel">1</span><svg class="tip-icon" data-tip="Canceled in this period; excluded from the open-order count" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title"><span class="icon-tile tile-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></span>Invoices <span class="bd-card-count" id="bd-inv-total">16</span></span>
+        <a class="text-link" href="#">View All <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+      <div class="bd-rows">
+        <div class="bd-row c-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="bd-label">Invoice Validation<span class="bd-meta">your move</span></span><span class="bd-count" id="bd-inv-0">11</span><svg class="tip-icon" data-tip="Invoices waiting for you to QC against the delivery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><span class="bd-label">Invoice Posted<span class="bd-meta">with accounting</span></span><span class="bd-count" id="bd-inv-1">4</span><svg class="tip-icon" data-tip="Validated and on the books; a check will be cut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg><span class="bd-label">Paid<span class="bd-meta">awaiting vendor capture</span></span><span class="bd-count" id="bd-inv-2">1</span><svg class="tip-icon" data-tip="You confirmed payment; the vendor has not captured it yet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><span class="bd-label">Completed<span class="bd-meta">captured &amp; closed</span></span><span class="bd-count" id="bd-inv-3">27</span><svg class="tip-icon" data-tip="Payment captured and the order closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title"><span class="icon-tile tile-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span>Approvals <span class="bd-card-count" id="bd-apr-total">14</span></span>
+        <a class="text-link" href="#">View All <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+      <div class="bd-rows">
+        <div class="bd-row c-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="bd-label">Pending<span class="bd-meta">your move</span></span><span class="bd-count" id="bd-apr-0">1</span><svg class="tip-icon" data-tip="Order requests awaiting your approval" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><span class="bd-label">Approved</span><span class="bd-count" id="bd-apr-1">10</span><svg class="tip-icon" data-tip="Approved and released to the vendor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span class="bd-label">Rejected</span><span class="bd-count" id="bd-apr-2">3</span><svg class="tip-icon" data-tip="Declined requests" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="chart-grid">
+    <div class="card">
+      <div class="card-head">
+        <div><div class="card-title">Spend Trend</div><div class="card-sub" id="trend-sub">Last 30 days</div></div>
+        <span class="delta up" id="trend-delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>+12.4%</span>
+      </div>
+      <div class="chart-wrap">
+        <svg class="chart-svg" id="trend-chart" viewBox="0 0 560 220" preserveAspectRatio="none"></svg>
+        <div class="chart-tip" id="trend-tip"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><div class="card-title">Category Spend</div><div class="card-sub" id="cat-sub">Last 30 days breakdown</div></div>
+      </div>
+      <div class="hbars" id="hbars"></div>
+      <div class="hbar-axis"><span></span><div id="hbar-axis"></div><span></span></div>
+      <div class="hbar-total"><span id="hbar-total-label">4 categories</span><b id="hbar-total">$25,471</b></div>
+    </div>
+  </div>
+
+  <!-- Recent activity -->
+  <div class="card">
+    <div class="card-head">
+      <div><div class="card-title">Recent Activity</div><div class="card-sub">Latest updates on your orders and quotes</div></div>
+      <a class="text-link" href="#">View All <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    </div>
+    <div class="act-list">
+      <a class="act-row" href="#"><span class="icon-tile tile-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg></span><span class="act-body"><span class="act-title" style="display:block">Invoice #102 ready for validation</span><span class="act-desc" style="display:block">Scout Demo Vendor sent the invoice and sales tax for Order #515.</span></span><span class="act-time">2h ago</span><svg class="act-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+      <a class="act-row" href="#"><span class="icon-tile tile-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span class="act-body"><span class="act-title" style="display:block">Delivery exception updated for #645</span><span class="act-desc" style="display:block">Scout Demo Vendor responded to your report.</span></span><span class="act-time">2d ago</span><svg class="act-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+      <a class="act-row" href="#"><span class="icon-tile tile-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span><span class="act-body"><span class="act-title" style="display:block">Order #645 delivered</span><span class="act-desc" style="display:block">Scout Demo Vendor marked this order as delivered.</span></span><span class="act-time">2d ago</span><svg class="act-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+      <a class="act-row" href="#"><span class="icon-tile tile-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></span><span class="act-body"><span class="act-title" style="display:block">Quote cancelled</span><span class="act-desc" style="display:block">Quote #0K2RAKN0 to Scout Demo Vendor was cancelled.</span></span><span class="act-time">06/30/2026</span><svg class="act-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+      <a class="act-row" href="#"><span class="icon-tile tile-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span class="act-body"><span class="act-title" style="display:block">Quote requested</span><span class="act-desc" style="display:block">Quote #0K2RAKN0 sent to Scout Demo Vendor for 12 microwaves.</span></span><span class="act-time">06/30/2026</span><svg class="act-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* ---------- Theme ---------- */
+  function applyTheme() {
+    const dark = localStorage.getItem('scout-theme') === 'dark';
+    document.body.classList.toggle('dark', dark);
+    const b = document.getElementById('theme-btn');
+    b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+    b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+  }
+  function toggleTheme() { localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark'); applyTheme(); }
+  applyTheme();
+
+  /* ---------- Greeting ---------- */
+  const USER = { firstName: 'Alicia', lastName: 'Grant', initials: 'AG' };
+  document.getElementById('greeting').textContent = USER.firstName ? 'Welcome back, ' + USER.firstName : 'Welcome back';
+
+  /* ---------- Menus ---------- */
+  function closeMenus() {
+    document.querySelectorAll('.menu-panel').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-chip').forEach(c => c.classList.remove('open'));
+  }
+  function toggleMenu(id) {
+    const panel = document.getElementById('menu-' + id), chip = document.getElementById('nav-' + id);
+    const wasOpen = panel.classList.contains('open');
+    closeMenus(); document.getElementById('ctx-switch').classList.remove('open');
+    if (!wasOpen) { panel.classList.add('open'); chip.classList.add('open'); }
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-anchor')) closeMenus();
+    if (!e.target.closest('.ctx-switch')) document.getElementById('ctx-switch').classList.remove('open');
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); document.getElementById('ctx-switch').classList.remove('open'); } });
+
+  /* ---------- Context switcher ---------- */
+  const PROPERTIES = [
+    { id: 'all', name: 'All properties', desc: 'Combined dashboard for every accessible property', units: null },
+    { id: 'magnolia', name: 'Magnolia Place Apartments', addr: '4201 Veterans Memorial Blvd', city: 'Metairie, LA 70006', units: 51 },
+    { id: 'bayou', name: 'Bayou Crossing Apartments', addr: '3850 Airline Dr', city: 'Baton Rouge, LA 70805', units: 120 },
+    { id: 'lonestar', name: 'Lone Star Flats', addr: '7200 Westheimer Rd', city: 'Houston, TX 77057', units: 78 },
+    { id: 'central', name: 'Central Park View', addr: '1501 Canal St', city: 'New Orleans, LA 70112', units: 96 },
+    { id: 'cypress', name: 'Cypress Lake Apartments', addr: '9100 Cypress Lake Dr', city: 'Lafayette, LA 70508', units: 64 },
+    { id: 'beauchene', name: 'Beau Chene Villas', addr: '225 Beau Chene Blvd', city: 'Mandeville, LA 70471', units: 40 },
+    { id: 'sherwood', name: 'Sherwood Acres', addr: '1250 Sherwood Forest Blvd', city: 'Baton Rouge, LA 70815', units: 88 },
+    { id: 'cyprus', name: 'Cyprus Glenn', addr: '4800 Cyprus Glenn Way', city: 'Shreveport, LA 71105', units: 32 },
+    { id: 'heights', name: 'Magnolia Heights Apartments', addr: '6301 Magnolia Heights Rd', city: 'Houston, TX 77004', units: 110 }
+  ];
+  let currentProp = 'all';
+  const bIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
+  const pinIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  function renderCtxList() {
+    document.getElementById('ctx-list').innerHTML = PROPERTIES.map(p => {
+      const active = p.id === currentProp;
+      const body = p.id === 'all'
+        ? '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.desc + '</span>'
+        : '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.addr + '</span><span class="opt-city">' + pinIcon + p.city + '</span>';
+      const units = p.units ? '<span class="units-badge"><b>' + p.units + '</b><span>units</span></span>' : '';
+      return '<button class="ctx-option' + (active ? ' active' : '') + '" onclick="selectProp(\'' + p.id + '\')"><span class="opt-tile">' + bIcon + '</span><span class="opt-body">' + body + '</span>' + units + '</button>';
+    }).join('');
+  }
+  function selectProp(id) {
+    currentProp = id;
+    const p = PROPERTIES.find(x => x.id === id);
+    document.getElementById('echo-name').textContent = p.name;
+    document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
+    renderCtxList();
+    document.getElementById('ctx-switch').classList.remove('open');
+    render();
+  }
+  function toggleCtx() {
+    const el = document.getElementById('ctx-switch');
+    const wasOpen = el.classList.contains('open');
+    closeMenus();
+    if (!wasOpen) el.classList.add('open');
+  }
+  renderCtxList();
+
+  /* ---------- Data model (range × property) ---------- */
+  const TOTAL_UNITS = PROPERTIES.filter(p => p.units).reduce((a, p) => a + p.units, 0);
+  const weightOf = id => id === 'all' ? 1 : PROPERTIES.find(p => p.id === id).units / TOTAL_UNITS;
+  const BASE = {
+    paid:     { 7: 6120.40, 30: 25471.50, 90: 71890.25 },
+    shipping: { 7: 84.50,   30: 325.97,   90: 902.10 },
+    open:     [36, 11, 7, 8], partial: [2, 2, 4], canceled: 1, rog: 5,
+    invoices: { 7: [11, 4, 1, 6], 30: [11, 4, 1, 27], 90: [11, 4, 1, 81] },
+    approvals:{ 7: [1, 3, 1],  30: [1, 10, 3],  90: [1, 26, 7] },
+    cats: {
+      7:  [['Dishwashers', 2460], ['Microwaves', 1890], ['Refrigerators', 1120], ['Water Heaters', 650]],
+      30: [['Dishwashers', 9840], ['Microwaves', 6215], ['Refrigerators', 5480], ['Water Heaters', 3936]],
+      90: [['Dishwashers', 28410], ['Microwaves', 17925], ['Refrigerators', 15640], ['Water Heaters', 9915]]
+    },
+    deltas: { 7: -3.1, 30: 12.4, 90: 8.7 }
+  };
+  let range = 30, includeShip = true;
+  const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const sc = (v, w) => w === 1 ? v : Math.round(v * w);
+  function model() {
+    const w = weightOf(currentProp);
+    const open = BASE.open.map(v => sc(v, w)), partial = BASE.partial.map((v, i) => Math.min(sc(v, w), open[i]));
+    const inv = BASE.invoices[range].map(v => sc(v, w)), apr = BASE.approvals[range].map(v => sc(v, w));
+    const rog = Math.min(sc(BASE.rog, w), open[3]);
+    return {
+      w, open, partial, canceled: sc(BASE.canceled, w), inv, apr, rog,
+      paid: BASE.paid[range] * w, shipping: BASE.shipping[range] * w,
+      cats: BASE.cats[range].map(c => [c[0], Math.round(c[1] * w)]),
+      delta: BASE.deltas[range] + (currentProp === 'all' ? 0 : ((PROPERTIES.findIndex(p => p.id === currentProp) % 3) - 1) * 4.2)
+    };
+  }
+  function render() {
+    const m = model();
+    const $ = id => document.getElementById(id);
+    $('kpi-paid').textContent = money(includeShip ? m.paid : m.paid - m.shipping);
+    $('ship-amt').textContent = '($' + m.shipping.toFixed(2) + ')';
+    const openTotal = m.open.reduce((a, b) => a + b, 0), invPending = m.inv[0] + m.inv[1] + m.inv[2], aprTotal = m.apr.reduce((a, b) => a + b, 0);
+    $('kpi-completed').textContent = m.inv[3]; $('kpi-open').textContent = openTotal; $('kpi-invoices').textContent = invPending;
+    $('ac-rog').textContent = m.rog; $('ac-inv').textContent = m.inv[0]; $('ac-apr').textContent = m.apr[0];
+    $('ac-rog-meta').textContent = m.rog ? 'Confirm receipt of goods · oldest 3d' : 'All deliveries validated';
+    $('bd-open-m3').textContent = m.rog ? m.rog + ' awaiting your validation' : 'validated · awaiting payment';
+    $('ac-inv-meta').textContent = m.inv[0] ? 'Check invoices against delivery · oldest 6d' : 'Nothing waiting on you — all invoices validated';
+    $('ac-apr-meta').textContent = m.apr[0] ? (m.apr[0] === 1 ? 'Order request awaiting your approval · 1d' : m.apr[0] + ' order requests awaiting your approval · oldest 1d') : 'No requests waiting for approval';
+    const cards = document.querySelectorAll('.action-card');
+    [[m.rog, 'Validate Deliveries', 'View Deliveries'], [m.inv[0], 'Review Invoices', 'View Invoices'], [m.apr[0], 'Review Request', 'View Approvals']].forEach(([n, act, calm], i) => {
+      cards[i].classList.toggle('calm', n === 0);
+      cards[i].querySelector('.ac-action').innerHTML = (n > 0 ? act : calm) + ' &rarr;';
+    });
+    $('bd-cancel-row').classList.toggle('c-rose', m.canceled > 0); $('bd-cancel-row').classList.toggle('c-muted', m.canceled === 0);
+    $('bd-open-total').textContent = openTotal; $('bd-inv-total').textContent = invPending; $('bd-apr-total').textContent = aprTotal;
+    m.open.forEach((v, i) => $('bd-open-' + i).textContent = v);
+    const pm = ['partially fulfilled', 'partially shipped', 'partially delivered'];
+    m.partial.forEach((v, i) => $('bd-open-m' + i).textContent = v ? 'incl. ' + v + ' ' + pm[i] : 'none partial');
+    $('bd-cancel').textContent = m.canceled;
+    m.inv.forEach((v, i) => $('bd-inv-' + i).textContent = v);
+    m.apr.forEach((v, i) => $('bd-apr-' + i).textContent = v);
+    $('trend-sub').textContent = 'Last ' + range + ' days'; $('cat-sub').textContent = 'Last ' + range + ' days breakdown';
+    renderDelta(m.delta); renderTrend(m.w); renderCats(m.cats);
+  }
+  function toggleShipping() {
+    includeShip = !includeShip;
+    document.getElementById('ship-switch').setAttribute('aria-checked', includeShip ? 'true' : 'false');
+    render();
+  }
+  function setRange(r) {
+    range = r;
+    document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('active', +b.dataset.range === r));
+    render();
+  }
+  function renderDelta(d) {
+    const el = document.getElementById('trend-delta');
+    el.className = 'delta ' + (d >= 0 ? 'up' : 'down');
+    el.innerHTML = (d >= 0
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg>')
+      + (d >= 0 ? '+' : '') + d.toFixed(1) + '%';
+    el.title = 'vs previous ' + range + ' days';
+  }
+
+  /* ---------- Line chart ---------- */
+  function series(n, seed) {
+    const out = []; let v = 620;
+    for (let i = 0; i < n; i++) { const t = Math.sin((i + seed) * 0.9) * 180 + Math.cos((i + seed) * 0.37) * 120; v = Math.max(80, 700 + t + ((i * 37 + seed * 11) % 150) - 60); out.push(Math.round(v)); }
+    return out;
+  }
+  const TREND = { 7: series(7, 3), 30: series(30, 5), 90: series(90, 9) };
+  function dateLabel(daysAgo) {
+    const d = new Date(2026, 7, 21); d.setDate(d.getDate() - daysAgo);
+    return (d.getMonth() + 1).toString().padStart(2, '0') + '/' + d.getDate().toString().padStart(2, '0');
+  }
+  function renderTrend(w) {
+    const data = TREND[range].map(v => Math.max(20, Math.round(v * (w === 1 ? 1 : w * 2.2)))), svg = document.getElementById('trend-chart');
+    const W = 560, H = 220, pl = 44, pr = 12, pt = 12, pb = 28;
+    const max = Math.ceil(Math.max(...data) / 200) * 200, min = 0;
+    const x = i => pl + (i / (data.length - 1)) * (W - pl - pr);
+    const y = v => pt + (1 - (v - min) / (max - min)) * (H - pt - pb);
+    let g = '<g class="grid">';
+    const ticks = 4;
+    for (let t = 0; t <= ticks; t++) { const v = min + (max - min) * t / ticks; g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y(v) + '" y2="' + y(v) + '"/>'; }
+    g += '</g><g class="axis">';
+    for (let t = 0; t <= ticks; t++) { const v = min + (max - min) * t / ticks; g += '<text x="' + (pl - 8) + '" y="' + (y(v) + 3) + '" text-anchor="end">$' + (v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v) + '</text>'; }
+    const xt = range === 7 ? [0, 2, 4, 6] : range === 30 ? [0, 6, 12, 18, 24, 29] : [0, 18, 36, 54, 72, 89];
+    xt.forEach(i => { g += '<text x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + dateLabel(data.length - 1 - i) + '</text>'; });
+    g += '</g>';
+    const path = data.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+    const area = path + ' L' + x(data.length - 1).toFixed(1) + ' ' + y(min) + ' L' + x(0).toFixed(1) + ' ' + y(min) + ' Z';
+    g += '<path class="area" d="' + area + '"/><path class="series" d="' + path + '"/>';
+    g += '<line class="crosshair" id="xh" x1="0" x2="0" y1="' + pt + '" y2="' + (H - pb) + '"/><circle class="marker" id="mk" r="4" cx="0" cy="0"/>';
+    g += '<rect x="' + pl + '" y="' + pt + '" width="' + (W - pl - pr) + '" height="' + (H - pt - pb) + '" fill="transparent" id="hit"/>';
+    svg.innerHTML = g;
+    const tip = document.getElementById('trend-tip'), xh = document.getElementById('xh'), mk = document.getElementById('mk');
+    const hit = document.getElementById('hit');
+    hit.onmousemove = e => {
+      const r = svg.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width * W;
+      const i = Math.max(0, Math.min(data.length - 1, Math.round((px - pl) / (W - pl - pr) * (data.length - 1))));
+      xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.style.opacity = 1;
+      mk.setAttribute('cx', x(i)); mk.setAttribute('cy', y(data[i])); mk.style.opacity = 1;
+      tip.innerHTML = '<b>$' + data[i].toLocaleString('en-US') + '</b>' + dateLabel(data.length - 1 - i);
+      tip.style.left = (x(i) / W * r.width) + 'px'; tip.style.top = (y(data[i]) / H * r.height) + 'px'; tip.style.opacity = 1;
+    };
+    hit.onmouseleave = () => { xh.style.opacity = 0; mk.style.opacity = 0; tip.style.opacity = 0; };
+  }
+
+  /* ---------- Horizontal bars ---------- */
+  function renderCats(cats) {
+    const top = Math.max(...cats.map(c => c[1])); const step = top > 20000 ? 10000 : top > 5000 ? 5000 : top > 1000 ? 1000 : 250; const max = Math.ceil(top / step) * step || step;
+    document.getElementById('hbars').innerHTML = cats.map((c, i) =>
+      '<div class="hbar" title="' + c[0] + ': $' + c[1].toLocaleString('en-US') + '"><span class="hbar-label"><span class="hbar-dot cat-' + (i + 1) + '"></span>' + c[0] + '</span><span class="hbar-track"><span class="hbar-fill cat-' + (i + 1) + '" style="width:' + (c[1] / max * 100).toFixed(1) + '%"></span></span><span class="hbar-value">$' + c[1].toLocaleString('en-US') + '</span></div>'
+    ).join('');
+    const ax = []; for (let t = 0; t <= 4; t++) { const v = max * t / 4; ax.push('<span>$' + (v >= 1000 ? (v / 1000) + 'k' : v) + '</span>'); }
+    document.getElementById('hbar-axis').innerHTML = ax.join('');
+    const tot = cats.reduce((a, c) => a + c[1], 0);
+    document.getElementById('hbar-total').textContent = '$' + tot.toLocaleString('en-US');
+    document.getElementById('hbar-total-label').textContent = cats.length + ' categories · total spend';
+  }
+
+  setRange(30);
+</script>
+</body>
+</html>

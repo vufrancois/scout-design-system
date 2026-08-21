@@ -449,7 +449,7 @@ The single source of truth tying the Orders list to the order detail. Every lega
 
 ### Hero Search & Search Modes
 
-- Storefront search is the Search component at hero scale: 58px pill, 20px leading icon, `--ring` focus ring with a soft glow. A compact 46px variant sits sticky above results grids (transparent row, no backdrop).
+- Storefront pages open directly into search (no masthead — the App Bar already carries the brand and section): the Search component at hero scale, full content width, 58px pill, 20px leading icon, `--ring` focus ring with a soft glow. **It is sticky** (14px under the App Bar, shadow-md) so search stays reachable while browsing categories; a compact 46px variant does the same above results grids.
 - Search mode (Keyword / ✦ AI) is a **segmented control inside the field**, never a floating chip; the AI mode wears the sparkles icon per the AI-action rule and swaps the placeholder to a natural-language prompt. Enter submits — no separate go button.
 
 ### Category Tile & Browse Modal

@@ -758,7 +758,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
 
       <h3>Hero Search &amp; Search Modes</h3>
       <ul>
-        <li>Storefront search is the Search component at hero scale: 58px pill, 20px leading icon, <code>--ring</code> focus ring with a soft glow. A compact 46px variant sits sticky above results grids (transparent row, no backdrop).</li>
+        <li>Storefront pages open directly into search (no masthead &mdash; the App Bar already carries the brand and section): the Search component at hero scale, full content width, 58px pill, 20px leading icon, <code>--ring</code> focus ring with a soft glow. <strong>It is sticky</strong> (14px under the App Bar, shadow-md) so search stays reachable while browsing categories; a compact 46px variant does the same above results grids.</li>
         <li>Search mode (Keyword / &#10022; AI) is a <strong>segmented control inside the field</strong>, never a floating chip; the AI mode wears the sparkles icon per the AI-action rule and swaps the placeholder to a natural-language prompt. Enter submits &mdash; no separate go button.</li>
       </ul>
 

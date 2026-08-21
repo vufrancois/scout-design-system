@@ -7,11 +7,11 @@ The storefront landing: masthead, hero search, promo carousel, the 29-category g
 
 ## Storefront
 
-### 1. Masthead that does work
-The "SCOUT | MRO MARKETPLACE" lockup stays as the storefront's identity moment (the one buyer page where a masthead earns its place), trimmed to our scale (26px logo, 22px uppercase name) and given a contextual line beneath: **"29 categories · 4 approved vendors · shopping for All properties"** — which re-scopes live when the Context Switcher changes.
+### 1. No masthead
+The reference opened with a "SCOUT | MRO MARKETPLACE" lockup and a subline. Both were dropped: the App Bar already carries the logo and the active Marketplace chip, and the property is named in the Context Switcher — the masthead only repeated them and pushed the content down. The page now opens straight into the full-width search, promos, and categories.
 
 ### 2. Hero search with AI as a mode, not a chip
-Our Search at hero size (58px pill, ring on focus). The reference's free-floating "AI Search" chip + arrow button became a **Keyword / ✦ AI segmented mode** inside the field — per the existing rule that AI actions wear the sparkles icon — with a mode-specific placeholder ("Describe what you need, e.g. …") and Enter to submit; the redundant arrow button is gone.
+Our Search at hero size (58px pill, full content width, ring on focus), **sticky under the App Bar** so it stays reachable while browsing all 29 categories. The reference's free-floating "AI Search" chip + arrow button became a **Keyword / ✦ AI segmented mode** inside the field — per the existing rule that AI actions wear the sparkles icon — with a mode-specific placeholder ("Describe what you need, e.g. …") and Enter to submit; the redundant arrow button is gone.
 
 ### 3. Promo carousel without autoplay
 Six **Marketing Cards** (hero gradient, icon tile, 20px title, body, "Learn more →") in a paged rail: 3 per view (2 under 1100px, 1 under 820px), dots + prev/next. **No autoplay, so no pause button** — the reference's pause control was apologizing for content moving under a reader.
@@ -27,8 +27,7 @@ Marketplace is the active nav chip; Demo Environment tag and chat bubble dropped
 
 ## Design system additions
 
-- **Marketplace Masthead** — logo lockup + uppercase name + contextual subline
-- **Hero Search with mode segment** — 58px search pill, Keyword / AI segmented toggle inside the field
+- **Hero Search with mode segment** — full-width 58px search pill, Keyword / AI segmented toggle inside the field
 - **Promo Carousel** — Marketing Card rail with dots + arrows, paged by viewport, no autoplay
 - **Category Tile** — tonal tile, title top-left, art slot bottom-right; `.sm` variant for subcategories
 - **Browse Modal** — wide Modal variant with header pager (‹ › n / N) and scrollable body

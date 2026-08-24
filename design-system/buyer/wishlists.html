@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marketplace — Scout Buyer</title>
+<title>Wishlists — Scout Buyer</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 </head>
@@ -53,61 +53,65 @@
     <div class="bar-actions">
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
-      <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn active-page" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
       <button class="icon-btn primary" title="Cart" onclick="location.href='marketplace.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
     </div>
   </nav>
 </div>
 
 
-<main class="page" style="padding-top:28px">
 
-  <!-- Search (sticky) -->
-  <div class="mp-search sticky">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-    <input type="text" id="mp-q" placeholder="Search for products, parts, or vendors…" onkeydown="if(event.key==='Enter')runSearch()">
-    <div class="mode-seg" id="mode-seg">
-      <button class="active" data-mode="keyword" onclick="setMode('keyword')"><span>Keyword</span></button>
-      <button data-mode="ai" onclick="setMode('ai')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg><span>AI Search</span></button>
-    </div>
+
+<main class="page" style="padding-top:32px">
+  <div class="wl-page-head">
+    <div><h1>Wishlists</h1><div class="sub" id="wl-sub-line">Shared product lists for Magnolia Place Apartments.</div></div>
+    <button class="btn btn-primary" style="height:40px" onclick="openNameModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New wishlist</button>
   </div>
 
-  <!-- Promo carousel -->
-  <section class="promo">
-    <div class="promo-rail"><div class="promo-track" id="promo-track"></div></div>
-    <div class="promo-controls">
-      <div class="dots" id="promo-dots"></div>
-      <div class="promo-arrows">
-        <button class="icon-btn" onclick="promoPage(-1)" title="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-        <button class="icon-btn" onclick="promoPage(1)" title="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+  <div id="wl-prop-prompt" class="empty" style="display:none"><b>Wishlists are per property</b>Pick a property from "Current Property:" in the bar above to see its lists.<br><br><button class="btn" onclick="toggleCtx()">Choose a property</button></div>
+
+  <div class="wl-layout" id="wl-layout">
+    <aside class="wl-side">
+      <div id="wl-side-items"></div>
+    </aside>
+    <section>
+      <div class="wl-head-card">
+        <div class="wl-head-body">
+          <h2 id="wl-name">2x1 Turns</h2>
+          <div class="meta" id="wl-meta">2 saved products</div>
+        </div>
+        <button class="icon-btn" data-tip="Rename" onclick="openNameModal(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+        <button class="icon-btn" data-tip="Delete" onclick="openDelete()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
+        <button class="btn btn-primary" style="height:40px" id="wl-copy" onclick="copyToCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg><span id="wl-copy-label">Add 2 to cart</span></button>
       </div>
-    </div>
-  </section>
-
-  <!-- Categories -->
-  <div class="cat-head"><span>All categories</span><span id="cat-count">29 total</span></div>
-  <div class="cat-grid" id="cat-grid"></div>
-
+      <div class="wl-toolbar" id="wl-toolbar">
+        <select class="select" id="f-vendor" onchange="renderProducts()"><option value="">All vendors</option></select>
+        <select class="select" id="f-cat" onchange="renderProducts()"><option value="">All categories</option><option>Dryers</option><option>Dishwashers</option></select>
+        <span class="spacer"></span>
+        <span class="count" id="wl-count">2 of 2</span>
+      </div>
+      <div class="product-grid" id="wl-grid" style="grid-template-columns:repeat(3,1fr)"></div>
+    </section>
+  </div>
 </main>
 
-<!-- Browse modal -->
-<div class="overlay" id="browse" onclick="if(event.target===this)closeBrowse()">
-  <div class="browse-modal" role="dialog" aria-modal="true">
-    <div class="browse-head">
-      <h2 id="browse-title">Appliance Parts</h2>
-      <div class="pager">
-        <button class="icon-btn" onclick="pageCat(-1)" title="Previous category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
-        <button class="icon-btn" onclick="pageCat(1)" title="Next category"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-        <span class="pager-pos" id="browse-pos">1 / 29</span>
-      </div>
-      <button class="icon-btn" onclick="closeBrowse()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
-    </div>
-    <div class="browse-body">
-      <div class="browse-meta" id="browse-meta"></div>
-      <div class="sub-grid" id="sub-grid"></div>
-    </div>
+<!-- Name modal (create / rename) -->
+<div class="overlay center" id="name-modal" onclick="if(event.target===this)closeNameModal()">
+  <div class="wl-modal">
+    <div class="wl-modal-head"><h2 id="nm-title">New wishlist</h2><div class="wl-sub" id="nm-sub">This list is shared with everyone assigned to this property.</div></div>
+    <div class="wl-modal-body"><div class="wl-label">Wishlist name</div><input class="wl-input" id="nm-input" placeholder="e.g. Turnover supplies" oninput="document.getElementById('nm-save').disabled=!this.value.trim()" onkeydown="if(event.key==='Enter'&&this.value.trim())saveName()"></div>
+    <div class="wl-modal-foot"><button class="btn" onclick="closeNameModal()">Cancel</button><button class="btn btn-primary" id="nm-save" disabled onclick="saveName()">Create wishlist</button></div>
   </div>
 </div>
+
+<!-- Delete confirm -->
+<div class="overlay center" id="del-modal" onclick="if(event.target===this)closeDelete()">
+  <div class="wl-modal" style="max-width:440px">
+    <div class="wl-modal-head"><h2 id="del-title">Delete list?</h2><div class="wl-sub" id="del-sub"></div></div>
+    <div class="wl-modal-foot"><button class="btn" onclick="closeDelete()">Cancel</button><button class="btn btn-danger" onclick="doDelete()">Delete wishlist</button></div>
+  </div>
+</div>
+<script src="wishlist.js"></script>
 
 <script>
   /* ---------- Theme ---------- */
@@ -171,6 +175,7 @@
     document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
     renderCtxList();
     document.getElementById('ctx-switch').classList.remove('open');
+    renderPage();
   }
   function toggleCtx() {
     const el = document.getElementById('ctx-switch');
@@ -180,75 +185,95 @@
   }
   renderCtxList();
 
-  const ICONS = {"cog": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\"/>", "fridge": "<path d=\"M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z\"/><path d=\"M5 10h14\"/><path d=\"M15 7v6\"/>", "blinds": "<path d=\"M3 3h18\"/><path d=\"M20 7H8\"/><path d=\"M20 11H8\"/><path d=\"M10 19h10\"/><path d=\"M8 15h12\"/><path d=\"M4 3v14\"/><circle cx=\"4\" cy=\"19\" r=\"2\"/>", "cabinet": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M12 3v18\"/><path d=\"M9 12h.01M15 12h.01\"/>", "concrete": "<path d=\"M3 17l9 4 9-4V7l-9-4-9 4z\"/><path d=\"M3 7l9 4 9-4\"/><path d=\"M12 11v10\"/>", "door": "<path d=\"M13 4h3a2 2 0 0 1 2 2v14\"/><path d=\"M2 20h3\"/><path d=\"M13 20h9\"/><path d=\"M10 12v.01\"/><path d=\"M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z\"/>", "zap": "<path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/>", "food": "<path d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2\"/><path d=\"M7 2v20\"/><path d=\"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7\"/>", "garage": "<path d=\"M6 20H4a2 2 0 0 1-2-2V8.8a2 2 0 0 1 1.1-1.8l8-4a2 2 0 0 1 1.8 0l8 4A2 2 0 0 1 22 8.8V18a2 2 0 0 1-2 2h-2\"/><path d=\"M6 20v-8h12v8\"/><path d=\"M6 16h12\"/>", "sprout": "<path d=\"M7 20h10\"/><path d=\"M10 20c5.5-2.5.8-6.4 3-10\"/><path d=\"M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z\"/><path d=\"M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z\"/>", "hvac": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"5\" rx=\"2\"/><path d=\"M2 10h20\"/><circle cx=\"12\" cy=\"15\" r=\"2\"/><path d=\"M6 15h2M16 15h2\"/>", "fan": "<path d=\"M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z\"/><path d=\"M12 12v.01\"/>", "bolt": "<path d=\"M14.5 4.5 9 10l-4 4-1 6 6-1 4-4 5.5-5.5\"/><path d=\"m9 10 5 5\"/><path d=\"M14.5 4.5a2.1 2.1 0 1 1 5 5\"/>", "biohazard": "<circle cx=\"12\" cy=\"11.9\" r=\"2\"/><path d=\"M6.7 3.4c-.9 2.5 0 5.2 2.2 6.7C6.5 9 3.7 9.6 2 11.6\"/><path d=\"m8.9 10.1 1.4.8\"/><path d=\"M17.3 3.4c.9 2.5 0 5.2-2.2 6.7 2.4-1.2 5.2-.6 6.9 1.5\"/><path d=\"m15.1 10.1-1.4.8\"/><path d=\"M16.7 20.8c-2.6-.4-4.6-2.6-4.7-5.3-.2 2.6-2.1 4.8-4.7 5.2\"/><path d=\"M12 13.9v1.6\"/>", "bed": "<path d=\"M2 4v16\"/><path d=\"M2 8h18a2 2 0 0 1 2 2v10\"/><path d=\"M2 17h20\"/><path d=\"M6 8v9\"/>", "mop": "<path d=\"M12 2v14\"/><path d=\"M8 16h8l1 6H7z\"/><path d=\"M9 2h6\"/>", "cone": "<path d=\"M8 22h8\"/><path d=\"m10 4 2-2 2 2-1 4h-2z\"/><path d=\"M9 8h6l2 8H7z\"/><path d=\"M6 16h12l1 6H5z\"/>", "hardhat": "<path d=\"M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2z\"/><path d=\"M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5\"/><path d=\"M4 15v-3a6 6 0 0 1 6-6\"/><path d=\"M14 6a6 6 0 0 1 6 6v3\"/>", "lamp": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\"/><path d=\"M9 18h6\"/><path d=\"M10 22h4\"/>", "lock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/>", "paint": "<path d=\"m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11Z\"/><path d=\"m5 2 5 5\"/><path d=\"M2 13h15\"/><path d=\"M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4Z\"/>", "wrench": "<path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z\"/>", "waves": "<path d=\"M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1\"/><path d=\"M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1\"/><path d=\"M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1\"/>", "roof": "<path d=\"m3 11 9-8 9 8\"/><path d=\"M5 10v10h14V10\"/><path d=\"M9 20v-6h6v6\"/>", "shield": "<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/>", "grid": "<rect width=\"7\" height=\"7\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"14\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"3\" y=\"14\" rx=\"1\"/>", "hammer": "<path d=\"m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9\"/><path d=\"m18 15 4-4\"/><path d=\"m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5\"/>", "heater": "<rect width=\"12\" height=\"18\" x=\"6\" y=\"3\" rx=\"3\"/><path d=\"M10 21v1M14 21v1\"/><path d=\"M12 7v6\"/><circle cx=\"12\" cy=\"15\" r=\"1\"/>", "window": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M3 12h18\"/><path d=\"M12 3v18\"/>"};
-  const CATS = [["Appliance Parts", "cog"], ["Appliances", "fridge"], ["Blinds", "blinds"], ["Cabinetry", "cabinet"], ["Concrete & Asphalt Materials", "concrete"], ["Doors, Floors & Ceilings", "door"], ["Electrical", "zap"], ["Food, Drink, and Kitchen Supplies", "food"], ["Garage", "garage"], ["Grounds & Irrigation", "sprout"], ["HVAC Equipment", "hvac"], ["HVAC Parts", "fan"], ["Hardware", "bolt"], ["Hazardous Material Cleanup", "biohazard"], ["Hospitality", "bed"], ["Janitorial", "mop"], ["Jobsite Prep", "cone"], ["Jobsite Safety", "hardhat"], ["Lighting", "lamp"], ["Locks & Accessories", "lock"], ["Paint & Sundries", "paint"], ["Plumbing", "wrench"], ["Pool", "waves"], ["Roofing Materials and Tools", "roof"], ["Safety", "shield"], ["Tile & Backsplash Kits", "grid"], ["Tools", "hammer"], ["Water Heaters", "heater"], ["Windows", "window"]];
-  const SUBS = {"Appliance Parts": ["Crisper Drawers & Covers", "Ice Makers & Parts", "Appliance Paint & Repair", "Defrost & Cold Controls", "Drip Pans, Bowls & Rings", "Dryer Parts", "Exhaust Fans & Heaters", "Oven Parts", "Rangehood Parts", "Refrigerator Door Parts", "Gas Valve", "Appliance Supply Lines", "Dishwasher Parts", "Exhaust Fan Parts", "Microwave Parts", "Stove and Range Parts"], "Appliances": ["Refrigerators", "Ranges & Ovens", "Dishwashers", "Microwaves", "Washers", "Dryers", "Range Hoods", "Garbage Disposals"], "Blinds": ["Mini Blinds", "Vertical Blinds", "Faux Wood Blinds", "Roller Shades", "Blind Hardware", "Valances"], "Cabinetry": ["Base Cabinets", "Wall Cabinets", "Vanities", "Cabinet Doors", "Hinges & Slides", "Knobs & Pulls"], "Concrete & Asphalt Materials": ["Concrete Mix", "Mortar", "Asphalt Patch", "Rebar & Mesh", "Sealers", "Forms & Stakes"], "Doors, Floors & Ceilings": ["Interior Doors", "Exterior Doors", "Door Hardware", "Vinyl Plank", "Carpet", "Ceiling Tiles", "Transitions & Trim"], "Electrical": ["Outlets & Switches", "Breakers", "Wire & Cable", "Boxes & Covers", "Conduit", "Smoke Detectors", "Ceiling Fans"], "Food, Drink, and Kitchen Supplies": ["Coffee & Tea", "Snacks", "Bottled Water", "Disposable Cups", "Cutlery & Plates", "Cleaning Wipes"], "Garage": ["Garage Doors", "Openers", "Springs & Cables", "Remotes & Keypads", "Weatherstripping", "Tracks & Rollers"], "Grounds & Irrigation": ["Sprinkler Heads", "Valves & Timers", "Hoses", "Drip Irrigation", "Hand Tools", "Fertilizer & Seed", "Mulch & Soil"], "HVAC Equipment": ["Packaged Units", "Condensers", "Air Handlers", "Mini Splits", "PTAC Units", "Furnaces", "Thermostats"], "HVAC Parts": ["Filters", "Capacitors", "Contactors", "Motors", "Refrigerant Lines", "Coils", "Ductwork"], "Hardware": ["Screws", "Bolts & Nuts", "Anchors", "Brackets", "Chains & Rope", "Hooks", "Adhesives & Tape"], "Hazardous Material Cleanup": ["Spill Kits", "Absorbents", "Containment", "PPE for Hazmat", "Disposal Bags & Drums", "Labels & Signage"], "Hospitality": ["Towels & Linens", "Toiletries", "Hangers", "Ice Buckets", "Housekeeping Carts", "Guest Amenities"], "Janitorial": ["Mops & Buckets", "Brooms", "Trash Liners", "Cleaners & Disinfectants", "Paper Products", "Restroom Supplies", "Floor Care"], "Jobsite Prep": ["Barricades", "Cones", "Caution Tape", "Drop Cloths", "Dust Barriers", "Tarps"], "Jobsite Safety": ["Hard Hats", "Safety Glasses", "Gloves", "High-Vis Vests", "Hearing Protection", "Respirators", "First Aid"], "Lighting": ["LED Bulbs", "Fixtures", "Exterior & Security", "Exit & Emergency", "Ballasts & Drivers", "Photocells & Timers"], "Locks & Accessories": ["Deadbolts", "Knobs & Levers", "Smart Locks", "Padlocks", "Key Blanks", "Strikes & Plates", "Door Closers"], "Paint & Sundries": ["Interior Paint", "Exterior Paint", "Primer", "Brushes & Rollers", "Caulk", "Spackle & Patch", "Masking"], "Plumbing": ["Faucets", "Toilets & Parts", "Supply Lines", "Valves", "PEX & Fittings", "Drain Parts", "Garbage Disposals", "Water Filters"], "Pool": ["Chlorine & Chemicals", "Filters & Cartridges", "Pumps", "Test Kits", "Skimmers & Nets", "Pool Covers"], "Roofing Materials and Tools": ["Shingles", "Underlayment", "Flashing", "Roof Cement", "Vents", "Roofing Nails"], "Safety": ["Fire Extinguishers", "Smoke & CO Alarms", "Signage", "Safety Mirrors", "Anti-Slip", "Lockout/Tagout"], "Tile & Backsplash Kits": ["Ceramic Tile", "Porcelain Tile", "Mosaic Sheets", "Grout", "Thinset", "Trim & Edging"], "Tools": ["Drills & Drivers", "Saws", "Hand Tools", "Measuring", "Tool Storage", "Batteries & Chargers", "Ladders"], "Water Heaters": ["Tank Water Heaters", "Tankless", "Elements & Thermostats", "Expansion Tanks", "Venting", "Pans & Valves"], "Windows": ["Single-Hung", "Sliding", "Window Screens", "Balances & Hardware", "Weatherstripping", "Window AC Sleeves"]};
 
-  const svgOf = key => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONS[key] + '</svg>';
-  const tile = (name, icon, i, small) => '<button class="cat-tile' + (small ? ' sm' : '') + '" onclick="' + (small ? 'openSub(' + JSON.stringify(name).replace(/"/g, '&quot;') + ')' : 'openCat(' + i + ')') + '"><span class="cat-title">' + name + '</span><span class="cat-art">' + svgOf(icon) + '</span></button>';
 
-  /* ---------- Masthead ---------- */
-  function updateMasthead() {}
+  const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  let activeList = null, renaming = false;
+  const prop = () => PROPERTIES.find(p => p.id === currentProp);
 
-  /* ---------- Search mode ---------- */
-  let mode = 'keyword';
-  function setMode(m) {
-    mode = m;
-    document.querySelectorAll('#mode-seg button').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
-    document.getElementById('mp-q').placeholder = m === 'ai' ? 'Describe what you need, e.g. "replacement igniter for a 2019 GE range"' : 'Search for products, parts, or vendors…';
-    document.getElementById('mp-q').focus();
+  function renderPage() {
+    const isAll = currentProp === 'all';
+    document.getElementById('wl-prop-prompt').style.display = isAll ? '' : 'none';
+    document.getElementById('wl-layout').style.display = isAll ? 'none' : '';
+    document.getElementById('wl-sub-line').textContent = isAll ? 'Shared product lists — pick a property to view its lists.' : 'Shared product lists for ' + prop().name + '.';
+    if (isAll) return;
+    const lists = WL.listsFor(currentProp);
+    if (!lists.length) { activeList = null; } else if (!activeList || !lists.some(l => l.id === activeList)) activeList = lists[0].id;
+    document.getElementById('wl-side-items').innerHTML = lists.map(l => '<button class="wl-item' + (l.id === activeList ? ' active' : '') + '" onclick="pickList(\'' + l.id + '\')"><b>' + l.name + '</b><span>' + l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + '</span></button>').join('') || '<div style="padding:14px;font-size:13px;color:var(--muted-foreground)">No lists yet</div>';
+    renderList();
   }
-  function runSearch() { const q = document.getElementById('mp-q').value.trim(); if (q) showToast((mode === 'ai' ? 'AI search' : 'Search') + ' · ' + q, 'Results view is next on the build list'); }
+  function pickList(id) { activeList = id; renderPage(); }
+  function cur() { return WL.listsFor(currentProp).find(l => l.id === activeList); }
+  function renderList() {
+    const l = cur();
+    const sec = document.querySelector('.wl-layout section');
+    sec.style.visibility = l ? '' : 'hidden';
+    if (!l) return;
+    document.getElementById('wl-name').textContent = l.name;
+    const total = l.products.reduce((a, p) => a + p.price, 0);
+    document.getElementById('wl-meta').textContent = l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + (l.products.length ? ' · ' + money(total) : '');
+    const vendors = [...new Set(l.products.map(p => p.vendor))];
+    const fv = document.getElementById('f-vendor'); const kept = fv.value;
+    fv.innerHTML = '<option value="">All vendors</option>' + vendors.map(v => '<option' + (v === kept ? ' selected' : '') + '>' + v + '</option>').join('');
+    renderProducts();
+  }
+  function deliveryLine(p) { return p.speed === '1-2' ? 'Overnight · order by 2pm CST' : p.speed === '3-5' ? '3–5 business days' : '5–7 business days · from vendor'; }
+  const glyph = '<svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><circle cx="8" cy="5" r="0.6"/><circle cx="11" cy="5" r="0.6"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
+  function renderProducts() {
+    const l = cur(); if (!l) return;
+    const big = l.products.length >= 8;
+    document.getElementById('wl-toolbar').style.display = big ? '' : 'none';
+    const v = big ? document.getElementById('f-vendor').value : '';
+    const items = l.products.filter(p => !v || p.vendor === v);
+    document.getElementById('wl-count').textContent = v ? 'Showing ' + items.length + ' of ' + l.products.length : '';
+    document.getElementById('wl-copy-label').textContent = 'Add ' + l.products.length + ' to cart';
+    document.getElementById('wl-copy').disabled = !l.products.length;
+    document.getElementById('wl-grid').innerHTML = items.length ? items.map(p =>
+      '<div class="product-card"><div class="pc-media">' + glyph + (p.pickup ? '<span class="pc-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Pickup · ' + p.miles + ' mi</span>' : '') + '</div>' +
+      '<div class="pc-vendor"><span class="v-avatar">' + p.vini + '</span><span class="v-name">' + p.vendor + '</span></div>' +
+      '<div class="pc-title">' + p.name + '</div>' +
+      '<div class="pc-price"><div class="pc-price-now"><span class="now">' + money(p.price) + '</span><span class="unit">/ each</span></div><div class="pc-price-was"></div></div>' +
+      '<div class="pc-meta"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>' + deliveryLine(p) + '</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stock">In Stock</span></div></div>' +
+      '<div class="pc-actions"><button class="btn btn-primary" onclick="showToast(\'Added to cart\', \'' + p.name.replace(/'/g, "\\'") + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add to Cart</button><button class="icon-btn in-list" data-tip="Remove from this list" onclick="removeFromList(' + p.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button></div></div>'
+    ).join('') : '<div class="empty" style="grid-column:1/-1"><b>No products yet</b>Heart products in the Marketplace and choose "' + l.name + '".<br><br><a class="btn" href="marketplace.html" style="display:inline-flex">Browse Marketplace</a></div>';
+  }
+  function removeFromList(pid) { const l = cur(); WL.setLists(currentProp, WL.listsFor(currentProp).map(x => x.id === l.id ? { ...x, rev: x.rev + 1, products: x.products.filter(p => p.id !== pid) } : x)); renderPage(); }
+  function copyToCart() { const l = cur(); showToast('Added to cart', l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + ' from "' + l.name + '"'); }
+
+  /* name modal */
+  function openNameModal(rename) {
+    if (currentProp === 'all') { showToast('Pick a property first', 'Wishlists belong to a property'); return; }
+    renaming = !!rename;
+    document.getElementById('nm-title').textContent = renaming ? 'Rename wishlist' : 'New wishlist';
+    document.getElementById('nm-sub').textContent = 'This list is shared with everyone assigned to ' + prop().name + '.';
+    document.getElementById('nm-save').textContent = renaming ? 'Save name' : 'Create wishlist';
+    const input = document.getElementById('nm-input');
+    input.value = renaming ? cur().name : '';
+    document.getElementById('nm-save').disabled = !input.value.trim();
+    document.getElementById('name-modal').classList.add('open'); input.focus();
+  }
+  function closeNameModal() { document.getElementById('name-modal').classList.remove('open'); }
+  function saveName() {
+    const name = document.getElementById('nm-input').value.trim(); if (!name) return;
+    if (renaming) { WL.renameList(currentProp, activeList, name); showToast('Renamed', name); }
+    else { const l = WL.createList(currentProp, name); activeList = l.id; showToast('Wishlist created', name); }
+    closeNameModal(); renderPage();
+  }
+  /* delete */
+  function openDelete() {
+    const l = cur();
+    document.getElementById('del-title').textContent = 'Delete ' + l.name + '?';
+    document.getElementById('del-sub').textContent = l.products.length ? 'This removes the list and its ' + l.products.length + ' saved product' + (l.products.length === 1 ? '' : 's') + ' for everyone at this property.' : 'This removes the empty list for everyone at this property.';
+    document.getElementById('del-modal').classList.add('open');
+  }
+  function closeDelete() { document.getElementById('del-modal').classList.remove('open'); }
+  function doDelete() { const l = cur(); WL.deleteList(currentProp, activeList); activeList = null; closeDelete(); showToast('Wishlist deleted', l.name); renderPage(); }
+
   let toastTimer;
-  function showToast(title, desc) { let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px'; document.body.appendChild(t); } t.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; t.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = 0, 3500); }
-
-  /* ---------- Promo carousel ---------- */
-  const PROMOS = [
-    ['Message any vendor', 'Chat with vendors about orders, ETAs, and parts — every thread lives next to the order it\'s about.', 'M7.9 20A9 9 0 1 0 4 16.1L2 22Z'],
-    ['Quote management', 'Request quotes from any vendor, track status in real time, and convert to an order in one click.', 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z M14 2v4a2 2 0 0 0 2 2h4 M10 9H8 M16 13H8 M16 17H8'],
-    ['Verified vendor &amp; product reviews', 'Rate products and suppliers after every order, and see what other property managers think before you buy.', 'M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z'],
-    ['Purchase history', 'Search, filter, and reorder across your entire portfolio by property, vendor, or status.', 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 M3 3v5h5 M12 7v5l4 2'],
-    ['Approved vendors only', 'Your admins choose who you can buy from. Every vendor here is already vetted for your organization.', 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z M9 12l2 2 4-4'],
-    ['Shopping lists', 'Build per-property lists of the parts you reorder most, and check out in seconds.', 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z M14 2v4a2 2 0 0 0 2 2h4 M8 13h8 M8 17h8']
-  ];
-  let promoIdx = 0;
-  const perView = () => window.innerWidth <= 820 ? 1 : window.innerWidth <= 1100 ? 2 : 3;
-  function renderPromos() {
-    document.getElementById('promo-track').innerHTML = PROMOS.map(p => '<div class="promo-card"><div class="promo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="' + p[2] + '"/></svg></div><h3>' + p[0] + '</h3><p>' + p[1] + '</p><a class="promo-link" href="#">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>').join('');
-    promoPage(0);
-  }
-  function promoPage(dir) {
-    const pages = Math.ceil(PROMOS.length / perView());
-    promoIdx = (promoIdx + dir + pages) % pages;
-    const track = document.getElementById('promo-track');
-    const card = track.firstElementChild; const step = card ? (card.getBoundingClientRect().width + 16) * perView() : 0;
-    track.style.transform = 'translateX(-' + (promoIdx * step) + 'px)';
-    document.getElementById('promo-dots').innerHTML = Array.from({ length: pages }, (_, i) => '<span class="' + (i === promoIdx ? 'active' : '') + '"></span>').join('');
-  }
-  window.addEventListener('resize', () => { promoIdx = 0; promoPage(0); });
-
-  /* ---------- Categories + browse modal ---------- */
-  document.getElementById('cat-grid').innerHTML = CATS.map((c, i) => tile(c[0], c[1], i, false)).join('');
-  let catIdx = 0;
-  function openCat(i) { catIdx = i; renderBrowse(); document.getElementById('browse').classList.add('open'); document.body.style.overflow = 'hidden'; }
-  function closeBrowse() { document.getElementById('browse').classList.remove('open'); document.body.style.overflow = ''; }
-  function pageCat(d) { catIdx = (catIdx + d + CATS.length) % CATS.length; renderBrowse(); }
-  function renderBrowse() {
-    const [name, icon] = CATS[catIdx]; const subs = SUBS[name] || [];
-    document.getElementById('browse-title').textContent = name;
-    document.getElementById('browse-pos').textContent = (catIdx + 1) + ' / ' + CATS.length;
-    document.getElementById('browse-meta').textContent = subs.length + ' subcategories';
-    document.getElementById('sub-grid').innerHTML = subs.map(s => tile(s, icon, 0, true)).join('');
-    document.querySelector('.browse-body').scrollTop = 0;
-  }
-  function openSub(name) { location.href = 'products.html'; }
-  document.addEventListener('keydown', e => {
-    if (!document.getElementById('browse').classList.contains('open')) return;
-    if (e.key === 'Escape') closeBrowse();
-    if (e.key === 'ArrowRight') pageCat(1);
-    if (e.key === 'ArrowLeft') pageCat(-1);
-  });
-  renderPromos();
+  function showToast(title, desc) { let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(t); } t.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; t.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = 0, 3000); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeNameModal(); closeDelete(); } });
+  // land scoped: default to Magnolia when arriving on All properties
+  if (currentProp === 'all') selectProp('magnolia'); else renderPage();
 </script>
 </body>
 </html>

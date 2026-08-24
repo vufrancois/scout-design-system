@@ -491,6 +491,16 @@ The single source of truth tying the Orders list to the order detail. Every lega
 - Ratings appear as a compact row (stars · summary · "See reviews" outline button) — reviews live on their own page, never inline.
 - Product details are a full-width card below both columns with underline tabs (AI Summary · Description · Specifications · Spec Sheets); content fills the card (two-column bullets and spec grid when wide). Alternatives render as a sortable **grid**, not a carousel — a sort control on a rail reorders items you can't see.
 
+### Wishlists
+
+- Wishlists are **property-scoped shared shopping lists** ("shared with everyone assigned to [property]"). The heart icon operates on the current property; with "All properties" active, the flow first asks which property the list belongs to. The Wishlists page names the property in its subtitle — never a separate kicker (the App Bar already shows it).
+- **Heart semantics:** a heart on a card or buy box opens the List Picker (never a silent toggle); it fills rose wherever the product is in any list, live across pages. In list context the filled heart means "remove from this list" (tooltip says so). The nav heart opens the Wishlists page.
+- **List Picker:** centered 480px modal — property kicker (rose heart + name), title, product subtitle; checkbox rows of lists with live counts, pre-checked for current membership; a dashed "Create a new list" row that expands into a standard input + Add; Save disabled until membership actually changed.
+- **Page anatomy:** List Sidebar (name + count, rose active accent, no header block) beside a List Header card — name, **"N products · $total"** (the total is the number purchasers want), rename and delete icon buttons, and the list's one primary, **"Add N to cart"** (count in the label, disabled at zero). Counts are never repeated: the sidebar scans, the header prices, the button acts; a "Showing n of N" appears only while filtered.
+- Filter controls appear only when a list has 8+ products; the vendor filter builds from the list's actual contents.
+- Create and Rename share one small modal (name field, submit disabled until non-empty, Enter submits). Delete is the destructive confirm with consequence copy that adapts to contents ("removes the empty list" vs "removes the list and its N saved products — for everyone at this property").
+- Small wishlist dialogs center in the viewport; only the tall Browse Modal stays top-anchored.
+
 ### AI Block
 
 - AI-generated content sits in a tinted block: accent fill, blue-200 border (blue-600 in dark), radius-lg; header of a 26px primary icon tile with sparkles + 14px/600 primary title ("Scout AI Summary"); 14px bullets with primary markers (two columns when the block is wider than ~720px); a 12px muted provenance footnote ("Generated from… verify critical specs before ordering"). Section bands announcing AI content (e.g. "AI-powered alternatives") use the same tint with a 40px icon tile.

@@ -53,7 +53,7 @@
     <div class="bar-actions">
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
-      <button class="icon-btn" title="Wishlist" onclick="location.href='products.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
       <button class="icon-btn primary" title="Cart" onclick="location.href='marketplace.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
     </div>
   </nav>
@@ -196,6 +196,7 @@
     document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
     renderCtxList();
     document.getElementById('ctx-switch').classList.remove('open');
+    applyFilters();
   }
   function toggleCtx() {
     const el = document.getElementById('ctx-switch');
@@ -304,7 +305,7 @@
       '<div class="pc-price-was">' + (p.was ? '<span class="was">' + money(p.was) + '</span><span class="save">Save ' + save + '%</span>' : '') + '</div></div>' +
       '<div class="pc-meta"><div title="' + deliveryLine(p) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>' + deliveryLine(p) + '</span></div>' +
       '<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' + stock + '</div></div>' +
-      '<div class="pc-actions"><button class="btn btn-primary" ' + (p.stock === 'out' ? 'disabled style="opacity:.5"' : '') + ' onclick="addToCart(' + p.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add to Cart</button><button class="icon-btn' + (wish.has(p.id) ? ' on' : '') + '" data-tip="Save to wishlist" onclick="toggleWish(' + p.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button></div></div>';
+      '<div class="pc-actions"><button class="btn btn-primary" ' + (p.stock === 'out' ? 'disabled style="opacity:.5"' : '') + ' onclick="addToCart(' + p.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add to Cart</button><button class="icon-btn' + (typeof WL !== 'undefined' && currentProp !== 'all' && WL.inAnyList(currentProp, p.id) ? ' on' : '') + '" data-tip="Save to wishlist" onclick="toggleWish(' + p.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button></div></div>';
   }
 
   let current = [];
@@ -362,7 +363,7 @@
     document.getElementById('ct-thumbs').innerHTML = [...compare].map(() => '<span>' + glyph.replace('class="glyph"', '') + '</span>').join('');
     t.querySelector('.btn-primary').disabled = compare.size < 2; t.querySelector('.btn-primary').style.opacity = compare.size < 2 ? .5 : 1;
   }
-  function toggleWish(id) { wish.has(id) ? wish.delete(id) : wish.add(id); applyFilters(); }
+  function toggleWish(id) { openWishModal(PRODUCTS.find(x => x.id === id)); }
   function addToCart(id) { const p = PRODUCTS.find(x => x.id === id); showToast('Added to cart', p.brand + ' · ' + money(p.price)); }
   let mode = 'keyword';
   function setMode(m) { mode = m; document.querySelectorAll('#mode-seg button').forEach(b => b.classList.toggle('active', b.dataset.mode === m)); document.getElementById('q').placeholder = m === 'ai' ? 'Describe what you need, e.g. "quiet dishwasher under $500 with third rack"' : 'Search within Dishwashers…'; }
@@ -371,6 +372,8 @@
   function toggleRail(open) { document.getElementById('rail').classList.toggle('open', open); document.getElementById('rail-scrim').classList.toggle('show', open); }
 
   rangeInput(); applyFilters();
+  document.addEventListener('wishlists-changed', applyFilters);
 </script>
+<script src="wishlist.js"></script>
 </body>
 </html>

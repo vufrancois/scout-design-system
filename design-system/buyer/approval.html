@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approval Request — Scout Buyer</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buyer.css">
+</head>
+<body class="buyer">
+
+<!-- ===== App Bar ===== -->
+<div class="app-bar-wrap">
+  <nav class="app-bar">
+    <div class="brand">
+      <span class="avatar-ring">AG</span>
+      <span class="wordmark"><svg class="logo" viewBox="0 0 592 116" xmlns="http://www.w3.org/2000/svg" aria-label="Scout"><path fill="currentColor" d="M368.921 24.0615C369.027 24.0452 369.13 24.0312 369.237 24.0193C394.599 21.02 413.592 34.7995 416.669 61.022C419.492 85.0688 410.296 111.346 382.626 114.34C358.328 118.032 337.745 104.403 334.506 79.5118C331.05 52.9541 339.398 28.8412 368.921 24.0615ZM377.059 98.6156C398.048 96.5091 401.22 71.0955 395.783 54.677C392.869 45.877 383.88 38.9518 374.268 39.9686C374.112 39.9852 373.956 40.0065 373.8 40.0327C349.315 42.1918 346.678 81.0129 362.884 94.4005C366.729 97.5713 371.668 99.1037 376.633 98.6665C376.776 98.6529 376.919 98.6359 377.059 98.6156Z"/><path fill="currentColor" d="M112.681 0.22147C116.656 -0.0887322 123.344 -0.0229021 127.331 0.116074C128.859 6.12993 130.114 37.4859 126.805 41.2283C124.225 41.0029 118.858 34.206 115.122 32.124L114.991 32.0522C107.163 33.4416 97.9848 39.7162 90.3365 42.5914C80.7606 46.1915 71.4784 49.9355 62.0854 53.9884C62.4117 54.9314 63.0516 56.7636 63.8188 57.3312C76.9084 66.4314 91.6422 66.3822 104.163 77.5225C115.962 88.0205 102.225 110.521 90.5078 114.174C85.4041 115.764 71.6144 115.414 65.3493 115.42L37.5858 115.417C28.8031 115.496 20.0195 115.439 11.2384 115.245C8.50338 115.162 1.40473 115.53 0.00704319 113.332C-0.0933617 111.956 0.899447 110.61 1.72667 109.576C11.6325 97.1926 55.4695 90.1437 59.7624 84.0178C59.9988 83.68 60.1714 83.0879 60.1096 82.6813C59.6097 79.3981 53.1218 76.3542 50.5789 74.4328C45.1303 70.3154 37.8755 65.6066 36.9074 58.2914C34.5996 40.8523 52.4088 36.4216 65.3277 32.2627C74.9917 29.1514 85.3738 26.6455 93.9114 21.0209C96.121 19.5654 98.016 18.4053 99.6486 16.2758C95.1379 11.5912 91.3425 8.37316 88.8751 2.31641C94.9191 0.817933 106.164 0.292952 112.681 0.22147Z"/><path fill="currentColor" d="M191.172 24.7498C199.619 23.243 212.635 26.1442 219.285 31.3122C226.233 36.7123 228.162 42.5031 229.396 50.843C223.509 50.954 217.43 50.8297 211.526 50.7801C209.668 42.0343 202.483 39.9536 194.379 40.0969C188.328 40.204 180.593 43.5644 181.313 50.7326C181.955 57.1098 190.137 59.5821 195.326 60.5729C204.947 62.6792 215.496 63.9047 223.542 70.0452C232.923 77.5981 232.858 95.513 225.098 104.283C217.59 112.768 209.801 114.396 199.064 115.312L198.904 115.322C183.008 116.247 163.38 110.878 161.197 92.2132C161.052 90.9734 160.992 89.6873 160.916 88.4399C165.59 88.7561 173.465 88.5616 178.381 88.5905C181.737 98.4897 188.534 100.313 198.262 99.8146C202.693 99.5875 207.148 98.1482 210.124 94.7187C213.315 91.3338 212.492 84.9961 208.399 82.6222C200.502 78.0433 189.943 77.7723 181.275 74.9559C177.204 73.6007 173.418 71.5051 170.107 68.7748C159.085 59.6623 160.482 39.1737 172.293 31.4479C178.989 27.0675 183.212 25.4596 191.172 24.7498Z"/><path fill="currentColor" d="M443.451 25.8357C446.294 25.7981 449.195 25.9048 452.038 25.976C452.025 26.4225 452.018 26.869 452.012 27.3159L452.025 62.4807C452.008 69.8903 451.649 77.1952 452.474 84.5778C453.754 97.0045 466.778 101.155 477.374 97.3965C487.321 93.8683 487.438 83.9654 487.394 75.0673C487.371 70.7804 487.401 66.4814 487.401 62.2314C487.441 50.3117 487.404 38.3914 487.291 26.472C491.568 25.5241 501.16 25.9085 505.886 26.0159C505.763 34.3774 505.889 43.058 505.896 51.4458C505.882 60.1178 506.601 85.7146 504.768 92.4529C503.431 97.3829 500.807 101.87 497.172 105.457C484.355 118.319 455.021 118.063 442.107 105.154C438.273 101.379 435.589 96.5896 434.378 91.3461C432.925 85.1461 433.371 71.4367 433.377 64.4333L433.427 26.2207C436.673 25.9065 440.168 25.9018 443.451 25.8357Z"/><path fill="currentColor" d="M277.918 24.5402C284.762 24.242 291.251 23.987 297.836 26.3658C312.619 31.7091 320.231 41.5451 321.455 57.0289L303.396 57.0126C303.23 56.4112 303.06 55.8107 302.887 55.2116C299.475 43.4033 290.055 38.1711 277.979 41.4507C263.42 45.8238 261.513 63.6629 262.869 76.4001C264.467 91.4088 275.194 103.105 290.988 98.1378C295.634 96.645 299.498 93.3734 301.74 89.0389C302.156 87.2665 302.808 85.4003 303.376 83.6574C308.328 83.4975 315.695 83.2322 320.551 83.5025C323.577 85.6047 317.933 97.5779 316.114 100.142C310.713 107.805 302.475 112.992 293.229 114.548C268.91 118.683 248.414 107.249 244.343 81.6825C242.146 67.882 243.493 50.1739 252.018 38.5621C258.271 30.0454 267.717 26.1411 277.918 24.5402Z"/><path fill="currentColor" d="M542.279 28.1452C547.913 27.9853 590.091 27.8633 591.354 28.9625C591.64 30.3735 591.644 41.5511 591.68 43.9629C583.103 44.0929 574.406 43.9555 565.793 44.0476C566.464 66.4005 565.237 90.0606 565.949 112.506C565.992 113.591 566.095 114.093 565.55 115.014C562.836 115.721 551.229 115.163 547.305 115.39L547.261 68.383C547.265 60.4348 547.125 51.8642 547.431 43.9742C538.604 43.9273 529.761 44.0968 520.945 43.9968C521.39 39.3221 521.244 33.4559 520.988 28.7816C524.982 27.9122 537.457 28.1515 542.279 28.1452Z""/></svg></span>
+    </div>
+    <div class="nav-chips">
+      <a class="nav-chip" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
+      <a class="nav-chip" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
+      <a class="nav-chip" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="lbl">Messages</span></a>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel cols-2" id="menu-orders">
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span><span class="menu-item-title">Order Tracking</span><span class="menu-item-desc" style="display:block">Review orders and invoices</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span><span class="menu-item-title">Reviews</span><span class="menu-item-desc" style="display:block">Rate your purchases</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span><span class="menu-item-title">Quotes</span><span class="menu-item-desc" style="display:block">Requests &amp; negotiated pricing</span></span></a>
+          <div class="menu-item disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span><span class="menu-item-title">Budgets</span><a class="menu-item-link" href="#">Contact SCOUT to enable Budgets <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></span></div>
+          <a class="menu-item" href="approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg><span><span class="menu-item-title">Order Approvals</span><span class="menu-item-desc" style="display:block">Approve pending requests</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span><span class="menu-item-title">Purchase History</span><span class="menu-item-desc" style="display:block">Your procurement history</span></span></a>
+          <span></span>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg><span><span class="menu-item-title">Funding Report</span><span class="menu-item-desc" style="display:block">Validated invoices awaiting payment</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-admin" onclick="toggleMenu('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span class="lbl">Admin</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-admin">
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg><span><span class="menu-item-title">Vendor Select</span><span class="menu-item-desc" style="display:block">Shop approved vendors</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h8"/><path d="M8 17h8"/></svg><span><span class="menu-item-title">Shopping Lists</span><span class="menu-item-desc" style="display:block">Product-level restrictions</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span><span class="menu-item-title">Organization</span><span class="menu-item-desc" style="display:block">Org settings &amp; properties</span></span></a>
+        </div>
+      </div>
+    </div>
+    <div class="menu-anchor ctx-switch" id="ctx-switch">
+      <button class="ctx-echo" onclick="toggleCtx()" title="Change property">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/></svg>
+        <span><span class="ctx-kicker" style="display:block">Current Property:</span><span class="ctx-name" id="echo-name" style="display:block">All properties</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="ctx-list" id="ctx-list"></div>
+    </div>
+    <div class="bar-actions">
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
+      <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn primary" title="Cart" onclick="location.href='marketplace.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
+    </div>
+  </nav>
+</div>
+
+
+
+
+
+
+<section class="hero page-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner" style="flex-direction:column;gap:0">
+    <a class="back-link" href="approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to approvals</a>
+    <div class="hero-title-block">
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></div>
+      <div><h1>Approval request</h1><p id="hero-sub"></p></div>
+    </div>
+  </div>
+</section>
+
+<main class="page">
+  <div class="det-grid">
+    <div class="det-main" id="det-main"></div>
+    <div class="det-side" id="det-side"></div>
+  </div>
+</main>
+
+<script>
+  /* ---------- Theme ---------- */
+  function applyTheme() {
+    const dark = localStorage.getItem('scout-theme') === 'dark';
+    document.body.classList.toggle('dark', dark);
+    const b = document.getElementById('theme-btn');
+    b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+    b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+  }
+  function toggleTheme() { localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark'); applyTheme(); }
+  applyTheme();
+
+  /* ---------- Menus ---------- */
+  function closeMenus() {
+    document.querySelectorAll('.menu-panel').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-chip').forEach(c => c.classList.remove('open'));
+  }
+  function toggleMenu(id) {
+    const panel = document.getElementById('menu-' + id), chip = document.getElementById('nav-' + id);
+    const wasOpen = panel.classList.contains('open');
+    closeMenus(); document.getElementById('ctx-switch').classList.remove('open');
+    if (!wasOpen) { panel.classList.add('open'); chip.classList.add('open'); }
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-anchor')) closeMenus();
+    if (!e.target.closest('.ctx-switch')) document.getElementById('ctx-switch').classList.remove('open');
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); document.getElementById('ctx-switch').classList.remove('open'); } });
+
+  /* ---------- Context switcher ---------- */
+  const PROPERTIES = [
+    { id: 'all', name: 'All properties', desc: 'Combined dashboard for every accessible property', units: null },
+    { id: 'magnolia', name: 'Magnolia Place Apartments', addr: '4201 Veterans Memorial Blvd', city: 'Metairie, LA 70006', units: 51 },
+    { id: 'bayou', name: 'Bayou Crossing Apartments', addr: '3850 Airline Dr', city: 'Baton Rouge, LA 70805', units: 120 },
+    { id: 'lonestar', name: 'Lone Star Flats', addr: '7200 Westheimer Rd', city: 'Houston, TX 77057', units: 78 },
+    { id: 'central', name: 'Central Park View', addr: '1501 Canal St', city: 'New Orleans, LA 70112', units: 96 },
+    { id: 'cypress', name: 'Cypress Lake Apartments', addr: '9100 Cypress Lake Dr', city: 'Lafayette, LA 70508', units: 64 },
+    { id: 'beauchene', name: 'Beau Chene Villas', addr: '225 Beau Chene Blvd', city: 'Mandeville, LA 70471', units: 40 },
+    { id: 'sherwood', name: 'Sherwood Acres', addr: '1250 Sherwood Forest Blvd', city: 'Baton Rouge, LA 70815', units: 88 },
+    { id: 'cyprus', name: 'Cyprus Glenn', addr: '4800 Cyprus Glenn Way', city: 'Shreveport, LA 71105', units: 32 },
+    { id: 'heights', name: 'Magnolia Heights Apartments', addr: '6301 Magnolia Heights Rd', city: 'Houston, TX 77004', units: 110 }
+  ];
+  let currentProp = 'all';
+  const bIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
+  const pinIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  function renderCtxList() {
+    document.getElementById('ctx-list').innerHTML = PROPERTIES.map(p => {
+      const active = p.id === currentProp;
+      const body = p.id === 'all'
+        ? '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.desc + '</span>'
+        : '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.addr + '</span><span class="opt-city">' + pinIcon + p.city + '</span>';
+      const units = p.units ? '<span class="units-badge"><b>' + p.units + '</b><span>units</span></span>' : '';
+      return '<button class="ctx-option' + (active ? ' active' : '') + '" onclick="selectProp(\'' + p.id + '\')"><span class="opt-tile">' + bIcon + '</span><span class="opt-body">' + body + '</span>' + units + '</button>';
+    }).join('');
+  }
+  function selectProp(id) {
+    currentProp = id;
+    const p = PROPERTIES.find(x => x.id === id);
+    document.getElementById('echo-name').textContent = p.name;
+    document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
+    renderCtxList();
+    document.getElementById('ctx-switch').classList.remove('open');
+    renderPage();
+  }
+  function toggleCtx() {
+    const el = document.getElementById('ctx-switch');
+    const wasOpen = el.classList.contains('open');
+    closeMenus();
+    if (!wasOpen) el.classList.add('open');
+  }
+  renderCtxList();
+
+
+
+
+  const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const VEN = { SD: 'Scout Demo Vendor', ID: 'Ideal DEV', CH: 'API Test - Chadwell', GB: 'Gorman Bros' };
+  const STATUS = { pending: ['dot-pending', 'Pending'], approved: ['dot-approved', 'Approved'], rejected: ['dot-rejected', 'Rejected'], revision: ['dot-revision', 'Revision Requested'] };
+  const item = (name, sku, qty, price, flags) => Object.assign({ name, sku, qty, price }, flags || {});
+  const REQS = {
+    K4PT2N: { v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'pending', level: 'Supervisor', date: '08/21/2026',
+      items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1455.09), item('Dryer Vent Kit, 4 in. x 8 ft.', '7719928', 2, 24.63)],
+      shipping: ['Local Delivery', 0], eligible: ['Supervisor', 'Master'],
+      history: [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1504.35, when: '8/21/2026, 9:14:02 AM', items: [['Commercial 6.7 cu. ft. Non Coin Electric Dryer in White · Qty 1', 1455.09], ['Dryer Vent Kit, 4 in. x 8 ft. · Qty 2', 49.26]] }] },
+    '9MS9D4': { v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '07/16/2026',
+      items: [item('24 in. 2-Cycle Built-in Dishwasher in White', '8339618', 1, 390.39)],
+      shipping: ['Expedited', 25], eligible: ['Supervisor', 'Master'], decidedBy: 'Priya Nair', order: ['#411', 415.39],
+      stepDates: ['7/16/2026', '7/16/2026', '7/16/2026', '7/16/2026'],
+      history: [
+        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1062.49, when: '7/16/2026, 8:05:57 AM', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
+        { t: 'Revision requested', actor: 'Master', rev: 1, amt: 1062.49, when: '7/16/2026, 8:06:59 AM', comment: 'Over budget for this property — please find a lower-cost option.', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
+        { t: 'Changes submitted', actor: 'Buyer', rev: 1, amt: 1062.49, when: '7/16/2026, 8:08:14 AM', comment: 'Resubmitting for another look.', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
+        { t: 'Revision requested', actor: 'Master', rev: 2, amt: 1062.49, when: '7/16/2026, 8:08:54 AM', comment: 'Still over the threshold — try a different model.', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
+        { t: 'Changes submitted', actor: 'Buyer', rev: 2, amt: 415.39, when: '7/16/2026, 8:09:44 AM', comment: 'Swapped to a lower-cost model.', items: [['24 in. 2-Cycle Built-in Dishwasher in White · Qty 1', 390.39]] },
+        { t: 'Approved', actor: 'Master', rev: 2, amt: 415.39, when: '7/16/2026, 8:10:28 AM', items: [['24 in. 2-Cycle Built-in Dishwasher in White · Qty 1', 390.39]] }
+      ] },
+    J8RG6V: { v: 'SD', buyer: 'Jordan Ellis', prop: 'lonestar', status: 'revision', level: 'Supervisor', date: '07/15/2026',
+      items: [item('1.6 cu. ft. Refrigerator in Black', '6118834', 3, 357.17)],
+      shipping: ['Local Delivery', 0], eligible: ['Supervisor', 'Master'], decidedBy: 'Priya Nair',
+      comment: 'Quantity seems high for one property — can we start with two units?',
+      history: [
+        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1071.51, when: '7/15/2026, 2:31:40 PM', items: [['1.6 cu. ft. Refrigerator in Black · Qty 3', 1071.51]] },
+        { t: 'Revision requested', actor: 'Supervisor', rev: 1, amt: 1071.51, when: '7/15/2026, 4:02:11 PM', comment: 'Quantity seems high for one property — can we start with two units?', items: [['1.6 cu. ft. Refrigerator in Black · Qty 3', 1071.51]] }
+      ] },
+    RBQ90M: { v: 'SD', buyer: 'Priya Nair', prop: 'bayou', status: 'rejected', level: 'Master', date: '06/15/2026',
+      items: [item('Spacemaker® 23-7/8 in. 3.6 cu. ft. Electric Dryer in White on White', '1879922', 8, 790.79)],
+      shipping: ['In-Store Pickup', 0], eligible: ['Master'], decidedBy: 'Marcus Webb', legacy: true,
+      comment: 'Reach out to vendor for bulk quote.',
+      history: [
+        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 6326.32, when: '6/15/2026, 10:12:05 AM', items: [['Spacemaker® 23-7/8 in. 3.6 cu. ft. Electric Dryer · Qty 8', 6326.32]] },
+        { t: 'Rejected', actor: 'Master', rev: 0, amt: 6326.32, when: '6/15/2026, 11:40:22 AM', comment: 'Reach out to vendor for bulk quote.', items: [['Spacemaker® 23-7/8 in. 3.6 cu. ft. Electric Dryer · Qty 8', 6326.32]] }
+      ] },
+    '0ZS6B5': { v: 'ID', buyer: 'Alicia Grant', prop: 'magnolia', status: 'rejected', level: 'Supervisor', date: '06/10/2026',
+      items: [item('24" Drawer Dishwasher', 'variant_01KTSEWPKJ0KKB4JDBB7V4RMCH', 1, 1170.00, { unavailable: true })],
+      shipping: ['Local Delivery', 0], eligible: ['Supervisor', 'Master'], decidedBy: 'Priya Nair', legacy: true, unavailable: true,
+      comment: 'Product discontinued — reorder an in-stock model.',
+      history: [
+        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1170.00, when: '6/10/2026, 3:22:48 PM', items: [['24" Drawer Dishwasher · Qty 1', 1170.00]] },
+        { t: 'Rejected', actor: 'Supervisor', rev: 0, amt: 1170.00, when: '6/10/2026, 5:01:19 PM', comment: 'Product discontinued — reorder an in-stock model.', items: [['24" Drawer Dishwasher · Qty 1', 1170.00]] }
+      ] }
+  };
+  const GENERIC = { CT3CPQ: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/25/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1467.08],
+    VJXT0Z: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/24/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1467.08],
+    '2XX1Z9': ['SD','Alicia Grant','magnolia','approved','Supervisor','06/15/2026','27 in. 7.4 cu. ft. Electric Dryer in White','7411520',1,1062.13],
+    GNZSXC: ['ID','Ravi Buyer Demo','magnolia','approved','Supervisor','06/12/2026','50 gal. Tall Electric Water Heater','5521904',2,946.27],
+    ADAKB7: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/08/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1463.08],
+    NRE2YP: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/05/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1461.62],
+    HW3K1A: ['GB','Jordan Ellis','bayou','approved','Supervisor','05/28/2026','LED High Bay Fixture, 150W','4412907',6,189.54],
+    PX8Q4D: ['CH','Priya Nair','central','approved','Master','05/20/2026','WHIRLPOOL® ENERGY STAR® 24" Dishwasher - Black','301085',4,376.38],
+    MM2V7E: ['SD','Alicia Grant','magnolia','rejected','Supervisor','05/12/2026','Hospitality 32 in. LED TV (case of 4)','8890021',2,1044.00] };
+  Object.entries(GENERIC).forEach(([id, g]) => {
+    const [v, buyer, prop, status, level, date, nm, sku, qty, price] = g;
+    const amt = Math.round(qty * price * 100) / 100;
+    REQS[id] = { v, buyer, prop, status, level, date, items: [item(nm, sku, qty, price)], shipping: ['Local Delivery', 0],
+      eligible: level === 'Master' ? ['Master'] : ['Supervisor', 'Master'],
+      decidedBy: status === 'pending' ? null : 'Priya Nair',
+      order: status === 'approved' ? ['#' + (300 + Math.abs(id.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % 200), amt] : null,
+      comment: status === 'rejected' ? 'Declined — over the property budget for this period.' : null,
+      history: [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt, when: date + ', 9:00:00 AM', items: [[nm + ' · Qty ' + qty, amt]] }]
+        .concat(status === 'approved' ? [{ t: 'Approved', actor: level, rev: 0, amt, when: date + ', 11:30:00 AM', items: [[nm + ' · Qty ' + qty, amt]] }]
+          : status === 'rejected' ? [{ t: 'Rejected', actor: level, rev: 0, amt, when: date + ', 11:30:00 AM', comment: 'Declined — over the property budget for this period.', items: [[nm + ' · Qty ' + qty, amt]] }] : []) };
+  });
+  Object.values(REQS).forEach(r => r.amount = Math.round((r.items.reduce((a, i) => a + i.qty * i.price, 0) + (r.shipping ? r.shipping[1] : 0)) * 100) / 100);
+
+  let R, curId;
+  function pickReq() { curId = (location.hash || '').replace('#', '') || 'K4PT2N'; if (!REQS[curId]) curId = 'K4PT2N'; R = REQS[curId]; }
+  pickReq();
+  window.addEventListener('hashchange', () => { pickReq(); renderPage(); window.scrollTo(0, 0); });
+
+  const glyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><circle cx="8" cy="5" r="0.6"/><circle cx="11" cy="5" r="0.6"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
+  const IC = {
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    thumb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>',
+    cross: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+    cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>',
+    refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>',
+    truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
+    box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+    store: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/></svg>',
+    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
+  };
+
+  function statusPill(st) { const p = STATUS[st]; return '<span class="status-dot-item"><span class="status-dot ' + p[0] + '"></span><span class="status-dot-label">' + p[1] + '</span></span>'; }
+
+  function stepper(st) {
+    const d = R.stepDates || [];
+    let steps;
+    if (st === 'approved') steps = [
+      { l: 'Requested', s: 'done', i: IC.check, dt: d[0] || R.date },
+      { l: 'Under Review', s: 'done', i: IC.check, dt: d[1] || R.date },
+      { l: 'Approved', s: 'done', i: IC.check, dt: d[2] || R.date },
+      { l: 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
+    else if (st === 'rejected') steps = [
+      { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
+      { l: 'Under Review', s: 'done', i: IC.check, dt: R.date },
+      { l: 'Rejected', s: 'rejected', i: IC.cross, dt: R.date },
+      { l: 'Order Created', s: 'future', i: IC.cart }];
+    else if (st === 'revision') steps = [
+      { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
+      { l: 'Buyer revision', s: 'active sky', i: IC.refresh },
+      { l: 'Approved', s: 'future', i: IC.thumb },
+      { l: 'Order Created', s: 'future', i: IC.cart }];
+    else steps = [
+      { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
+      { l: 'Under Review', s: 'active', i: IC.eye, dt: 'your move' },
+      { l: 'Approved', s: 'future', i: IC.thumb },
+      { l: 'Order Created', s: 'future', i: IC.cart }];
+    return '<div class="ap-stepper">' + steps.map((sp, i) => {
+      const conn = i < steps.length - 1
+        ? '<div class="ap-conn' + (steps[i + 1].s === 'rejected' || sp.s === 'rejected' && false ? ' rose' : (sp.s === 'done' && steps[i + 1].s.startsWith('done')) ? ' done' : sp.s === 'done' && steps[i + 1].s !== 'future' ? ' done' : '') + '"></div>' : '';
+      return '<div class="ap-step ' + sp.s + '"><div class="ap-dot">' + sp.i + '</div><div class="ap-label">' + sp.l + '</div>' + (sp.dt ? '<div class="ap-date">' + sp.dt + '</div>' : '') + '</div>' + conn;
+    }).join('') + '</div>';
+  }
+
+  function itemLine(i) {
+    const nm = i.unavailable
+      ? '<span class="strike">' + i.name + '</span> <span class="avail-pill">No longer available</span>'
+      : i.name;
+    const meta = i.unavailable
+      ? '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-weight:700">' + money(i.qty * i.price) + '</span><span class="item-meta-pill">Requested ' + i.qty + ' · Available Not tracked</span><span class="avail-pill">Unavailable</span></div>'
+      : '<span class="qty">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total">' + money(i.qty * i.price) + '</span>';
+    return '<div class="item-line"><span class="thumb">' + glyph + '</span><span class="item-nm">' + nm + '<span class="item-sku">Qty ' + i.qty + ' · ' + i.sku + '</span></span>' + meta + '</div>';
+  }
+
+  function renderPage() {
+    document.getElementById('hero-sub').textContent = '#' + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
+    const st = R.status;
+    let main = '';
+
+    main += '<div class="card"><div class="det-card-head"><h2>Approval Progress</h2>' + statusPill(st) + '</div>' + stepper(st) + '</div>';
+
+    if (st === 'pending') {
+      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span class="pill p-neutral">' + R.level + ' approval</span></div>' +
+        '<p style="font-size:13px;color:var(--muted-foreground);margin-bottom:10px">A comment is required to request a revision or reject.</p>' +
+        '<textarea class="dec-comment" id="dec-comment" placeholder="Add a comment for the buyer (required for revision or rejection)…"></textarea>' +
+        '<div class="decision-actions">' +
+        '<button class="btn btn-primary" onclick="decide(\'approved\')">Approve</button>' +
+        '<button class="btn btn-outline-sky" onclick="decide(\'revision\')">Request revision</button>' +
+        '<button class="btn btn-outline-rose" onclick="decide(\'rejected\')">Reject</button>' +
+        '</div></div>';
+    }
+
+    main += '<div class="card"><div class="det-card-head"><div><h2>Order details</h2><div class="sub" id="inv-checked">Checked just now</div></div>' +
+      '<button class="btn" style="height:36px;font-size:13px;display:inline-flex;align-items:center;gap:8px" onclick="refreshInv()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Refresh inventory</button></div>' +
+      (R.legacy ? '<div class="callout violet" style="margin:10px 0"><b>' + IC.warn + 'Legacy approval · Recreate cart required</b>This approval was created before live inventory classification was added. Request a revision so the buyer can clear all items from the cart, add the same items again, and resubmit it for approval.</div>' : '') +
+      (R.unavailable ? '<div class="callout rose" style="margin:10px 0"><b>A product in this request is no longer available</b>The vendor no longer lists the product(s) marked below, so this request can no longer be approved. Please reject it and ask the buyer to place a new order with available items.</div>' : '') +
+      R.items.map(itemLine).join('') +
+      (() => { const sub = Math.round(R.items.reduce((a, i) => a + i.qty * i.price, 0) * 100) / 100;
+        return '<div class="det-totals">' +
+        '<div class="tot-row"><span>Items subtotal</span><span>' + money(sub) + '</span></div>' +
+        '<div class="tot-row"><span>Shipping · ' + R.shipping[0] + '</span><span>' + money(R.shipping[1]) + '</span></div>' +
+        '<div class="tot-row grand"><span>Request total</span><span>' + money(R.amount) + '</span></div></div>'; })() + '</div>';
+
+    main += '<div class="card"><div class="det-card-head"><h2>Approval history</h2></div>' +
+      '<p style="font-size:13px;color:var(--muted-foreground);margin-bottom:4px">Every request, response and decision is retained on this approval.</p>' +
+      R.history.map((ev, i) => {
+        const prev = R.history[i - 1];
+        const changed = !prev || prev.amt !== ev.amt || JSON.stringify(prev.items) !== JSON.stringify(ev.items);
+        return '<div class="tl-event"><div class="tl-head"><div><div class="tl-title">' + ev.t + '</div><div class="tl-actor">' + ev.actor + ' · Revision ' + ev.rev + '</div></div>' +
+        '<div class="tl-right"><b>' + money(ev.amt) + '</b>' + ev.when + '</div></div>' +
+        (ev.comment ? '<div class="tl-comment">' + ev.comment + '</div>' : '') +
+        (changed ? ev.items.map(it => '<div class="tl-item"><span>' + it[0] + '</span><span>' + money(it[1]) + '</span></div>').join('') : '') +
+        '</div>'; }).join('') + '</div>';
+
+
+    let side = '';
+    side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + R.v + '</span><div><div class="ven-eyebrow">Vendor</div><div class="ven-name"><a href="products.html" style="color:inherit;text-decoration:none">' + VEN[R.v] + '</a></div></div></div></div>';
+
+    const prop = PROPERTIES.find(x => x.id === R.prop);
+    side += '<div class="card"><dl class="fact-rows wide">' +
+      '<dt>Reason</dt><dd>Amount threshold</dd>' +
+      '<dt>Property</dt><dd>' + prop.name + '</dd>' +
+      '<dt>Approvers</dt><dd>' + R.eligible.map(e => '<span class="lvl-pill">' + e + '</span>').join('') + '</dd>' +
+      (R.decidedBy ? '<dt>Decided by</dt><dd>' + R.decidedBy + '</dd>' : '') + '</dl>' +
+      (R.status === 'revision' && R.comment ? '<div class="callout amber" style="margin-top:14px"><b>Note to buyer</b>' + R.comment + '</div>' : '') +
+      (R.status === 'rejected' && R.comment ? '<div class="callout rose" style="margin-top:14px"><b>Rejection reason</b>' + R.comment + '</div>' : '') + '</div>';
+
+    if (R.status === 'approved' && R.order) {
+      side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Orders placed</h2></div>' +
+        '<p style="font-size:13px;color:var(--muted-foreground)">Created when this request was approved.</p>' +
+        '<div class="order-row"><div class="onum">Order ' + R.order[0] + '</div>' +
+        '<a class="toolbar-btn" style="text-decoration:none" href="#">View order <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></div>';
+    }
+
+    document.getElementById('det-main').innerHTML = main;
+    document.getElementById('det-side').innerHTML = side;
+  }
+
+  function decide(next) {
+    const c = (document.getElementById('dec-comment').value || '').trim();
+    if ((next === 'revision' || next === 'rejected') && !c) {
+      const box = document.getElementById('dec-comment');
+      box.style.borderColor = 'var(--rose)'; box.focus(); return;
+    }
+    const now = '8/24/2026, 10:15:00 AM';
+    if (next === 'approved') {
+      R.status = 'approved'; R.decidedBy = 'You (Supervisor)'; R.order = ['#498', R.amount];
+      R.history.push({ t: 'Approved', actor: 'Supervisor', rev: 0, amt: R.amount, when: now, comment: c || null, items: R.history[0].items });
+    } else if (next === 'revision') {
+      R.status = 'revision'; R.decidedBy = 'You (Supervisor)'; R.comment = c;
+      R.history.push({ t: 'Revision requested', actor: 'Supervisor', rev: 1, amt: R.amount, when: now, comment: c, items: R.history[0].items });
+    } else {
+      R.status = 'rejected'; R.decidedBy = 'You (Supervisor)'; R.comment = c;
+      R.history.push({ t: 'Rejected', actor: 'Supervisor', rev: 0, amt: R.amount, when: now, comment: c, items: R.history[0].items });
+    }
+    R.history.forEach(ev => { if (ev.comment === null) delete ev.comment; });
+    renderPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function refreshInv() {
+    const el = document.getElementById('inv-checked');
+    el.textContent = 'Checked 0 seconds ago';
+    setTimeout(() => el.textContent = 'Checked just now', 1200);
+  }
+
+  renderPage();
+</script>
+</body>
+</html>

@@ -26,6 +26,12 @@ Admins approve orders that exceed a property's budget. A queue page lists every 
 - #9MS9D4 amount $415.39 = $390.39 item + $25 expedited shipping, consistent across table, detail, history, and Order #411.
 - Reference's "DemoRole Buyer"/"Demo Supervisor" → real names (Alicia Grant, Jordan Ellis, Priya Nair, Marcus Webb); joke comments replaced with plausible demo copy; reference's "Items 0" row fixed.
 
+## Table refinements (post-build)
+- Columns reordered identity-first: Request # · Property · Vendor · Buyer · Amount · Level · Status · Date (Status → Date close the row per vendor Orders convention; Date kept last rather than second).
+- Default sort is status lifecycle order (date desc tiebreak) — the actionable queue (Pending, then Revision Requested) leads the table instead of raw date order.
+- Level pills carry threshold tooltips: Supervisor "Approves amounts over $2,500" (matching checkout's Sent-for-approval budget threshold), Master "over $5,000".
+- Expanded Items block re-spaced to the reference: 48px thumbs, taller rows, larger name/total type, and a 20px horizontal inset on rows and label inside the tinted block.
+
 ## Redundancy pass (post-build)
 - Hero subtitle is now the identity line `#id · buyer · amount` (the request # previously appeared nowhere); rail facts dropped Buyer / Requested amount / Approval level, keeping Reason · Property · Approvers (pills) · Decided by.
 - Decision panel copy trimmed to the instruction only (Reason fact already says "Amount threshold").

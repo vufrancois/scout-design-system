@@ -25,6 +25,7 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | **Buyer App** · Product Detail | [buyer/product-detail.md](buyer/product-detail.md) |
 | **Buyer App** · Wishlists | [buyer/wishlists.md](buyer/wishlists.md) |
 | **Buyer App** · Order Approvals | [buyer/approvals.md](buyer/approvals.md) |
+| **Buyer App** · Cart & Checkout | [buyer/cart-checkout.md](buyer/cart-checkout.md) |
 
 All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass. The **Order Detail phase is also complete**: one stateful detail page covering the full 8-step order workflow as 9 URL states (`#placed` → `#completed`), every Orders-list row deep-linking to its matching state, and a codified **Lifecycle Matrix** keeping list pills, detail states, and demo data reconciled. New components from the phase: Stepper (actor captions + buyer-turn nodes), Next-Task Strip, Line Item + Totals (badge-in-totals), Document Row (type accents), Form Rows, Radio Cards, Toast, Drawer, plus the Modal-over-takeover and primary-actions-never-nest rules.
 

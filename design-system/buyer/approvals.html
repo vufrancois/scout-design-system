@@ -6,6 +6,7 @@
 <title>Order Approvals — Scout Buyer</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
+<script src="cart.js"></script>
 </head>
 <body class="buyer">
 
@@ -54,7 +55,7 @@
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
       <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
-      <button class="icon-btn primary" title="Cart" onclick="location.href='marketplace.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
+      <button class="icon-btn primary" title="Cart" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
     </div>
   </nav>
 </div>
@@ -144,13 +145,13 @@
       <table class="tbl">
         <thead><tr>
           <th style="width:36px"></th>
+          <th class="sortable" data-k="id" onclick="setSort('id')">Request #<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
+          <th class="sortable col-hide" data-k="prop" onclick="setSort('prop')">Property<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
           <th class="sortable" data-k="vendor" onclick="setSort('vendor')">Vendor<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
           <th class="sortable" data-k="buyer" onclick="setSort('buyer')">Buyer<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable col-hide" data-k="prop" onclick="setSort('prop')">Property<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable" data-k="id" onclick="setSort('id')">Request #<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
           <th class="sortable" data-k="amount" onclick="setSort('amount')">Amount<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable" data-k="status" onclick="setSort('status')">Status<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
           <th class="sortable col-hide" data-k="level" onclick="setSort('level')">Level<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
+          <th class="sortable" data-k="status" onclick="setSort('status')">Status<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
           <th class="sortable" data-k="date" onclick="setSort('date')">Date<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
           <th style="width:1%"></th>
         </tr></thead>
@@ -259,7 +260,7 @@
   const STATUS = { pending: ['dot-pending', 'Pending'], approved: ['dot-approved', 'Approved'], rejected: ['dot-rejected', 'Rejected'], revision: ['dot-revision', 'Revision Requested'] };
   const ARROWS = { neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>', asc: '<path d="m7 14.5 5-5 5 5"/>', desc: '<path d="m7 9.5 5 5 5-5"/>' };
   const ORDER = { pending: 0, revision: 1, approved: 2, rejected: 3 };
-  let filter = 'all', sortK = 'date', sortDir = -1;
+  let filter = 'all', sortK = 'status', sortDir = 1;
   const TODAY = '2026-08-24';
   const facets = { vendor: null, buyer: null, level: null, status: null };
   let dateDays = null, dateLabel = '';
@@ -336,17 +337,19 @@
     });
     let list = rows.filter(r => filter === 'all' || r.status === filter);
     const val = r => sortK === 'amount' ? r.amount : sortK === 'status' ? ORDER[r.status] : sortK === 'vendor' ? VEN[r.v] : sortK === 'prop' ? PROPERTIES.find(x => x.id === r.prop).name : r[sortK];
-    list.sort((a, b) => { const av = val(a), bv = val(b); const d = typeof av === 'number' ? av - bv : String(av).localeCompare(String(bv)); return d * sortDir; });
+    list.sort((a, b) => { const av = val(a), bv = val(b); const d = typeof av === 'number' ? av - bv : String(av).localeCompare(String(bv)); return d * sortDir || b.date.localeCompare(a.date); });
     document.getElementById('tbody').innerHTML = list.length ? list.map(row).join('') : '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted-foreground)">No requests match the current filters.</td></tr>';
   }
   function row(r) {
     const p = STATUS[r.status]; const prop = PROPERTIES.find(x => x.id === r.prop);
     const main = '<tr class="data-row"><td><button class="expander' + (open.has(r.id) ? ' open' : '') + '" onclick="toggleRow(\'' + r.id + '\')" title="Items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
-      '<td><span class="cell-entity"><span class="v-avatar">' + r.v + '</span><span class="nm">' + VEN[r.v] + '</span></span></td>' +
-      '<td>' + r.buyer + '</td><td class="col-hide cell-clip" title="' + prop.name + '">' + prop.name + '</td><td class="mono"><a class="table-link" style="font-family:inherit" href="approval.html#' + r.id + '">#' + r.id + '</a></td>' +
+      '<td class="mono"><a class="table-link" style="font-family:inherit" href="approval.html#' + r.id + '">#' + r.id + '</a></td>' +
+      '<td class="col-hide cell-clip" title="' + prop.name + '">' + prop.name + '</td>' +
+      '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + r.v + '</span><span class="nm">' + VEN[r.v] + '</span></span></td>' +
+      '<td>' + r.buyer + '</td>' +
       '<td class="num" style="font-weight:600">' + money(r.amount) + '</td>' +
+      '<td class="col-hide"><span class="pill p-neutral" data-tip="' + (r.level === 'Master' ? 'Approves amounts over $5,000' : 'Approves amounts over $2,500') + '">' + r.level + '</span></td>' +
       '<td><span class="status-dot-item"><span class="status-dot ' + p[0] + '"></span><span class="status-dot-label">' + p[1] + '</span></span></td>' +
-      '<td class="col-hide"><span class="pill p-neutral">' + r.level + '</span></td>' +
       '<td style="white-space:nowrap;color:var(--muted-foreground)">' + fmtDate(r.date) + '</td>' +
       '<td>' + (r.status === 'pending' ? '<button class="btn btn-primary btn-sm" onclick="reviewReq(\'' + r.id + '\')">Review</button>' : '') + '</td></tr>';
     const items = open.has(r.id) ? '<tr class="items-block"><td colspan="10"><div class="items-label">Items</div>' + r.items.map(i =>

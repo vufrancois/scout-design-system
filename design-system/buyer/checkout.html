@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Approval Request — Scout Buyer</title>
+<title>Checkout — Scout Buyer</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
@@ -65,21 +65,26 @@
 
 
 
-<section class="hero page-hero">
+
+
+<section class="hero page-hero" id="hero-band">
   <div class="hero-bg"></div>
   <div class="hero-inner" style="flex-direction:column;gap:0">
-    <a class="back-link" href="approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to approvals</a>
-    <div class="hero-title-block">
-      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></div>
-      <div><h1>Approval request</h1><p id="hero-sub"></p></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;width:100%">
+      <div class="hero-title-block">
+        <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></div>
+        <div><h1>Checkout</h1><p id="hero-sub"></p></div>
+      </div>
+      <a class="back-link" href="cart.html" id="back-cart" style="margin:8px 0 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to Cart</a>
     </div>
+    <div class="chk-steps" id="chk-steps"></div>
   </div>
 </section>
 
 <main class="page">
-  <div class="det-grid">
-    <div class="det-main" id="det-main"></div>
-    <div class="det-side" id="det-side"></div>
+  <div class="det-grid" id="chk-grid">
+    <div class="det-main" id="chk-main"></div>
+    <div class="det-side sticky" id="chk-side"></div>
   </div>
 </main>
 
@@ -159,225 +164,198 @@
 
 
   const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const VEN = { SD: 'Scout Demo Vendor', ID: 'Ideal DEV', CH: 'API Test - Chadwell', GB: 'Gorman Bros' };
-  const STATUS = { pending: ['dot-pending', 'Pending'], approved: ['dot-approved', 'Approved'], rejected: ['dot-rejected', 'Rejected'], revision: ['dot-revision', 'Revision Requested'] };
-  const item = (name, sku, qty, price, flags) => Object.assign({ name, sku, qty, price }, flags || {});
-  const REQS = {
-    K4PT2N: { v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'pending', level: 'Supervisor', date: '08/21/2026',
-      items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1455.09), item('Dryer Vent Kit, 4 in. x 8 ft.', '7719928', 2, 24.63)],
-      shipping: ['Local Delivery', 0], eligible: ['Supervisor', 'Master'],
-      history: [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1504.35, when: '8/21/2026, 9:14:02 AM', items: [['Commercial 6.7 cu. ft. Non Coin Electric Dryer in White · Qty 1', 1455.09], ['Dryer Vent Kit, 4 in. x 8 ft. · Qty 2', 49.26]] }] },
-    '9MS9D4': { v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '07/16/2026',
-      items: [item('24 in. 2-Cycle Built-in Dishwasher in White', '8339618', 1, 390.39)],
-      shipping: ['Expedited', 25], eligible: ['Supervisor', 'Master'], decidedBy: 'Priya Nair', order: ['#411', 415.39],
-      stepDates: ['7/16/2026', '7/16/2026', '7/16/2026', '7/16/2026'],
-      history: [
-        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1062.49, when: '7/16/2026, 8:05:57 AM', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
-        { t: 'Revision requested', actor: 'Master', rev: 1, amt: 1062.49, when: '7/16/2026, 8:06:59 AM', comment: 'Over budget for this property — please find a lower-cost option.', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
-        { t: 'Changes submitted', actor: 'Buyer', rev: 1, amt: 1062.49, when: '7/16/2026, 8:08:14 AM', comment: 'Resubmitting for another look.', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
-        { t: 'Revision requested', actor: 'Master', rev: 2, amt: 1062.49, when: '7/16/2026, 8:08:54 AM', comment: 'Still over the threshold — try a different model.', items: [['17-5/8 in. 8 Place Settings Dishwasher in Stainless Steel · Qty 1', 1046.50]] },
-        { t: 'Changes submitted', actor: 'Buyer', rev: 2, amt: 415.39, when: '7/16/2026, 8:09:44 AM', comment: 'Swapped to a lower-cost model.', items: [['24 in. 2-Cycle Built-in Dishwasher in White · Qty 1', 390.39]] },
-        { t: 'Approved', actor: 'Master', rev: 2, amt: 415.39, when: '7/16/2026, 8:10:28 AM', items: [['24 in. 2-Cycle Built-in Dishwasher in White · Qty 1', 390.39]] }
-      ] },
-    J8RG6V: { v: 'SD', buyer: 'Jordan Ellis', prop: 'lonestar', status: 'revision', level: 'Supervisor', date: '07/15/2026',
-      items: [item('1.6 cu. ft. Refrigerator in Black', '6118834', 3, 357.17)],
-      shipping: ['Local Delivery', 0], eligible: ['Supervisor', 'Master'], decidedBy: 'Priya Nair',
-      comment: 'Quantity seems high for one property — can we start with two units?',
-      history: [
-        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1071.51, when: '7/15/2026, 2:31:40 PM', items: [['1.6 cu. ft. Refrigerator in Black · Qty 3', 1071.51]] },
-        { t: 'Revision requested', actor: 'Supervisor', rev: 1, amt: 1071.51, when: '7/15/2026, 4:02:11 PM', comment: 'Quantity seems high for one property — can we start with two units?', items: [['1.6 cu. ft. Refrigerator in Black · Qty 3', 1071.51]] }
-      ] },
-    RBQ90M: { v: 'SD', buyer: 'Priya Nair', prop: 'bayou', status: 'rejected', level: 'Master', date: '06/15/2026',
-      items: [item('Spacemaker® 23-7/8 in. 3.6 cu. ft. Electric Dryer in White on White', '1879922', 8, 790.79)],
-      shipping: ['In-Store Pickup', 0], eligible: ['Master'], decidedBy: 'Marcus Webb', legacy: true,
-      comment: 'Reach out to vendor for bulk quote.',
-      history: [
-        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 6326.32, when: '6/15/2026, 10:12:05 AM', items: [['Spacemaker® 23-7/8 in. 3.6 cu. ft. Electric Dryer · Qty 8', 6326.32]] },
-        { t: 'Rejected', actor: 'Master', rev: 0, amt: 6326.32, when: '6/15/2026, 11:40:22 AM', comment: 'Reach out to vendor for bulk quote.', items: [['Spacemaker® 23-7/8 in. 3.6 cu. ft. Electric Dryer · Qty 8', 6326.32]] }
-      ] },
-    '0ZS6B5': { v: 'ID', buyer: 'Alicia Grant', prop: 'magnolia', status: 'rejected', level: 'Supervisor', date: '06/10/2026',
-      items: [item('24" Drawer Dishwasher', 'variant_01KTSEWPKJ0KKB4JDBB7V4RMCH', 1, 1170.00, { unavailable: true })],
-      shipping: ['Local Delivery', 0], eligible: ['Supervisor', 'Master'], decidedBy: 'Priya Nair', legacy: true, unavailable: true,
-      comment: 'Product discontinued — reorder an in-stock model.',
-      history: [
-        { t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1170.00, when: '6/10/2026, 3:22:48 PM', items: [['24" Drawer Dishwasher · Qty 1', 1170.00]] },
-        { t: 'Rejected', actor: 'Supervisor', rev: 0, amt: 1170.00, when: '6/10/2026, 5:01:19 PM', comment: 'Product discontinued — reorder an in-stock model.', items: [['24" Drawer Dishwasher · Qty 1', 1170.00]] }
-      ] }
-  };
-  const GENERIC = { CT3CPQ: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/25/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1467.08],
-    VJXT0Z: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/24/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1467.08],
-    '2XX1Z9': ['SD','Alicia Grant','magnolia','approved','Supervisor','06/15/2026','27 in. 7.4 cu. ft. Electric Dryer in White','7411520',1,1062.13],
-    GNZSXC: ['ID','Ravi Buyer Demo','magnolia','approved','Supervisor','06/12/2026','50 gal. Tall Electric Water Heater','5521904',2,946.27],
-    ADAKB7: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/08/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1463.08],
-    NRE2YP: ['SD','Alicia Grant','magnolia','approved','Supervisor','06/05/2026','Commercial 6.7 cu. ft. Non Coin Electric Dryer in White','7503672',1,1461.62],
-    HW3K1A: ['GB','Jordan Ellis','bayou','approved','Supervisor','05/28/2026','LED High Bay Fixture, 150W','4412907',6,189.54],
-    PX8Q4D: ['CH','Priya Nair','central','approved','Master','05/20/2026','WHIRLPOOL® ENERGY STAR® 24" Dishwasher - Black','301085',4,376.38],
-    MM2V7E: ['SD','Alicia Grant','magnolia','rejected','Supervisor','05/12/2026','Hospitality 32 in. LED TV (case of 4)','8890021',2,1044.00] };
-  Object.entries(GENERIC).forEach(([id, g]) => {
-    const [v, buyer, prop, status, level, date, nm, sku, qty, price] = g;
-    const amt = Math.round(qty * price * 100) / 100;
-    REQS[id] = { v, buyer, prop, status, level, date, items: [item(nm, sku, qty, price)], shipping: ['Local Delivery', 0],
-      eligible: level === 'Master' ? ['Master'] : ['Supervisor', 'Master'],
-      decidedBy: status === 'pending' ? null : 'Priya Nair',
-      order: status === 'approved' ? ['#' + (300 + Math.abs(id.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % 200), amt] : null,
-      comment: status === 'rejected' ? 'Declined — over the property budget for this period.' : null,
-      history: [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt, when: date + ', 9:00:00 AM', items: [[nm + ' · Qty ' + qty, amt]] }]
-        .concat(status === 'approved' ? [{ t: 'Approved', actor: level, rev: 0, amt, when: date + ', 11:30:00 AM', items: [[nm + ' · Qty ' + qty, amt]] }]
-          : status === 'rejected' ? [{ t: 'Rejected', actor: level, rev: 0, amt, when: date + ', 11:30:00 AM', comment: 'Declined — over the property budget for this period.', items: [[nm + ' · Qty ' + qty, amt]] }] : []) };
-  });
-  Object.values(REQS).forEach(r => r.amount = Math.round((r.items.reduce((a, i) => a + i.qty * i.price, 0) + (r.shipping ? r.shipping[1] : 0)) * 100) / 100);
-
-  let R, curId;
-  function pickReq() { curId = (location.hash || '').replace('#', '') || 'K4PT2N'; if (!REQS[curId]) curId = 'K4PT2N'; R = REQS[curId]; }
-  pickReq();
-  window.addEventListener('hashchange', () => { pickReq(); renderPage(); window.scrollTo(0, 0); });
-
+  const VEN = { SD: 'Scout Demo Vendor', ID: 'Ideal DEV', CH: 'API Test - Chadwell', GB: 'Gorman Bros', AW: 'The Appliance Warehouse - LCR', SA: "Stanton's Appliance" };
   const glyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><circle cx="8" cy="5" r="0.6"/><circle cx="11" cy="5" r="0.6"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
   const IC = {
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
-    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
-    thumb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>',
-    cross: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
-    cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>',
-    refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>',
     truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
+    card: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+    bld: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
     box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
-    store: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/></svg>',
-    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
+    bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>'
   };
+  const SHIP = [
+    { id: 'son', name: 'Overnight', price: 15.99, eta: 'Arrives Tue, Aug 25' },
+    { id: 'sex', name: 'Expedited', price: 25.00, eta: 'Arrives Tue, Aug 25 by 12 PM' },
+    { id: 's2', name: '2 Business Days', price: 11.99, eta: 'Arrives Wed, Aug 26' },
+    { id: 's35', name: '3 - 5 Business Days', price: 7.99, eta: 'Arrives Thu, Aug 27 – Mon, Aug 31' },
+    { id: 'pick', name: 'In-Store Pickup', price: 0, eta: 'Ready today · 8 mi away', free: true }
+  ];
+  const state = { ship: {}, pay: {}, phone: '' };
+  const openItems = new Set();
+  let lastStep = null;
+  const plural = n => n + (n === 1 ? ' item' : ' items');
+  function toggleItems(v) { openItems.has(v) ? openItems.delete(v) : openItems.add(v); renderPage(); }
+  const propId = () => currentProp === 'all' ? 'magnolia' : currentProp;
+  const step = () => (location.hash || '#address').replace('#', '');
+  window.addEventListener('hashchange', renderPage);
 
-  function statusPill(st) { const p = STATUS[st]; return '<span class="status-dot-item"><span class="status-dot ' + p[0] + '"></span><span class="status-dot-label">' + p[1] + '</span></span>'; }
+  function vendorsOf(items) { return [...new Set(items.map(i => i.vendor))]; }
+  function shipTotal(vendors) { return vendors.reduce((a, v) => a + (state.ship[v] ? SHIP.find(s => s.id === state.ship[v]).price : 0), 0); }
+  function allShipped(vendors) { return vendors.every(v => state.ship[v]); }
+  function allReady(vendors) { return vendors.every(v => state.ship[v] && state.pay[v]); }
 
-  function stepper(st) {
-    const d = R.stepDates || [];
-    let steps;
-    if (st === 'approved') steps = [
-      { l: 'Requested', s: 'done', i: IC.check, dt: d[0] || R.date },
-      { l: 'Under Review', s: 'done', i: IC.check, dt: d[1] || R.date },
-      { l: 'Approved', s: 'done', i: IC.check, dt: d[2] || R.date },
-      { l: 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
-    else if (st === 'rejected') steps = [
-      { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
-      { l: 'Under Review', s: 'done', i: IC.check, dt: R.date },
-      { l: 'Rejected', s: 'rejected', i: IC.cross, dt: R.date },
-      { l: 'Order Created', s: 'future', i: IC.cart }];
-    else if (st === 'revision') steps = [
-      { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
-      { l: 'Buyer revision', s: 'active sky', i: IC.refresh },
-      { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: 'Order Created', s: 'future', i: IC.cart }];
-    else steps = [
-      { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
-      { l: 'Under Review', s: 'active', i: IC.eye, dt: 'your move' },
-      { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: 'Order Created', s: 'future', i: IC.cart }];
-    return '<div class="ap-stepper">' + steps.map((sp, i) => {
-      const conn = i < steps.length - 1
-        ? '<div class="ap-conn' + (steps[i + 1].s === 'rejected' || sp.s === 'rejected' && false ? ' rose' : (sp.s === 'done' && steps[i + 1].s.startsWith('done')) ? ' done' : sp.s === 'done' && steps[i + 1].s !== 'future' ? ' done' : '') + '"></div>' : '';
-      return '<div class="ap-step ' + sp.s + '"><div class="ap-dot">' + sp.i + '</div><div class="ap-label">' + sp.l + '</div>' + (sp.dt ? '<div class="ap-date">' + sp.dt + '</div>' : '') + '</div>' + conn;
-    }).join('') + '</div>';
+  function stepBand(cur) {
+    const steps = [['address', 'Address', 'Delivery location'], ['shipping', 'Shipping & Payment', 'Per-vendor options'], ['review', 'Review & Place Order', 'Confirm details']];
+    const idx = { address: 0, shipping: 1, review: 2, placed: 3 }[cur];
+    document.getElementById('chk-steps').innerHTML = steps.map(([id, t, d], i) => {
+      const cls = i < idx ? 'done' : i === idx ? 'active' : '';
+      const n = i < idx ? IC.check : (i + 1);
+      return '<div class="chk-step ' + cls + '"' + (i < idx ? ' onclick="location.hash=\'#' + id + '\'"' : '') + '><span class="n">' + n + '</span><span><span class="t">' + t + '</span><br><span class="d">' + d + '</span></span></div>' + (i < 2 ? '<div class="chk-conn' + (i < idx ? ' done' : '') + '"></div>' : '');
+    }).join('');
   }
 
-  function itemLine(i) {
-    const nm = i.unavailable
-      ? '<span class="strike">' + i.name + '</span> <span class="avail-pill">No longer available</span>'
-      : i.name;
-    const meta = i.unavailable
-      ? '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="font-weight:700">' + money(i.qty * i.price) + '</span><span class="item-meta-pill">Requested ' + i.qty + ' · Available Not tracked</span><span class="avail-pill">Unavailable</span></div>'
-      : '<span class="qty">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total">' + money(i.qty * i.price) + '</span>';
-    return '<div class="item-line"><span class="thumb">' + glyph + '</span><span class="item-nm">' + nm + '<span class="item-sku">Qty ' + i.qty + ' · ' + i.sku + '</span></span>' + meta + '</div>';
+  function optRow(sel, onclick, icon, name, priceHtml, extra) {
+    return '<button class="opt-row' + (sel ? ' selected' : '') + (extra && extra.disabled ? ' disabled' : '') + (onclick ? '' : ' readonly') + '"' + (onclick && !(extra && extra.disabled) ? ' onclick="' + onclick + '"' : '') + '>' +
+      (icon ? '<span class="opt-ic">' + icon + '</span>' : '') + '<span class="opt-body"><span class="opt-name">' + name + (extra && extra.chip ? '<span class="soon-chip">' + extra.chip + '</span>' : '') + '</span>' + (extra && extra.desc ? '<span class="opt-desc">' + extra.desc + '</span>' : '') + '</span>' +
+      '<span class="opt-price' + (extra && extra.free ? ' free' : '') + '">' + priceHtml + '</span><span class="opt-radio">' + IC.check + '</span></button>';
   }
+
+  function buyerDetailsCard(prop) {
+    return '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Buyer details</h2><a class="table-link" onclick="location.hash=\'#address\'">Edit</a></div>' +
+      '<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:10px"><span class="v-avatar">AG</span><div><div style="font-size:14px;font-weight:600">Alicia Grant</div><div style="font-size:12px;color:var(--muted-foreground)">alicia.grant@demoinc.com</div></div></div>' +
+      '<div class="deliver-card" style="padding:0"><span class="icon-tile tile-sky" style="width:40px;height:40px">' + IC.bld + '</span><div><div class="ven-eyebrow">Delivering to</div><div class="ven-name" style="margin-bottom:2px">' + prop.name + '</div><div style="font-size:13px;color:var(--muted-foreground)">' + prop.addr + ', ' + prop.city + '</div></div></div></div>';
+  }
+  const secureBar = '<div class="secure-bar">' + IC.lock + 'Secure Checkout</div>';
 
   function renderPage() {
-    document.getElementById('hero-sub').textContent = '#' + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
-    const st = R.status;
-    let main = '';
+    if (currentProp === 'all') { selectProp(localStorage.getItem('scout-checkout-prop') || 'magnolia'); return; }
+    const cur = step();
+    const items = CART.itemsFor(currentProp);
+    if (cur === 'review' && lastStep !== 'review') vendorsOf(items).forEach(v => openItems.add(v));
+    lastStep = cur;
+    const prop = PROPERTIES.find(x => x.id === currentProp);
+    const vendors = vendorsOf(items);
+    const sub = CART.subtotalFor(currentProp);
+    const main = document.getElementById('chk-main'), side = document.getElementById('chk-side');
+    document.getElementById('hero-sub').textContent = '1 Fulfillment location · ' + prop.name;
 
-    main += '<div class="card"><div class="det-card-head"><h2>Approval Progress</h2>' + statusPill(st) + '</div>' + stepper(st) + '</div>';
+    if (cur === 'placed') {
+      let rc = null;
+      try { rc = JSON.parse(localStorage.getItem('scout-last-order')); } catch (e) {}
+      const rprop = PROPERTIES.find(x => x.id === (rc ? rc.prop : currentProp)) || prop;
+      document.getElementById('hero-band').style.display = '';
+      document.getElementById('chk-steps').style.display = 'none';
+      document.getElementById('back-cart').style.display = 'none';
+      document.querySelector('.hero-title-block').style.display = 'none';
+      const grid = document.getElementById('chk-grid');
+      grid.style.gridTemplateColumns = '1fr';
+      grid.style.marginTop = '-36px';
+      side.innerHTML = '';
+      main.innerHTML = '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px"><svg style="width:34px;height:34px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></div>' +
+        '<h1 style="margin-bottom:0">Order placed successfully</h1>' +
+        '<div class="confirm-sub">' + rprop.name + ' · Confirmation sent to alicia.grant@demoinc.com</div>' +
+        (rc ? '<div class="card next-card" style="margin-bottom:16px"><div class="det-card-head"><h2 style="font-size:16px;display:inline-flex;align-items:center;gap:8px"><span style="color:var(--emerald);display:inline-flex;width:17px;height:17px">' + IC.box + '</span>' + (rc.orders.length === 1 ? 'Order placed' : rc.orders.length + ' orders placed') + '</h2></div>' +
+        rc.orders.map(o => '<div class="rcpt-row"><span class="mono">#' + o.num + '</span><span class="rcpt-body"><span class="rcpt-name">' + o.name + '</span><span class="rcpt-sub" style="display:block">' + o.count + (o.count === 1 ? ' item' : ' items') + ' · ' + o.ship + '</span></span><span class="rcpt-total">' + money(o.total) + '</span></div>').join('') +
+        '<div class="rcpt-grand"><span>Total</span><span>' + money(rc.grand) + '</span></div></div>' : '') +
+        (rc && rc.over ? '<div class="callout amber" style="text-align:left;margin-bottom:16px"><b>Sent for approval</b>This order exceeds the property\'s budget, so it needs a Supervisor\'s sign-off before it\'s released to the vendor. <a class="table-link" href="approvals.html" style="font-size:13px">View approvals</a></div>' : '') +
+        '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">What happens next?</h2></div>' +
+        '<div class="next-step"><span class="nn">1</span><div><b>Order confirmation</b><span>You\'ll receive an email confirming your order details.</span></div></div>' +
+        '<div class="next-step"><span class="nn">2</span><div><b>Processing &amp; shipping</b><span>Each vendor or fulfillment location processes its order separately.</span></div></div>' +
+        '<div class="next-step"><span class="nn">3</span><div><b>Track it from Orders</b><span>Follow delivery and validate receipt from Order Tracking.</span></div></div></div>' +
+        '<div class="confirm-actions"><a class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" href="home.html"><span style="display:inline-flex;width:16px;height:16px">' + IC.box + '</span>Track your orders</a>' +
+        '<a class="btn" style="display:inline-flex;align-items:center;gap:8px" href="marketplace.html"><span style="display:inline-flex;width:16px;height:16px">' + IC.bag + '</span>Continue Shopping</a></div></div>';
+      return;
+    }
+    document.getElementById('hero-band').style.display = '';
+    document.getElementById('back-cart').style.display = '';
+    document.getElementById('chk-steps').style.display = '';
+    document.querySelector('.hero-title-block').style.display = '';
+    document.getElementById('chk-grid').style.gridTemplateColumns = '';
+    document.getElementById('chk-grid').style.marginTop = '';
+    if (!items.length) { location.href = 'cart.html'; return; }
+    stepBand(cur);
 
-    if (st === 'pending') {
-      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span class="pill p-neutral">' + R.level + ' approval</span></div>' +
-        '<p style="font-size:13px;color:var(--muted-foreground);margin-bottom:10px">A comment is required to request a revision or reject.</p>' +
-        '<textarea class="dec-comment" id="dec-comment" placeholder="Add a comment for the buyer (required for revision or rejection)…"></textarea>' +
-        '<div class="decision-actions">' +
-        '<button class="btn btn-primary" onclick="decide(\'approved\')">Approve</button>' +
-        '<button class="btn btn-outline-sky" onclick="decide(\'revision\')">Request revision</button>' +
-        '<button class="btn btn-outline-rose" onclick="decide(\'rejected\')">Reject</button>' +
-        '</div></div>';
+    if (cur === 'address') {
+      main.innerHTML = '<div class="card"><div class="det-card-head hd"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.pin + '</span>Delivery Address</h2></div>' +
+        '<div class="chk-box"><span class="icon-tile tile-sky">' + IC.bld + '</span><div><div style="font-size:14px;font-weight:700">' + prop.name + '</div><div style="font-size:13px;color:var(--muted-foreground);margin-top:2px">' + prop.addr + ', ' + prop.city + '</div></div></div>' + '</div>' +
+        '<div class="card"><div class="det-card-head hd"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.user + '</span>Contact</h2></div>' +
+        '<div class="chk-box" style="align-items:center"><span class="v-avatar">AG</span><div><div style="font-size:14px;font-weight:600">Alicia Grant</div><div style="font-size:12px;color:var(--muted-foreground)">alicia.grant@demoinc.com</div></div></div>' +
+        '<div class="gl-field" style="margin-top:14px"><label>Phone Number (optional)</label><input id="phone-in" placeholder="(555) 123-4567" value="' + state.phone + '"></div>' +
+        '<button class="btn btn-primary btn-block" style="margin-top:16px" onclick="state.phone = document.getElementById(\'phone-in\').value; location.hash = \'#shipping\'">Proceed</button></div>';
+      side.innerHTML = '<div class="card"><div class="det-card-head"><h2>Order Summary</h2></div>' +
+        '<div class="coupon-row"><input placeholder="Enter coupon code"><button class="btn" style="height:40px">Apply</button></div>' +
+        (vendors.length > 1 ? vendors.map(v => '<div class="sum-vendor"><span class="ven-logo" style="width:30px;height:30px;font-size:10px">' + v + '</span>' + VEN[v] + '<span class="sv-total">' + money(items.filter(i => i.vendor === v).reduce((a, i) => a + i.qty * i.price, 0)) + '</span></div>').join('') : '') +
+        '<div class="sum-row"><span class="muted">Subtotal (' + plural(CART.countFor(currentProp)) + ')</span><span>' + money(sub) + '</span></div>' +
+        '<div class="sum-row"><span class="muted">Shipping</span><span class="hint">Calculated after address</span></div>' +
+        '<div class="sum-row"><span class="muted">Tax</span><span class="hint">Handled by vendor</span></div></div>' + secureBar;
+      return;
     }
 
-    main += '<div class="card"><div class="det-card-head"><div><h2>Order details</h2><div class="sub" id="inv-checked">Checked just now</div></div>' +
-      '<button class="btn" style="height:36px;font-size:13px;display:inline-flex;align-items:center;gap:8px" onclick="refreshInv()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Refresh inventory</button></div>' +
-      (R.legacy ? '<div class="callout violet" style="margin:10px 0"><b>' + IC.warn + 'Legacy approval · Recreate cart required</b>This approval was created before live inventory classification was added. Request a revision so the buyer can clear all items from the cart, add the same items again, and resubmit it for approval.</div>' : '') +
-      (R.unavailable ? '<div class="callout rose" style="margin:10px 0"><b>A product in this request is no longer available</b>The vendor no longer lists the product(s) marked below, so this request can no longer be approved. Please reject it and ask the buyer to place a new order with available items.</div>' : '') +
-      R.items.map(itemLine).join('') +
-      (() => { const sub = Math.round(R.items.reduce((a, i) => a + i.qty * i.price, 0) * 100) / 100;
-        return '<div class="det-totals">' +
-        '<div class="tot-row"><span>Items subtotal</span><span>' + money(sub) + '</span></div>' +
-        '<div class="tot-row"><span>Shipping · ' + R.shipping[0] + '</span><span>' + money(R.shipping[1]) + '</span></div>' +
-        '<div class="tot-row grand"><span>Request total</span><span>' + money(R.amount) + '</span></div></div>'; })() + '</div>';
+    // shipping + review share the vendor card
+    const review = cur === 'review';
+    main.innerHTML = vendors.map(v => {
+      const vi = items.filter(i => i.vendor === v);
+      const vt = vi.reduce((a, i) => a + i.qty * i.price, 0);
+      const shipSel = state.ship[v];
+      const paySel = state.pay[v] || null;
+      const chip = (done, n, label) => '<span class="vp' + (done ? ' done' : '') + '"><span class="pdot">' + (done ? IC.check : n) + '</span>' + label + '</span>';
+      const prog = review ? '<a class="table-link" onclick="location.hash=\'#shipping\'">Edit</a>' : '<div class="vprog">' + chip(!!shipSel, 1, 'Shipping') + '<span class="vp-sep"></span>' + chip(!!paySel, 2, 'Payment') + '<span class="vp-sep"></span>' + chip(!!shipSel && !!paySel, 3, 'Ready') + '</div>';
+      const itemsOpen = openItems.has(v);
+      return '<div class="card" data-v="' + v + '"><div class="vg-head" style="border-bottom:none;padding-bottom:8px"><div class="vg-id"><span class="ven-logo">' + v + '</span><div><div class="vg-name">' + VEN[v] + '</div>' +
+        '<button class="gl-toggle' + (itemsOpen ? ' open' : '') + '" style="margin-top:2px" onclick="toggleItems(\'' + v + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' + (n => n + (n === 1 ? ' item' : ' items'))(vi.reduce((a, i) => a + i.qty, 0)) + ' · ' + money(vt) + '</button></div></div>' + prog + '</div>' +
+        (itemsOpen ? vi.map(i => '<div class="cart-item" style="padding:12px 0"><div class="ci-row" style="grid-template-columns:48px 1fr auto;align-items:center"><span class="ci-thumb" style="width:48px;height:48px">' + glyph + '</span><div><div class="ci-name" style="font-size:13px">' + i.name + '</div><div class="ci-unit" style="font-size:12px">' + money(i.price) + ' × ' + i.qty + '</div></div><span class="ci-line" style="font-size:14px">' + money(i.qty * i.price) + '</span></div></div>').join('') : '') +
+        '<div class="opt-group-title">' + IC.truck + 'Shipping & Pickup' + (shipSel && !review ? '<span class="ok">' + IC.check + '</span>' : '') + '</div>' +
+        SHIP.filter(s => !review || shipSel === s.id).map(s => optRow(shipSel === s.id, review ? '' : 'pickShip(\'' + v + '\',\'' + s.id + '\')', null, s.name, s.free ? 'Free' : money(s.price), { desc: s.eta, free: s.free })).join('') +
+        '<div class="opt-group-title">' + IC.card + 'Payment Method' + (paySel && !review ? '<span class="ok">' + IC.check + '</span>' : '') + '</div>' +
+        optRow(paySel === 'po', review ? '' : 'pickPay(\'' + v + '\',\'po\')', IC.doc, 'Purchase Orders', '', { desc: 'Traditional purchase order workflow' }) +
+        (review ? '' : optRow(false, '', IC.card, 'Direct Checkout', '', { desc: 'Accept card payments directly via Stripe Connect', chip: 'Coming Soon', disabled: true })) +
+        '<div class="det-totals"><div class="tot-row"><span>Subtotal</span><span>' + money(vt) + '</span></div>' +
+        '<div class="tot-row"><span>Shipping' + (shipSel ? ' · ' + SHIP.find(s => s.id === shipSel).name : '') + '</span><span>' + (shipSel ? money(SHIP.find(s => s.id === shipSel).price) : '—') + '</span></div>' +
+        '<div class="tot-row grand"><span>Vendor Total</span><span>' + money(vt + (shipSel ? SHIP.find(s => s.id === shipSel).price : 0)) + '</span></div></div></div>';
+    }).join('');
 
-    main += '<div class="card"><div class="det-card-head"><h2>Approval history</h2></div>' +
-      '<p style="font-size:13px;color:var(--muted-foreground);margin-bottom:4px">Every request, response and decision is retained on this approval.</p>' +
-      R.history.map((ev, i) => {
-        const prev = R.history[i - 1];
-        const changed = !prev || prev.amt !== ev.amt || JSON.stringify(prev.items) !== JSON.stringify(ev.items);
-        return '<div class="tl-event"><div class="tl-head"><div><div class="tl-title">' + ev.t + '</div><div class="tl-actor">' + ev.actor + ' · Revision ' + ev.rev + '</div></div>' +
-        '<div class="tl-right"><b>' + money(ev.amt) + '</b>' + ev.when + '</div></div>' +
-        (ev.comment ? '<div class="tl-comment">' + ev.comment + '</div>' : '') +
-        (changed ? ev.items.map(it => '<div class="tl-item"><span>' + it[0] + '</span><span>' + money(it[1]) + '</span></div>').join('') : '') +
-        '</div>'; }).join('') + '</div>';
-
-
-    let side = '';
-    side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + R.v + '</span><div><div class="ven-eyebrow">Vendor</div><div class="ven-name"><a href="products.html" style="color:inherit;text-decoration:none">' + VEN[R.v] + '</a></div></div></div></div>';
-
-    const prop = PROPERTIES.find(x => x.id === R.prop);
-    side += '<div class="card"><dl class="fact-rows wide">' +
-      '<dt>Reason</dt><dd>Amount threshold</dd>' +
-      '<dt>Property</dt><dd>' + prop.name + '</dd>' +
-      '<dt>Approvers</dt><dd>' + R.eligible.map(e => '<span class="lvl-pill">' + e + '</span>').join('') + '</dd>' +
-      (R.decidedBy ? '<dt>Decided by</dt><dd>' + R.decidedBy + '</dd>' : '') + '</dl>' +
-      (R.status === 'revision' && R.comment ? '<div class="callout amber" style="margin-top:14px"><b>Note to buyer</b>' + R.comment + '</div>' : '') +
-      (R.status === 'rejected' && R.comment ? '<div class="callout rose" style="margin-top:14px"><b>Rejection reason</b>' + R.comment + '</div>' : '') + '</div>';
-
-    if (R.status === 'approved' && R.order) {
-      side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Orders placed</h2></div>' +
-        '<p style="font-size:13px;color:var(--muted-foreground)">Created when this request was approved.</p>' +
-        '<div class="order-row"><div class="onum">Order ' + R.order[0] + '</div>' +
-        '<a class="toolbar-btn" style="text-decoration:none" href="#">View order <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></div>';
-    }
-
-    document.getElementById('det-main').innerHTML = main;
-    document.getElementById('det-side').innerHTML = side;
-  }
-
-  function decide(next) {
-    const c = (document.getElementById('dec-comment').value || '').trim();
-    if ((next === 'revision' || next === 'rejected') && !c) {
-      const box = document.getElementById('dec-comment');
-      box.style.borderColor = 'var(--rose)'; box.focus(); return;
-    }
-    const now = '8/24/2026, 10:15:00 AM';
-    if (next === 'approved') {
-      R.status = 'approved'; R.decidedBy = 'You (Supervisor)'; R.order = ['#498', R.amount];
-      R.history.push({ t: 'Approved', actor: 'Supervisor', rev: 0, amt: R.amount, when: now, comment: c || null, items: R.history[0].items });
-    } else if (next === 'revision') {
-      R.status = 'revision'; R.decidedBy = 'You (Supervisor)'; R.comment = c;
-      R.history.push({ t: 'Revision requested', actor: 'Supervisor', rev: 1, amt: R.amount, when: now, comment: c, items: R.history[0].items });
+    const shipCost = vendors.reduce((a, v) => a + (state.ship[v] ? SHIP.find(s => s.id === state.ship[v]).price : 0), 0);
+    const ready = allReady(vendors);
+    if (!review) {
+      side.innerHTML = '<div class="card"><div class="det-card-head"><h2>Order Total</h2></div>' +
+        (vendors.length > 1 ? vendors.map(v => '<div class="sum-vendor"><span class="ven-logo" style="width:30px;height:30px;font-size:10px">' + v + '</span>' + VEN[v] + '<span class="sv-total">' + money(items.filter(i => i.vendor === v).reduce((a, i) => a + i.qty * i.price, 0)) + '</span></div>').join('') : '') +
+        '<div class="sum-row"><span class="muted">Subtotal (' + plural(CART.countFor(currentProp)) + ')</span><span>' + money(sub) + '</span></div>' +
+        '<div class="sum-row"><span class="muted">Shipping</span>' + (allShipped(vendors) ? '<span>' + money(shipCost) + '</span>' : '<span class="hint">Select a shipping option</span>') + '</div>' +
+        '<div class="sum-row"><span class="muted">Tax</span><span class="hint">Handled by vendor</span></div>' +
+        '<div class="sum-grand"><span>Order Total</span><span class="amt">' + money(sub + shipCost) + '</span></div>' +
+        '<button class="btn btn-primary btn-block" style="margin-top:14px"' + (ready ? ' onclick="location.hash=\'#review\'"' : ' disabled') + '>Continue to Review</button></div>' +
+        buyerDetailsCard(prop) + secureBar;
     } else {
-      R.status = 'rejected'; R.decidedBy = 'You (Supervisor)'; R.comment = c;
-      R.history.push({ t: 'Rejected', actor: 'Supervisor', rev: 0, amt: R.amount, when: now, comment: c, items: R.history[0].items });
+      const total = sub + shipCost;
+      side.innerHTML = '<div class="card"><div class="det-card-head"><h2>Review Order</h2></div>' +
+        (vendors.length > 1 ? vendors.map(v =>
+          '<div class="sum-vendor"><span class="ven-logo" style="width:30px;height:30px;font-size:10px">' + v + '</span>' + VEN[v] + '<span style="color:var(--emerald);display:inline-flex;width:15px;height:15px;margin-left:6px;flex-shrink:0">' + IC.check + '</span><span class="sv-total">' + money(items.filter(i => i.vendor === v).reduce((a, i) => a + i.qty * i.price, 0)) + '</span></div>').join('') : '') +
+        '<div class="sum-row"><span class="muted">Subtotal</span><span>' + money(sub) + '</span></div>' +
+        '<div class="sum-row"><span class="muted">Shipping</span><span>' + money(shipCost) + '</span></div>' +
+        '<div class="sum-row"><span class="muted">Tax</span><span class="hint">Handled by vendor</span></div>' +
+        '<div class="sum-grand"><span>Total</span><span class="amt">' + money(total) + '</span></div>' +
+        '<button class="btn btn-primary btn-block" style="margin-top:14px" onclick="placeOrder()">Place ' + vendors.length + ' Order' + (vendors.length > 1 ? 's' : '') + ' – ' + money(total) + '</button></div>' +
+        buyerDetailsCard(prop) + secureBar;
     }
-    R.history.forEach(ev => { if (ev.comment === null) delete ev.comment; });
-    renderPage();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function refreshInv() {
-    const el = document.getElementById('inv-checked');
-    el.textContent = 'Checked 0 seconds ago';
-    setTimeout(() => el.textContent = 'Checked just now', 1200);
+  function pickShip(v, id) { state.ship[v] = id; renderPage(); advanceFrom(v); }
+  function pickPay(v, id) { state.pay[v] = id; renderPage(); advanceFrom(v); }
+  function advanceFrom(v) {
+    if (!(state.ship[v] && state.pay[v])) return;
+    const next = [...document.querySelectorAll('#chk-main .card[data-v]')].find(c => { const cv = c.dataset.v; return !(state.ship[cv] && state.pay[cv]); });
+    if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+  }
+  const BUDGET = 2500;
+  function placeOrder() {
+    const items = CART.itemsFor(currentProp);
+    const vendors = vendorsOf(items);
+    let seq = parseInt(localStorage.getItem('scout-order-seq') || '412', 10);
+    const orders = vendors.map(v => {
+      const vi = items.filter(i => i.vendor === v);
+      const ship = SHIP.find(x => x.id === state.ship[v]);
+      const total = vi.reduce((a, i) => a + i.qty * i.price, 0) + ship.price;
+      return { num: seq++, v, name: VEN[v], count: vi.reduce((a, i) => a + i.qty, 0), ship: ship.name, total: Math.round(total * 100) / 100 };
+    });
+    localStorage.setItem('scout-order-seq', String(seq));
+    const receipt = { orders, grand: Math.round(orders.reduce((a, o) => a + o.total, 0) * 100) / 100, prop: currentProp, over: orders.reduce((a, o) => a + o.total, 0) > BUDGET };
+    localStorage.setItem('scout-last-order', JSON.stringify(receipt));
+    CART.clear(currentProp); CART.syncBadge(); location.hash = '#placed';
   }
 
   renderPage();

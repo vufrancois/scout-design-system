@@ -20,9 +20,12 @@
 2. **No strip Raise Claim button** — item-level entries remain the claim door (standing declutter rule); by this stage the claim window is nearly closed anyway.
 3. The reference's amber variance treatment ("The Scout AI extracted amount is incorrect. I reviewed the invoice PDF…") is **held** — our demo invoice has $0.00 variance everywhere; the variance-mismatch confirm path needs a discrepant-invoice demo order (natural fit: a corrected invoice on the claims order).
 
+## Variance mismatch + vendor disputed state (follow-up pass)
+- **Seeded #664** (deep link `#664/invoice`): a resolved-claim order whose vendor invoice still bills the canceled LEVOLOR shade. New `invBilledWrong` model: `billedAmounts()` computes what the invoice claims vs `invAmounts()` (our truth); the mock PDF renders the billed figures including the canceled line ($30.40 vs $77.60 subtotal, $52.16 grand-total variance).
+- **Variance treatment**: mismatched amount rows show a rose Variance figure + amber warning under the label ("The extracted amount doesn't match your records — confirm only if you reviewed the PDF and accept the difference; otherwise dispute"); the billed-but-canceled unit appears as its own SKU row (ROG "—" vs Invoice 1, amber "Canceled after your claim — the invoice still bills it"). Checking a mismatched row is an explicit attestation; Validate stays unlockable for accepted differences, Dispute is the refusal path — both verified live on #664.
+- **Vendor `#disputed` state**: rose "Invoice Disputed" pill, "Action Required · Correct & Resubmit Invoice" strip with the buyer's reason, rose Documents note ("Invoice #001042755 disputed … Validation blocked" chip); **Upload Corrected Invoice re-enters the standard upload → AI review → accept pipeline** (verified: upload from #disputed lands on #review).
+
 ## Held
-- Variance-mismatch state (amber confirm copy when Order/ROG ≠ Invoice).
-- Vendor side of a dispute (corrected-invoice resubmission — vendor `#review` handles the re-upload naturally, but no disputed-state demo exists there yet).
 - Write a Review remains a stub.
 
 ## Components cascaded

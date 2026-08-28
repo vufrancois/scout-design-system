@@ -1580,6 +1580,19 @@
         feedHidden: [['Items delivered','2 items \u00B7 Fulfillment #1','3m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','5m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','7m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','9m ago']]
       },
+      disputed: {
+        noCancel: true,
+        doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
+        pills: [['dot-delivered','Delivery Validated','Validated by the buyer 07/23/2026 \u00B7 Receipt of Goods on file'], ['dot-claim','Invoice Disputed','The buyer rejected the invoice \u2014 correct and resubmit']],
+        progress: '4 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'claim', title: 'Action Required \u00B7 Correct & Resubmit Invoice', desc: 'The buyer disputed invoice #001042755 \u2014 the amounts don\u2019t match the received goods. Upload a corrected invoice; their validation stays blocked until they review the replacement.', cta: ['Upload Corrected Invoice', 'openInvoice()'] },
+        docsRog: true, invDisputedNote: true,
+        feed: [['Invoice disputed by buyer','#001042755 \u00B7 amounts don\u2019t match the received goods','Just now'], ['Invoice accepted','#001042755 \u00B7 $16.89 (8%) sales tax confirmed','1h ago']],
+        feedHidden: [['Delivery validated by buyer','Receipt of Goods generated','2h ago'], ['Items delivered','2 items \u00B7 Fulfillment #1','3h ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','5h ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','7h ago']]
+      },
       invoiced: {
         noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered','tax'], current: 'validated', currentActor: 'buyer',
@@ -1709,8 +1722,13 @@
       document.getElementById('pay-pending').textContent = s.pending || '$236.14 USD';
       document.getElementById('doc-invoice').style.display = s.docs3 ? '' : 'none';
       document.getElementById('doc-receipt').style.display = (s.docs3 || s.docsRog) ? '' : 'none';
-      document.getElementById('doc-pending').style.display = s.invPending ? '' : 'none';
+      document.getElementById('doc-pending').style.display = (s.invPending || s.invDisputedNote) ? '' : 'none';
       if (s.invPending) renderInvPending();
+      if (s.invDisputedNote) {
+        const dp = document.getElementById('doc-pending');
+        dp.style.borderColor = 'color-mix(in srgb, var(--rose) 45%, transparent)';
+        dp.innerHTML = '<div style="display:flex;gap:10px;align-items:flex-start"><svg style="width:18px;height:18px;color:var(--rose);flex-shrink:0;margin-top:1px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><div><div style="font-size:13px;font-weight:600">Invoice #001042755 disputed</div><div style="font-size:12px;color:var(--muted-foreground);margin-top:2px">The buyer reviewed the invoice and rejected it \u2014 the amounts don\u2019t match the received goods. Upload a corrected invoice to restart their validation.</div><span style="display:inline-flex;margin-top:8px;font-size:11px;font-weight:600;background:var(--rose-soft);color:var(--rose);border-radius:var(--radius-sm);padding:2px 8px">Validation blocked</span></div></div>';
+      } else { document.getElementById('doc-pending').style.borderColor = ''; }
       document.getElementById('pay-capture').style.display = s.capture ? '' : 'none';
       document.getElementById('pay-capture-desc').textContent = s.captureDesc || '';
       document.getElementById('btn-mark-paid').style.display = s.captureBtn ? '' : 'none';

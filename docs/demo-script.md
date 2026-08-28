@@ -18,6 +18,7 @@ Walk the lifecycle top to bottom; every order also appears in Order Tracking (`b
 | Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold, "Cancellation requested" item note; rose Claim Open overlay in the table |
 | Awaiting vendor invoice | live | Validate any order fully (e.g. `#512`) — the saved state is exactly this: sky **Awaiting vendor invoice** pill + clock note |
 | Awaiting Payment | `#653` | **Confirm Payment** task → confirm dialog → resting "Waiting on Vendor · Completion" (violet Payment confirmed, Paid Total goes real, Write a Review) |
+| Invoice with variance (dispute demo) | `#664` | `#664/invoice`: the invoice still bills a claim-canceled unit — rose Variance, amber attestation copy, canceled unit as ROG "—" row; Dispute → rose "Invoice disputed"; pairs with vendor `#disputed` |
 | Invoice received → Invoice Validation | `#674` | **Validate Invoice** primary appears (only now); `#674/invoice` deep-links into the **Document Review Split View** — confirm every AI-extracted value, then Validate (same-page advance to Awaiting Payment, tax joins totals) or Dispute (steps back, rose "Invoice disputed") |
 | Completed / closed | `#515` | The vendor demo order from the buyer's lens — all 8 steps done, "Order Complete" resting strip, Paid Total = $253.03, Write a Review only. Pair with vendor `#completed` for the one-order-two-lenses beat |
 | Claim resolved | `#662` | Emerald **Claim resolved** callout with per-line outcomes; Summary rewritten: canceled line struck through + rose pill and out of the totals, replacement as its own line with **Fulfillment #2**; validate the replacement live to finish the loop |
@@ -36,6 +37,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 | Delivered — waiting on buyer | `#delivered` | **Waiting on Buyer · Delivery Validation** (vendor no longer "uploads invoice to unblock validation") |
 | Claim Open | `#claim` | **Claim Resolution Panel**: buyer-request chips (emerald keep / rose cancel), Send replacement vs Cancel affected quantity cards, Resolve claim → invoice released (transitions to `#tax`) |
 | Delivery Validated — Upload Invoice | `#tax` | Buyer's **Receipt of Goods** in Documents; Upload Invoice modal → "Upload for AI review" kicks off the live flow |
+| Invoice disputed — correct & resubmit | `#disputed` | Buyer rejected the invoice: rose pill, disputed Documents note ("Validation blocked"), Upload Corrected Invoice re-enters the upload → AI review pipeline |
 | Invoice pending review | `#review` | Scout AI processing → Ready for review; Documents shows the **Pending review** block; Review modal with extracted number + tax and the **two required confirmation cards** — accept to advance |
 | Invoice submitted — buyer QCing | `#invoiced` | Waiting on Buyer · Invoice Validation; emerald Invoice #001042755 doc-row |
 | Invoice validated | `#validated` | Invoice Posted · Awaiting Payment |

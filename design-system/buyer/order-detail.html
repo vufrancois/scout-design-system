@@ -310,6 +310,20 @@
       { t: 'Invoice validated by Alicia Grant', sub: '#001042755 · $253.03 on the books', when: 'Jul 24, 2026', more: true },
       { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: 'Jul 23, 2026', more: true },
       { t: 'Order placed', sub: '$236.14', when: 'Jul 23, 2026' }] };
+  ORDERS[664] = { v: 'SD', prop: 'bayou', invNum: '001042760', invBilledWrong: true, status: ['Delivery Validated', 'dot-approved'], placed: 'Aug 27, 2026, 9:58 AM', ship: ['2 Business Days', 11.99],
+    items: [
+      { name: '47 x 64 in. Vinyl Cordless Plus Mini Blind', sku: '7134298', price: 30.40, qty: 1, rec: 1, st: ['Delivered', 'dot-approved'] },
+      { name: 'LEVOLOR 72 x 60 in. Room Darkening Shade', sku: '7280114', price: 47.20, qty: 1, rec: 0, canceled: true, st: null }],
+    prog: { done: 5, active: 5, dates: ['Aug 27', 'Aug 27', 'Aug 27', 'Aug 28', 'Aug 28'] },
+    fulfillments: [{ n: 1, state: 'delivered', items: [0, 1], tracking: null }],
+    docs: [['Purchase Order #664', 'PDF'], ['Receipt of Goods #ROG-664', 'PDF', 'violet', 'Aug 28, 2026'], ['Invoice #001042760', 'PDF', 'emerald', 'Aug 28, 2026']],
+    claim: { resolved: true, lines: [{ qty: 1, name: 'LEVOLOR 72 x 60 in. Room Darkening Shade', issue: 'Damaged item', res: 'cancel' }] },
+    activity: [
+      { t: 'Invoice received from vendor', sub: '#001042760 · $97.74 · ready for your validation', when: '30m ago', hi: true },
+      { t: 'Claim resolved by vendor', sub: '1 unit canceled — removed from the invoice', when: '2h ago' },
+      { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: '3h ago', more: true },
+      { t: 'Claim raised by Alicia Grant', sub: '1× LEVOLOR Room Darkening Shade — Damaged item', when: '3h ago', more: true },
+      { t: 'Order placed', sub: '$89.59', when: 'Aug 27' }] };
   function genericOrder(num) {
     let sv = num; const rnd = () => { sv = (sv * 1103515245 + 12345) % 2147483648; return sv / 2147483648; };
     const price = Math.round((100 + rnd() * 2500) * 100) / 100;
@@ -668,11 +682,20 @@
     return { sub, tax, grand, ship: O.ship[1] };
   }
   function pdfRows() { return O.items.filter(i => !i.canceled && (i.rec || 0) > 0); }
+  function billedAmounts() {
+    const a = invAmounts();
+    if (!O.invBilledWrong) return a;
+    const extra = Math.round(O.items.reduce((x, i) => x + (i.canceled ? i.qty * i.price : 0), 0) * 100) / 100;
+    const sub = Math.round((a.sub + extra) * 100) / 100;
+    const tax = Math.round(sub * (O.taxRate || 0.105) * 100) / 100;
+    return { sub, tax, grand: Math.round((sub + tax + a.ship) * 100) / 100, ship: a.ship };
+  }
   function pdfHead(docLabel) {
     return 'SCOUT DEMO VENDOR\n1502 DAVE DIXON DR\nNEW ORLEANS LA 70112\n' + docLabel + '\n---------Sold to----------    ------Comments------    ---------Ship to---------\nBAYOU CROSSING APARTMENTS                             BAYOU CROSSING APARTMENTS\n3850 AIRLINE DR               SCOUT ORDER #' + num + '        3850 AIRLINE DR\nBATON ROUGE LA                2 BUSINESS DAY SHIP     BATON ROUGE LA\n70805                                                 70805\n';
   }
   function invPdfText() {
-    const a = invAmounts(); const rows = pdfRows();
+    const a = billedAmounts();
+    const rows = pdfRows().concat(O.invBilledWrong ? O.items.filter(i => i.canceled).map(i => ({ ...i, rec: i.qty })) : []);
     return pdfHead('Ref #:' + invN() + ' Trc:I Chrg          INVOICE           08/28/26  Page: 1') +
       '\n                    A/N:7278  St#:F\nPO#:PO-' + num + '-189   Clr:JVL   Slp:361   Trms:NET PROX 10TH\n        Ship Date:08/28/26 11:50                      Pay Type:C\n Ord Shp C B/O Mfg Sku     Des                 List    Unit     Ext Amt\n' + rows.map(r => '  1   1 I   0 LWI ' + r.sku + '  ' + r.name.toUpperCase().slice(0, 22) + '  ' + (Math.round(r.price * 1.333 * 100) / 100).toFixed(2) + '  ' + r.price.toFixed(2) + '    ' + (r.rec * r.price).toFixed(2)).join('\n') + '\n\n                          Tax       Sub-Total:      ' + a.sub.toFixed(2) + '\n                          ' + a.tax.toFixed(2) + '\n                                    Shipping:       ' + a.ship.toFixed(2) + '\nRecv\'d by:          Total Shipped: ' + rows.reduce((x, r) => x + r.rec, 0) + '   Grand Total:    ' + a.grand.toFixed(2) + '\n\n     *** DEMO INVOICE - NOT A REAL TRANSACTION ***\n     SALES TAX APPLIED AT 10.5% ON MERCHANDISE SUBTOTAL';
   }
@@ -701,15 +724,23 @@
   function renderInvTk() {
     const tk = document.getElementById('inv-tk'); if (!tk) return;
     const a = invAmounts();
+    const b = billedAmounts();
     const rows = O.items.filter(i => !i.canceled && (i.rec || 0) > 0);
-    const reqKeys = rows.map((r, x) => 'q' + x).concat(['sub', 'tax', 'grand']);
+    const billedExtra = O.invBilledWrong ? O.items.filter(i => i.canceled) : [];
+    const reqKeys = rows.map((r, x) => 'q' + x).concat(billedExtra.map((r, x) => 'x' + x)).concat(['sub', 'tax', 'grand']);
     const done = reqKeys.filter(k => invChecks[k]).length;
     const allOk = done === reqKeys.length;
     const chk = (k) => '<span class="chk' + (invChecks[k] ? ' on' : '') + '" onclick="invTkToggle(\'' + k + '\')">' + (invChecks[k] ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' : '') + '</span>';
     const pdfText = invPdfText();
-    const skuRows = rows.map((r, x) => '<div class="ivt-row"><span>' + chk('q' + x) + '</span><span class="ivt-item"><span class="thumb" style="width:38px;height:38px">' + glyph + '</span><span class="ivt-name">' + r.name + '</span></span><span class="ivt-sku">' + r.sku + '</span><span class="ivt-c">' + r.rec + '</span><span class="ivt-c ivt-ai">' + r.rec + '</span></div>').join('');
-    const amtRow = (k, label, ours, theirs, variance, noChk) =>
-      '<div class="ivt-row amt"><span>' + (noChk ? '' : chk(k)) + '</span><span class="ivt-amt-l">' + label + '</span><span class="ivt-c">' + ours + '</span><span class="ivt-c ivt-ai">' + theirs + '</span><span class="ivt-c">' + variance + '</span></div>';
+    const skuRows = rows.map((r, x) => '<div class="ivt-row"><span>' + chk('q' + x) + '</span><span class="ivt-item"><span class="thumb" style="width:38px;height:38px">' + glyph + '</span><span class="ivt-name">' + r.name + '</span></span><span class="ivt-sku">' + r.sku + '</span><span class="ivt-c">' + r.rec + '</span><span class="ivt-c ivt-ai">' + r.rec + '</span></div>').join('') +
+      billedExtra.map((r, x) => '<div class="ivt-row"><span>' + chk('x' + x) + '</span><span class="ivt-item"><span class="thumb" style="width:38px;height:38px">' + glyph + '</span><span><span class="ivt-name">' + r.name + '</span><span class="ivt-warn">Canceled after your claim \u2014 the invoice still bills it.</span></span></span><span class="ivt-sku">' + r.sku + '</span><span class="ivt-c">\u2014</span><span class="ivt-c ivt-ai">' + r.qty + '</span></div>').join('');
+    const amtRow = (k, label, ours, theirs, noChk) => {
+      const varAmt = (noChk || theirs === null) ? null : Math.round((theirs - ours) * 100) / 100;
+      const mismatch = varAmt !== null && Math.abs(varAmt) >= 0.01;
+      return '<div class="ivt-row amt"><span>' + (noChk ? '' : chk(k)) + '</span><span><span class="ivt-amt-l">' + label + '</span>' +
+        (mismatch ? '<span class="ivt-warn">The extracted amount doesn\u2019t match your records \u2014 confirm only if you reviewed the PDF and accept the difference; otherwise dispute.</span>' : '') + '</span>' +
+        '<span class="ivt-c">' + money(ours) + '</span><span class="ivt-c ivt-ai">' + (theirs === null ? '\u2014' : money(theirs)) + '</span><span class="ivt-c"' + (mismatch ? ' style="color:#be185d;font-weight:600"' : '') + '>' + (varAmt === null ? '\u2014' : money(Math.abs(varAmt))) + '</span></div>';
+    };
     const mapRows = rows.map(r => '<div class="ivt-map-row"><div><div class="ivt-map-inv">' + r.name.toUpperCase().slice(0, 34) + '</div><div class="ivt-map-sub">' + r.sku + ' · Qty ' + r.rec + ' · Unit ' + money(r.price) + '</div></div><span class="ivt-map-arr">\u2192</span><div><div class="ivt-map-lbl">ROG item</div><select class="ivt-map-sel"><option>' + r.name + '</option></select></div></div>').join('');
     tk.innerHTML =
       '<div class="ivt-head"><span class="ivt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg></span><div style="flex:1;min-width:0"><h2>Review invoice ' + invN() + '</h2><p>Scout AI extracted invoice number: ' + invN() + '. Compare the PDF with the final Receipt of Goods and Scout AI extracted values.</p></div><button class="row-action" style="width:34px;height:34px" title="Close" onclick="closeInvTk()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>' +
@@ -720,10 +751,10 @@
       '<div class="ivt-table"><div class="ivt-row hd"><span>Confirm</span><span>Item</span><span class="ivt-sku">SKU</span><span class="ivt-c">ROG Qty</span><span class="ivt-c ivt-ai">Invoice Qty<em>Extracted by Scout AI</em></span></div>' + skuRows + '</div>' +
       '<h3 style="margin-top:22px">Invoice amounts</h3><p class="ivt-sub">Shipping, subtotal, sales tax, and total from the invoice.</p>' +
       '<div class="ivt-table"><div class="ivt-row hd amt"><span>Confirm</span><span class="ivt-amt-l">Amount</span><span class="ivt-c">Order/ROG</span><span class="ivt-c ivt-ai">Invoice<em>Extracted by Scout AI</em></span><span class="ivt-c">Variance</span></div>' +
-      amtRow('sub', 'Subtotal', money(a.sub), money(a.sub), '$0.00') +
-      amtRow('tax', 'Sales tax', money(a.tax), money(a.tax), '$0.00') +
-      amtRow('grand', 'Grand total', money(a.grand), money(a.grand), '$0.00') +
-      amtRow('', 'Shipping (included in total)', money(a.ship), '\u2014', '\u2014', true) + '</div>' +
+      amtRow('sub', 'Subtotal', a.sub, b.sub) +
+      amtRow('tax', 'Sales tax', a.tax, b.tax) +
+      amtRow('grand', 'Grand total', a.grand, b.grand) +
+      amtRow('', 'Shipping (included in total)', a.ship, null, true) + '</div>' +
       '<div class="ivt-map"><button class="ivt-map-head" onclick="invMapToggle()"><span><b>Map the line items myself</b><span class="ivt-map-sub" style="display:block">Match invoice lines to the received order items</span></span><span class="ivt-map-chip">' + rows.length + '/' + rows.length + '</span><svg style="width:15px;height:15px;transform:rotate(' + (invMapOpen ? 180 : 0) + 'deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>' +
       (invMapOpen ? '<div class="ivt-map-body"><p class="ivt-sub" style="margin:0 0 12px">Exact SKU matches are selected automatically. Review or change each match before previewing.</p>' + mapRows + '<div style="display:flex;align-items:center;margin-top:12px"><span class="ivt-sub" style="margin:0">All line items are mapped.</span><button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showToast(\'Mapping preview\', \'Every invoice line maps to a received item\')">Preview mapping</button></div></div>' : '') + '</div>' +
       '</div>' +

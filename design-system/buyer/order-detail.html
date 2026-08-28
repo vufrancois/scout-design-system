@@ -185,9 +185,9 @@
   const ORDERS = {
     657: { v: 'SD', status: ['Delivered', 'dot-approved'], placed: 'Aug 24, 2026, 2:03 PM', ship: ['2 Business Days', 11.99],
       items: [
-        { name: '27 in. 7.4 cu. ft. Electric Dryer in White', sku: '7625863', price: 1210.00, qty: 1, st: ['Delivered', 'dot-approved'] },
-        { name: 'Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', sku: '7503672', price: 1455.09, qty: 1, st: ['Delivered', 'dot-approved'] },
-        { name: '23-7/16 in. 4.3 cu. ft. Electric Dryer in White', sku: '7759375', price: 1118.39, qty: 1, st: ['Delivered', 'dot-approved'] }],
+        { name: '27 in. 7.4 cu. ft. Electric Dryer in White', sku: '7625863', price: 1210.00, qty: 1, rec: 0, st: ['Delivered', 'dot-approved'] },
+        { name: 'Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', sku: '7503672', price: 1455.09, qty: 1, rec: 0, st: ['Delivered', 'dot-approved'] },
+        { name: '23-7/16 in. 4.3 cu. ft. Electric Dryer in White', sku: '7759375', price: 1118.39, qty: 1, rec: 0, st: ['Delivered', 'dot-approved'] }],
       prog: { done: 3, active: 3, dates: ['Aug 24', 'Aug 24', 'Aug 24'] },
       fulfillments: [{ n: 1, state: 'delivered', items: [0, 1, 2], tracking: null }],
       docs: [['Purchase Order #657', 'PDF']],
@@ -197,8 +197,8 @@
         { t: 'Order placed', sub: '$3,795.47', when: '3d ago' }] },
     373: { v: 'SD', status: ['Partially Fulfilled', 'dot-revision'], placed: 'Jul 10, 2026, 2:45 PM', ship: ['3 - 5 Business Days', 7.99],
       items: [
-        { name: '23-3/4 in. 12 Place Settings Dishwasher in Black', sku: '7523686', price: 818.09, qty: 1, st: ['Fulfilled', 'dot-revision'] },
-        { name: 'T6 PRO Z-Wave Z-Wave Pro Thermostat', sku: '10003040', price: 161.29, qty: 1, st: null }],
+        { name: '23-3/4 in. 12 Place Settings Dishwasher in Black', sku: '7523686', price: 818.09, qty: 1, rec: 0, st: ['Fulfilled', 'dot-revision'] },
+        { name: 'T6 PRO Z-Wave Z-Wave Pro Thermostat', sku: '10003040', price: 161.29, qty: 1, rec: 0, st: null }],
       prog: { done: 1, active: 1, dates: ['Jul 10'] },
       unfulfilled: [1],
       fulfillments: [{ n: 1, state: 'shipped', items: [0], tracking: null }],
@@ -207,24 +207,34 @@
         { t: 'Order updated', when: 'Jul 14, 2026' }, { t: 'Fulfillment created', sub: '1 item', when: 'Jul 14, 2026' },
         { t: 'Order placed', sub: '$987.37', when: 'Jul 10, 2026' }] },
     512: { v: 'GB', status: ['Not Fulfilled', 'neutral'], placed: 'Jul 22, 2026, 12:42 PM', ship: ['Local Delivery', 0],
-      items: [{ name: 'GE® ENERGY STAR® Dishwasher with Front Controls', sku: 'GDF510PGRBB', price: 563.00, qty: 1, st: null }],
+      items: [{ name: 'GE® ENERGY STAR® Dishwasher with Front Controls', sku: 'GDF510PGRBB', price: 563.00, qty: 1, rec: 0, st: null }],
       prog: { done: 0, active: -1, dates: [] },
       fulfillments: [],
       docs: [['Purchase Order #512', 'PDF']],
       activity: [{ t: 'Order placed', sub: '$563.00', when: 'Jul 22, 2026' }] }
   };
+  ORDERS[408] = { v: 'ID', status: ['Partially Delivered · 4/10', 'dot-revision'], placed: 'Jul 15, 2026, 9:20 AM', ship: ['3 - 5 Business Days', 7.99],
+    items: [{ name: 'Packaged Terminal Air Conditioner 12k BTU', sku: '6231145', price: 689.20, qty: 10, rec: 4, st: ['Partially Delivered', 'dot-revision'] }],
+    prog: { done: 1, active: 1, dates: ['Jul 15'] },
+    fulfillments: [{ n: 1, state: 'delivered', items: [0], tracking: null }],
+    docs: [['Purchase Order #408', 'PDF']],
+    activity: [
+      { t: 'Delivery validated by Alicia Grant', sub: '4 items confirmed', when: 'Jul 18, 2026', hi: true },
+      { t: 'Fulfillment created', sub: '4 items', when: 'Jul 18, 2026' },
+      { t: 'Order placed', sub: '$6,899.99', when: 'Jul 15, 2026' }] };
   function genericOrder(num) {
     let sv = num; const rnd = () => { sv = (sv * 1103515245 + 12345) % 2147483648; return sv / 2147483648; };
     const price = Math.round((100 + rnd() * 2500) * 100) / 100;
     const vs = ['SD', 'ID', 'CH', 'GB', 'AC'][Math.floor(rnd() * 5)];
     return { v: vs, status: ['Not Fulfilled', 'neutral'], placed: 'Jul ' + (1 + Math.floor(rnd() * 28)) + ', 2026', ship: ['Local Delivery', 0],
-      items: [{ name: 'Commercial appliance order', sku: String(7000000 + Math.floor(rnd() * 999999)), price, qty: 1, st: null }],
+      items: [{ name: 'Commercial appliance order', sku: String(7000000 + Math.floor(rnd() * 999999)), price, qty: 1, rec: 0, st: null }],
       prog: { done: 0, active: -1, dates: [] }, fulfillments: [], docs: [['Purchase Order #' + num, 'PDF']],
       activity: [{ t: 'Order placed', sub: money(price), when: 'Jul 2026' }] };
   }
 
   let num, O, actExpanded = false;
-  function pick() { num = parseInt((location.hash || '#657').replace('#', ''), 10) || 657; O = ORDERS[num] || genericOrder(num); actExpanded = false; }
+  let autoValidate = false;
+  function pick() { const h = (location.hash || '#657').replace('#', ''); autoValidate = h.includes('/validate'); num = parseInt(h, 10) || 657; O = ORDERS[num] || genericOrder(num); actExpanded = false; }
   window.addEventListener('hashchange', () => { pick(); renderPage(); window.scrollTo(0, 0); });
   pick();
 
@@ -243,10 +253,17 @@
     }).join('') + '</div>';
   }
 
-  function itemRow(i, withPrice) {
+  function itemRow(i, withPrice, plain) {
+    const rec = i.rec || 0;
+    const statePill = rec > 0
+      ? (rec < i.qty ? pillHtml('Partially Delivered · ' + rec + '/' + i.qty, 'dot-revision') : pillHtml('Delivered', 'dot-approved'))
+      : (i.st ? pillHtml(i.st[0], i.st[1]) : '');
+    const chips = plain ? '' : ((statePill ? '<span style="display:inline-block;margin-top:5px">' + statePill + '</span>' : '') +
+      (i.cancelReq ? '<span class="val-meta" style="display:block;color:#be185d">Cancellation requested · ' + i.cancelReq + (i.cancelReq === 1 ? ' unit' : ' units') + '</span>' : ''));
+    const reportLink = (withPrice && (i.qty - (i.claimed || 0)) > 0) ? '<button class="act-more" style="padding:2px 0 0;font-size:12px" onclick="openClaim(' + O.items.indexOf(i) + ')">Report a problem</button>' : '';
     return '<div class="item-line"><span class="thumb">' + glyph + '</span>' +
-      '<span class="item-nm">' + i.name + '<span class="item-sku">' + i.sku + '</span>' + (i.st ? '<span style="display:inline-block;margin-top:5px">' + pillHtml(i.st[0], i.st[1]) + '</span>' : '') + '</span>' +
-      (withPrice ? '<span class="qty">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total">' + money(Math.round(i.qty * i.price * 100) / 100) + '</span>' : '<span class="qty">× ' + i.qty + '</span>') + '</div>';
+      '<span class="item-nm">' + i.name + '<span class="item-sku">' + i.sku + '</span>' + chips + '</span>' +
+      (withPrice ? '<span style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span class="qty" style="margin-right:0">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total">' + money(Math.round(i.qty * i.price * 100) / 100) + '</span>' + reportLink + '</span>' : '<span class="qty">× ' + i.qty + '</span>') + '</div>';
   }
 
   function miniSteps(state) {
@@ -264,25 +281,32 @@
     document.getElementById('hero-sub').textContent = 'Placed ' + O.placed + ' · ' + vName + ' · ' + money(grand());
     let main = '';
 
-    main += '<div class="card"><div class="det-card-head"><h2>Order Progress</h2><span style="display:flex;align-items:center;gap:10px"><button class="icon-btn" style="width:32px;height:32px" title="Refresh status" onclick="showToast(\'Status refreshed\', \'Order #\' + num + \' is up to date\')"><span style="display:inline-flex;width:15px;height:15px">' + IC.refresh + '</span></button>' + pillHtml(O.status[0], O.status[1]) + '</span></div>' + stepper() + '</div>';
+    main += '<div class="card"><div class="det-card-head"><h2>Order Progress</h2>' + pillHtml(O.status[0], O.status[1]) + '</div>' + stepper() + '</div>';
 
-    main += '<div class="task-strip"><span class="ts-icon">' + IC.shield + '</span><div class="ts-body"><div class="ts-title">Delivery Validation</div><div class="ts-desc">Record the items and quantities you have physically received.</div></div><button class="btn btn-primary" onclick="showToast(\'Start Delivery Validation — Order #\' + num, \'Item-level validation screen is next on the build list\')">Start Delivery Validation</button></div>';
+    const allReceived = O.items.every(i => (i.rec || 0) >= i.qty);
+    const anyReceived = O.items.some(i => (i.rec || 0) > 0);
+    const warnIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
+    main += '<div class="task-strip"><span class="ts-icon"' + (allReceived ? ' style="background:var(--emerald-soft);color:var(--emerald)"' : '') + '>' + (allReceived ? IC.flag : IC.shield) + '</span><div class="ts-body"><div class="ts-title">Delivery Validation</div><div class="ts-desc">' +
+      (allReceived ? 'All items received and validated.' : 'Record the items and quantities you have physically received.') + '</div></div>' +
+      (!allReceived ? '<button class="btn btn-primary" onclick="openValidation()">Start Delivery Validation</button>' : '') + '</div>';
 
-    main += '<div class="card"><div class="det-card-head hd"><h2>Summary</h2></div>' + O.items.map(i => itemRow(i, true)).join('') +
+        main += '<div class="card"><div class="det-card-head hd"><h2>Summary</h2></div>' + O.items.map(i => itemRow(i, true)).join('') +
       '<div class="det-totals"><div class="tot-row"><span>Item Total</span><span>' + money(itemTotal()) + '</span></div>' +
       '<div class="tot-row"><span>Shipping · ' + O.ship[0] + '</span><span>' + money(O.ship[1]) + '</span></div>' +
       '<div class="tot-row grand"><span>Total</span><span>' + money(grand()) + '</span></div>' +
       '<div class="tot-row"><span>Paid Total</span><span>' + money(0) + '</span></div></div></div>';
 
     if (O.unfulfilled && O.unfulfilled.length) {
-      main += '<div class="card"><div class="det-card-head"><h2>Unfulfilled Items</h2><span style="display:flex;gap:8px;flex-wrap:wrap">' + pillHtml('Requires shipping', 'dot-pending') + pillHtml('Awaiting fulfillment', 'neutral') + '</span></div>' +
+      main += '<div class="card"><div class="det-card-head hd"><h2>Unfulfilled Items</h2><span style="display:flex;gap:8px;flex-wrap:wrap">' + pillHtml('Requires shipping', 'dot-pending') + pillHtml('Awaiting fulfillment', 'neutral') + '</span></div>' +
         O.unfulfilled.map(ix => itemRow(O.items[ix], true)).join('') + '</div>';
     }
 
     if (O.fulfillments.length) {
-      main += O.fulfillments.map(f => '<div class="card"><div class="det-card-head"><h2>Fulfillment #' + f.n + '</h2><span style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">' +
-        (f.state === 'shipped' ? '<button class="btn btn-primary" style="height:36px;font-size:13px" onclick="markDelivered(' + f.n + ')">Mark as delivered</button>' : '') + miniSteps(f.state) + '</span></div>' +
-        f.items.map(ix => itemRow(O.items[ix], false)).join('') +
+      main += O.fulfillments.map(f => '<div class="card"><div class="det-card-head hd"><h2>Fulfillment #' + f.n + '</h2><span style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">' +
+        (f.state === 'delivered'
+          ? pillHtml('Delivered', 'dot-approved')
+          : miniSteps(f.state)) + '</span></div>' +
+        f.items.map(ix => itemRow(O.items[ix], false, true)).join('') +
         '<div class="det-totals" style="border-top:1px solid var(--border)"><div class="tot-row"><span>Shipping option</span><span>' + O.ship[0] + '</span></div>' +
         '<div class="tot-row"><span>Tracking</span><span>' + (f.tracking || '—') + '</span></div></div></div>').join('');
     } else {
@@ -297,16 +321,22 @@
     let side = '';
     side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + O.v + '</span><div><div class="ven-eyebrow">Fulfilled by</div><div class="ven-name" style="margin-bottom:2px">' + vLoc + '</div><a href="products.html" style="font-size:13px;color:var(--sky);text-decoration:none">' + vName + '</a></div></div></div>';
 
-    side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Customer</h2></div><dl class="fact-rows wide" style="grid-template-columns:80px 1fr">' +
-      '<dt>Customer</dt><dd>Alicia Grant</dd>' +
-      '<dt>Contact</dt><dd style="overflow-wrap:anywhere;font-size:13px">alicia.grant@demoinc.com</dd>' +
-      '<dt>Shipping</dt><dd>Magnolia Place Apartments<br><span style="font-weight:400;color:var(--muted-foreground)">4201 Veterans Memorial Blvd, Metairie, LA 70006</span></dd>' +
-      '<dt>Billing</dt><dd>Same as shipping</dd></dl></div>';
+    side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Customer</h2></div><div class="rail-rows">' +
+      '<div class="rail-row"><span class="rail-label">Buyer</span><span class="rail-value"><span class="v-avatar" style="background:var(--emerald);color:#fff">AG</span>Alicia Grant</span></div>' +
+      '<div class="rail-row"><span class="rail-label">Contact</span><span class="rail-value">alicia.grant@demoinc.com <button class="row-action" title="Copy" onclick="showToast(\'Copied\', \'Email address copied\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></span></div>' +
+      '<div class="rail-row"><span class="rail-label">Property</span><span class="rail-value"><span class="v-avatar" style="background:var(--violet);color:#fff">MP</span>Magnolia Place Apartments</span></div>' +
+      '<div class="rail-row"><span class="rail-label">Shipping</span><span class="rail-value">4201 Veterans Memorial Blvd, Metairie, LA 70006 <button class="row-action" title="Copy" onclick="showToast(\'Copied\', \'Shipping address copied\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></span></div>' +
+      '<div class="rail-row"><span class="rail-label">Billing</span><span class="rail-value" style="color:var(--muted-foreground)">Same as shipping</span></div></div></div>';
 
-    side += '<div class="card"><button class="gl-toggle' + (window.docsOpen ? ' open' : '') + '" style="margin:0;font-size:14px;font-weight:700;color:var(--foreground)" onclick="window.docsOpen = !window.docsOpen; renderPage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>Documents</button>' +
-      (window.docsOpen ? O.docs.map(d => '<div style="display:flex;align-items:center;gap:10px;padding:10px 0 0;font-size:13px"><span style="display:inline-flex;width:16px;height:16px;color:var(--sky)">' + IC.docu + '</span><span style="flex:1">' + d[0] + '</span><span class="pill p-neutral">' + d[1] + '</span></div>').join('') : '') + '</div>';
+    if (O.claim) {
+      side += '<div class="callout rose"><b>Claim under review</b>Vendor responding · the invoice remains on hold.' +
+        '<div style="margin-top:8px;border-top:1px solid color-mix(in srgb, var(--rose) 25%, transparent)">' +
+        O.claim.lines.map(l => '<div class="claim-ln"><span class="cq">' + l.qty + '×</span><span><span class="cn">' + l.name + '</span><span class="ci">' + l.issue + (l.res === 'cancel' ? ' · cancellation requested' : '') + '</span></span></div>').join('') + '</div></div>';
+    }
+    side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Documents</h2></div>' +
+      O.docs.map(d => '<div class="doc-row"><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><div style="flex:1;min-width:0"><div class="doc-name">' + d[0] + '</div><div class="doc-date">' + O.placed.split(',').slice(0, 1).join('') + ', 2026 · ' + d[1] + '</div></div><button class="row-action" title="Download" onclick="showToast(\'Download started\', \'' + d[0] + '.pdf\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button></div>').join('') + '</div>';
 
-    const evs = O.activity.filter(e => actExpanded || !e.more);
+        const evs = O.activity.filter(e => actExpanded || !e.more);
     const hidden = O.activity.length - evs.length;
     side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Activity</h2></div><div class="act-tl">' +
       evs.map(e => '<div class="act-ev' + (e.hi ? ' hi' : '') + '"><span class="adot"></span><div class="abody"><div class="at">' + e.t + '</div>' + (e.sub ? '<div class="asub">' + e.sub + '</div>' : '') + '</div><span class="awhen">' + e.when + '</span></div>').join('') +
@@ -316,18 +346,162 @@
     document.getElementById('det-side').innerHTML = side;
   }
 
-  function markDelivered(n) {
-    const f = O.fulfillments.find(x => x.n === n);
-    if (f) { f.state = 'delivered'; O.items[f.items[0]].st = ['Delivered', 'dot-approved']; }
-    renderPage();
-    showToast('Fulfillment #' + n + ' marked as delivered', 'Delivery recorded — validation is now available');
+  let pending = {};
+  let vClaim = {};
+  function openValidation() {
+    pending = {}; vClaim = {};
+    let ov = document.getElementById('val-ov');
+    if (!ov) { ov = document.createElement('div'); ov.id = 'val-ov'; ov.className = 'overlay center'; document.body.appendChild(ov); ov.addEventListener('click', e => { if (e.target === ov) closeValidation(); }); }
+    renderValidation(); ov.classList.add('open');
   }
-  function copyNum() { try { navigator.clipboard.writeText('Order #' + num); } catch (e) {} showToast('Copied', 'Order #' + num + ' copied to the clipboard'); }
+  function closeValidation() { const ov = document.getElementById('val-ov'); if (ov) ov.classList.remove('open'); pending = {}; vClaim = {}; }
+  function renderValidation() {
+    const ov = document.getElementById('val-ov');
+    const anyReceive = Object.values(pending).some(v => v > 0);
+    const claimRows = Object.keys(vClaim).filter(k => vClaim[k]);
+    const claimsComplete = claimRows.every(k => vClaim[k].res);
+    const anyNew = (anyReceive || claimRows.length > 0) && claimsComplete;
+    ov.innerHTML = '<div class="val-modal"><div class="val-head"><h2>Delivery Validation</h2><p>Order #' + num + ' · Record the items and quantities you have physically received.</p></div>' +
+      '<div class="val-body">' + O.items.map((i, ix) => {
+        const rec = i.rec || 0, remaining = i.qty - rec, locked = remaining <= 0;
+        const sel = pending[ix] || 0;
+        const qtyCtl = !locked && sel > 0 && i.qty > 1
+          ? '<div class="val-qty"><span style="font-size:12px;color:var(--muted-foreground)">Received now</span><span class="stepper"><button onclick="valQty(' + ix + ', -1)"' + (sel <= 1 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button><input value="' + sel + '" readonly><button onclick="valQty(' + ix + ', 1)"' + (sel >= remaining ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></span><span style="font-size:12px;color:var(--muted-foreground)">of ' + remaining + ' outstanding</span></div>' : '';
+        const vc = vClaim[ix];
+        const claimCapN = i.qty - (i.claimed || 0);
+        const problemLink = (!locked && claimCapN > 0)
+          ? '<button class="act-more" style="padding:4px 0 0;font-size:12px;display:inline-flex;align-items:center;gap:5px" onclick="vClaimToggle(' + ix + ')"><span style="display:inline-flex;width:13px;height:13px;color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>' + (vc ? 'Remove problem report' : 'Report a problem') + '</button>' : '';
+        const claimForm = vc ? '<div class="claim-form"><div style="display:grid;grid-template-columns:110px 1fr;gap:12px">' +
+            '<div><label>Quantity</label><span class="stepper" style="height:38px"><button onclick="vClaimQty(' + ix + ', -1)"' + (vc.qty <= 1 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button><input value="' + vc.qty + '" readonly style="width:36px"><button onclick="vClaimQty(' + ix + ', 1)"' + (vc.qty >= claimCapN ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></span></div>' +
+            '<div><label>What happened?</label><select onchange="vClaim[' + ix + '].issue = this.value">' + ISSUES.map(o => '<option' + (vc.issue === o ? ' selected' : '') + '>' + o + '</option>').join('') + '</select></div></div>' +
+            '<div style="margin-top:10px"><label>What should happen to this item?</label><div class="res-row">' +
+            '<button class="res-btn keep' + (vc.res === 'keep' ? ' on' : '') + '" onclick="vClaimRes(' + ix + ', \'keep\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>I still want this item</button>' +
+            '<button class="res-btn cancel' + (vc.res === 'cancel' ? ' on' : '') + '" onclick="vClaimRes(' + ix + ', \'cancel\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel this item</button>' +
+            '</div></div></div>' : '';
+        const xMark = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+        const chkCls = (sel > 0 || locked) ? ' on' : (vc ? ' claimed' : '');
+        return '<div class="val-row" style="flex-direction:column;align-items:stretch;gap:0"><div style="display:flex;align-items:flex-start;gap:12px"><button class="chk' + chkCls + '"' + (locked ? ' disabled' : '') + ' onclick="valToggle(' + ix + ')">' + ((vc && sel === 0 && !locked) ? xMark : IC.check) + '</button>' +
+          '<span class="thumb" style="width:44px;height:44px;border:1px solid var(--border);border-radius:var(--radius-sm);display:inline-flex;align-items:center;justify-content:center;color:var(--muted-foreground);flex-shrink:0"><span style="display:inline-flex;width:20px;height:20px">' + glyph + '</span></span>' +
+          '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">' + i.name + '</div><div class="item-sku">' + i.sku + '</div>' +
+          '<div class="val-meta">Received ' + rec + ' of ' + i.qty + (locked ? ' · validated' : '') + '</div>' + qtyCtl + problemLink + '</div>' +
+          (locked ? '<span class="chip-ok" style="margin-top:10px">' + rec + ' confirmed</span>' : '<span class="val-meta" style="margin-top:12px;white-space:nowrap">× ' + i.qty + '</span>') + '</div>' + claimForm + '</div>';
+      }).join('') + '</div>' +
+      '<div class="val-foot"><button class="btn" onclick="closeValidation()">Cancel</button><button class="btn btn-primary"' + (anyNew ? ' onclick="saveValidation()"' : ' disabled') + '>Save Delivery Validation</button></div></div>';
+  }
+  function valToggle(ix) {
+    const i = O.items[ix]; const remaining = i.qty - (i.rec || 0);
+    if (remaining <= 0) return;
+    pending[ix] = pending[ix] > 0 ? 0 : 1;
+    renderValidation();
+  }
+  function vClaimToggle(ix) { vClaim[ix] = vClaim[ix] ? null : { qty: 1, issue: ISSUES[0], res: null }; if (!vClaim[ix]) delete vClaim[ix]; renderValidation(); }
+  function vClaimQty(ix, d) { const c = vClaim[ix]; c.qty = Math.max(1, Math.min(O.items[ix].qty - (O.items[ix].claimed || 0), c.qty + d)); renderValidation(); }
+  function vClaimRes(ix, r) { vClaim[ix].res = r; renderValidation(); }
+  function valQty(ix, d) {
+    const i = O.items[ix]; const remaining = i.qty - (i.rec || 0);
+    pending[ix] = Math.max(1, Math.min(remaining, (pending[ix] || 1) + d));
+    renderValidation();
+  }
+  function saveValidation() {
+    const claimIx = Object.keys(vClaim).filter(k => vClaim[k] && vClaim[k].res).map(Number);
+    if (claimIx.length) {
+      const lines = claimIx.map(ix => {
+        const c = vClaim[ix], i = O.items[ix];
+        i.claimed = (i.claimed || 0) + c.qty;
+        if (c.res === 'cancel') i.cancelReq = (i.cancelReq || 0) + c.qty;
+        return { name: i.name, qty: c.qty, issue: c.issue, res: c.res };
+      });
+      O.claim = O.claim ? { lines: O.claim.lines.concat(lines), note: O.claim.note } : { lines, note: '' };
+      O.activity.unshift({ t: 'Claim raised by Alicia Grant', sub: lines.map(l => l.qty + '× ' + l.name.split(' ').slice(0, 4).join(' ') + ' — ' + l.issue).join(' · '), when: 'Just now' });
+    }
+    const confirmedIx = Object.keys(pending).filter(k => pending[k] > 0).map(Number);
+    let count = 0;
+    confirmedIx.forEach(ix => {
+      const i = O.items[ix];
+      i.rec = (i.rec || 0) + pending[ix]; count += pending[ix];
+      if (i.rec >= i.qty) {
+        O.fulfillments.forEach(f => { if (f.items.includes(ix)) f.state = 'delivered'; });
+      }
+    });
+    const orphans = count === 0 ? [] : confirmedIx.filter(ix => !O.fulfillments.some(f => f.items.includes(ix)));
+    if (orphans.length) O.fulfillments.push({ n: O.fulfillments.length + 1, state: 'delivered', items: orphans, tracking: null });
+    const allReceived = O.items.every(i => (i.rec || 0) >= i.qty);
+    const totalItems = O.items.reduce((a, i) => a + i.qty, 0);
+    const recItems = O.items.reduce((a, i) => a + (i.rec || 0), 0);
+    if (count > 0 && allReceived) { O.status = ['Delivered', 'dot-approved']; O.prog = { done: 4, active: 4, dates: (O.prog.dates || []).concat().slice(0, 3).concat(['Aug 24']) }; O.prog.dates[3] = 'Aug 24'; }
+    else if (count > 0) { O.status = ['Partially Delivered · ' + recItems + '/' + totalItems, 'dot-revision']; }
+    if (count > 0) O.activity.unshift({ t: 'Delivery validated by Alicia Grant', sub: count + (count === 1 ? ' item' : ' items') + ' confirmed', when: 'Just now', hi: true });
+    closeValidation(); renderPage();
+    showToast('Delivery validation saved', (count ? count + (count === 1 ? ' item' : ' items') + ' confirmed' : 'No items confirmed') + (claimIx.length ? ' · ' + claimIx.length + (claimIx.length === 1 ? ' problem' : ' problems') + ' reported to the vendor' : '') + (count ? ' — fulfillment updated on the vendor side' : ''));
+  }
+  const ISSUES = ['Missing item or quantity', 'Damaged item', 'Wrong item', 'Other difference'];
+  let claimSel = {};
+  function openClaim(preIx) {
+    claimSel = {};
+    if (typeof preIx === 'number' && claimCap(O.items[preIx]) > 0) claimSel[preIx] = { on: true, qty: 1, issue: ISSUES[0], res: null };
+    let ov = document.getElementById('claim-ov');
+    if (!ov) { ov = document.createElement('div'); ov.id = 'claim-ov'; ov.className = 'overlay center'; document.body.appendChild(ov); ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); }); }
+    renderClaim(); ov.classList.add('open');
+  }
+  function claimCap(i) { return i.qty - (i.claimed || 0); }
+  function claimValid() { const sel = Object.values(claimSel).filter(c => c.on); return sel.length > 0 && sel.every(c => c.qty >= 1 && c.res); }
+  function renderClaim() {
+    const ov = document.getElementById('claim-ov');
+    const note = document.getElementById('claim-note') ? document.getElementById('claim-note').value : '';
+    ov.innerHTML = '<div class="val-modal" style="width:600px"><div class="val-head"><h2>Raise a claim</h2><p>Order #' + num + ' · Report a problem with what you received. The invoice remains blocked until this is resolved.</p></div>' +
+      '<div class="val-body">' +
+      '<div class="callout amber" style="margin:10px 0 4px">Select the affected quantity and choose what you\'d like to do. The vendor will review your request and decide the course of action.</div>' +
+      O.items.map((i, ix) => {
+        const cap = claimCap(i);
+        const c = claimSel[ix] || {};
+        const capped = cap <= 0;
+        return '<div class="val-row" style="flex-direction:column;align-items:stretch;gap:6px"><div style="display:flex;align-items:flex-start;gap:12px">' +
+          '<button class="chk' + (c.on ? ' on' : '') + '"' + (capped ? ' disabled' : '') + ' onclick="claimToggle(' + ix + ')">' + IC.check + '</button>' +
+          '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">' + i.name + '</div><div class="val-meta">Up to ' + cap + ' available for this issue type</div></div></div>' +
+          (c.on ? '<div class="claim-form"><div style="display:grid;grid-template-columns:110px 1fr;gap:12px">' +
+            '<div><label>Quantity</label><span class="stepper" style="height:38px"><button onclick="claimQty(' + ix + ', -1)"' + (c.qty <= 1 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button><input value="' + c.qty + '" readonly style="width:36px"><button onclick="claimQty(' + ix + ', 1)"' + (c.qty >= cap ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></span></div>' +
+            '<div><label>What happened?</label><select onchange="claimIssue(' + ix + ', this.value)">' + ISSUES.map(o => '<option' + (c.issue === o ? ' selected' : '') + '>' + o + '</option>').join('') + '</select></div></div>' +
+            '<div style="margin-top:10px"><label>What should happen to this item?</label><div class="res-row">' +
+            '<button class="res-btn keep' + (c.res === 'keep' ? ' on' : '') + '" onclick="claimRes(' + ix + ', \'keep\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>I still want this item</button>' +
+            '<button class="res-btn cancel' + (c.res === 'cancel' ? ' on' : '') + '" onclick="claimRes(' + ix + ', \'cancel\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel this item</button>' +
+            '</div></div></div>' : '') + '</div>';
+      }).join('') +
+      '<textarea class="dec-comment" id="claim-note" placeholder="Optional note about the delivery" style="margin:12px 0 4px">' + note.replace(/</g, '&lt;') + '</textarea>' +
+      '</div><div class="val-foot"><button class="btn" onclick="document.getElementById(\'claim-ov\').classList.remove(\'open\')">Not now</button>' +
+      '<button class="btn btn-primary"' + (claimValid() ? ' onclick="submitClaim()"' : ' disabled') + '>Send claim to vendor</button></div></div>';
+  }
+  function claimToggle(ix) {
+    const i = O.items[ix]; if (claimCap(i) <= 0) return;
+    if (claimSel[ix] && claimSel[ix].on) claimSel[ix] = { on: false };
+    else claimSel[ix] = { on: true, qty: 1, issue: ISSUES[0], res: null };
+    renderClaim();
+  }
+  function claimQty(ix, d) { const c = claimSel[ix]; c.qty = Math.max(1, Math.min(claimCap(O.items[ix]), c.qty + d)); renderClaim(); }
+  function claimIssue(ix, v) { claimSel[ix].issue = v; }
+  function claimRes(ix, r) { claimSel[ix].res = r; renderClaim(); }
+  function submitClaim() {
+    const note = (document.getElementById('claim-note').value || '').trim();
+    const lines = Object.keys(claimSel).filter(k => claimSel[k].on).map(k => {
+      const ix = Number(k), c = claimSel[k], i = O.items[ix];
+      i.claimed = (i.claimed || 0) + c.qty;
+      if (c.res === 'cancel') i.cancelReq = (i.cancelReq || 0) + c.qty;
+      return { name: O.items[ix].name, qty: c.qty, issue: c.issue, res: c.res };
+    });
+    O.claim = O.claim
+      ? { lines: O.claim.lines.concat(lines), note: [O.claim.note, note].filter(Boolean).join(' · ') }
+      : { lines, note };
+    document.getElementById('claim-ov').classList.remove('open');
+    O.activity.unshift({ t: 'Claim raised by Alicia Grant', sub: lines.map(l => l.qty + '× ' + l.name.split(' ').slice(0, 4).join(' ') + ' — ' + l.issue).join(' · '), when: 'Just now' });
+    renderPage();
+    showToast('Claim sent to the vendor', lines.length + (lines.length === 1 ? ' item' : ' items') + ' reported — the invoice remains on hold');
+  }
+    function copyNum() { try { navigator.clipboard.writeText('Order #' + num); } catch (e) {} showToast('Copied', 'Order #' + num + ' copied to the clipboard'); }
 
   let toastTimer;
   function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
 
   renderPage();
+  if (autoValidate) setTimeout(openValidation, 150);
 </script>
 </body>
 </html>

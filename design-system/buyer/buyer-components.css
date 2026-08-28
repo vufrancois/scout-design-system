@@ -676,6 +676,10 @@
 .dark .buyer .spec-table .row > div:first-child, .buyer.dark .spec-table .row > div:first-child { background: var(--muted); }
 .buyer .doc-row { display: flex; align-items: center; gap: 12px; background: var(--sky-soft); border-radius: var(--radius-md); padding: 12px 14px; }
 .buyer .doc-row + .doc-row { margin-top: 10px; }
+.buyer .doc-row.emerald { background: var(--emerald-soft); }
+.buyer .doc-row.emerald .doc-ico { color: var(--emerald); }
+.buyer .doc-row.violet { background: var(--violet-soft); }
+.buyer .doc-row.violet .doc-ico { color: var(--violet); }
 .buyer .doc-row svg.doc-ico { width: 18px; height: 18px; color: var(--sky); flex-shrink: 0; }
 .buyer .doc-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; }
 .buyer .doc-meta { font-size: 12px; color: var(--muted-foreground); margin-top: 1px; }
@@ -888,6 +892,7 @@
 .buyer .det-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; margin-top: -76px; position: relative; z-index: 2; }
 .buyer .det-main, .buyer .det-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 .buyer .det-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.buyer .det-side .det-card-head { margin-bottom: 12px; }
 .buyer .det-card-head h2 { font-size: 17px; font-weight: 700; }
 .buyer .det-card-head .sub { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
 
@@ -1216,7 +1221,7 @@
 
 /* Activity timeline */
 .buyer .act-tl { position: relative; }
-.buyer .act-ev { display: flex; gap: 10px; padding: 7px 0; }
+.buyer .act-ev { display: flex; gap: 12px; padding: 10px 0; }
 .buyer .act-ev .adot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); margin-top: 5px; flex-shrink: 0; }
 .buyer .act-ev.hi .adot { background: var(--emerald); }
 .buyer .act-ev .abody { flex: 1; min-width: 0; }
@@ -1231,3 +1236,75 @@
 .buyer .hero-copy:hover { background: rgba(255,255,255,.15); color: #fff; }
 .buyer .hero-copy svg { width: 14px; height: 14px; }
 .buyer .row-warn[data-tip]:hover::after { left: 0; transform: none; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+/* ===== Delivery Validation modal ===== */
+.buyer .val-modal { width: 560px; max-width: calc(100vw - 48px); background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); max-height: calc(100vh - 96px); display: flex; flex-direction: column; }
+.buyer .val-head { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); }
+.buyer .val-head h2 { font-size: 17px; font-weight: 700; }
+.buyer .val-head p { font-size: 13px; color: var(--muted-foreground); margin-top: 3px; }
+.buyer .val-body { padding: 8px 24px; overflow-y: auto; }
+.buyer .val-row { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.buyer .val-row:last-child { border-bottom: none; }
+.buyer .chk { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); background: var(--background); flex-shrink: 0; margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; color: transparent; cursor: pointer; padding: 0; }
+.buyer .chk svg { width: 12px; height: 12px; }
+.buyer .chk.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.buyer .chk.claimed { background: var(--rose); border-color: var(--rose); color: #fff; }
+.buyer .chk:disabled { cursor: default; opacity: .55; }
+.buyer .chip-ok { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--emerald-soft); color: #047857; }
+.dark .buyer .chip-ok, .buyer.dark .chip-ok { color: #34d399; }
+.buyer .val-meta { font-size: 12px; color: var(--muted-foreground); margin-top: 3px; }
+.buyer .val-qty { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.buyer .val-qty .stepper { height: 34px; }
+.buyer .val-qty .stepper button { width: 34px; }
+.buyer .val-qty .stepper input { width: 40px; }
+.buyer .val-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px 18px; border-top: 1px solid var(--border); }
+
+/* Claim modal */
+.buyer .claim-form { background: var(--surface-soft, #f8f9fa); border-radius: var(--radius-md); padding: 12px 14px; margin-top: 10px; }
+.dark .buyer .claim-form, .buyer.dark .claim-form { background: var(--muted); }
+.buyer .claim-form label { display: block; font-size: 12px; font-weight: 600; color: var(--muted-foreground); margin-bottom: 5px; }
+.buyer .claim-form select { width: 100%; height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md); font: inherit; font-size: 13px; background: var(--background); color: var(--foreground); }
+.buyer .res-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.buyer .res-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border-radius: var(--radius-md); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; background: var(--background); }
+.buyer .res-btn svg { width: 15px; height: 15px; }
+.buyer .res-btn.keep { border: 1px solid var(--emerald); color: #047857; }
+.buyer .res-btn.keep.on { background: var(--emerald); color: #fff; }
+.buyer .res-btn.cancel { border: 1px solid var(--rose); color: #be185d; }
+.buyer .res-btn.cancel.on { background: var(--rose); color: #fff; }
+.dark .buyer .res-btn.keep, .buyer.dark .res-btn.keep { color: #34d399; }
+.dark .buyer .res-btn.cancel, .buyer.dark .res-btn.cancel { color: #f9a8d4; }
+.dark .buyer .res-btn.keep.on, .buyer.dark .res-btn.keep.on { color: #06251b; }
+.dark .buyer .res-btn.cancel.on, .buyer.dark .res-btn.cancel.on { color: #2d0716; }
+.buyer .claim-lines { font-size: 12px; color: #b45309; margin-top: 3px; }
+.dark .buyer .claim-lines, .buyer.dark .claim-lines { color: #fbbf24; }
+/* Claim callout lines */
+.buyer .claim-ln { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; }
+.buyer .claim-ln + .claim-ln { border-top: 1px solid color-mix(in srgb, var(--rose) 18%, transparent); }
+.buyer .claim-ln .cq { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; font-weight: 700; background: color-mix(in srgb, var(--rose) 14%, transparent); color: inherit; border-radius: 6px; padding: 1px 6px; flex-shrink: 0; margin-top: 1px; }
+.buyer .claim-ln .cn { font-size: 12.5px; font-weight: 600; color: var(--foreground); line-height: 1.35; }
+.buyer .claim-ln .ci { display: block; font-size: 11.5px; font-weight: 400; color: inherit; opacity: .85; margin-top: 1px; }
+
+/* Rail rows (vendor pattern) */
+.buyer .rail-row { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 12px 0; font-size: 13px; align-items: start; }
+.buyer .rail-row + .rail-row { border-top: 1px solid var(--border); }
+.buyer .rail-label { color: var(--muted-foreground); }
+.buyer .rail-value { color: var(--foreground); display: flex; align-items: center; gap: 8px; min-width: 0; overflow-wrap: anywhere; }
+.buyer .rail-value .v-avatar { width: 22px; height: 22px; border-radius: 50%; font-size: 9px; font-weight: 600; color: #fff; }
+.buyer .row-action { width: 32px; height: 32px; border-radius: var(--radius-md); border: none; background: none; color: var(--muted-foreground); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: background 0.15s; }
+.buyer .row-action:hover { background: var(--muted); color: var(--foreground); }
+.buyer .row-action svg { width: 16px; height: 16px; }
+.buyer .rail-value .row-action { width: 26px; height: 26px; }
+.buyer .rail-value .row-action svg { width: 14px; height: 14px; }
+/* Doc rows (vendor pattern) */
+.buyer .doc-row { display: flex; align-items: center; gap: 12px; background: var(--sky-soft); border-radius: var(--radius-md); padding: 12px 14px; }
+.buyer .doc-row + .doc-row { margin-top: 10px; }
+.buyer .doc-row.emerald { background: var(--emerald-soft); }
+.buyer .doc-row.emerald .doc-ico { color: var(--emerald); }
+.buyer .doc-row.violet { background: var(--violet-soft); }
+.buyer .doc-row.violet .doc-ico { color: var(--violet); }
+.buyer .doc-ico { width: 18px; height: 18px; color: var(--sky); flex-shrink: 0; }
+.buyer .doc-name { font-size: 13px; font-weight: 600; }
+.buyer .doc-date { font-size: 12px; color: var(--muted-foreground); }
+/* Activity: vendor feed dividers + emerald dots */
+.buyer .act-ev + .act-ev { border-top: 1px solid var(--border); }
+.buyer .act-ev .adot { background: var(--emerald); }

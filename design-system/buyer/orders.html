@@ -243,7 +243,7 @@
     { num: 420, v: 'ID', prop: 'magnolia', total: 37.02, count: 1, stage: 'fulfill', date: '2026-07-16', items: [['Thermostat Batteries AA (12-pack)', 1, 37.02]] },
     { num: 411, v: 'SD', prop: 'magnolia', total: 415.39, count: 1, stage: 'delivered', attn: true, date: '2026-07-16', items: [['24 in. 2-Cycle Built-in Dishwasher in White', 1, 390.39]] },
     { num: 408, v: 'ID', prop: 'bayou', total: 6900.00, count: 10, stage: 'fulfill', part: { done: 4, of: 10 }, date: '2026-07-15', items: [['Packaged Terminal Air Conditioner 12k BTU', 10, 690.00]] },
-    { num: 404, v: 'SD', prop: 'magnolia', total: 1070.58, count: 1, stage: 'fulfill', date: '2026-07-15', items: [['27 in. 7.4 cu. ft. Electric Dryer in White', 1, 1070.58]] }
+    { num: 404, v: 'SD', prop: 'magnolia', total: 1070.58, count: 1, stage: 'fulfill', claimOpen: true, date: '2026-07-15', items: [['27 in. 7.4 cu. ft. Electric Dryer in White', 1, 1070.58]] }
   ].concat(
     gen(30, 399, 2, i => ({ stage: 'fulfill' })),
     gen(11, 369, 2, i => ({ stage: 'ship' })),
@@ -362,9 +362,19 @@
     }
 
     let list = rows.filter(r => cardFilter === 'all' || r.stage === cardFilter || r.inv === cardFilter || r.cl === cardFilter);
+    const FRANK = { fulfill: 0, ship: 1, transit: 2, delivered: 3 };
+    const IRANK = { await: 0, validated: 1, paid: 2 };
+    const sortVal = r =>
+      sortK === 'num' ? r.num
+      : sortK === 'total' ? r.total
+      : sortK === 'prop' ? ((PROPERTIES.find(x => x.id === r.prop) || {}).name || '')
+      : sortK === 'vendor' ? VEN[r.v]
+      : sortK === 'status' ? (r.cl ? (r.cl === 'completed' ? 0 : 1) : 0)
+      : sortK === 'ful' ? (r.inv !== undefined ? IRANK[r.inv] : (FRANK[r.stage] !== undefined ? FRANK[r.stage] + (r.part ? 0.5 : r.sub ? 0.25 : 0) : 0))
+      : sortK === 'pay' ? ((r.inv === 'paid' || r.cl === 'completed') ? 1 : 0)
+      : r.date;
     list = list.slice().sort((a, b) => {
-      const va = sortK === 'num' ? a.num : sortK === 'total' ? a.total : a.date;
-      const vb = sortK === 'num' ? b.num : sortK === 'total' ? b.total : b.date;
+      const va = sortVal(a), vb = sortVal(b);
       const d = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
       return d * sortDir || b.num - a.num;
     });
@@ -373,17 +383,18 @@
     const slice = list.slice((page - 1) * PER, page * PER);
 
     const cols = t === 'open'
-      ? th('num', 'Order #') + '<th class="col-hide">Property</th><th>Vendor</th>' + th('total', 'Total') + '<th>Order Status</th><th>Fulfillment</th>' + th('date', 'Date')
+      ? th('num', 'Order #') + th('prop', 'Property', ' col-hide') + th('vendor', 'Vendor') + th('total', 'Total') + th('status', 'Order Status') + th('ful', 'Fulfillment') + th('date', 'Date')
       : t === 'invoiced'
-        ? th('num', 'Order #') + '<th class="col-hide">Property</th><th>Vendor</th>' + th('total', 'Total') + '<th>Fulfillment</th><th>Payment</th>' + th('date', 'Date')
-        : th('num', 'Order #') + '<th class="col-hide">Property</th><th>Vendor</th>' + th('total', 'Total') + '<th>Order Status</th><th>Payment</th>' + th('date', 'Date');
+        ? th('num', 'Order #') + th('prop', 'Property', ' col-hide') + th('vendor', 'Vendor') + th('total', 'Total') + th('ful', 'Fulfillment') + th('pay', 'Payment') + th('date', 'Date')
+        : th('num', 'Order #') + th('prop', 'Property', ' col-hide') + th('vendor', 'Vendor') + th('total', 'Total') + th('status', 'Order Status') + th('pay', 'Payment') + th('date', 'Date');
 
     const body = slice.map(r => {
       const prop = PROPERTIES.find(x => x.id === r.prop);
       const isOpen = openRows.has(r.num);
       let statusCells, action;
       if (t === 'open') {
-        const st = r.cancel ? pill('Cancellation Pending', 'dot-revision')
+        const st = r.claimOpen ? pill('Claim Open', 'dot-rejected')
+          : r.cancel ? pill('Cancellation Pending', 'dot-revision')
           : r.part ? pill('Partially Delivered · ' + r.part.done + '/' + r.part.of, 'dot-revision')
           : r.sub ? pill(r.sub[0] + ' · ' + r.sub[1] + '/' + r.sub[2], 'dot-revision')
           : pill(STAGE[r.stage][0], STAGE[r.stage][1]);
@@ -439,7 +450,7 @@
   document.addEventListener('click', e => { if (e.target.isConnected && !e.target.closest('.row-menu-wrap')) document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none'); });
 
   function setCard(k) { cardFilter = cardFilter === k ? 'all' : k; page = 1; renderPage(); }
-  function setSort(k) { if (sortK === k) sortDir *= -1; else { sortK = k; sortDir = -1; } renderPage(); }
+  function setSort(k) { if (sortK === k) sortDir *= -1; else { sortK = k; sortDir = (k === 'date' || k === 'total' || k === 'num') ? -1 : 1; } renderPage(); }
   function toggleRow(num) { openRows.has(num) ? openRows.delete(num) : openRows.add(num); renderPage(); }
   function setVendor(v, label) {
     vendorF = v; closeFMenus();
@@ -487,7 +498,7 @@
 
   let toastTimer;
   function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
-  function validateOrder(num) { showToast('Start Delivery Validation — Order #' + num, 'Item-level validation screen is next on the build list'); }
+  function validateOrder(num) { location.href = 'order-detail.html#' + num + '/validate'; }
   function rowAct(what, num) { document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none'); showToast(what + ' — Order #' + num, 'Demo action'); }
 
   renderPage();

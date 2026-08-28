@@ -6,7 +6,7 @@
 
 ## What shipped
 - **Four tabs as hash states** under one hero, using the **buyer Filter Tabs** (vendor tab-bar ported to spec: muted radius-lg bar, radius-md items, primary-fill active + shadow, count chips). Each tab has its own selectable metric cards (`stat-card-colored`, new **stat-violet** variant) and its own table columns.
-- **Expandable sortable table** (Approvals component, wholesale): expander → roomy Order Items block, sortable Order #/Total/Date, dot-pill statuses, Validate as the row primary, ⋯ **row overflow menu** (View order / Download invoice / Report an issue) on closed/validated rows, **Pager** ("Showing 1–10 of N", Previous/Next) per the tables-paginate rule.
+- **Expandable sortable table** (Approvals component, wholesale): expander → roomy Order Items block, every column sortable (text asc on first click, Order #/Total/Date desc, fulfillment/payment in lifecycle rank — partials rank between their neighboring stages), dot-pill statuses, Validate as the row primary, ⋯ **row overflow menu** (View order / Download invoice / Report an issue) on closed/validated rows, **Pager** ("Showing 1–10 of N", Previous/Next) per the tables-paginate rule.
 - **Attention rows** — new `.row-attn` amber-soft row fill + warning triangle beside the order number for rows awaiting the buyer's move.
 - Wired: Orders mega-menu "Order Tracking" (all 11 pages), Home's Validate Deliveries → `#open`, Review Invoices → `#invoiced`, both breakdown View-All links, and the checkout confirmation's "Track your orders".
 
@@ -22,7 +22,7 @@ Team update (post-build): the buyer can validate as soon as items arrive, withou
 - New partial state: sky "Partially Delivered · n/m" pill — validated count folded into the badge (seeded on #408 4/10 + two more in-flight orders); rows keep their lifecycle bucket so the card counts still reconcile with Home.
 - Attention tint narrowed to arrived-but-unvalidated rows; row toast speaks the flow's language ("Start Delivery Validation").
 - Design doc: Order Tracking rules updated + Lifecycle Matrix note (pipeline = delivery validation → invoice submission → invoice validation; **vendor Order Detail demos still show the old order — flagged for a later reconciliation pass**).
-- The Delivery Validation screen itself (item checkboxes, capped counters, locked lines, Raise Claim) is **deferred — reference screens incoming**.
+- The Delivery Validation flow itself: built as a Modal — see [delivery-validation.md](delivery-validation.md).
 
 ## Fulfillment vocabulary alignment (post-build)
 Canonical enum mapped into the vendor Lifecycle Matrix (new "Buyer fulfillment pill" column): Not Fulfilled → Fulfilled → **Shipped** → Delivered, with partials as aggregates of each fulfillment's Fulfilled → Shipped → Delivered mini-lifecycle (Partially Fulfilled · n/m, Partially Shipped · n/m, Partially Delivered · n/m — each staying in its least-advanced bucket so card counts reconcile). "In Transit" retired everywhere — buyer cards/pills and Home's breakdown row, **and the vendor app was updated in the same pass** (documented here since the change originated with this view):

@@ -1510,6 +1510,7 @@
           <a onclick="scrollToSection('buyer-cart')">Buyer Cart &amp; Checkout</a>
           <a onclick="scrollToSection('buyer-orders')">Buyer Order Tracking</a>
           <a onclick="scrollToSection('buyer-order-detail')">Buyer Order Detail</a>
+          <a onclick="scrollToSection('rail-primitives')">Rail Primitives (shared)</a>
           <a onclick="scrollToSection('metric-tile')">Metric Tile</a>
           <a onclick="scrollToSection('insight-card')">Insight Card</a>
           <a onclick="scrollToSection('activity-feed')">Activity Feed</a>
@@ -3802,16 +3803,49 @@
       <div class="comp-card" style="margin-bottom:16px">
         <h3 class="subsection-title">Fulfillment Mini-Stepper</h3>
         <p class="subsection-desc">A compact three-slot stepper on each Fulfillment card &mdash; Fulfilled &rarr; Shipped &rarr; Delivered, 26px nodes with 10px labels. A shipped fulfillment pairs it with the buyer's &ldquo;Mark as delivered&rdquo; action (the new model lets the buyer record receipt); marking flips the stepper and the item pills live.</p>
-        <div class="buyer"><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><button class="btn btn-primary" style="height:36px;font-size:13px">Mark as delivered</button><div class="mini-steps">
+        <div class="buyer"><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><div class="mini-steps">
           <div class="mini-step done"><div class="mini-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="mini-label">Fulfilled</div></div><div class="mini-conn done"></div>
           <div class="mini-step active"><div class="mini-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div><div class="mini-label">Shipped</div></div><div class="mini-conn"></div>
           <div class="mini-step"><div class="mini-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div><div class="mini-label">Delivered</div></div>
         </div></div></div>
       </div>
 
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Delivery Validation Modal</h3>
+        <p class="subsection-desc">Validation is a Modal, not a page mode (the Modal-over-takeover rule): the Next-Task Strip's Start button opens it; the order detail beneath stays read-only truth. Selectable line-item rows &mdash; checkbox, thumb, name/SKU, &ldquo;Received <em>n</em> of <em>m</em>&rdquo; meta. Checking a single-qty item confirms it directly (Save is the commit &mdash; no nested confirm popup); a multi-qty item reveals an inline Quantity Stepper capped at the outstanding count. Already-validated lines render locked with the emerald confirmed chip. Save is disabled until something new is confirmed; saving creates the vendor-side fulfillment, marks items shipped + delivered, updates pills/stepper, and logs the audit entry (&ldquo;Delivery validated by Alicia Grant&rdquo;). When everything is received the strip shows Raise Claim only.</p>
+        <div class="buyer"><div class="val-modal" style="max-width:520px;box-shadow:var(--shadow-md)">
+          <div class="val-head"><h2>Delivery Validation</h2><p>Order #408 &middot; Record the items and quantities you have physically received.</p></div>
+          <div class="val-body">
+            <div class="val-row"><button class="chk on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><span class="thumb" style="width:44px;height:44px;border:1px solid var(--border);border-radius:var(--radius-sm);display:inline-flex;align-items:center;justify-content:center;color:var(--muted-foreground);flex-shrink:0"><span style="display:inline-flex;width:20px;height:20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><path d="M8 12h8"/><path d="M8 16h8"/></svg></span></span>
+              <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">Packaged Terminal Air Conditioner 12k BTU</div><div class="item-sku">6231145</div><div class="val-meta">Received 4 of 10</div>
+              <div class="val-qty"><span style="font-size:12px;color:var(--muted-foreground)">Received now</span><span class="stepper"><button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button><input value="1" readonly><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></span><span style="font-size:12px;color:var(--muted-foreground)">of 6 outstanding</span></div></div>
+              <span class="val-meta" style="margin-top:12px;white-space:nowrap">&times; 10</span></div>
+            <div class="val-row"><button class="chk" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button><span class="thumb" style="width:44px;height:44px;border:1px solid var(--border);border-radius:var(--radius-sm);display:inline-flex;align-items:center;justify-content:center;color:var(--muted-foreground);flex-shrink:0"><span style="display:inline-flex;width:20px;height:20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><path d="M8 12h8"/><path d="M8 16h8"/></svg></span></span>
+              <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">24 in. 2-Cycle Built-in Dishwasher in White</div><div class="item-sku">8339618</div><div class="val-meta">Received 1 of 1 &middot; validated</div></div>
+              <span class="chip-ok" style="margin-top:10px">1 confirmed</span></div>
+          </div>
+          <div class="val-foot"><button class="btn">Cancel</button><button class="btn btn-primary">Save Delivery Validation</button></div>
+        </div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Claim Modal &amp; Resolution Toggle</h3>
+        <p class="subsection-desc">Raise Claim opens a structured per-item form (never a bare textarea): an amber guidance callout, then item rows with a checkbox and an &ldquo;Up to <em>n</em> available for this issue type&rdquo; cap (ordered minus already claimed). Checking expands the claim form &mdash; capped Quantity stepper, &ldquo;What happened?&rdquo; Select (Missing item or quantity &middot; Damaged item &middot; Wrong item &middot; Other difference), and the <strong>Resolution Toggle</strong>: a two-choice pair that fills when chosen &mdash; &ldquo;I still want this item&rdquo; (emerald) vs &ldquo;Cancel this item&rdquo; (rose, the destructive path). Send is disabled until every checked item has quantity, issue, and resolution. Claims live where they're discovered: validation-modal rows carry a &ldquo;Report a problem&rdquo; link that flips the row into this form inline (one Save commits receipts and claims together), the strip's &ldquo;Report a problem&rdquo; is always available, and Summary lines with unclaimed quantity offer their own entry. Submitting renders the claim as a rose rail callout (&ldquo;Claim under review &middot; invoice on hold&rdquo; + affected lines) &mdash; the strip stays a pure task strip &mdash; notes &ldquo;Cancellation requested&rdquo; on canceled lines, shows a rose &ldquo;Claim Open&rdquo; overlay on the tracking table, and logs the audit entry.</p>
+        <div class="buyer"><div class="claim-form" style="max-width:520px">
+          <div style="display:grid;grid-template-columns:110px 1fr;gap:12px">
+            <div><label>Quantity</label><span class="stepper" style="height:38px"><button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button><input value="1" readonly style="width:36px"><button disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></span></div>
+            <div><label>What happened?</label><select><option>Missing item or quantity</option><option>Damaged item</option><option>Wrong item</option><option>Other difference</option></select></div>
+          </div>
+          <div style="margin-top:10px"><label>What should happen to this item?</label><div class="res-row">
+            <button class="res-btn keep on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>I still want this item</button>
+            <button class="res-btn cancel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Cancel this item</button>
+          </div></div>
+        </div></div>
+      </div>
+
       <div class="comp-card">
         <h3 class="subsection-title">Activity Timeline</h3>
-        <p class="subsection-desc">Right-rail event feed, strictly newest first: dot (emerald for milestone events), 13px/600 title, optional muted sub-line (amounts, item counts), right-aligned time. Long feeds collapse behind a sky &ldquo;Show N more activities&rdquo; text action &mdash; the first and latest events always stay visible.</p>
+        <p class="subsection-desc">Right-rail event feed matching the vendor Activity anatomy: divided rows, emerald dots, 13px/600 title, optional muted sub-line (amounts, item counts), right-aligned time. Long feeds collapse behind a sky &ldquo;Show N more activities&rdquo; text action &mdash; the first and latest events always stay visible.</p>
         <div class="buyer"><div class="card" style="max-width:360px"><div class="act-tl">
           <div class="act-ev"><span class="adot"></span><div class="abody"><div class="at">Order updated</div></div><span class="awhen">3d ago</span></div>
           <div class="act-ev hi"><span class="adot"></span><div class="abody"><div class="at">Fulfillment delivered</div></div><span class="awhen">3d ago</span></div>
@@ -3820,6 +3854,44 @@
         </div></div></div>
       </div>
     </section>
+
+    <section class="section" id="rail-primitives">
+      <div class="section-header">
+        <h2 class="section-title">Rail Primitives (shared)</h2>
+        <p class="section-desc">Cross-app primitives that must render identically in the vendor and buyer apps &mdash; the canonical spec lives in the design doc's &ldquo;Shared Rail Primitives &amp; the Porting Rule&rdquo; table. Porting rule: copy the source CSS verbatim and diff against the spec; never rebuild from memory.</p>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Rail Rows + Row Actions</h3>
+        <p class="subsection-desc">Muted label column, left-aligned 13px values, dividers between rows. Circular avatars (emerald = people, violet = properties) vertically centered with their text; copy/download actions are borderless ghost row-actions (hover = muted fill) &mdash; never bordered squares. Secondary values muted.</p>
+        <div class="buyer"><div class="card" style="max-width:360px"><div class="rail-rows">
+          <div class="rail-row"><span class="rail-label">Buyer</span><span class="rail-value"><span class="v-avatar" style="background:var(--emerald);color:#fff">AG</span>Alicia Grant</span></div>
+          <div class="rail-row"><span class="rail-label">Contact</span><span class="rail-value">alicia.grant@demoinc.com <button class="row-action" title="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></span></div>
+          <div class="rail-row"><span class="rail-label">Property</span><span class="rail-value"><span class="v-avatar" style="background:var(--violet);color:#fff">MP</span>Magnolia Place Apartments</span></div>
+          <div class="rail-row"><span class="rail-label">Billing</span><span class="rail-value" style="color:var(--muted-foreground)">Same as shipping</span></div>
+        </div></div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Doc Rows</h3>
+        <p class="subsection-desc">Tinted rounded blocks 10px apart &mdash; never divided plain rows. Sky = purchase order, emerald = invoice, violet = receipt of goods; 13px/600 name over a 12px muted date &middot; type line, ghost download action.</p>
+        <div class="buyer"><div style="max-width:360px">
+          <div class="doc-row"><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><div style="flex:1;min-width:0"><div class="doc-name">Purchase Order #657</div><div class="doc-date">08/24/2026 &middot; PDF</div></div><button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button></div>
+          <div class="doc-row emerald"><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><div style="flex:1;min-width:0"><div class="doc-name">Invoice #102</div><div class="doc-date">08/26/2026 &middot; PDF</div></div><button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button></div>
+          <div class="doc-row violet"><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><div style="flex:1;min-width:0"><div class="doc-name">Receipt of Goods #ROG-657</div><div class="doc-date">08/26/2026 &middot; PDF</div></div><button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button></div>
+        </div></div>
+      </div>
+
+      <div class="comp-card">
+        <h3 class="subsection-title">Activity Feed (shared rhythm)</h3>
+        <p class="subsection-desc">12px gap, 10px row padding, dividers between rows, 8px emerald dot at a 5px offset; 13px/600 title, 12px muted sub-line, right-aligned time. Identical in both apps; the buyer adds the &ldquo;Show N more&rdquo; collapse.</p>
+        <div class="buyer"><div class="card" style="max-width:360px"><div class="act-tl">
+          <div class="act-ev"><span class="adot"></span><div class="abody"><div class="at">Fulfillment delivered</div></div><span class="awhen">3d ago</span></div>
+          <div class="act-ev"><span class="adot"></span><div class="abody"><div class="at">Order placed</div><div class="asub">$3,795.47</div></div><span class="awhen">3d ago</span></div>
+        </div></div></div>
+      </div>
+    </section>
+
 
 
 

@@ -720,6 +720,28 @@
     .status-dot.dot-ship { background: var(--sky); }
     .status-dot.dot-transit { background: var(--violet); }
     .status-dot.dot-delivered { background: var(--emerald); }
+    .status-dot.dot-claim { background: var(--rose); }
+    .claim-head-callout { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border: 1px dashed var(--amber); background: var(--amber-soft); border-radius: var(--radius-md); margin-bottom: 6px; }
+    .claim-head-callout > svg { width: 18px; height: 18px; color: var(--amber); flex-shrink: 0; margin-top: 1px; }
+    .claim-line { padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .claim-line:last-of-type { border-bottom: 0; }
+    .claim-ln-name { font-size: 14px; font-weight: 600; }
+    .claim-ln-issue { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+    .claim-req { display: inline-flex; margin-top: 8px; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: var(--radius-sm); }
+    .claim-req.keep { background: var(--emerald-soft); color: var(--emerald); }
+    .claim-req.cancel { background: var(--rose-soft); color: var(--rose); }
+    .claim-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .claim-opt { text-align: left; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; font: inherit; color: inherit; }
+    .claim-opt svg { width: 18px; height: 18px; color: var(--muted-foreground); }
+    .claim-opt .co-t { font-size: 13px; font-weight: 600; }
+    .claim-opt .co-d { font-size: 12px; color: var(--muted-foreground); }
+    .claim-opt.selected { border-color: var(--sky); background: var(--sky-soft); box-shadow: 0 0 0 1px var(--sky); }
+    .claim-opt.selected svg { color: var(--sky); }
+    .claim-opt.danger svg { color: var(--rose); }
+    .claim-opt.danger.selected { border-color: var(--rose); background: var(--rose-soft); box-shadow: 0 0 0 1px var(--rose); }
+    .claim-note { width: 100%; margin-top: 14px; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; font: inherit; font-size: 13px; background: var(--card); color: var(--foreground); resize: vertical; min-height: 44px; }
+    .claim-cta-row { display: flex; justify-content: flex-end; margin-top: 12px; }
+    @media (max-width: 720px) { .claim-opts { grid-template-columns: 1fr; } }
 
     /* Next-task strip */
     .task-strip {
@@ -944,37 +966,37 @@
             </div>
             <div class="step" data-step="fulfilled">
               <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
-              <div class="step-label">Fulfilled</div>
+              <div class="step-label">Fulfillment</div>
               <div class="step-actor">You</div>
             </div>
             <div class="step" data-step="shipped">
               <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
-              <div class="step-label">Shipped</div>
+              <div class="step-label">Delivery</div>
               <div class="step-actor">You</div>
             </div>
             <div class="step" data-step="delivered">
-              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div>
-              <div class="step-label">Delivered</div>
-              <div class="step-actor">You</div>
+              <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+              <div class="step-label">Delivery Validation</div>
+              <div class="step-actor">Buyer</div>
             </div>
             <div class="step" data-step="tax">
               <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></div>
-              <div class="step-label">Sales Tax</div>
+              <div class="step-label">Invoice Submission</div>
               <div class="step-actor">You</div>
             </div>
             <div class="step" data-step="validated">
               <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
-              <div class="step-label">Validated</div>
+              <div class="step-label">Invoice Validation</div>
               <div class="step-actor">Buyer</div>
             </div>
             <div class="step" data-step="paid">
               <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></div>
-              <div class="step-label">Paid</div>
+              <div class="step-label">Awaiting Payment</div>
               <div class="step-actor">Buyer</div>
             </div>
             <div class="step" data-step="completed">
               <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></div>
-              <div class="step-label">Completed</div>
+              <div class="step-label">Completion</div>
               <div class="step-actor">You</div>
             </div>
         </div>
@@ -989,6 +1011,29 @@
         </div>
         <button class="toolbar-btn" id="task-cta2" style="display:none"></button>
         <button class="toolbar-btn btn-primary-fill" id="task-cta"></button>
+      </div>
+
+      <!-- Claim Resolution (claim state) -->
+      <div class="panel" id="panel-claim" style="display:none">
+        <div class="claim-head-callout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <div><div style="font-size:14px;font-weight:600">Action required &mdash; claim</div>
+          <div style="font-size:13px;color:var(--muted-foreground);margin-top:1px">The buyer reported a difference during delivery validation. Resolve every affected line to release the invoice.</div></div>
+        </div>
+        <div class="claim-line">
+          <div class="claim-ln-name">1&times; 700 W Compact Microwave in Black</div>
+          <div class="claim-ln-issue">Missing item or quantity</div>
+          <span class="claim-req cancel">Buyer: Cancel this item</span>
+          <div class="claim-opts"><button class="claim-opt" onclick="claimPick(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="co-t">Send replacement</span><span class="co-d">Restores the missing unit, reserves it, and adds a new line to ship.</span></button><button class="claim-opt danger selected" onclick="claimPick(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span class="co-t">Cancel affected quantity</span><span class="co-d">Restores the missing unit to stock and removes it from the invoice.</span></button></div>
+        </div>
+        <div class="claim-line">
+          <div class="claim-ln-name">1&times; 700 W Compact Microwave in Black</div>
+          <div class="claim-ln-issue">Missing item or quantity</div>
+          <span class="claim-req keep">Buyer: I still want this item</span>
+          <div class="claim-opts"><button class="claim-opt selected" onclick="claimPick(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="co-t">Send replacement</span><span class="co-d">Restores the missing unit, reserves it, and adds a new line to ship.</span></button><button class="claim-opt danger" onclick="claimPick(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span class="co-t">Cancel affected quantity</span><span class="co-d">Restores the missing unit to stock and removes it from the invoice.</span></button></div>
+        </div>
+        <textarea class="claim-note" placeholder="Optional note to the buyer"></textarea>
+        <div class="claim-cta-row"><button class="toolbar-btn btn-primary-fill" onclick="resolveClaim()">Resolve claim</button></div>
       </div>
 
       <div class="detail-layout">
@@ -1426,6 +1471,7 @@
     const feedHTML = items => items.map(i => '<div class="feed-item"><span class="feed-dot"></span><div class="feed-body"><div class="feed-title">' + i[0] + '</div><div class="feed-meta">' + i[1] + '</div></div><span class="feed-time">' + i[2] + '</span></div>').join('');
 
     const TASK_ICONS = {
+      claim: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
       fulfill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
       ship: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
       deliver: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
@@ -1457,9 +1503,9 @@
       },
       shipped: {
         noCancel: true,
-        doneSteps: ['placed','fulfilled','shipped'], current: 'delivered',
+        doneSteps: ['placed','fulfilled'], current: 'shipped',
         pills: [['dot-transit','Shipped','Shipped 07/23/2026 \u00B7 with carrier'], ['dot-tax','Needs Tax &amp; Invoice','Awaiting your tax input and invoice']],
-        progress: '3 of 8',
+        progress: '2 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-transit','Shipped'], cancel: false },
         task: { tone: 'action', icon: 'deliver', title: 'Action Required \u00B7 Mark as Delivered', desc: 'Confirm the buyer received Fulfillment #1.', cta: ['Mark as Delivered', 'openConfirm()'] },
@@ -1467,27 +1513,54 @@
       },
       delivered: {
         noCancel: true,
-        doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
-        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-tax','Needs Tax &amp; Invoice','Blocks the buyer\u2019s delivery validation']],
-        progress: '4 of 8',
+        doneSteps: ['placed','fulfilled','shipped'], current: 'delivered', currentActor: 'buyer',
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','Awaiting Delivery Validation','The buyer records what they physically received']],
+        progress: '3 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
-        task: { tone: 'action', icon: 'invoice', title: 'Action Required \u00B7 Upload Invoice', desc: 'The buyer cannot validate this delivery until you add the invoice.', cta: ['Upload Invoice', 'openInvoice()'], cta2: ['Input Sales Tax', 'openTax()'] },
+        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Delivery Validation', desc: 'The buyer records what they physically received \u2014 their validation generates the Receipt of Goods and opens Invoice Submission.', cta: null },
         feed: [['Items delivered','2 items \u00B7 Fulfillment #1','Just now'], ['Items shipped','2 items \u00B7 Fulfillment #1','2m ago']],
         feedHidden: [['Items fulfilled','2 items \u00B7 Fulfillment #1','4m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','6m ago']]
       },
       tax: {
         noCancel: true,
+        doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
+        pills: [['dot-delivered','Delivery Validated','Validated by the buyer 07/23/2026 \u00B7 Receipt of Goods on file'], ['dot-tax','Needs Tax &amp; Invoice','Awaiting your tax input and invoice']],
+        progress: '4 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'invoice', title: 'Action Required \u00B7 Submit Invoice', desc: 'The buyer validated delivery \u2014 input sales tax and upload your invoice to move the order forward.', cta: ['Upload Invoice', 'openInvoice()'], cta2: ['Input Sales Tax', 'openTax()'] },
+        docsRog: true,
+        feed: [['Delivery validated by buyer','Receipt of Goods generated','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','2m ago']],
+        feedHidden: [['Items shipped','2 items \u00B7 Fulfillment #1','4m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','6m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','8m ago']]
+      },
+      claim: {
+        noCancel: true,
+        doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
+        pills: [['dot-delivered','Delivery Validated','Validated by the buyer \u00B7 claims cover 2 units'], ['dot-claim','Claim Open','The invoice is on hold until every affected line is resolved']],
+        progress: '4 of 8',
+        panels: { unfulfilled: false, fulfillment: true, claim: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'claim', title: 'Action Required \u00B7 Resolve Claim', desc: 'The buyer reported a difference during delivery validation. Resolve every affected line to release the invoice.', cta: ['Review Claim', 'scrollToClaim()'] },
+        docsRog: true,
+        feed: [['Claim raised by buyer','2\u00D7 700 W Compact Microwave \u2014 Missing item or quantity','Just now'], ['Delivery validated by buyer','Receipt of Goods generated \u00B7 claims cover 2 units','1m ago']],
+        feedHidden: [['Items delivered','2 items \u00B7 Fulfillment #1','3m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','5m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','7m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','9m ago']]
+      },
+      invoiced: {
+        noCancel: true,
         doneSteps: ['placed','fulfilled','shipped','delivered','tax'], current: 'validated', currentActor: 'buyer',
-        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','Invoice Validation','Buyer is validating delivery and QCing the invoice']],
+        pills: [['dot-delivered','Delivered','Delivered 07/23/2026'], ['dot-ship','Invoice Validation','Buyer is QCing the invoice']],
         progress: '5 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
-        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Invoice Validation', desc: 'The buyer is validating delivery and QCing the invoice \u2014 $16.89 (8%) stays editable until they validate.', cta: ['Edit Tax', 'editTax()', 'ghost'] },
+        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Invoice Validation', desc: 'The buyer is QCing your invoice \u2014 $16.89 (8%) stays editable until they validate.', cta: ['Edit Tax', 'editTax()', 'ghost'] },
         taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
-        payPill: ['dot-ship','Invoice Validation','Buyer is validating delivery and QCing the invoice'],
-        feed: [['Sales tax sent to buyer','$16.89 (8%)','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','2m ago']],
+        payPill: ['dot-ship','Invoice Validation','Buyer is QCing the invoice'],
+        docs3: true,
+        feed: [['Invoice submitted','#INV-1042 \u00B7 $16.89 (8%) tax','Just now'], ['Delivery validated by buyer','Receipt of Goods generated','2m ago']],
         feedHidden: [['Items shipped','2 items \u00B7 Fulfillment #1','4m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','6m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','8m ago']]
       },
@@ -1502,7 +1575,7 @@
         taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
         payPill: ['dot-ship','Invoice Posted','Invoice validated and on the books \u00B7 awaiting payment'],
         docs3: true, capture: true, captureDesc: 'Waiting for the buyer to confirm payment before you can capture', captureBtn: true,
-        feed: [['Delivery validated','2 items \u00B7 by the buyer','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','3m ago']],
+        feed: [['Invoice validated by buyer','On the books \u00B7 awaiting payment','Just now'], ['Invoice submitted','#INV-1042','3m ago']],
         feedHidden: [['Sales tax sent to buyer','$16.89 (8%)','2m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','5m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','7m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','9m ago']]
       },
@@ -1576,6 +1649,7 @@
       document.getElementById('progress-label').innerHTML = s.progress;
       document.getElementById('panel-unfulfilled').style.display = s.panels.unfulfilled ? '' : 'none';
       document.getElementById('panel-fulfillment').style.display = s.panels.fulfillment ? '' : 'none';
+      document.getElementById('panel-claim').style.display = s.panels.claim ? '' : 'none';
       const t = s.task;
       const strip = document.getElementById('task-strip');
       strip.className = 'task-strip ' + t.tone;
@@ -1603,7 +1677,7 @@
       document.getElementById('sum-grand').textContent = s.orderTotal || '$236.14 USD';
       document.getElementById('pay-pending').textContent = s.pending || '$236.14 USD';
       document.getElementById('doc-invoice').style.display = s.docs3 ? '' : 'none';
-      document.getElementById('doc-receipt').style.display = s.docs3 ? '' : 'none';
+      document.getElementById('doc-receipt').style.display = (s.docs3 || s.docsRog) ? '' : 'none';
       document.getElementById('pay-capture').style.display = s.capture ? '' : 'none';
       document.getElementById('pay-capture-desc').textContent = s.captureDesc || '';
       document.getElementById('btn-mark-paid').style.display = s.captureBtn ? '' : 'none';
@@ -1637,6 +1711,17 @@
     }
 
     function openShip() { document.getElementById('ship-modal').classList.add('open'); }
+    function scrollToClaim() { document.getElementById('panel-claim').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    function claimPick(el) {
+      el.closest('.claim-line').querySelectorAll('.claim-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+    function resolveClaim() {
+      const picks = [...document.querySelectorAll('#panel-claim .claim-line')].map(l => l.querySelector('.claim-opt.selected .co-t').textContent);
+      const rep2 = picks.filter(p => p === 'Send replacement').length, can = picks.length - rep2;
+      showToast('Claim resolved', (rep2 ? rep2 + ' replacement' + (rep2 === 1 ? '' : 's') + ' queued' : '') + (rep2 && can ? ' \u00B7 ' : '') + (can ? can + ' unit' + (can === 1 ? '' : 's') + ' canceled' : '') + ' \u2014 invoice released');
+      location.hash = '#tax';
+    }
     let curState;
     function expandFeed() {
       document.getElementById('activity-feed').innerHTML =

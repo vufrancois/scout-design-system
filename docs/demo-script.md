@@ -1,0 +1,48 @@
+# Scout Demo Script — one order per lifecycle state
+
+Every state below is a seeded, reconciled order. Paths are relative to the site root (locally `http://localhost:3333/…`).
+
+## Buyer App — `buyer/order-detail.html#<order>`
+
+Walk the lifecycle top to bottom; every order also appears in Order Tracking (`buyer/orders.html#open`) with matching pills and counts (Total Open 62 = To Fulfill 36 · To Ship 11 · Shipped 7 · Delivered 8).
+
+| State | Order | What to show |
+|---|---|---|
+| Not Fulfilled | `#512` | Baseline open order; stepper at Seen; **Start Delivery Validation available even pre-fulfillment** (validation-first model — validating live advances everything) |
+| Partially Fulfilled | `#373` | Unfulfilled Items card + Fulfillment #1 mini-stepper; sky "Partially Fulfilled" |
+| Fulfilled | `#669` | Mini-stepper: Fulfilled done, Shipped active |
+| Shipped | `#668` | Tracking number on the fulfillment card |
+| Delivered — awaiting validation | `#657` | Amber attention row in the table; the buyer's move. `#657/validate` deep-links straight into the **Delivery Validation modal** |
+| Partially Delivered · 4/10 | `#408` | Multi-quantity validation: capped "Received now" stepper, per-row **Report a problem** (checkbox flips to rose ×), one Save commits receipts + claims |
+| Cancellation Pending | `#486` | Sky pill (vendor's move on the buyer side); rail notice explains the hold |
+| Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold, "Cancellation requested" item note; rose Claim Open overlay in the table |
+| Delivery Validated → Invoice Submission | `#674` | The post-validation state: "Delivery Confirmed" strip, sky **Awaiting vendor invoice**, violet **Receipt of Goods** doc, awaiting-invoice clock note, Write a Review |
+| Claim resolved | `#662` | Emerald **Claim resolved** callout with per-line outcomes (Replacement on the way / Canceled — removed from the invoice), **Claim adjustment −$30.40** in totals ($112.37 → $81.97), honest line pills |
+
+**Live-flow demo (the showstopper):** open `#512` → Start Delivery Validation → check the item → Save. Watch the whole page advance in one commit: pill → Delivery Validated, stepper step 4 done, ROG appears in Documents, strip flips to Delivery Confirmed, audit trail logs validation + ROG. Repeat on `#408` mixing received quantities with a problem report to land in the claim-held state.
+
+## Vendor App — `order-detail.html#<state>`
+
+One demo order (#515) with every state as a hash — the stepper itself is clickable to jump between them. The Orders list (`orders.html`) deep-links the classic states; use direct hashes for the three newest.
+
+| State | Hash | What to show |
+|---|---|---|
+| Placed | `#placed` | Action Required · Fulfill Items |
+| Fulfilled | `#fulfilled` | Mark as Shipped |
+| Shipped (mid-Delivery) | `#shipped` | Mark as Delivered |
+| Delivered — waiting on buyer | `#delivered` | **Waiting on Buyer · Delivery Validation** (vendor no longer "uploads invoice to unblock validation") |
+| Claim Open | `#claim` | **Claim Resolution Panel**: buyer-request chips (emerald keep / rose cancel), Send replacement vs Cancel affected quantity cards, Resolve claim → invoice released (transitions to `#tax`) |
+| Delivery Validated — Submit Invoice | `#tax` | Buyer's **Receipt of Goods** now in the vendor's Documents; Action Required · Submit Invoice |
+| Invoice submitted — buyer QCing | `#invoiced` | Waiting on Buyer · Invoice Validation |
+| Invoice validated | `#validated` | Invoice Posted · Awaiting Payment |
+| Buyer paid | `#paid` | Mark as Paid (capture) |
+| Captured | `#captured` | Complete Order |
+| Completed | `#completed` | Closed out |
+
+## The claims loop in one arc (cross-app)
+
+1. Buyer `#408` — raise a problem inside the validation modal (or `#404` for a standing claim).
+2. Vendor `#claim` — the same request arrives with the buyer's keep/cancel choice pre-selected; resolve it.
+3. Buyer `#662` — the resolved rendering: emerald callout, adjusted invoice, cleared overlay.
+
+Rule of the loop: *the buyer requests, the vendor decides; a claim never blocks delivery validation — it holds the invoice.*

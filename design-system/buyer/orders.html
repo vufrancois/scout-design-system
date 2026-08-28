@@ -236,6 +236,10 @@
 
   // Open: 62 = To Fulfill 36 · To Ship 11 · Shipped 7 · Delivered 8 (reconciled to Home)
   const OPEN = [
+    { num: 674, v: 'SD', prop: 'bayou', total: 42.39, count: 1, stage: 'delivered', validated: true, date: '2026-08-28', items: [['47 x 64 in. Vinyl Cordless Plus Mini Blind', 1, 30.40]] },
+    { num: 669, v: 'SD', prop: 'magnolia', total: 979.11, count: 1, stage: 'ship', date: '2026-08-26', items: [['Whirlpool 24 in. Front Control Dishwasher in White', 1, 971.12]] },
+    { num: 668, v: 'ID', prop: 'magnolia', total: 322.58, count: 2, stage: 'transit', date: '2026-08-26', items: [['T6 PRO Z-Wave Z-Wave Pro Thermostat', 2, 161.29]] },
+    { num: 662, v: 'SD', prop: 'bayou', total: 81.97, count: 3, stage: 'delivered', validated: true, date: '2026-08-27', items: [['CORDLESS MINI BLIND 69X60 - ALABASTER', 2, 34.99], ['47 x 64 in. Vinyl Cordless Plus Mini Blind', 1, 30.40]] },
     { num: 657, v: 'SD', prop: 'magnolia', total: 3795.47, count: 3, stage: 'delivered', attn: true, date: '2026-08-24', items: [['27 in. 7.4 cu. ft. Electric Dryer in White', 1, 1210.00], ['Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', 1, 1455.09], ['23-7/16 in. 4.3 cu. ft. Electric Dryer in White', 1, 1118.39]] },
     { num: 512, v: 'GB', prop: 'magnolia', total: 563.00, count: 1, stage: 'fulfill', date: '2026-07-22', items: [['GE® ENERGY STAR® Dishwasher with Front Controls', 1, 563.00]] },
     { num: 486, v: 'SD', prop: 'magnolia', total: 66.18, count: 1, stage: 'fulfill', cancel: true, date: '2026-07-20', items: [['Dryer Vent Kit, 4 in. x 8 ft.', 1, 66.18]] },
@@ -246,9 +250,9 @@
     { num: 404, v: 'SD', prop: 'magnolia', total: 1070.58, count: 1, stage: 'fulfill', claimOpen: true, date: '2026-07-15', items: [['27 in. 7.4 cu. ft. Electric Dryer in White', 1, 1070.58]] }
   ].concat(
     gen(30, 399, 2, i => ({ stage: 'fulfill' })),
-    gen(11, 369, 2, i => ({ stage: 'ship' })),
-    gen(7, 358, 3, i => ({ stage: 'transit' })),
-    gen(6, 351, 4, i => ({ stage: 'delivered', attn: i < 3 }))
+    gen(10, 369, 2, i => ({ stage: 'ship' })),
+    gen(6, 358, 3, i => ({ stage: 'transit' })),
+    gen(4, 351, 4, i => ({ stage: 'delivered', attn: i < 3 }))
   );
   // Partial validation is the normal case: mark two more in-flight orders mid-validation
   (() => { let marked = 0; for (const r of OPEN) { if (!r.part && r.stage === 'fulfill' && r.count >= 2 && r.num < 400) { r.part = { done: 1, of: r.count }; if (++marked === 2) break; } }
@@ -370,7 +374,7 @@
       : sortK === 'prop' ? ((PROPERTIES.find(x => x.id === r.prop) || {}).name || '')
       : sortK === 'vendor' ? VEN[r.v]
       : sortK === 'status' ? (r.cl ? (r.cl === 'completed' ? 0 : 1) : 0)
-      : sortK === 'ful' ? (r.inv !== undefined ? IRANK[r.inv] : (FRANK[r.stage] !== undefined ? FRANK[r.stage] + (r.part ? 0.5 : r.sub ? 0.25 : 0) : 0))
+      : sortK === 'ful' ? (r.inv !== undefined ? IRANK[r.inv] : (r.validated ? 3.9 : FRANK[r.stage] !== undefined ? FRANK[r.stage] + (r.part ? 0.5 : r.sub ? 0.25 : 0) : 0))
       : sortK === 'pay' ? ((r.inv === 'paid' || r.cl === 'completed') ? 1 : 0)
       : r.date;
     list = list.slice().sort((a, b) => {
@@ -395,11 +399,12 @@
       if (t === 'open') {
         const st = r.claimOpen ? pill('Claim Open', 'dot-rejected')
           : r.cancel ? pill('Cancellation Pending', 'dot-revision')
+          : r.validated ? pill('Delivery Validated', 'dot-approved')
           : r.part ? pill('Partially Delivered · ' + r.part.done + '/' + r.part.of, 'dot-revision')
           : r.sub ? pill(r.sub[0] + ' · ' + r.sub[1] + '/' + r.sub[2], 'dot-revision')
           : pill(STAGE[r.stage][0], STAGE[r.stage][1]);
         statusCells = '<td>' + pill('Pending', 'dot-pending') + '</td><td>' + st + '</td>';
-        action = '<button class="btn btn-primary btn-sm" onclick="validateOrder(' + r.num + ')">Validate</button>';
+        action = r.validated ? rowMenu(r.num, true) : '<button class="btn btn-primary btn-sm" onclick="validateOrder(' + r.num + ')">Validate</button>';
       } else if (t === 'invoiced') {
         const f = r.inv === 'await' ? pill('Awaiting Validation', 'dot-pending') : pill('Validated', 'dot-revision');
         const p = r.inv === 'paid' ? pill('Paid', 'dot-approved') : pill('Not Paid', 'dot-rejected');
@@ -433,12 +438,12 @@
     if (currentProp !== 'all' && propF) setPropF(null);
   }
 
-  function rowMenu(num) {
+  function rowMenu(num, claimable) {
     return '<div class="row-menu-wrap"><button class="icon-btn" style="width:32px;height:32px" onclick="toggleMenuRow(event, ' + num + ')" title="More actions"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>' +
       '<div class="row-menu" id="rm-' + num + '" style="display:none">' +
       '<button onclick="rowAct(\'View order\', ' + num + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>View order</button>' +
       '<button onclick="rowAct(\'Download invoice\', ' + num + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Download invoice (PDF)</button>' +
-      '<button onclick="rowAct(\'Report an issue\', ' + num + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Report an issue</button></div></div>';
+      (claimable ? '<button onclick="rowAct(\'Report an issue\', ' + num + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Report an issue</button>' : '') + '</div></div>';
   }
   function toggleMenuRow(e, num) {
     e.stopPropagation();

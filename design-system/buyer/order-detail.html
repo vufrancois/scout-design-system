@@ -232,12 +232,13 @@
       { t: 'Order updated', when: '28m ago' },
       { t: 'Fulfillment delivered', when: '32m ago', more: true }, { t: 'Fulfillment shipped', when: '35m ago', more: true }, { t: 'Fulfillment created', sub: '1 item', when: '36m ago', more: true },
       { t: 'Order placed', sub: '$42.39', when: '37m ago' }] };
-  ORDERS[662] = { v: 'SD', prop: 'bayou', status: ['Delivery Validated', 'dot-approved'], placed: 'Aug 27, 2026, 2:18 PM', ship: ['2 Business Days', 11.99],
+  ORDERS[662] = { v: 'SD', prop: 'bayou', status: ['Partially Delivered · 1/2', 'dot-revision'], placed: 'Aug 27, 2026, 2:18 PM', ship: ['2 Business Days', 11.99],
     items: [
-      { name: 'CORDLESS MINI BLIND 69X60 - ALABASTER', sku: '412688', price: 34.99, qty: 2, rec: 1, claimed: 1, st: ['Delivered', 'dot-approved'] },
-      { name: '47 x 64 in. Vinyl Cordless Plus Mini Blind', sku: '7134298', price: 30.40, qty: 1, rec: 0, claimed: 1, cancelReq: 1, st: ['Delivered', 'dot-approved'] }],
+      { name: 'CORDLESS MINI BLIND 69X60 - ALABASTER', sku: '412688', price: 34.99, qty: 1, rec: 1, st: ['Delivered', 'dot-approved'] },
+      { name: '47 x 64 in. Vinyl Cordless Plus Mini Blind', sku: '7134298', price: 30.40, qty: 1, rec: 0, canceled: true, st: null },
+      { name: 'CORDLESS MINI BLIND 69X60 - ALABASTER', sku: '412688', price: 34.99, qty: 1, rec: 0, replacement: true, st: ['Fulfilled', 'dot-revision'] }],
     prog: { done: 4, active: 4, dates: ['Aug 27', 'Aug 27', 'Aug 28', 'Aug 28'] },
-    fulfillments: [{ n: 1, state: 'delivered', items: [0, 1], tracking: null }],
+    fulfillments: [{ n: 1, state: 'delivered', items: [0, 1], tracking: null }, { n: 2, state: 'fulfilled', items: [2], tracking: null }],
     docs: [['Purchase Order #662', 'PDF'], ['Receipt of Goods #ROG-662', 'PDF', 'violet', 'Aug 28, 2026']],
     claim: { resolved: true, lines: [
       { qty: 1, name: 'CORDLESS MINI BLIND 69X60 - ALABASTER', issue: 'Missing item or quantity', res: 'keep' },
@@ -301,9 +302,8 @@
   window.addEventListener('hashchange', () => { pick(); renderPage(); window.scrollTo(0, 0); });
   pick();
 
-  const itemTotal = () => Math.round(O.items.reduce((a, i) => a + i.qty * i.price, 0) * 100) / 100;
-  const claimAdj = () => (O.claim && O.claim.resolved) ? Math.round(O.items.reduce((a, i) => a + (i.cancelReq || 0) * i.price, 0) * 100) / 100 : 0;
-  const grand = () => Math.round((itemTotal() - claimAdj() + O.ship[1]) * 100) / 100;
+  const itemTotal = () => Math.round(O.items.reduce((a, i) => a + (i.canceled ? 0 : i.qty * i.price), 0) * 100) / 100;
+  const grand = () => Math.round((itemTotal() + O.ship[1]) * 100) / 100;
   const pillHtml = (label, dot) => dot === 'neutral'
     ? '<span class="status-dot-item"><span class="status-dot" style="background:var(--muted-foreground)"></span><span class="status-dot-label">' + label + '</span></span>'
     : '<span class="status-dot-item"><span class="status-dot ' + dot + '"></span><span class="status-dot-label">' + label + '</span></span>';
@@ -319,13 +319,19 @@
 
   function itemRow(i, withPrice, plain) {
     const rec = i.rec || 0;
-    const canceledOut = (O.claim && O.claim.resolved && (i.cancelReq || 0) >= i.qty - rec && rec < i.qty);
-    const statePill = canceledOut && rec === 0 ? pillHtml('Canceled', 'neutral')
-      : rec > 0
-      ? (rec < i.qty ? (canceledOut ? pillHtml('Delivered · ' + rec + '/' + i.qty, 'dot-approved') : pillHtml('Partially Delivered · ' + rec + '/' + i.qty, 'dot-revision')) : pillHtml('Delivered', 'dot-approved'))
+    if (i.canceled) {
+      const struck = 'text-decoration:line-through;color:var(--muted-foreground)';
+      return '<div class="item-line" style="opacity:.85"><span class="thumb" style="opacity:.6">' + glyph + '</span>' +
+        '<span class="item-nm" style="' + struck + '">' + i.name + '<span class="item-sku" style="' + struck + '">' + i.sku + '</span>' +
+        (plain ? '' : '<span style="display:inline-block;margin-top:5px;text-decoration:none">' + pillHtml('Canceled', 'dot-rejected') + '</span>') + '</span>' +
+        (withPrice ? '<span style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;' + struck + '"><span class="qty" style="margin-right:0">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total" style="color:var(--muted-foreground)">' + money(Math.round(i.qty * i.price * 100) / 100) + '</span></span>' : '<span class="qty" style="' + struck + '">× ' + i.qty + '</span>') + '</div>';
+    }
+    const statePill = rec > 0
+      ? (rec < i.qty ? pillHtml('Partially Delivered · ' + rec + '/' + i.qty, 'dot-revision') : pillHtml('Delivered', 'dot-approved'))
       : (i.st ? pillHtml(i.st[0], i.st[1]) : '');
     const chips = plain ? '' : ((statePill ? '<span style="display:inline-block;margin-top:5px">' + statePill + '</span>' : '') +
-      (i.cancelReq ? '<span class="val-meta" style="display:block;color:#be185d">' + ((O.claim && O.claim.resolved) ? 'Canceled · ' + i.cancelReq + (i.cancelReq === 1 ? ' unit' : ' units') + ' removed from the invoice' : 'Cancellation requested · ' + i.cancelReq + (i.cancelReq === 1 ? ' unit' : ' units')) + '</span>' : ''));
+      (i.replacement ? '<span class="val-meta" style="display:block;color:var(--sky)">Replacement · sent by the vendor after your claim</span>' : '') +
+      (i.cancelReq && !(O.claim && O.claim.resolved) ? '<span class="val-meta" style="display:block;color:#be185d">Cancellation requested · ' + i.cancelReq + (i.cancelReq === 1 ? ' unit' : ' units') + '</span>' : ''));
     const reportLink = (withPrice && (O.prog.done || 0) < 6 && (i.qty - (i.claimed || 0)) > 0) ? '<button class="act-more" style="padding:2px 0 0;font-size:12px" onclick="openClaim(' + O.items.indexOf(i) + ')">Report a problem</button>' : '';
     return '<div class="item-line"><span class="thumb">' + glyph + '</span>' +
       '<span class="item-nm">' + i.name + '<span class="item-sku">' + i.sku + '</span>' + chips + '</span>' +
@@ -349,7 +355,7 @@
 
     main += '<div class="card"><div class="det-card-head"><h2>Order Progress</h2>' + pillHtml(O.status[0], O.status[1]) + '</div>' + stepper() + '</div>';
 
-    const allReceived = O.items.every(i => (i.rec || 0) + (i.claimed || 0) >= i.qty) && (O.prog.done || 0) >= 4;
+    const allReceived = O.items.every(i => i.canceled || (i.rec || 0) + (i.claimed || 0) >= i.qty) && (O.prog.done || 0) >= 4;
     const anyReceived = O.items.some(i => (i.rec || 0) > 0);
     const warnIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
     if (allReceived) {
@@ -365,7 +371,6 @@
 
         main += '<div class="card"><div class="det-card-head hd"><h2>Summary</h2></div>' + O.items.map(i => itemRow(i, true)).join('') +
       '<div class="det-totals"><div class="tot-row"><span>Item Total</span><span>' + money(itemTotal()) + '</span></div>' +
-      (claimAdj() ? '<div class="tot-row"><span>Claim adjustment · canceled items</span><span style="color:#be185d">\u2212' + money(claimAdj()) + '</span></div>' : '') +
       '<div class="tot-row"><span>Shipping · ' + O.ship[0] + '</span><span>' + money(O.ship[1]) + '</span></div>' +
       '<div class="tot-row grand"><span>Total</span><span>' + money(grand()) + '</span></div>' +
       '<div class="tot-row"><span>Paid Total</span><span>' + money(0) + '</span></div></div></div>';
@@ -444,6 +449,7 @@
     const anyNew = (anyReceive || claimRows.length > 0) && claimsComplete;
     ov.innerHTML = '<div class="val-modal"><div class="val-head"><h2>Delivery Validation</h2><p>Order #' + num + ' · Record the items and quantities you have physically received.</p></div>' +
       '<div class="val-body">' + O.items.map((i, ix) => {
+        if (i.canceled) return '';
         const rec = i.rec || 0, remaining = i.qty - rec, locked = remaining <= 0;
         const sel = pending[ix] || 0;
         const qtyCtl = !locked && sel > 0 && i.qty > 1
@@ -506,7 +512,7 @@
     });
     const orphans = count === 0 ? [] : confirmedIx.filter(ix => !O.fulfillments.some(f => f.items.includes(ix)));
     if (orphans.length) O.fulfillments.push({ n: O.fulfillments.length + 1, state: 'delivered', items: orphans, tracking: null });
-    const allResolved = O.items.every(i => (i.rec || 0) + (i.claimed || 0) >= i.qty);
+    const allResolved = O.items.every(i => i.canceled || (i.rec || 0) + (i.claimed || 0) >= i.qty);
     const totalItems = O.items.reduce((a, i) => a + i.qty, 0);
     const recItems = O.items.reduce((a, i) => a + (i.rec || 0), 0);
     if ((count > 0 || claimIx.length > 0) && allResolved) {
@@ -540,6 +546,7 @@
       '<div class="val-body">' +
       '<div class="callout amber" style="margin:10px 0 4px">Select the affected quantity and choose what you\'d like to do. The vendor will review your request and decide the course of action.</div>' +
       O.items.map((i, ix) => {
+        if (i.canceled) return '';
         const cap = claimCap(i);
         const c = claimSel[ix] || {};
         const capped = cap <= 0;

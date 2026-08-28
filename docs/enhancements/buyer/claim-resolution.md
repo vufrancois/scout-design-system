@@ -24,13 +24,14 @@ Documented here per convention (vendor-side changes made during buyer work live 
 ## Buyer-side resolved rendering (item 5, follow-up pass)
 Built on `buyer/order-detail.html` — seeded showcase **#662** (Bayou, 2× Alabaster blind + 1× Vinyl blind; buyer received 1, claimed 1 missing-keep + 1 damaged-cancel; vendor resolved):
 - The rose rail callout turns **emerald**: "Claim resolved · The vendor resolved every affected line · the invoice is released", with a per-line outcome under each issue — *Replacement on the way* (keep) or rose *Canceled — removed from the invoice*.
-- **Totals never lie**: a rose "Claim adjustment · canceled items −$30.40" row corrects Item Total → Total ($112.37 placed → $81.97 invoiced); the item note flips from "Cancellation requested" to "Canceled · n units removed from the invoice".
-- **Honest line pills**: fully-canceled line → neutral *Canceled*; a line whose missing remainder was canceled → emerald "Delivered · n/m" (nothing further expected); a line awaiting its replacement keeps sky "Partially Delivered · n/m".
+- **The Summary is rewritten to the new truth** (per the post-resolution reference): a canceled line is struck through (name, SKU, prices) with a rose *Canceled* pill and drops out of the totals — the struck line *is* the adjustment, so the earlier "Claim adjustment" row was retired; a replacement arrives as its own new line (sky "Replacement · sent by the vendor after your claim") with its own **Fulfillment #2** card and mini-lifecycle, the original line's quantity reduced so units and money stay honest ($69.98 + $11.99 = $81.97).
+- **A pending replacement re-opens the task**: the strip returns to Start Delivery Validation, the validation modal omits canceled lines, and receiving the replacement advances the order to Delivery Validated live — the full raise → resolve → re-validate loop is demoable on #662.
+- Deviation noted: the reference's amber "This order has changed" callout is not duplicated — change narration lives in the emerald rail callout + activity feed (state expressed once).
 - Strip desc becomes "All items are received or resolved by the vendor."; activity logs "Claim resolved by vendor · 1 replacement queued · 1 unit canceled — invoice released". The tracking table's Claim Open overlay clears on resolution (rule; #404 stays the unresolved example).
 - New CSS: `.callout.emerald` + outcome line `.co.keep/.co.cancel` (light + dark).
 
 ## Held for a later pass
-- Replacement fulfillment demo (the "adds a new line to ship" outcome as a visible Fulfillment #2 on both sides).
+- Vendor-side visible Fulfillment #2 for the replacement (buyer side now shows it on #662).
 
 ## Components cascaded
 Gallery **Order Flow & Forms → Claim Resolution Panel (vendor)** card; design-doc claims rule extended with the two-sided model + Lifecycle Matrix rewrite + vendor-reconciliation note; `docs/design.md` regenerated.

@@ -17,7 +17,7 @@ Walk the lifecycle top to bottom; every order also appears in Order Tracking (`b
 | Cancellation Pending | `#486` | Sky pill (vendor's move on the buyer side); rail notice explains the hold |
 | Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold, "Cancellation requested" item note; rose Claim Open overlay in the table |
 | Delivery Validated → Invoice Submission | `#674` | The post-validation state: "Delivery Confirmed" strip, sky **Awaiting vendor invoice**, violet **Receipt of Goods** doc, awaiting-invoice clock note, Write a Review |
-| Claim resolved | `#662` | Emerald **Claim resolved** callout with per-line outcomes (Replacement on the way / Canceled — removed from the invoice), **Claim adjustment −$30.40** in totals ($112.37 → $81.97), honest line pills |
+| Claim resolved | `#662` | Emerald **Claim resolved** callout with per-line outcomes; Summary rewritten: canceled line struck through + rose pill and out of the totals, replacement as its own line with **Fulfillment #2**; validate the replacement live to finish the loop |
 
 **Live-flow demo (the showstopper):** open `#512` → Start Delivery Validation → check the item → Save. Watch the whole page advance in one commit: pill → Delivery Validated, stepper step 4 done, ROG appears in Documents, strip flips to Delivery Confirmed, audit trail logs validation + ROG. Repeat on `#408` mixing received quantities with a problem report to land in the claim-held state.
 

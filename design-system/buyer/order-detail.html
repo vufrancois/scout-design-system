@@ -298,6 +298,18 @@
       { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: '3d ago', more: true },
       { t: 'Fulfillment delivered', when: '4d ago', more: true },
       { t: 'Order placed', sub: '$513.12', when: 'Aug 21' }] };
+  ORDERS[515] = { v: 'SD', invNum: '001042755', taxRate: 0.08, status: ['Completed', 'dot-approved'], placed: 'Jul 23, 2026, 9:33 AM', ship: ['Standard', 25.00],
+    items: [{ name: '700 W Compact Microwave in Black', sku: '10101352', price: 105.57, qty: 2, rec: 2, st: ['Delivered', 'dot-approved'] }],
+    prog: { done: 8, active: 8, dates: ['Jul 23', 'Jul 23', 'Jul 23', 'Jul 23', 'Jul 23', 'Jul 24', 'Jul 24', 'Jul 24'] },
+    fulfillments: [{ n: 1, state: 'delivered', items: [0], tracking: null }],
+    docs: [['Purchase Order #515', 'PDF'], ['Receipt of Goods #ROG-515-83', 'PDF', 'violet', 'Jul 23, 2026'], ['Invoice #001042755', 'PDF', 'emerald', 'Jul 23, 2026']],
+    activity: [
+      { t: 'Order completed', sub: 'Closed by the vendor', when: 'Jul 24, 2026', hi: true },
+      { t: 'Payment captured by vendor', sub: '$253.03', when: 'Jul 24, 2026' },
+      { t: 'Payment confirmed by Alicia Grant', sub: '$253.03 sent for Invoice #001042755', when: 'Jul 24, 2026', more: true },
+      { t: 'Invoice validated by Alicia Grant', sub: '#001042755 · $253.03 on the books', when: 'Jul 24, 2026', more: true },
+      { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: 'Jul 23, 2026', more: true },
+      { t: 'Order placed', sub: '$236.14', when: 'Jul 23, 2026' }] };
   function genericOrder(num) {
     let sv = num; const rnd = () => { sv = (sv * 1103515245 + 12345) % 2147483648; return sv / 2147483648; };
     const price = Math.round((100 + rnd() * 2500) * 100) / 100;
@@ -316,7 +328,7 @@
   pick();
 
   const itemTotal = () => Math.round(O.items.reduce((a, i) => a + (i.canceled ? 0 : i.qty * i.price), 0) * 100) / 100;
-  const invTax = () => (O.prog.done || 0) >= 6 ? Math.round(itemTotal() * 0.105 * 100) / 100 : 0;
+  const invTax = () => (O.prog.done || 0) >= 6 ? Math.round(itemTotal() * (O.taxRate || 0.105) * 100) / 100 : 0;
   const grand = () => Math.round((itemTotal() + invTax() + O.ship[1]) * 100) / 100;
   const pillHtml = (label, dot) => dot === 'neutral'
     ? '<span class="status-dot-item"><span class="status-dot" style="background:var(--muted-foreground)"></span><span class="status-dot-label">' + label + '</span></span>'
@@ -379,7 +391,10 @@
       let title = 'Delivery Confirmed';
       let desc = O.claim ? (O.claim.resolved ? 'All items are received or resolved by the vendor.' : 'All items are received or covered by a claim.') : 'You have confirmed receipt of all items.';
       let mid; let icon = 'done';
-      if ((O.prog.done || 0) >= 7) {
+      if ((O.prog.done || 0) >= 8) {
+        title = 'Order Complete'; desc = 'Payment captured by the vendor \u2014 this order is closed. Documents stay available for your records.';
+        mid = '';
+      } else if ((O.prog.done || 0) >= 7) {
         title = 'Waiting on Vendor \u00B7 Completion'; desc = 'You confirmed payment \u2014 the vendor confirms receipt and closes out the order.';
         mid = '<span class="status-dot-item" style="align-self:center"><span class="status-dot" style="background:var(--violet)"></span><span class="status-dot-label">Payment confirmed</span></span>';
       } else if (invValidated) {
@@ -447,7 +462,7 @@
     }
 
     main += '<div class="card"><div class="det-card-head hd"><h2>Payment</h2></div>' +
-      '<div class="callout neutral"><b>' + IC.info + 'Notice</b>' + ((O.prog.done || 0) >= 7 ? 'Payment of ' + money(grand()) + ' is confirmed \u2014 the vendor confirms receipt to close the order.' : (O.prog.done || 0) >= 6 ? 'Invoice #' + invN() + ' is validated \u2014 payment is released by your accounting team, then confirmed here.' : 'Payments are processed after order delivery has been validated.') + '</div>' +
+      '<div class="callout neutral"><b>' + IC.info + 'Notice</b>' + ((O.prog.done || 0) >= 8 ? 'Payment of ' + money(grand()) + ' was captured by the vendor \u2014 this order is closed.' : (O.prog.done || 0) >= 7 ? 'Payment of ' + money(grand()) + ' is confirmed \u2014 the vendor confirms receipt to close the order.' : (O.prog.done || 0) >= 6 ? 'Invoice #' + invN() + ' is validated \u2014 payment is released by your accounting team, then confirmed here.' : 'Payments are processed after order delivery has been validated.') + '</div>' +
       '<div class="det-totals" style="border-top:none;padding-top:14px"><div class="tot-row grand" style="border-top:none;margin-top:0;padding-top:0"><span>Total</span><span>' + money(grand()) + '</span></div></div></div>';
 
     let side = '';

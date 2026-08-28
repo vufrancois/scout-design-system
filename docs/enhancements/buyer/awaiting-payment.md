@@ -13,8 +13,8 @@
 - Cross-app continuity: the buyer's confirmation is exactly what the vendor's `#paid` state receives ("The buyer confirmed payment — Mark as Paid to capture").
 - Fix along the way: the Summary's sales-tax row hardcoded invoice #001042731; now uses the order's own invoice number.
 
-## Held
-- Buyer-side Completion state (vendor captures → order closes) — needs the closed-order detail treatment; currently the resting strip ends the buyer's journey.
+## Completion / closed order (follow-up)
+Seeded **#515** — deliberately the vendor demo order seen from the buyer's lens (same microwave ×2, same 8% tax via new per-order `taxRate`, same $253.03 captured; it was already the Closed tab's first row). All 8 steps done with dates; strip rests at "Order Complete · Payment captured by the vendor — this order is closed. Documents stay available for your records" with Write a Review as the one action; Payment Notice states the captured amount; Paid Total equals Total; no task affordances remain (claim window closed, no validation entry). One order, two lenses, one truth — `order-detail.html#completed` (vendor) vs `buyer/order-detail.html#515`.
 
 ## Components cascaded
 Design doc: Awaiting Payment task → resting state rule + Payment card staging + Paid-Total-goes-real. Demo script updated. `docs/design.md` regenerated.

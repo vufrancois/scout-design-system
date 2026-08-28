@@ -776,6 +776,7 @@
 .buyer .stat-card-colored.stat-emerald::before { background: var(--emerald); }
 .buyer .stat-card-colored.stat-rose::before { background: var(--rose); }
 .buyer .stat-card-colored.stat-gray::before { background: var(--muted-foreground); }
+.buyer .stat-card-colored.stat-violet::before { background: var(--violet); }
 .buyer .stat-card-colored .stat-card-title { font-size: 13px; font-weight: 600; color: var(--foreground); display: inline-flex; align-items: center; gap: 6px; }
 .buyer .stat-card-colored .stat-card-icon { width: 16px; height: 16px; flex-shrink: 0; }
 .buyer .stat-card-colored.stat-sky .stat-card-icon { color: var(--sky); }
@@ -783,18 +784,21 @@
 .buyer .stat-card-colored.stat-emerald .stat-card-icon { color: var(--emerald); }
 .buyer .stat-card-colored.stat-rose .stat-card-icon { color: var(--rose); }
 .buyer .stat-card-colored.stat-gray .stat-card-icon { color: var(--muted-foreground); }
+.buyer .stat-card-colored.stat-violet .stat-card-icon { color: var(--violet); }
 .buyer .stat-card-colored .stat-card-count { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
 .buyer .stat-card-colored.stat-sky .stat-card-count { color: var(--sky); }
 .buyer .stat-card-colored.stat-amber .stat-card-count { color: var(--amber); }
 .buyer .stat-card-colored.stat-emerald .stat-card-count { color: var(--emerald); }
 .buyer .stat-card-colored.stat-rose .stat-card-count { color: var(--rose); }
 .buyer .stat-card-colored.stat-gray .stat-card-count { color: var(--muted-foreground); }
+.buyer .stat-card-colored.stat-violet .stat-card-count { color: var(--violet); }
 .buyer .stat-card-colored .stat-card-desc { font-size: 13px; color: var(--muted-foreground); }
 .buyer .stat-card-colored.active.stat-sky { border-color: var(--sky); background: var(--sky-soft); }
 .buyer .stat-card-colored.active.stat-amber { border-color: var(--amber); background: var(--amber-soft); }
 .buyer .stat-card-colored.active.stat-emerald { border-color: var(--emerald); background: var(--emerald-soft); }
 .buyer .stat-card-colored.active.stat-rose { border-color: var(--rose); background: var(--rose-soft); }
 .buyer .stat-card-colored.active.stat-gray { border-color: var(--muted-foreground); background: var(--muted); }
+.buyer .stat-card-colored.active.stat-violet { border-color: var(--violet); background: var(--violet-soft); }
 
 /* Data table — vendor .table-card conventions */
 .buyer .tbl-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
@@ -1135,3 +1139,95 @@
 .buyer .confirm-sub { font-size: 14px; color: var(--muted-foreground); margin: 10px 0 26px; }
 .buyer .items-block .item-line { padding: 14px 20px; }
 .buyer .items-block .items-label { padding: 0 20px; }
+
+/* ===== Order Tracking ===== */
+/* Filter Tabs (vendor tab-bar, buyer port, with count chips) */
+.buyer .tab-bar { display: inline-flex; gap: 4px; flex-wrap: wrap; background: var(--muted); padding: 4px; border-radius: var(--radius-lg); margin: 24px 0 4px; }
+.buyer .tab-item { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; font-family: inherit; background: transparent; color: var(--muted-foreground); border: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.buyer .tab-item svg { width: 15px; height: 15px; }
+.buyer .tab-item:hover { color: var(--foreground); background: var(--background); }
+.buyer .tab-item.active { background: var(--primary); color: #fff; box-shadow: var(--shadow-xs); }
+.buyer .tab-count { font-size: 11px; font-weight: 700; background: var(--card); color: var(--muted-foreground); border-radius: var(--radius-pill); padding: 1px 7px; }
+.buyer .tab-item.active .tab-count { background: rgba(255,255,255,.22); color: #fff; }
+.dark .buyer .tab-item.active, .buyer.dark .tab-item.active { background: #2740b8; }
+
+/* Row attention tints */
+.buyer .tbl tbody tr.row-attn td { background: var(--amber-soft); }
+.buyer .tbl tbody tr.row-attn:hover td { background: color-mix(in srgb, var(--amber) 16%, var(--card)); }
+.buyer .row-warn { display: inline-flex; width: 15px; height: 15px; color: var(--amber); vertical-align: -2px; margin-left: 6px; }
+
+/* Row overflow menu */
+.buyer .row-menu-wrap { position: relative; display: inline-block; }
+.buyer .row-menu { position: absolute; right: 0; top: calc(100% + 4px); min-width: 180px; z-index: 50; background: var(--popover); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); overflow: hidden; padding: 4px; }
+.buyer .row-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: none; background: none; font: inherit; font-size: 13px; color: var(--popover-foreground); text-align: left; cursor: pointer; border-radius: var(--radius-sm); }
+.buyer .row-menu button:hover { background: var(--accent); }
+.buyer .row-menu button svg { width: 15px; height: 15px; color: var(--muted-foreground); }
+
+/* Pager */
+.buyer .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted-foreground); }
+.buyer .pager .pg-btns { display: flex; gap: 8px; }
+
+/* ===== Buyer Order Detail ===== */
+/* Lifecycle Stepper (actor captions + buyer-turn nodes) */
+.buyer .ls-stepper { display: flex; align-items: flex-start; padding: 14px 0 4px; overflow-x: auto; }
+.buyer .ls-step { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 86px; flex: 1; }
+.buyer .ls-dot { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--border); background: var(--card); color: var(--muted-foreground); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.buyer .ls-dot svg { width: 18px; height: 18px; }
+.buyer .ls-step.done .ls-dot { background: var(--primary); border-color: var(--primary); color: #fff; }
+.buyer .ls-step.active .ls-dot { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+.buyer .ls-step.active.vend .ls-dot { border-color: var(--sky); color: var(--sky); background: var(--sky-soft); }
+.buyer .ls-label { font-size: 12px; font-weight: 600; text-align: center; line-height: 1.25; }
+.buyer .ls-step.future .ls-label { color: var(--muted-foreground); font-weight: 500; }
+.buyer .ls-actor { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 7px; border-radius: var(--radius-pill); background: var(--muted); color: var(--muted-foreground); }
+.buyer .ls-actor.you { background: var(--sky-soft); color: #1d4ed8; }
+.dark .buyer .ls-actor.you, .buyer.dark .ls-actor.you { color: #8da0fb; }
+.buyer .ls-date { font-size: 10px; color: var(--muted-foreground); }
+.buyer .ls-conn { flex: 0 0 18px; height: 2px; background: var(--border); margin-top: 20px; }
+.buyer .ls-conn.done { background: var(--primary); }
+.dark .buyer .ls-step.done .ls-dot, .buyer.dark .ls-step.done .ls-dot { background: #2740b8; border-color: #2740b8; }
+.dark .buyer .ls-conn.done, .buyer.dark .ls-conn.done { background: #2740b8; }
+
+/* Next-Task Strip (buyer) */
+.buyer .task-strip { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 20px; }
+.buyer .task-strip .ts-icon { width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--sky-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.buyer .task-strip .ts-icon svg { width: 20px; height: 20px; }
+.buyer .task-strip .ts-body { flex: 1; min-width: 0; }
+.buyer .task-strip .ts-title { font-size: 14px; font-weight: 700; }
+.buyer .task-strip .ts-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 1px; }
+
+/* Fulfillment mini-stepper */
+.buyer .mini-steps { display: flex; align-items: flex-start; }
+.buyer .mini-step { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 58px; }
+.buyer .mini-dot { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border); background: var(--card); color: var(--muted-foreground); display: flex; align-items: center; justify-content: center; }
+.buyer .mini-dot svg { width: 12px; height: 12px; }
+.buyer .mini-step.done .mini-dot { background: var(--primary); border-color: var(--primary); color: #fff; }
+.buyer .mini-step.active .mini-dot { border-color: var(--sky); color: var(--sky); background: var(--sky-soft); }
+.buyer .mini-label { font-size: 10px; font-weight: 600; color: var(--muted-foreground); }
+.buyer .mini-step.done .mini-label { color: var(--foreground); }
+.buyer .mini-conn { flex: 0 0 22px; height: 2px; background: var(--border); margin-top: 12px; }
+.buyer .mini-conn.done { background: var(--primary); }
+.dark .buyer .mini-step.done .mini-dot, .buyer.dark .mini-step.done .mini-dot { background: #2740b8; border-color: #2740b8; }
+.dark .buyer .mini-conn.done, .buyer.dark .mini-conn.done { background: #2740b8; }
+
+/* Neutral notice callout */
+.buyer .callout.neutral { background: var(--surface-soft, #f8f9fa); color: var(--muted-foreground); border: 1px solid var(--border); }
+.dark .buyer .callout.neutral, .buyer.dark .callout.neutral { background: var(--muted); }
+.buyer .callout.neutral b { color: var(--foreground); display: flex; align-items: center; gap: 8px; }
+
+/* Activity timeline */
+.buyer .act-tl { position: relative; }
+.buyer .act-ev { display: flex; gap: 10px; padding: 7px 0; }
+.buyer .act-ev .adot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); margin-top: 5px; flex-shrink: 0; }
+.buyer .act-ev.hi .adot { background: var(--emerald); }
+.buyer .act-ev .abody { flex: 1; min-width: 0; }
+.buyer .act-ev .at { font-size: 13px; font-weight: 600; }
+.buyer .act-ev .asub { font-size: 12px; color: var(--muted-foreground); }
+.buyer .act-ev .awhen { font-size: 12px; color: var(--muted-foreground); white-space: nowrap; }
+.buyer .act-more { background: none; border: none; font: inherit; font-size: 13px; font-weight: 500; color: var(--sky); cursor: pointer; padding: 4px 0 4px 18px; }
+.buyer .act-more:hover { text-decoration: underline; }
+
+/* Hero copy button */
+.buyer .hero-copy { width: 30px; height: 30px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,.35); background: none; color: rgba(255,255,255,.85); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; vertical-align: 4px; margin-left: 10px; }
+.buyer .hero-copy:hover { background: rgba(255,255,255,.15); color: #fff; }
+.buyer .hero-copy svg { width: 14px; height: 14px; }
+.buyer .row-warn[data-tip]:hover::after { left: 0; transform: none; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }

@@ -733,7 +733,7 @@
         </button>
         <button class="tab-item" data-tab="transit" onclick="setTab('transit')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-          In Transit <span class="tab-count">1</span>
+          Shipped <span class="tab-count">1</span>
         </button>
         <button class="tab-item" data-tab="delivered" onclick="setTab('delivered')">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
@@ -847,7 +847,7 @@
               <td>$3,177.53 USD</td>
               <td>17<div class="cell-meta">4 items</div></td>
               <td><span class="status-dot-item" data-tip="Awaiting your tax input and invoice"><span class="status-dot dot-fulfill"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span><svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span></td>
-              <td><span class="status-dot-item"><span class="status-dot dot-transit"></span><span class="status-dot-label">In Transit</span></span></td>
+              <td><span class="status-dot-item"><span class="status-dot dot-transit"></span><span class="status-dot-label">Shipped</span></span></td>
               <td class="col-tracking"><a class="track-link">Track <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></td>
               <td class="col-date">06/01/2026</td>
               <td style="width:48px"><button class="row-action" title="More options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
@@ -1375,7 +1375,7 @@
     }
 
 
-    const STAGE_LABELS = { fulfill: ['dot-fulfill','To Fulfill'], ship: ['dot-ship','To Ship'], transit: ['dot-transit','In Transit'], delivered: ['dot-delivered','Delivered'], completed: ['dot-completed','Completed'] };
+    const STAGE_LABELS = { fulfill: ['dot-fulfill','To Fulfill'], ship: ['dot-ship','To Ship'], transit: ['dot-transit','Shipped'], delivered: ['dot-delivered','Delivered'], completed: ['dot-completed','Completed'] };
     const PEEK_PAY = { tax: ['dot-fulfill','Needs Tax &amp; Invoice'], buyer: ['dot-ship','Invoice Validation'], posted: ['dot-ship','Invoice Posted'], paid: ['dot-transit','Paid'], captured: ['dot-delivered','Captured'] };
 
     function pill(dot, label) {

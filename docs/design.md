@@ -395,18 +395,20 @@ See the Components tab for the visual reference. Below are usage rules.
 
 The single source of truth tying the Orders list to the order detail. Every legal state is one row; a list row's fulfillment pill × payment pill must match a row here, and its order link lands on that row's detail state.
 
-| Workflow step | Fulfillment pill | Payment pill | Whose turn | Detail state |
-|---|---|---|---|---|
-| 1 · Placed | To Fulfill | Needs Tax & Invoice | You | `#placed` |
-| 2 · Fulfilled | To Ship | Needs Tax & Invoice | You | `#fulfilled` |
-| 3 · Shipped | In Transit | Needs Tax & Invoice | You | `#shipped` |
-| 4 · Delivered | Delivered | Needs Tax & Invoice | You | `#delivered` |
-| 5 · Sales Tax set | Delivered | Invoice Validation (buyer QCs delivery + invoice) | Buyer | `#tax` |
-| 6 · Validated | Delivered | Invoice Posted (on the books · awaiting payment) | Buyer | `#validated` |
-| 7 · Buyer Paid | Delivered | Paid | You | `#paid` |
-| 7 · Captured | Delivered | Captured | You | `#captured` |
-| 8 · Completed | Completed | Captured | — | `#completed` |
+| Workflow step | Vendor fulfillment pill | Buyer fulfillment pill | Payment pill | Whose turn | Detail state |
+|---|---|---|---|---|---|
+| 1 · Placed | To Fulfill | Not Fulfilled | Needs Tax & Invoice | You | `#placed` |
+| 2 · Fulfilled | To Ship | Fulfilled | Needs Tax & Invoice | You | `#fulfilled` |
+| 3 · Shipped | Shipped | Shipped | Needs Tax & Invoice | You | `#shipped` |
+| 4 · Delivered | Delivered | Delivered | Needs Tax & Invoice | You | `#delivered` |
+| 5 · Sales Tax set | Delivered | Delivered | Invoice Validation (buyer QCs delivery + invoice) | Buyer | `#tax` |
+| 6 · Validated | Delivered | Delivered | Invoice Posted (on the books · awaiting payment) | Buyer | `#validated` |
+| 7 · Buyer Paid | Delivered | Delivered | Paid | You | `#paid` |
+| 7 · Captured | Delivered | Delivered | Captured | You | `#captured` |
+| 8 · Completed | Completed | Completed | Captured | — | `#completed` |
 
+- **One vocabulary, two lenses:** the canonical fulfillment terms are Not Fulfilled → Fulfilled → **Shipped** → Delivered ("In Transit" is retired everywhere). The vendor list keeps its action-oriented pills (To Fulfill, To Ship) for steps where the vendor must act; the buyer list shows the state terms. Colors flip by viewer per whose-turn: amber marks *your* move — so pre-delivery states read amber to the vendor and gray/sky to the buyer, and **Cancellation Pending** (an overlay that can ride any pre-delivery step, taking precedence over the stage pill) is amber on the vendor side and sky on the buyer side.
+- **Partials are aggregates, not new stages:** each fulfillment runs its own Fulfilled → Shipped → Delivered mini-lifecycle; the order-level pill is the aggregate — Partially Fulfilled (between 1 and 2), Partially Shipped (between 2 and 3), Partially Delivered · *n*/*m* (between 3 and 4). A partial pill keeps its order in the bucket of its least-advanced items, so list card counts still reconcile.
 - **Gating rule:** the payment pipeline can never outrun fulfillment — before Delivered, the payment pill is always **Needs Tax & Invoice**; Invoice Validation, Invoice Posted, Paid, and Captured all require Delivered. Any list row violating this is a data bug.
 - Exception flags (e.g. an Active Return) ride alongside these pills; they never replace them.
 
@@ -415,6 +417,7 @@ The single source of truth tying the Orders list to the order detail. Every lega
 - The Buyer App uses a **floating pill App Bar** (card surface, pill radius, shadow-md, sticky under a 14px gutter) instead of the vendor sidebar. Anatomy left→right: avatar ring (36px, 2px primary border, initials) + Scout wordmark (inline SVG on `currentColor`), Nav Chips, Context Switcher, icon buttons.
 - **Nav Chips:** 38px pills, 14px/500, 17px muted leading icon; active = muted fill + 600 weight + foreground icon; hover = accent. Dropdown chips carry a chevron that rotates 180° while open. Under 1100px labels collapse to icons; under 820px the wordmark hides.
 - **Icon buttons:** 40px circles; primary-filled only for notifications and cart (the two the reference filled); a status dot (emerald, 2px surface ring) marks unread.
+- **Lifecycle Matrix update (pending vendor-side catch-up):** delivery validation is no longer gated on fulfillment — the buyer can validate arriving items at any stage, the save creates the fulfillment and marks those items shipped + delivered, partial validation is a first-class state, invoice submission follows delivery validation, and validation events record who performed them. The vendor Order Detail demos still show the older delivered-then-validate order and will be reconciled in a later pass.
 - All buyer components ship in `buyer/buyer-components.css` scoped under `.buyer`; pages add `buyer/buyer.css` for the reset and layout. One shared stylesheet — no per-page CSS clones.
 
 ### Mega Menu
@@ -513,6 +516,27 @@ The single source of truth tying the Orders list to the order detail. Every lega
 - **No repeated facts:** the hero subtitle is the request's identity line — `#id · buyer · amount` — and the rail facts never repeat it (they carry Reason, Property, Approvers as level pills, Decided by). The amber rail callout is titled "Note to buyer" (the status pill already says Revision Requested); "Orders placed" shows the order number only — its amount is the request total. Shipping is not a separate card: Order details ends with totals rows — Items subtotal, Shipping · method, and a bold Request total that closes the math against the hero amount.
 - **Callouts:** tinted, bordered notes with a bold first line — amber for the standing revision comment, rose for rejection reasons and unavailable-product warnings, violet for informational legacy notices. Unavailable line items strike through with a rose "No longer available" pill; the live-inventory header pairs a "Refresh inventory" outline button with a muted "Checked X ago" caption.
 - **Routing:** detail states address by URL hash (`approval.html#K4PT2N`), matching the vendor Order Detail convention — clean-URL hosting drops query strings, hashes survive.
+
+### Order Tracking
+
+- **One page, four views:** Open, Backordered, Invoiced, and Closed orders are Filter Tabs with count chips over hash states (`orders.html#open…`). Each tab carries its own selectable metric cards and its own columns — the table changes shape with the tab, the chrome doesn't.
+- **Numbers reconcile with Home:** Open's cards are Home's lifecycle split (Total Open 62 = To Fulfill 36 · To Ship 11 · Shipped 7 · Delivered 8 — never a "Total" and a "Pending" showing the same number twice); Invoiced mirrors Home's invoice pipeline (16 = Awaiting Validation 11 · Validated 4 · Buyer Paid 1 · Captured 0); Closed = Completed 27 + Canceled 1. Card colors follow whose-turn: amber = the buyer's move (To Fulfill is the vendor's amber on Home's vocabulary; Awaiting Validation is the buyer's), violet = paid/promised, emerald = done, rose = canceled.
+- **Delivery validation is not gated by fulfillment** (product update): the buyer can start validating as soon as items arrive, so **every open row carries Validate** — and saving a validation creates the fulfillment on the vendor side. **Partial states are the normal case:** an order mid-validation shows a sky "Partially Delivered · *n*/*m*" pill (validated items over ordered), while staying in its lifecycle bucket. Validated lines are immutable — Raise Claim is the only path after validation. The pipeline order is delivery validation → invoice submission → invoice validation.
+- **Attention rows:** a row with arrived-but-unvalidated items takes an amber-soft row fill and a warning triangle beside the order number — whose-turn amber applied to table rows. Validate is the row's one primary.
+- **Property scope vs. property filter:** the Context Switcher stays the one *scope* control (the reference's standalone property dropdown is still dropped) — but under "All properties" the toolbar's nested **Add filter** menu (the vendor pattern: root list → submenu with a back row) offers Vendor and Property facets, narrowing the table without changing global context. When a specific property is active the facet hides (it would be moot). Order status and fulfillment are deliberately not facets: the selectable metric cards are those filters. Search matches vendor, order #, property, and item names.
+- **Tables paginate** (grids load progressively): a Pager footer inside the table card — "Showing 1–10 of N orders", Previous/Next outline buttons disabled at the ends; filters and card clicks reset to page one.
+- **Row overflow menu:** rows whose actions are secondary (closed, validated) carry a 32px “⋯” icon button opening a right-anchored popover of icon + label actions; one open at a time, outside click closes.
+- **Backordered empty state is contextual** — it names what would land there ("Items a vendor can't fulfill right away…"), never generic "No orders yet" copy; no redundant zero-count banner above an empty state.
+- Column hygiene follows Approvals: identity-first order (Order # leads with the attention marker), items fold into the expander (“Order Items” block), vendor names without @handles, status pills on the dot-pill anatomy.
+
+### Buyer Order Detail
+
+- **One stateful page** (`order-detail.html#<order>`) with the hero identity line ("Order #657" + copy button; subtitle Placed · vendor · total) and exactly **one status pill** — on the Order Progress card head beside the refresh button, never duplicated in a second header.
+- **Lifecycle Stepper (buyer):** eight fixed slots — Seen · Fulfillment · Delivery · Delivery Validation · Invoice Submission · Invoice Validation · Awaiting Payment · Completion — captioned VENDOR / YOU (sky). Labels never change with state; done = check + completion date, the next actionable step takes the whose-turn ring (amber "your move" / sky "in progress"), future stays outlined. The slot order encodes the pipeline: delivery validation before invoice submission.
+- **The Delivery Validation Next-Task Strip renders in every state** — validation is not gated on fulfillment. Summary items carry per-item status pills; quantities read "× 1" everywhere.
+- **Fulfillment cards** carry a compact Fulfilled → Shipped → Delivered mini-stepper; a shipped fulfillment offers the buyer "Mark as delivered" (recording receipt flips the stepper and item pills live). Unfulfilled Items get their own card with paired "Requires shipping" / "Awaiting fulfillment" pills; no fulfillments yet = the empty-state anatomy inside the card.
+- **Rail:** "Fulfilled by" card (warehouse name, vendor as a link); Customer fact rows with the address written once (no duplicated city line, no country in a US-only demo); Documents as a disclosure; **Activity timeline** strictly newest-first with a "Show N more activities" collapse — the latest and the original "Order placed" events always visible.
+- Payment card: neutral Notice callout ("Payments are processed after order delivery has been validated") + total. Paid Total stays visible at $0.00 — the buyer should see what has not left their account yet.
 
 ### Cart & Checkout
 

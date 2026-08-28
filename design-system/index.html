@@ -1508,6 +1508,8 @@
           <a onclick="scrollToSection('buyer-marketplace')">Buyer Marketplace</a>
           <a onclick="scrollToSection('buyer-approvals')">Buyer Approvals</a>
           <a onclick="scrollToSection('buyer-cart')">Buyer Cart &amp; Checkout</a>
+          <a onclick="scrollToSection('buyer-orders')">Buyer Order Tracking</a>
+          <a onclick="scrollToSection('buyer-order-detail')">Buyer Order Detail</a>
           <a onclick="scrollToSection('metric-tile')">Metric Tile</a>
           <a onclick="scrollToSection('insight-card')">Insight Card</a>
           <a onclick="scrollToSection('activity-feed')">Activity Feed</a>
@@ -2920,7 +2922,7 @@
             <tbody>
             <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">1 &middot; Placed</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">To Fulfill</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#placed" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#placed</a></td></tr>
             <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">2 &middot; Fulfilled</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--sky)"></span><span class="status-dot-label">To Ship</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#fulfilled" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#fulfilled</a></td></tr>
-            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">3 &middot; Shipped</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--violet)"></span><span class="status-dot-label">In Transit</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#shipped" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#shipped</a></td></tr>
+            <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">3 &middot; Shipped</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--violet)"></span><span class="status-dot-label">Shipped</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#shipped" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#shipped</a></td></tr>
             <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">4 &middot; Delivered</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--amber)"></span><span class="status-dot-label">Needs Tax &amp; Invoice</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">You</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#delivered" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#delivered</a></td></tr>
             <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">5 &middot; Sales Tax set</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--sky)"></span><span class="status-dot-label">Invoice Validation</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">Buyer</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#tax" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#tax</a></td></tr>
             <tr><td style="padding:9px 14px;border-top:1px solid var(--border);font-weight:600;white-space:nowrap">6 &middot; Validated</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--emerald)"></span><span class="status-dot-label">Delivered</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border)"><span class="status-dot-item"><span class="status-dot" style="background:var(--sky)"></span><span class="status-dot-label">Invoice Posted</span></span></td><td style="padding:9px 14px;border-top:1px solid var(--border);color:var(--muted-foreground)">Buyer</td><td style="padding:9px 14px;border-top:1px solid var(--border)"><a href="order-detail.html#validated" style="color:var(--primary);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px">#validated</a></td></tr>
@@ -3725,6 +3727,101 @@
         </div></div>
       </div>
     </section>
+
+    <section class="section" id="buyer-orders">
+      <div class="section-header">
+        <h2 class="section-title">Buyer App &middot; Order Tracking</h2>
+        <p class="section-desc">The buyer side of the order lifecycle: Filter Tabs with count chips route between Open, Backordered, Invoiced, and Closed orders (hash states), each tab with its own selectable metric cards reconciled to Home's breakdowns. New pieces: the buyer Filter Tabs port, the attention row tint, the row overflow menu, and the table Pager. Live on <code>buyer/orders.html</code>.</p>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Filter Tabs (buyer)</h3>
+        <p class="subsection-desc">The vendor Filter Tabs, verbatim: muted-fill bar (radius-lg, 4px padding), 13px/500 items on radius-md with a 15px icon and a count chip; active = primary fill + shadow-xs (count chip goes translucent white). Tabs are top-level views &mdash; each carries its own metric cards and columns; counts respect the property scope.</p>
+        <div class="buyer"><div class="tab-bar" style="margin:0">
+          <button class="tab-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Open Orders<span class="tab-count">62</span></button>
+          <button class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Invoiced Orders<span class="tab-count">16</span></button>
+          <button class="tab-item">Closed Orders<span class="tab-count">28</span></button>
+        </div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Attention Row</h3>
+        <p class="subsection-desc">A data-table row with arrived-but-unvalidated items takes an amber-soft fill plus a 15px amber warning triangle beside its identity &mdash; whose-turn amber applied to rows. Delivery validation is not fulfillment-gated, so every open row carries Validate; orders mid-validation show the sky &ldquo;Partially Delivered &middot; <em>n</em>/<em>m</em>&rdquo; pill (validated over ordered items).</p>
+        <div class="buyer"><div class="tbl-wrap" style="max-width:720px"><table class="tbl">
+          <thead><tr><th>Order #<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></th><th>Vendor</th><th>Total</th><th>Fulfillment</th><th style="width:1%"></th></tr></thead>
+          <tbody>
+            <tr class="data-row row-attn"><td class="mono" style="font-weight:700">#657<span class="row-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span></td><td>Scout Demo Vendor</td><td class="num" style="font-weight:600">$3,795.47</td><td><span class="status-dot-item"><span class="status-dot dot-approved"></span><span class="status-dot-label">Delivered</span></span></td><td><button class="btn btn-primary btn-sm">Validate</button></td></tr>
+            <tr class="data-row"><td class="mono" style="font-weight:700">#408</td><td>Ideal DEV</td><td class="num" style="font-weight:600">$6,900.00</td><td><span class="status-dot-item"><span class="status-dot dot-revision"></span><span class="status-dot-label">Partially Delivered &middot; 4/10</span></span></td><td><button class="btn btn-primary btn-sm">Validate</button></td></tr>
+            <tr class="data-row"><td class="mono" style="font-weight:700">#512</td><td>Gorman Bros</td><td class="num" style="font-weight:600">$563.00</td><td><span class="status-dot-item"><span class="status-dot" style="background:var(--muted-foreground)"></span><span class="status-dot-label">Not Fulfilled</span></span></td><td><button class="btn btn-primary btn-sm">Validate</button></td></tr>
+          </tbody>
+        </table></div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Row Overflow Menu</h3>
+        <p class="subsection-desc">Rows whose actions are secondary (closed and validated orders) carry a 32px &ldquo;&ctdot;&rdquo; icon button opening a right-anchored popover of icon + label actions. One menu open at a time; outside click closes (with the detached-node guard).</p>
+        <div class="buyer"><div class="row-menu-wrap" style="min-height:150px"><button class="icon-btn" style="width:32px;height:32px"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+          <div class="row-menu" style="position:relative;display:block;margin-top:6px;max-width:200px">
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>View order</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Download invoice (PDF)</button>
+            <button><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Report an issue</button>
+          </div></div></div>
+      </div>
+
+      <div class="comp-card">
+        <h3 class="subsection-title">Pager</h3>
+        <p class="subsection-desc">Tables paginate (grids load progressively): a footer row inside the table card &mdash; &ldquo;Showing 1&ndash;10 of 62 orders&rdquo; left, Previous / Next small outline buttons right, disabled at the ends. Filters and card selections reset to page one.</p>
+        <div class="buyer"><div class="tbl-wrap" style="max-width:720px"><div class="pager" style="border-top:none"><span>Showing 1&ndash;10 of 62 orders</span><span class="pg-btns"><button class="btn btn-sm" disabled>Previous</button><button class="btn btn-sm">Next</button></span></div></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="buyer-order-detail">
+      <div class="section-header">
+        <h2 class="section-title">Buyer App &middot; Order Detail</h2>
+        <p class="section-desc">The buyer's view of one order (<code>buyer/order-detail.html#&lt;order&gt;</code>, hash states): the Lifecycle Stepper with actor captions, the Delivery Validation Next-Task Strip (present in every state &mdash; validation is not fulfillment-gated), Summary with per-item status pills, Unfulfilled Items, Fulfillment cards with a compact mini-stepper and buyer "Mark as delivered", and an Activity timeline with a "Show more" collapse.</p>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Lifecycle Stepper (actor captions)</h3>
+        <p class="subsection-desc">Eight fixed slots &mdash; Seen &middot; Fulfillment &middot; Delivery &middot; Delivery Validation &middot; Invoice Submission &middot; Invoice Validation &middot; Awaiting Payment &middot; Completion &mdash; each captioned VENDOR or YOU (sky). Labels never change with state: done = primary check + completion date beneath, the next actionable step takes a whose-turn ring (amber "your move" for YOU, sky "in progress" for VENDOR), future stays outlined with its icon. The order encodes the new pipeline: delivery validation before invoice submission.</p>
+        <div class="buyer"><div class="card"><div class="ls-stepper" style="padding-top:4px">
+          <div class="ls-step done"><div class="ls-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="ls-label">Seen</div><span class="ls-actor">VENDOR</span><span class="ls-date">Aug 24</span></div><div class="ls-conn done"></div>
+          <div class="ls-step done"><div class="ls-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="ls-label">Fulfillment</div><span class="ls-actor">VENDOR</span><span class="ls-date">Aug 24</span></div><div class="ls-conn done"></div>
+          <div class="ls-step done"><div class="ls-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="ls-label">Delivery</div><span class="ls-actor">VENDOR</span><span class="ls-date">Aug 24</span></div><div class="ls-conn done"></div>
+          <div class="ls-step active"><div class="ls-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></div><div class="ls-label">Delivery Validation</div><span class="ls-actor you">YOU</span><span class="ls-date">your move</span></div><div class="ls-conn"></div>
+          <div class="ls-step future"><div class="ls-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div><div class="ls-label">Invoice Submission</div><span class="ls-actor">VENDOR</span></div>
+        </div></div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Next-Task Strip (buyer)</h3>
+        <p class="subsection-desc">The vendor Next-Task Strip ported: 40px sky icon tile, 14px/700 task name, one-line brief, and the page's one primary on the right. On Order Detail it is the Delivery Validation entry point and renders in <em>every</em> state &mdash; per the product rule that validation is never gated on fulfillment.</p>
+        <div class="buyer"><div class="task-strip" style="max-width:680px"><span class="ts-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><div class="ts-body"><div class="ts-title">Delivery Validation</div><div class="ts-desc">Record the items and quantities you have physically received.</div></div><button class="btn btn-primary">Start Delivery Validation</button></div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Fulfillment Mini-Stepper</h3>
+        <p class="subsection-desc">A compact three-slot stepper on each Fulfillment card &mdash; Fulfilled &rarr; Shipped &rarr; Delivered, 26px nodes with 10px labels. A shipped fulfillment pairs it with the buyer's &ldquo;Mark as delivered&rdquo; action (the new model lets the buyer record receipt); marking flips the stepper and the item pills live.</p>
+        <div class="buyer"><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><button class="btn btn-primary" style="height:36px;font-size:13px">Mark as delivered</button><div class="mini-steps">
+          <div class="mini-step done"><div class="mini-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="mini-label">Fulfilled</div></div><div class="mini-conn done"></div>
+          <div class="mini-step active"><div class="mini-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div><div class="mini-label">Shipped</div></div><div class="mini-conn"></div>
+          <div class="mini-step"><div class="mini-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div><div class="mini-label">Delivered</div></div>
+        </div></div></div>
+      </div>
+
+      <div class="comp-card">
+        <h3 class="subsection-title">Activity Timeline</h3>
+        <p class="subsection-desc">Right-rail event feed, strictly newest first: dot (emerald for milestone events), 13px/600 title, optional muted sub-line (amounts, item counts), right-aligned time. Long feeds collapse behind a sky &ldquo;Show N more activities&rdquo; text action &mdash; the first and latest events always stay visible.</p>
+        <div class="buyer"><div class="card" style="max-width:360px"><div class="act-tl">
+          <div class="act-ev"><span class="adot"></span><div class="abody"><div class="at">Order updated</div></div><span class="awhen">3d ago</span></div>
+          <div class="act-ev hi"><span class="adot"></span><div class="abody"><div class="at">Fulfillment delivered</div></div><span class="awhen">3d ago</span></div>
+          <button class="act-more">Show 2 more activities</button>
+          <div class="act-ev"><span class="adot"></span><div class="abody"><div class="at">Order placed</div><div class="asub">$3,795.47</div></div><span class="awhen">3d ago</span></div>
+        </div></div></div>
+      </div>
+    </section>
+
+
 
 
     <section class="section" id="metric-tile">

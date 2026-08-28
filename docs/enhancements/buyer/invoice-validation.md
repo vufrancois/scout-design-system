@@ -1,0 +1,29 @@
+# Buyer App — Invoice Validation (Document Review Split View)
+
+**Status:** ✅ built and cascaded
+**Page:** `design-system/buyer/order-detail.html#674` (deep link `#674/invoice` opens the takeover directly)
+**Reference:** Buyer Review Invoice screenshots — PDF-left / verification-right takeover, confirm checkboxes on AI-extracted values, Dispute confirm dialog, and the post-validation screens.
+
+## What shipped
+- **#674 advanced to invoice-received**: stepper 5 done, Invoice Validation YOU next (amber "your move"); emerald **Invoice #001042731** doc-row joins PO + ROG; the strip finally earns its **Validate Invoice** primary — the button we deliberately withheld until an invoice document existed. Polish pass: the strip leads with the task and the why ("Invoice Validation · The vendor's invoice is ready — compare it with your Receipt of Goods to release payment", sky doc icon) instead of restating "Delivery Confirmed" — the Next-Task Strip narrates the pending task, never the previous accomplishment. Then extended to **every progression stage**: pre-delivery states read "Waiting on Vendor · Fulfillment / Delivery" (muted icon, *ghost* Start Delivery Validation — available anytime, but primary is reserved for your actual move), arrived → "Your items have arrived — record what you received to generate the Receipt of Goods" (primary), mid-validation → "n of m items validated — record the rest as they arrive", Cancellation Pending → "Waiting on Vendor · Cancellation" (no button), invoice validated → "Awaiting Payment · The invoice is on the books — payment is being released to the vendor." Verified across all ten seeded demo orders. Follow-up: **Write a Review scoped to resting states only** — it appears at the Invoice Submission stage (awaiting/disputed invoice) and eventually Completion; task-carrying strips (Validate Invoice, Start Delivery Validation) and Awaiting Payment offer no review button — a strip with a primary task carries that task alone.
+- **The Document Review Split View** (kept per the user's direction — codified as the one sanctioned exception to Modal-over-takeover, for tasks that *compare a document against data*): full-screen takeover, mock PDF viewer left (dark pane, white sheet, the demo invoice rendered in mono), verification panel right:
+  - **SKUs and quantities** — per-line confirm checkbox (reusing the validation modal's `.chk`), item, SKU, ROG Qty vs the sky-highlighted "Invoice Qty · Extracted by Scout AI" column.
+  - **Invoice amounts** — Subtotal / Sales tax / Grand total rows, each Order/ROG vs Invoice with a **Variance** column; Shipping shown uncheckable (included in total).
+  - **Map the line items myself** — collapsed disclosure with n/n chip; invoice line → ROG item selects (exact SKU matches pre-selected), "All line items are mapped," Preview mapping.
+  - Footer: live counter ("n of 4 required values confirmed" → "Every Scout AI extracted value has been reviewed"), **Dispute Invoice** (danger) and **Validate Invoice** (disabled until every confirm is checked — the buyer attests to each AI-extracted value, mirroring the vendor's two acceptance confirmations).
+- **The answer to the reference's "alternative order screen"**: validating or disputing never leaves the order. No second page, no separate "Payment Progress" stepper — both outcomes land back on the same Order Detail and the single 8-slot stepper moves:
+  - **Validate** → Invoice Validation done, Awaiting Payment (YOU) active; strip becomes "Invoice Validated · The invoice is on the books — payment is being processed" with a violet **Payment processing** pill; the claim window closes (item "Report a problem" links disappear — the codified rule firing automatically); the invoice's sales tax joins the totals ("Sales tax · Invoice #001042731" · Total $42.39 → $45.58 — totals never lie); audit entry logged.
+  - **Dispute** → centered confirm dialog (above the takeover): "The vendor will be asked to correct and resubmit… validation will stay blocked until the replacement is reviewed." Confirming removes the invoice doc, steps the order back to Invoice Submission (4 done), flips the strip pill to rose "Invoice disputed · awaiting correction," and the Documents note reads "Invoice disputed · The vendor was asked to correct and resubmit."
+
+## Deviations from the reference
+1. **No second order screen** — the reference's post-action "Pending Orders" page with its own 4-step Payment Progress is replaced by same-page stepper advance (the user disliked it; this is the alternative).
+2. **No strip Raise Claim button** — item-level entries remain the claim door (standing declutter rule); by this stage the claim window is nearly closed anyway.
+3. The reference's amber variance treatment ("The Scout AI extracted amount is incorrect. I reviewed the invoice PDF…") is **held** — our demo invoice has $0.00 variance everywhere; the variance-mismatch confirm path needs a discrepant-invoice demo order (natural fit: a corrected invoice on the claims order).
+
+## Held
+- Variance-mismatch state (amber confirm copy when Order/ROG ≠ Invoice).
+- Vendor side of a dispute (corrected-invoice resubmission — vendor `#review` handles the re-upload naturally, but no disputed-state demo exists there yet).
+- Write a Review remains a stub.
+
+## Components cascaded
+Design doc: **Document Review Split View** pattern + Invoice Validation rules + "validating or disputing never leaves the order." Gallery: Invoice Validation card with a live amounts-table demo. `docs/design.md` regenerated.

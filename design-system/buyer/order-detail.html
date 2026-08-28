@@ -224,11 +224,12 @@
       { t: 'Order placed', sub: '$6,899.99', when: 'Jul 15, 2026' }] };
   ORDERS[674] = { v: 'SD', prop: 'bayou', status: ['Delivery Validated', 'dot-approved'], placed: 'Aug 28, 2026, 10:42 AM', ship: ['2 Business Days', 11.99],
     items: [{ name: '47 x 64 in. Vinyl Cordless Plus Mini Blind', sku: '7643032', price: 30.40, qty: 1, rec: 1, st: ['Delivered', 'dot-approved'] }],
-    prog: { done: 4, active: 4, dates: ['Aug 28', 'Aug 28', 'Aug 28', 'Aug 28'] },
+    prog: { done: 5, active: 5, dates: ['Aug 28', 'Aug 28', 'Aug 28', 'Aug 28', 'Aug 28'] },
     fulfillments: [{ n: 1, state: 'delivered', items: [0], tracking: null }],
-    docs: [['Purchase Order #674', 'PDF'], ['Receipt of Goods #ROG-674', 'PDF', 'violet']],
+    docs: [['Purchase Order #674', 'PDF'], ['Receipt of Goods #ROG-674', 'PDF', 'violet'], ['Invoice #001042731', 'PDF', 'emerald']],
     activity: [
-      { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: '28m ago', hi: true },
+      { t: 'Invoice received from vendor', sub: '#001042731 · $45.58 · ready for your validation', when: '9m ago', hi: true },
+      { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: '28m ago' },
       { t: 'Order updated', when: '28m ago' },
       { t: 'Fulfillment delivered', when: '32m ago', more: true }, { t: 'Fulfillment shipped', when: '35m ago', more: true }, { t: 'Fulfillment created', sub: '1 item', when: '36m ago', more: true },
       { t: 'Order placed', sub: '$42.39', when: '37m ago' }] };
@@ -286,6 +287,17 @@
     activity: [
       { t: 'Claim raised by Alicia Grant', sub: '1× 27 in. Electric Dryer — Missing item or quantity', when: 'Aug 20, 2026', hi: true },
       { t: 'Order placed', sub: '$1,070.58', when: 'Jul 15, 2026' }] };
+  ORDERS[653] = { v: 'SD', invNum: '001042698', status: ['Delivery Validated', 'dot-approved'], placed: 'Aug 21, 2026, 3:37 PM', ship: ['2 Business Days', 7.99],
+    items: [{ name: 'Gold\u00AE 23-7/8 in. Dishwasher with Pocket Handle', sku: '7524220', price: 505.13, qty: 1, rec: 1, st: ['Delivered', 'dot-approved'] }],
+    prog: { done: 6, active: 6, dates: ['Aug 21', 'Aug 22', 'Aug 24', 'Aug 25', 'Aug 26', 'Aug 27'] },
+    fulfillments: [{ n: 1, state: 'delivered', items: [0], tracking: null }],
+    docs: [['Purchase Order #653', 'PDF'], ['Receipt of Goods #ROG-653', 'PDF', 'violet', 'Aug 25, 2026'], ['Invoice #001042698', 'PDF', 'emerald', 'Aug 26, 2026']],
+    activity: [
+      { t: 'Invoice validated by Alicia Grant', sub: '#001042698 · $566.16 on the books', when: '1d ago', hi: true },
+      { t: 'Invoice received from vendor', sub: '#001042698 · $566.16', when: '2d ago', more: true },
+      { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: '3d ago', more: true },
+      { t: 'Fulfillment delivered', when: '4d ago', more: true },
+      { t: 'Order placed', sub: '$513.12', when: 'Aug 21' }] };
   function genericOrder(num) {
     let sv = num; const rnd = () => { sv = (sv * 1103515245 + 12345) % 2147483648; return sv / 2147483648; };
     const price = Math.round((100 + rnd() * 2500) * 100) / 100;
@@ -298,12 +310,14 @@
 
   let num, O, actExpanded = false;
   let autoValidate = false;
-  function pick() { const h = (location.hash || '#657').replace('#', ''); autoValidate = h.includes('/validate'); num = parseInt(h, 10) || 657; O = ORDERS[num] || genericOrder(num); actExpanded = false; }
+  let autoInvoice = false;
+  function pick() { const h = (location.hash || '#657').replace('#', ''); autoValidate = h.includes('/validate'); autoInvoice = h.includes('/invoice'); num = parseInt(h, 10) || 657; O = ORDERS[num] || genericOrder(num); actExpanded = false; }
   window.addEventListener('hashchange', () => { pick(); renderPage(); window.scrollTo(0, 0); });
   pick();
 
   const itemTotal = () => Math.round(O.items.reduce((a, i) => a + (i.canceled ? 0 : i.qty * i.price), 0) * 100) / 100;
-  const grand = () => Math.round((itemTotal() + O.ship[1]) * 100) / 100;
+  const invTax = () => (O.prog.done || 0) >= 6 ? Math.round(itemTotal() * 0.105 * 100) / 100 : 0;
+  const grand = () => Math.round((itemTotal() + invTax() + O.ship[1]) * 100) / 100;
   const pillHtml = (label, dot) => dot === 'neutral'
     ? '<span class="status-dot-item"><span class="status-dot" style="background:var(--muted-foreground)"></span><span class="status-dot-label">' + label + '</span></span>'
     : '<span class="status-dot-item"><span class="status-dot ' + dot + '"></span><span class="status-dot-label">' + label + '</span></span>';
@@ -359,21 +373,60 @@
     const anyReceived = O.items.some(i => (i.rec || 0) > 0);
     const warnIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
     if (allReceived) {
-      main += '<div class="task-strip"><span class="ts-icon" style="background:var(--emerald-soft);color:var(--emerald)">' + IC.flag + '</span><div class="ts-body"><div class="ts-title">Delivery Confirmed</div><div class="ts-desc">' + (O.claim ? (O.claim.resolved ? 'All items are received or resolved by the vendor.' : 'All items are received or covered by a claim.') : 'You have confirmed receipt of all items.') + '</div></div>' +
-        ((O.claim && !O.claim.resolved)
-          ? '<span class="status-dot-item" style="align-self:center"><span class="status-dot dot-rejected"></span><span class="status-dot-label">Invoice held · claim open</span></span>'
-          : '<span class="status-dot-item" style="align-self:center"><span class="status-dot dot-revision"></span><span class="status-dot-label">Awaiting vendor invoice</span></span>') +
-        '<button class="btn" style="display:inline-flex;align-items:center;gap:8px" onclick="showToast(\'Write a Review\', \'The review flow is on the build list\')"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Write a Review</button></div>';
+      const hasInv = O.docs.some(d => d[0].indexOf('Invoice') === 0);
+      const invValidated = (O.prog.done || 0) >= 6;
+      const reviewBtn = '<button class="btn" style="display:inline-flex;align-items:center;gap:8px" onclick="showToast(\'Write a Review\', \'The review flow is on the build list\')"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Write a Review</button>';
+      let title = 'Delivery Confirmed';
+      let desc = O.claim ? (O.claim.resolved ? 'All items are received or resolved by the vendor.' : 'All items are received or covered by a claim.') : 'You have confirmed receipt of all items.';
+      let mid; let icon = 'done';
+      if ((O.prog.done || 0) >= 7) {
+        title = 'Waiting on Vendor \u00B7 Completion'; desc = 'You confirmed payment \u2014 the vendor confirms receipt and closes out the order.';
+        mid = '<span class="status-dot-item" style="align-self:center"><span class="status-dot" style="background:var(--violet)"></span><span class="status-dot-label">Payment confirmed</span></span>';
+      } else if (invValidated) {
+        title = 'Awaiting Payment'; desc = 'The invoice is validated \u2014 confirm once accounting has released ' + money(grand()) + ' to the vendor.'; icon = 'card';
+        mid = '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="openPayConfirm()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>Confirm Payment</button>';
+      } else if (O.claim && !O.claim.resolved) {
+        mid = '<span class="status-dot-item" style="align-self:center"><span class="status-dot dot-rejected"></span><span class="status-dot-label">Invoice held · claim open</span></span>';
+      } else if (hasInv) {
+        title = 'Invoice Validation'; desc = 'The vendor\u2019s invoice is ready \u2014 compare it with your Receipt of Goods to release payment.'; icon = 'task';
+        mid = '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="openInvReview()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Validate Invoice</button>';
+      } else if (O.invDisputed) {
+        mid = '<span class="status-dot-item" style="align-self:center"><span class="status-dot dot-rejected"></span><span class="status-dot-label">Invoice disputed · awaiting correction</span></span>';
+      } else {
+        mid = '<span class="status-dot-item" style="align-self:center"><span class="status-dot dot-revision"></span><span class="status-dot-label">Awaiting vendor invoice</span></span>';
+      }
+      const showReview = ((O.prog.done || 0) >= 7) || (!invValidated && !hasInv && !(O.claim && !O.claim.resolved));
+      main += '<div class="task-strip"><span class="ts-icon"' + (icon === 'done' ? ' style="background:var(--emerald-soft);color:var(--emerald)"' : '') + '>' + (icon === 'done' ? IC.flag : icon === 'card' ? IC.card : IC.docu) + '</span><div class="ts-body"><div class="ts-title">' + title + '</div><div class="ts-desc">' + desc + '</div></div>' + mid + (showReview ? reviewBtn : '') + '</div>';
     } else {
-      main += '<div class="task-strip"><span class="ts-icon">' + IC.shield + '</span><div class="ts-body"><div class="ts-title">Delivery Validation</div><div class="ts-desc">Record the items and quantities you have physically received.</div></div>' +
-        '<button class="btn btn-primary" onclick="openValidation()">Start Delivery Validation</button></div>';
+      const cancelPending = O.status[0] === 'Cancellation Pending';
+      const anyDelivered = O.fulfillments.some(f => f.state === 'delivered');
+      const anyShipped = O.fulfillments.some(f => f.state === 'shipped');
+      const recCount = O.items.reduce((a, i) => a + (i.rec || 0), 0);
+      const totCount = O.items.reduce((a, i) => a + (i.canceled ? 0 : i.qty), 0);
+      let st;
+      if (cancelPending) {
+        st = { wait: true, ico: IC.eye, title: 'Waiting on Vendor \u00B7 Cancellation', desc: 'You asked to cancel this order \u2014 nothing ships while the vendor confirms.', btn: null };
+      } else if (anyReceived) {
+        st = { wait: false, ico: IC.shield, title: 'Delivery Validation', desc: recCount + ' of ' + totCount + ' items validated \u2014 record the rest as they arrive.', btn: 'primary' };
+      } else if (anyDelivered) {
+        st = { wait: false, ico: IC.shield, title: 'Delivery Validation', desc: 'Your items have arrived \u2014 record what you received to generate the Receipt of Goods.', btn: 'primary' };
+      } else if (anyShipped) {
+        st = { wait: true, ico: IC.pin, title: 'Waiting on Vendor \u00B7 Delivery', desc: 'Your items are on the way \u2014 validate them as they arrive.', btn: 'ghost' };
+      } else if (O.fulfillments.length) {
+        st = { wait: true, ico: IC.box, title: 'Waiting on Vendor \u00B7 Delivery', desc: 'Your order is fulfilled \u2014 the vendor is arranging delivery. Validate items as they arrive.', btn: 'ghost' };
+      } else {
+        st = { wait: true, ico: IC.box, title: 'Waiting on Vendor \u00B7 Fulfillment', desc: 'The vendor is preparing your order. If anything has already arrived, you can validate it now.', btn: 'ghost' };
+      }
+      main += '<div class="task-strip"><span class="ts-icon"' + (st.wait ? ' style="background:var(--muted);color:var(--muted-foreground)"' : '') + '>' + st.ico + '</span><div class="ts-body"><div class="ts-title">' + st.title + '</div><div class="ts-desc">' + st.desc + '</div></div>' +
+        (st.btn ? '<button class="btn' + (st.btn === 'primary' ? ' btn-primary' : '') + '" onclick="openValidation()">Start Delivery Validation</button>' : '') + '</div>';
     }
 
         main += '<div class="card"><div class="det-card-head hd"><h2>Summary</h2></div>' + O.items.map(i => itemRow(i, true)).join('') +
       '<div class="det-totals"><div class="tot-row"><span>Item Total</span><span>' + money(itemTotal()) + '</span></div>' +
+      (invTax() ? '<div class="tot-row"><span>Sales tax · Invoice #' + invN() + '</span><span>' + money(invTax()) + '</span></div>' : '') +
       '<div class="tot-row"><span>Shipping · ' + O.ship[0] + '</span><span>' + money(O.ship[1]) + '</span></div>' +
       '<div class="tot-row grand"><span>Total</span><span>' + money(grand()) + '</span></div>' +
-      '<div class="tot-row"><span>Paid Total</span><span>' + money(0) + '</span></div></div></div>';
+      '<div class="tot-row"><span>Paid Total</span><span>' + money((O.prog.done || 0) >= 7 ? grand() : 0) + '</span></div></div></div>';
 
     if (O.unfulfilled && O.unfulfilled.length) {
       main += '<div class="card"><div class="det-card-head hd"><h2>Unfulfilled Items</h2><span style="display:flex;gap:8px;flex-wrap:wrap">' + pillHtml('Requires shipping', 'dot-pending') + pillHtml('Awaiting fulfillment', 'neutral') + '</span></div>' +
@@ -394,7 +447,7 @@
     }
 
     main += '<div class="card"><div class="det-card-head hd"><h2>Payment</h2></div>' +
-      '<div class="callout neutral"><b>' + IC.info + 'Notice</b>Payments are processed after order delivery has been validated.</div>' +
+      '<div class="callout neutral"><b>' + IC.info + 'Notice</b>' + ((O.prog.done || 0) >= 7 ? 'Payment of ' + money(grand()) + ' is confirmed \u2014 the vendor confirms receipt to close the order.' : (O.prog.done || 0) >= 6 ? 'Invoice #' + invN() + ' is validated \u2014 payment is released by your accounting team, then confirmed here.' : 'Payments are processed after order delivery has been validated.') + '</div>' +
       '<div class="det-totals" style="border-top:none;padding-top:14px"><div class="tot-row grand" style="border-top:none;margin-top:0;padding-top:0"><span>Total</span><span>' + money(grand()) + '</span></div></div></div>';
 
     let side = '';
@@ -420,7 +473,7 @@
     const hasInvoice = O.docs.some(d => d[0].indexOf('Invoice') === 0);
     side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Documents</h2></div>' +
       O.docs.map(d => '<div class="doc-row' + (d[2] ? ' ' + d[2] : '') + '"><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><div style="flex:1;min-width:0"><div class="doc-name">' + d[0] + '</div><div class="doc-date">' + (d[3] || O.placed.split(',').slice(0, 1).join('') + ', 2026') + ' · ' + d[1] + '</div></div><button class="row-action" title="Download" onclick="showToast(\'Download started\', \'' + d[0] + '.pdf\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button></div>').join('') +
-      ((allReceived && !hasInvoice) ? '<div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:13px"><span style="display:inline-flex;width:16px;height:16px;color:var(--muted-foreground);flex-shrink:0;margin-top:1px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span><b style="display:block;font-size:13px">Awaiting vendor invoice</b><span style="color:var(--muted-foreground);font-size:12px">The vendor has not uploaded an invoice yet.</span></span></div>' : '') + '</div>';
+      ((allReceived && !hasInvoice) ? '<div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:13px"><span style="display:inline-flex;width:16px;height:16px;color:var(--muted-foreground);flex-shrink:0;margin-top:1px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span><b style="display:block;font-size:13px">' + (O.invDisputed ? 'Invoice disputed' : 'Awaiting vendor invoice') + '</b><span style="color:var(--muted-foreground);font-size:12px">' + (O.invDisputed ? 'The vendor was asked to correct and resubmit the invoice.' : 'The vendor has not uploaded an invoice yet.') + '</span></span></div>' : '') + '</div>';
 
         const evs = O.activity.filter(e => actExpanded || !e.more);
     const hidden = O.activity.length - evs.length;
@@ -590,13 +643,145 @@
     renderPage();
     showToast('Claim sent to the vendor', lines.length + (lines.length === 1 ? ' item' : ' items') + ' reported — the invoice remains on hold');
   }
-    function copyNum() { try { navigator.clipboard.writeText('Order #' + num); } catch (e) {} showToast('Copied', 'Order #' + num + ' copied to the clipboard'); }
+    /* ---- Invoice Validation takeover (PDF left, verification right) ---- */
+  let invChecks = {};
+  const invN = () => O.invNum || '001042731';
+  function invAmounts() {
+    const sub = itemTotal();
+    const tax = Math.round(sub * 0.105 * 100) / 100;
+    const grand = Math.round((sub + tax + O.ship[1]) * 100) / 100;
+    return { sub, tax, grand, ship: O.ship[1] };
+  }
+  function pdfRows() { return O.items.filter(i => !i.canceled && (i.rec || 0) > 0); }
+  function pdfHead(docLabel) {
+    return 'SCOUT DEMO VENDOR\n1502 DAVE DIXON DR\nNEW ORLEANS LA 70112\n' + docLabel + '\n---------Sold to----------    ------Comments------    ---------Ship to---------\nBAYOU CROSSING APARTMENTS                             BAYOU CROSSING APARTMENTS\n3850 AIRLINE DR               SCOUT ORDER #' + num + '        3850 AIRLINE DR\nBATON ROUGE LA                2 BUSINESS DAY SHIP     BATON ROUGE LA\n70805                                                 70805\n';
+  }
+  function invPdfText() {
+    const a = invAmounts(); const rows = pdfRows();
+    return pdfHead('Ref #:' + invN() + ' Trc:I Chrg          INVOICE           08/28/26  Page: 1') +
+      '\n                    A/N:7278  St#:F\nPO#:PO-' + num + '-189   Clr:JVL   Slp:361   Trms:NET PROX 10TH\n        Ship Date:08/28/26 11:50                      Pay Type:C\n Ord Shp C B/O Mfg Sku     Des                 List    Unit     Ext Amt\n' + rows.map(r => '  1   1 I   0 LWI ' + r.sku + '  ' + r.name.toUpperCase().slice(0, 22) + '  ' + (Math.round(r.price * 1.333 * 100) / 100).toFixed(2) + '  ' + r.price.toFixed(2) + '    ' + (r.rec * r.price).toFixed(2)).join('\n') + '\n\n                          Tax       Sub-Total:      ' + a.sub.toFixed(2) + '\n                          ' + a.tax.toFixed(2) + '\n                                    Shipping:       ' + a.ship.toFixed(2) + '\nRecv\'d by:          Total Shipped: ' + rows.reduce((x, r) => x + r.rec, 0) + '   Grand Total:    ' + a.grand.toFixed(2) + '\n\n     *** DEMO INVOICE - NOT A REAL TRANSACTION ***\n     SALES TAX APPLIED AT 10.5% ON MERCHANDISE SUBTOTAL';
+  }
+  function poPdfText() {
+    const rows = O.items.filter(i => !i.canceled);
+    return pdfHead('Ref #:PO-' + num + '-189                 PURCHASE ORDER    ' + O.placed.split(',').slice(0, 1).join('') + '  Page: 1') +
+      '\nTerms: NET PROX 10TH        Ship Via: BEST WAY\n Qty  Sku       Description                              Unit      Ext Amt\n' + rows.map(r => '  ' + r.qty + '   ' + r.sku + '   ' + r.name.toUpperCase().slice(0, 38) + '   ' + r.price.toFixed(2) + '   ' + (r.qty * r.price).toFixed(2)).join('\n') + '\n\n                                    Merchandise:    ' + itemTotal().toFixed(2) + '\n                                    Shipping:       ' + O.ship[1].toFixed(2) + '\n\nAuthorized by: ALICIA GRANT \u00B7 DEMO INC.\n\n     *** DEMO PURCHASE ORDER - NOT A REAL TRANSACTION ***';
+  }
+  function rogPdfText() {
+    const rows = pdfRows();
+    return pdfHead('Ref #:ROG-' + num + '                   RECEIPT OF GOODS  08/28/26  Page: 1') +
+      '\nDelivery validated by: ALICIA GRANT \u00B7 DEMO INC.\n Qty Received  Sku       Description\n' + rows.map(r => '     ' + r.rec + '         ' + r.sku + '   ' + r.name.toUpperCase().slice(0, 40)).join('\n') + '\n\nAll listed quantities were physically received and validated.\nGenerated automatically from the delivery validation.\n\n     *** DEMO RECEIPT OF GOODS - NOT A REAL TRANSACTION ***';
+  }
+  function openInvReview() {
+    invChecks = {};
+    let tk = document.getElementById('inv-tk');
+    if (!tk) { tk = document.createElement('div'); tk.id = 'inv-tk'; tk.className = 'inv-tk'; document.body.appendChild(tk); }
+    renderInvTk();
+    tk.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeInvTk() { const tk = document.getElementById('inv-tk'); if (tk) tk.classList.remove('open'); document.body.style.overflow = ''; }
+  function invTkToggle(k) { invChecks[k] = !invChecks[k]; renderInvTk(); }
+  let invMapOpen = false;
+  function invMapToggle() { invMapOpen = !invMapOpen; renderInvTk(); }
+  function renderInvTk() {
+    const tk = document.getElementById('inv-tk'); if (!tk) return;
+    const a = invAmounts();
+    const rows = O.items.filter(i => !i.canceled && (i.rec || 0) > 0);
+    const reqKeys = rows.map((r, x) => 'q' + x).concat(['sub', 'tax', 'grand']);
+    const done = reqKeys.filter(k => invChecks[k]).length;
+    const allOk = done === reqKeys.length;
+    const chk = (k) => '<span class="chk' + (invChecks[k] ? ' on' : '') + '" onclick="invTkToggle(\'' + k + '\')">' + (invChecks[k] ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' : '') + '</span>';
+    const pdfText = invPdfText();
+    const skuRows = rows.map((r, x) => '<div class="ivt-row"><span>' + chk('q' + x) + '</span><span class="ivt-item"><span class="thumb" style="width:38px;height:38px">' + glyph + '</span><span class="ivt-name">' + r.name + '</span></span><span class="ivt-sku">' + r.sku + '</span><span class="ivt-c">' + r.rec + '</span><span class="ivt-c ivt-ai">' + r.rec + '</span></div>').join('');
+    const amtRow = (k, label, ours, theirs, variance, noChk) =>
+      '<div class="ivt-row amt"><span>' + (noChk ? '' : chk(k)) + '</span><span class="ivt-amt-l">' + label + '</span><span class="ivt-c">' + ours + '</span><span class="ivt-c ivt-ai">' + theirs + '</span><span class="ivt-c">' + variance + '</span></div>';
+    const mapRows = rows.map(r => '<div class="ivt-map-row"><div><div class="ivt-map-inv">' + r.name.toUpperCase().slice(0, 34) + '</div><div class="ivt-map-sub">' + r.sku + ' · Qty ' + r.rec + ' · Unit ' + money(r.price) + '</div></div><span class="ivt-map-arr">\u2192</span><div><div class="ivt-map-lbl">ROG item</div><select class="ivt-map-sel"><option>' + r.name + '</option></select></div></div>').join('');
+    tk.innerHTML =
+      '<div class="ivt-head"><span class="ivt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg></span><div style="flex:1;min-width:0"><h2>Review invoice ' + invN() + '</h2><p>Scout AI extracted invoice number: ' + invN() + '. Compare the PDF with the final Receipt of Goods and Scout AI extracted values.</p></div><button class="row-action" style="width:34px;height:34px" title="Close" onclick="closeInvTk()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>' +
+      '<div class="ivt-body">' +
+      '<div class="ivt-pdf"><div class="ivt-pdf-bar"><span>scout-demo-invoice-' + num + '.pdf</span><span style="margin-left:auto">1 / 1 · 77%</span></div><div class="ivt-page"><pre>' + pdfText + '</pre></div></div>' +
+      '<div class="ivt-side"><div class="ivt-scroll">' +
+      '<h3>SKUs and quantities</h3><p class="ivt-sub">ROG quantities include resolved returns and write-offs.</p>' +
+      '<div class="ivt-table"><div class="ivt-row hd"><span>Confirm</span><span>Item</span><span class="ivt-sku">SKU</span><span class="ivt-c">ROG Qty</span><span class="ivt-c ivt-ai">Invoice Qty<em>Extracted by Scout AI</em></span></div>' + skuRows + '</div>' +
+      '<h3 style="margin-top:22px">Invoice amounts</h3><p class="ivt-sub">Shipping, subtotal, sales tax, and total from the invoice.</p>' +
+      '<div class="ivt-table"><div class="ivt-row hd amt"><span>Confirm</span><span class="ivt-amt-l">Amount</span><span class="ivt-c">Order/ROG</span><span class="ivt-c ivt-ai">Invoice<em>Extracted by Scout AI</em></span><span class="ivt-c">Variance</span></div>' +
+      amtRow('sub', 'Subtotal', money(a.sub), money(a.sub), '$0.00') +
+      amtRow('tax', 'Sales tax', money(a.tax), money(a.tax), '$0.00') +
+      amtRow('grand', 'Grand total', money(a.grand), money(a.grand), '$0.00') +
+      amtRow('', 'Shipping (included in total)', money(a.ship), '\u2014', '\u2014', true) + '</div>' +
+      '<div class="ivt-map"><button class="ivt-map-head" onclick="invMapToggle()"><span><b>Map the line items myself</b><span class="ivt-map-sub" style="display:block">Match invoice lines to the received order items</span></span><span class="ivt-map-chip">' + rows.length + '/' + rows.length + '</span><svg style="width:15px;height:15px;transform:rotate(' + (invMapOpen ? 180 : 0) + 'deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>' +
+      (invMapOpen ? '<div class="ivt-map-body"><p class="ivt-sub" style="margin:0 0 12px">Exact SKU matches are selected automatically. Review or change each match before previewing.</p>' + mapRows + '<div style="display:flex;align-items:center;margin-top:12px"><span class="ivt-sub" style="margin:0">All line items are mapped.</span><button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showToast(\'Mapping preview\', \'Every invoice line maps to a received item\')">Preview mapping</button></div></div>' : '') + '</div>' +
+      '</div>' +
+      '<div class="ivt-foot"><span class="ivt-sub" style="margin:0">' + (allOk ? 'Every Scout AI extracted value has been reviewed.' : done + ' of ' + reqKeys.length + ' required values confirmed.') + '</span><button class="btn btn-danger" style="margin-left:auto" onclick="openDispute()">Dispute Invoice</button><button class="btn btn-primary"' + (allOk ? '' : ' disabled') + ' onclick="validateInvoice()">Validate Invoice</button></div>' +
+      '</div></div>';
+  }
+  let payTab = 'inv';
+  const PAY_DOCS = { po: ['Purchase Order', () => 'PO-' + num + '-189', poPdfText], inv: ['Invoice', () => '#' + invN(), invPdfText], rog: ['Receipt of Goods', () => 'ROG-' + num, rogPdfText] };
+  function openPayConfirm() {
+    payTab = 'inv';
+    let ov = document.getElementById('pay-ov');
+    if (!ov) { ov = document.createElement('div'); ov.id = 'pay-ov'; ov.className = 'overlay center'; document.body.appendChild(ov); ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); }); }
+    renderPayModal();
+    ov.classList.add('open');
+  }
+  function payTabSet(t) { payTab = t; renderPayModal(); }
+  function payDownload(all) {
+    if (all) showToast('Payment packet downloaded', 'Purchase Order, Invoice, and Receipt of Goods \u00B7 3 PDFs for accounting');
+    else showToast(PAY_DOCS[payTab][0] + ' downloaded', PAY_DOCS[payTab][1]() + '.pdf \u00B7 ready to send to accounting');
+  }
+  function renderPayModal() {
+    const ov = document.getElementById('pay-ov');
+    const d = PAY_DOCS[payTab];
+    ov.innerHTML = '<div class="val-modal" style="width:720px;max-width:calc(100vw - 40px)"><div class="val-head"><h2>Confirm Payment \u00B7 Order #' + num + '</h2><p>Review the payment packet \u2014 preview and download the documents your accounting team needs, then confirm once ' + money(grand()) + ' has been released.</p></div>' +
+      '<div class="val-body" style="padding:16px 22px">' +
+      '<div class="tab-bar" style="margin-bottom:12px">' + Object.keys(PAY_DOCS).map(k => '<button class="tab-item' + (k === payTab ? ' active' : '') + '" onclick="payTabSet(\'' + k + '\')">' + PAY_DOCS[k][0] + '</button>').join('') + '</div>' +
+      '<div class="pay-doc"><pre>' + d[2]() + '</pre></div>' +
+      '<div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span style="font-size:12.5px;color:var(--muted-foreground)">' + d[0] + ' \u00B7 ' + d[1]() + ' \u00B7 PDF</span>' +
+      '<button class="btn btn-sm" style="margin-left:auto;display:inline-flex;align-items:center;gap:7px" onclick="payDownload(false)"><svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Download PDF</button>' +
+      '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:7px" onclick="payDownload(true)"><svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Download all (3)</button></div>' +
+      '</div>' +
+      '<div class="val-foot"><span style="font-size:13px;color:var(--muted-foreground);margin-right:auto">' + money(grand()) + ' \u00B7 Invoice #' + invN() + '</span><button class="btn" onclick="document.getElementById(\'pay-ov\').classList.remove(\'open\')">Cancel</button><button class="btn btn-primary" onclick="confirmPayment()">Confirm Payment</button></div></div>';
+  }
+  function confirmPayment() {
+    document.getElementById('pay-ov').classList.remove('open');
+    O.prog = { done: 7, active: 7, dates: (O.prog.dates || []).slice(0, 6).concat(['Aug 28']) };
+    O.activity.unshift({ t: 'Payment confirmed by Alicia Grant', sub: money(grand()) + ' sent for Invoice #' + invN(), when: 'Just now', hi: true });
+    renderPage();
+    showToast('Payment confirmed', money(grand()) + ' \u2014 the vendor captures the payment and closes out the order');
+  }
+  function openDispute() {
+    let ov = document.getElementById('dispute-ov');
+    if (!ov) { ov = document.createElement('div'); ov.id = 'dispute-ov'; ov.className = 'overlay center'; ov.style.zIndex = '500'; document.body.appendChild(ov); ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); }); }
+    ov.innerHTML = '<div class="val-modal" style="width:520px"><div class="val-head"><h2>Dispute this invoice?</h2><p>The vendor will be asked to correct and resubmit the invoice. The order will not be changed, and invoice validation will stay blocked until the replacement is reviewed.</p></div>' +
+      '<div class="val-foot"><button class="btn" onclick="document.getElementById(\'dispute-ov\').classList.remove(\'open\')">Cancel</button><button class="btn btn-danger" onclick="confirmDispute()">Dispute and request correction</button></div></div>';
+    ov.classList.add('open');
+  }
+  function confirmDispute() {
+    document.getElementById('dispute-ov').classList.remove('open');
+    closeInvTk();
+    O.docs = O.docs.filter(d => d[0].indexOf('Invoice') !== 0);
+    O.invDisputed = true;
+    O.prog = { done: 4, active: 4, dates: (O.prog.dates || []).slice(0, 4) };
+    O.activity.unshift({ t: 'Invoice disputed by Alicia Grant', sub: '#' + invN() + ' · vendor asked to correct and resubmit', when: 'Just now', hi: true });
+    renderPage();
+    showToast('Invoice disputed', '#' + invN() + ' sent back to the vendor · validation stays blocked until the replacement is reviewed');
+  }
+  function validateInvoice() {
+    const a = invAmounts();
+    closeInvTk();
+    O.prog = { done: 6, active: 6, dates: (O.prog.dates || []).slice(0, 5).concat(['Aug 28']) };
+    O.activity.unshift({ t: 'Invoice validated by Alicia Grant', sub: '#' + invN() + ' · ' + money(a.grand) + ' on the books', when: 'Just now', hi: true });
+    renderPage();
+    showToast('Invoice validated', '#' + invN() + ' · ' + money(a.grand) + ' \u2014 payment processing begins');
+  }
+  function copyNum() { try { navigator.clipboard.writeText('Order #' + num); } catch (e) {} showToast('Copied', 'Order #' + num + ' copied to the clipboard'); }
 
   let toastTimer;
   function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
 
   renderPage();
   if (autoValidate) setTimeout(openValidation, 150);
+  if (autoInvoice) setTimeout(openInvReview, 150);
 </script>
 </body>
 </html>

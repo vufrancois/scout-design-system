@@ -265,10 +265,11 @@
     { num: 516, v: 'SD', prop: 'magnolia', total: 698.85, count: 1, inv: 'await', attn: true, date: '2026-07-23', items: [['GE® ENERGY STAR® Dishwasher with Front Controls', 1, 698.85]] },
     { num: 514, v: 'SD', prop: 'magnolia', total: 4379.18, count: 5, inv: 'await', attn: true, date: '2026-07-22', items: mkItems(4379.18, 3) },
     { num: 508, v: 'SD', prop: 'magnolia', total: 3660.00, count: 5, inv: 'await', attn: true, date: '2026-07-21', items: mkItems(3660, 2) },
-    { num: 507, v: 'AC', prop: 'bayou', total: 83.12, count: 1, inv: 'await', attn: true, date: '2026-07-21', items: [['Refrigerator Door Gasket', 1, 83.12]] }
+    { num: 507, v: 'AC', prop: 'bayou', total: 83.12, count: 1, inv: 'await', attn: true, date: '2026-07-21', items: [['Refrigerator Door Gasket', 1, 83.12]] },
+    { num: 653, v: 'SD', prop: 'magnolia', total: 566.16, count: 1, inv: 'validated', date: '2026-08-27', items: [['Gold\u00AE 23-7/8 in. Dishwasher with Pocket Handle', 1, 505.13]] }
   ].concat(
     gen(6, 505, 2, i => ({ inv: 'await', attn: true })),
-    gen(4, 490, 2, i => ({ inv: 'validated' })),
+    gen(3, 490, 2, i => ({ inv: 'validated' })),
     gen(1, 480, 2, i => ({ inv: 'paid' }))
   );
   // Closed: 28 = Completed 27 · Canceled 1

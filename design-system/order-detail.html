@@ -530,7 +530,7 @@
       background: var(--sky-soft); border-radius: var(--radius-md);
       padding: 12px 14px;
     }
-    .doc-row + .doc-row { margin-top: 10px; }
+    .doc-row ~ .doc-row, .doc-row ~ #doc-pending { margin-top: 10px; }
     .doc-row svg.doc-ico { width: 18px; height: 18px; color: var(--sky); flex-shrink: 0; }
     .doc-row.emerald { background: var(--emerald-soft); }
     .doc-row.emerald svg.doc-ico { color: var(--emerald); }
@@ -721,6 +721,12 @@
     .status-dot.dot-transit { background: var(--violet); }
     .status-dot.dot-delivered { background: var(--emerald); }
     .status-dot.dot-claim { background: var(--rose); }
+    .req-chip { font-size: 10px; font-weight: 600; background: var(--amber-soft); color: var(--amber); border-radius: var(--radius-sm); padding: 1px 6px; vertical-align: 1px; }
+    .confirm-card { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; }
+    .confirm-card input { accent-color: var(--primary); width: 15px; height: 15px; margin-top: 2px; flex-shrink: 0; }
+    .confirm-card .cc-t { display: block; font-size: 13px; font-weight: 600; }
+    .confirm-card .cc-d { display: block; font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+    .confirm-card.on { border-color: var(--sky); background: var(--sky-soft); box-shadow: 0 0 0 1px var(--sky); }
     .claim-head-callout { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border: 1px dashed var(--amber); background: var(--amber-soft); border-radius: var(--radius-md); margin-bottom: 6px; }
     .claim-head-callout > svg { width: 18px; height: 18px; color: var(--amber); flex-shrink: 0; margin-top: 1px; }
     .claim-line { padding: 16px 0; border-bottom: 1px solid var(--border); }
@@ -1157,13 +1163,14 @@
             <div class="doc-row emerald" id="doc-invoice" style="display:none;flex-wrap:wrap">
               <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
               <div style="flex:1;min-width:0">
-                <div class="doc-name">Invoice #102</div>
+                <div class="doc-name">Invoice #001042755</div>
                 <div class="doc-date">07/23/2026</div>
               </div>
               <button class="row-action" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
               <button class="doc-replace" id="doc-replace-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>Replace invoice</button>
               <div class="doc-locked" id="doc-locked" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Locked &mdash; order paid</div>
             </div>
+            <div id="doc-pending" style="display:none;border:1px solid color-mix(in srgb, var(--emerald) 40%, transparent);border-radius:var(--radius-md);padding:14px"></div>
             <div class="doc-row violet" id="doc-receipt" style="display:none">
               <svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
               <div style="flex:1;min-width:0">
@@ -1327,23 +1334,34 @@
         <button class="modal-close" onclick="closeInvoice()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
       </div>
       <div class="modal-body">
-        <p style="font-size:13px;color:var(--muted-foreground);padding:14px 0 16px;line-height:1.5">Upload the final invoice for this order. The buyer sees it alongside the sales tax and cannot validate delivery without it.</p>
-        <div class="form-label">Invoice reference number</div>
-        <input class="text-input" id="inv-ref" placeholder="e.g. INV-10482" style="margin-top:8px" oninput="updateInvoice()" />
-        <div class="calc-note">Enter the invoice number shown on the PDF. Accounting will use this number.</div>
+        <p style="font-size:13px;color:var(--muted-foreground);padding:14px 0 4px;line-height:1.5">Scout AI will extract the invoice number and sales tax before you review and accept it.</p>
         <div class="file-drop" id="inv-drop" onclick="chooseInvoiceFile()">
           <div class="file-drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg></div>
           <div class="file-drop-title" id="inv-drop-title">Drop invoice PDF</div>
           <div class="file-drop-sub" id="inv-drop-sub">or click to choose &middot; up to 10 MB</div>
         </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;background:var(--muted);border-radius:var(--radius-md);padding:12px 14px;margin-top:14px;font-size:13px;color:var(--muted-foreground);line-height:1.5"><svg style="width:16px;height:16px;flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Scout AI will extract the invoice number and sales tax first. After processing, review those details and accept the invoice.</div>
         <div style="height:20px"></div>
       </div>
       <div class="modal-footer">
         <button class="toolbar-btn" onclick="closeInvoice()">Cancel</button>
         <button class="toolbar-btn btn-primary-fill" id="inv-upload-btn" disabled onclick="uploadInvoice()">
-          Upload Invoice
+          Upload for AI review
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Review invoice modal -->
+  <div class="modal-overlay" id="inv-review-modal" onclick="if(event.target===this)closeInvReview()">
+    <div class="modal" style="max-width:600px">
+      <div class="modal-head">
+        <span class="modal-title">Review Invoice &middot; Order #515</span>
+        <span class="esc-chip">esc</span>
+        <button class="modal-close" onclick="closeInvReview()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body" id="inv-review-body"></div>
+      <div class="modal-footer" id="inv-review-foot"></div>
     </div>
   </div>
 
@@ -1530,11 +1548,24 @@
         progress: '4 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
-        task: { tone: 'action', icon: 'invoice', title: 'Action Required \u00B7 Submit Invoice', desc: 'The buyer validated delivery \u2014 input sales tax and upload your invoice to move the order forward.', cta: ['Upload Invoice', 'openInvoice()'], cta2: ['Input Sales Tax', 'openTax()'] },
+        task: { tone: 'action', icon: 'invoice', title: 'Action Required \u00B7 Upload Invoice', desc: 'Upload your invoice \u2014 Scout AI extracts the invoice number and sales tax for your review.', cta: ['Upload Invoice', 'openInvoice()'] },
         docsRog: true,
         feed: [['Delivery validated by buyer','Receipt of Goods generated','Just now'], ['Items delivered','2 items \u00B7 Fulfillment #1','2m ago']],
         feedHidden: [['Items shipped','2 items \u00B7 Fulfillment #1','4m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','6m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','8m ago']]
+      },
+      review: {
+        noCancel: true,
+        doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
+        pills: [['dot-delivered','Delivery Validated','Validated by the buyer 07/23/2026 \u00B7 Receipt of Goods on file'], ['dot-tax','Invoice Pending Review','Scout AI extracted the details \u2014 review and accept']],
+        progress: '4 of 8',
+        panels: { unfulfilled: false, fulfillment: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'invoice', title: 'Action Required \u00B7 Review Invoice & Tax', desc: 'Review the uploaded invoice and confirm its extracted sales tax.', cta: ['Review Invoice', 'openInvReview()'] },
+        docsRog: true, invPending: true,
+        feed: [['Invoice uploaded','scout-demo-invoice-515.pdf \u00B7 sent to Scout AI','Just now'], ['Delivery validated by buyer','Receipt of Goods generated','2m ago']],
+        feedHidden: [['Items delivered','2 items \u00B7 Fulfillment #1','4m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','6m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','8m ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','10m ago']]
       },
       claim: {
         noCancel: true,
@@ -1556,11 +1587,11 @@
         progress: '5 of 8',
         panels: { unfulfilled: false, fulfillment: true },
         fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
-        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Invoice Validation', desc: 'The buyer is QCing your invoice \u2014 $16.89 (8%) stays editable until they validate.', cta: ['Edit Tax', 'editTax()', 'ghost'] },
+        task: { tone: 'wait', icon: 'wait', title: 'Waiting on Buyer \u00B7 Invoice Validation', desc: 'The buyer is reviewing the accepted invoice.', cta: null },
         taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
         payPill: ['dot-ship','Invoice Validation','Buyer is QCing the invoice'],
         docs3: true,
-        feed: [['Invoice submitted','#INV-1042 \u00B7 $16.89 (8%) tax','Just now'], ['Delivery validated by buyer','Receipt of Goods generated','2m ago']],
+        feed: [['Invoice accepted','#001042755 \u00B7 $16.89 (8%) sales tax confirmed','Just now'], ['Delivery validated by buyer','Receipt of Goods generated','2m ago']],
         feedHidden: [['Items shipped','2 items \u00B7 Fulfillment #1','4m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','6m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','8m ago']]
       },
@@ -1575,7 +1606,7 @@
         taxRow: true, orderTotal: '$253.03 USD', pending: '$253.03 USD',
         payPill: ['dot-ship','Invoice Posted','Invoice validated and on the books \u00B7 awaiting payment'],
         docs3: true, capture: true, captureDesc: 'Waiting for the buyer to confirm payment before you can capture', captureBtn: true,
-        feed: [['Invoice validated by buyer','On the books \u00B7 awaiting payment','Just now'], ['Invoice submitted','#INV-1042','3m ago']],
+        feed: [['Invoice validated by buyer','On the books \u00B7 awaiting payment','Just now'], ['Invoice accepted','#001042755','3m ago']],
         feedHidden: [['Sales tax sent to buyer','$16.89 (8%)','2m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','5m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','7m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','9m ago']]
       },
@@ -1678,6 +1709,8 @@
       document.getElementById('pay-pending').textContent = s.pending || '$236.14 USD';
       document.getElementById('doc-invoice').style.display = s.docs3 ? '' : 'none';
       document.getElementById('doc-receipt').style.display = (s.docs3 || s.docsRog) ? '' : 'none';
+      document.getElementById('doc-pending').style.display = s.invPending ? '' : 'none';
+      if (s.invPending) renderInvPending();
       document.getElementById('pay-capture').style.display = s.capture ? '' : 'none';
       document.getElementById('pay-capture-desc').textContent = s.captureDesc || '';
       document.getElementById('btn-mark-paid').style.display = s.captureBtn ? '' : 'none';
@@ -1756,6 +1789,8 @@
       document.getElementById('tax-send').disabled = !valid;
     }
     let invFileChosen = false;
+    let invPhase = 'ready';
+    const INV_FILE = 'scout-demo-invoice-515.pdf';
     function openInvoice() { document.getElementById('invoice-modal').classList.add('open'); }
     function closeInvoice() { document.getElementById('invoice-modal').classList.remove('open'); }
     function chooseInvoiceFile() {
@@ -1764,17 +1799,68 @@
       const drop = document.getElementById('inv-drop');
       drop.classList.add('selected');
       drop.querySelector('.file-drop-icon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-      document.getElementById('inv-drop-title').textContent = 'invoice-515.pdf';
-      document.getElementById('inv-drop-sub').textContent = '182 KB \u00B7 ready to upload';
-      updateInvoice();
-    }
-    function updateInvoice() {
-      const ref = document.getElementById('inv-ref').value.trim();
-      document.getElementById('inv-upload-btn').disabled = !(ref && invFileChosen);
+      document.getElementById('inv-drop-title').textContent = INV_FILE;
+      document.getElementById('inv-drop-sub').textContent = '2.5 KB \u00B7 PDF \u00B7 ready to upload';
+      document.getElementById('inv-upload-btn').disabled = false;
     }
     function uploadInvoice() {
       closeInvoice();
-      showToast('Invoice uploaded', document.getElementById('inv-ref').value.trim() + ' \u00B7 attached to Order #515');
+      invPhase = 'processing';
+      location.hash = '#review';
+      showToast('Invoice uploaded', INV_FILE + ' \u00B7 Scout AI is extracting the details');
+      setTimeout(() => {
+        invPhase = 'ready';
+        if ((location.hash || '').indexOf('review') !== -1) { renderInvPending(); if (document.getElementById('inv-review-modal').classList.contains('open')) renderInvReview(); }
+        showToast('Invoice processed', 'Invoice number and sales tax are ready to review');
+      }, 1800);
+    }
+    function renderInvPending() {
+      const chip = invPhase === 'processing'
+        ? '<span style="font-size:11px;font-weight:600;background:var(--amber-soft);color:var(--amber);border-radius:var(--radius-sm);padding:2px 8px">Processing</span>'
+        : '<span style="font-size:11px;font-weight:600;background:var(--amber-soft);color:var(--amber);border-radius:var(--radius-sm);padding:2px 8px">Ready for review</span>';
+      const sub = invPhase === 'processing' ? 'Scout AI is processing this invoice.' : 'Invoice number and sales tax are ready to review.';
+      const btn = invPhase === 'processing' ? '<button class="toolbar-btn" onclick="openInvReview()">View status</button>' : '<button class="toolbar-btn" onclick="openInvReview()">Review invoice</button>';
+      document.getElementById('doc-pending').innerHTML =
+        '<div style="display:flex;gap:10px;align-items:flex-start"><svg style="width:18px;height:18px;color:var(--emerald);flex-shrink:0;margin-top:1px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><div><div style="font-size:13px;font-weight:600">Buyer-facing Invoice</div><div style="font-size:12px;color:var(--muted-foreground);margin-top:1px">No invoice has been accepted yet.</div><span style="display:inline-flex;margin-top:6px;font-size:11px;font-weight:600;background:var(--amber-soft);color:var(--amber);border-radius:var(--radius-sm);padding:2px 8px">Awaiting invoice</span></div></div>' +
+        '<div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-foreground);margin:14px 0 8px">Pending review</div>' +
+        '<div style="border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;background:var(--card)"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:12.5px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + INV_FILE + '</span>' + chip + '</div><div style="font-size:12px;color:var(--muted-foreground);margin-top:3px">' + sub + '</div><div style="margin-top:8px">' + btn + '</div></div>' +
+        '<div style="font-size:12px;color:var(--muted-foreground);margin-top:10px">Accept or delete the pending invoice before attaching another.</div>';
+    }
+    function openInvReview() { renderInvReview(); document.getElementById('inv-review-modal').classList.add('open'); }
+    function closeInvReview() { document.getElementById('inv-review-modal').classList.remove('open'); }
+    function renderInvReview() {
+      const body = document.getElementById('inv-review-body');
+      const foot = document.getElementById('inv-review-foot');
+      const fileCard = (chip) => '<div style="display:flex;align-items:center;gap:10px;background:var(--muted);border-radius:var(--radius-md);padding:12px 14px;margin:14px 0 16px"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + INV_FILE + '</div><div style="font-size:12px;color:var(--muted-foreground);margin-top:1px">' + (invPhase === 'processing' ? 'Processing with Scout AI' : 'Processed by Scout AI') + '</div></div><span style="font-size:11px;font-weight:600;background:var(--amber-soft);color:var(--amber);border-radius:var(--radius-sm);padding:2px 8px;flex-shrink:0">' + chip + '</span></div>';
+      if (invPhase === 'processing') {
+        body.innerHTML = fileCard('Processing') +
+          '<div style="display:flex;gap:10px;align-items:flex-start;background:var(--muted);border-radius:var(--radius-md);padding:12px 14px;font-size:13px;color:var(--muted-foreground);line-height:1.5"><svg style="width:16px;height:16px;flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Scout AI is extracting the invoice number and sales tax. This usually takes a few seconds.</div><div style="height:20px"></div>';
+        foot.innerHTML = '<button class="btn-danger-outline" onclick="deleteInvoice()" style="margin-right:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>Delete invoice</button><button class="toolbar-btn" onclick="closeInvReview()">Cancel</button>';
+        return;
+      }
+      body.innerHTML = fileCard('Ready for review') +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div><div class="form-label">Invoice number <span class="req-chip">Required</span></div><input class="text-input" id="rev-num" value="001042755" style="margin-top:8px" oninput="updateInvReview()" /></div><div><div class="form-label">Sales tax <span class="req-chip">Required</span></div><input class="text-input" id="rev-tax" value="16.89" style="margin-top:8px" oninput="updateInvReview()" /><div class="calc-note">Confirm the amount shown on the invoice.</div></div></div>' +
+        '<label class="confirm-card" style="margin-top:14px"><input type="checkbox" id="rev-ck-tax" onchange="updateInvReview()"><span><span class="cc-t">Confirm sales tax <span class="req-chip">Required</span></span><span class="cc-d">I confirm this amount matches the invoice.</span></span></label>' +
+        '<div style="display:flex;gap:10px;align-items:flex-start;background:var(--muted);border-radius:var(--radius-md);padding:12px 14px;margin-top:14px;font-size:13px;color:var(--muted-foreground);line-height:1.5"><svg style="width:16px;height:16px;flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>This is the first invoice for this order. Accepting makes it the buyer-facing PDF.</div>' +
+        '<label class="confirm-card" style="margin-top:14px"><input type="checkbox" id="rev-ck-vis" onchange="updateInvReview()"><span><span class="cc-t">Confirm buyer visibility <span class="req-chip">Required</span></span><span class="cc-d">I understand the resulting invoice PDF will be shown to the buyer for invoice validation.</span></span></label><div style="height:20px"></div>';
+      foot.innerHTML = '<button class="btn-danger-outline" onclick="deleteInvoice()" style="margin-right:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>Delete invoice</button><button class="toolbar-btn" onclick="closeInvReview()">Cancel</button><button class="toolbar-btn btn-primary-fill" id="rev-accept" disabled onclick="acceptInvoice()">Accept Invoice</button>';
+      updateInvReview();
+    }
+    function updateInvReview() {
+      document.querySelectorAll('#inv-review-body .confirm-card').forEach(c => c.classList.toggle('on', c.querySelector('input').checked));
+      const ok = document.getElementById('rev-num').value.trim() && document.getElementById('rev-tax').value.trim() && document.getElementById('rev-ck-tax').checked && document.getElementById('rev-ck-vis').checked;
+      const btn = document.getElementById('rev-accept'); if (btn) btn.disabled = !ok;
+    }
+    function acceptInvoice() {
+      closeInvReview();
+      showToast('Invoice accepted', '#' + document.getElementById('rev-num').value.trim() + ' \u00B7 $' + document.getElementById('rev-tax').value.trim() + ' sales tax \u2014 sent to the buyer for validation');
+      location.hash = '#invoiced';
+    }
+    function deleteInvoice() {
+      closeInvReview();
+      invFileChosen = false; invPhase = 'ready';
+      showToast('Invoice deleted', INV_FILE + ' removed \u2014 upload a new invoice when ready');
+      location.hash = '#tax';
     }
     function openTax() { document.getElementById('tax-modal').classList.add('open'); }
     function editTax() { setTaxMode('rate'); document.getElementById('tax-value').value = '8'; updateTax(); openTax(); }

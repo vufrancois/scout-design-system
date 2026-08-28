@@ -16,7 +16,9 @@ Walk the lifecycle top to bottom; every order also appears in Order Tracking (`b
 | Partially Delivered · 4/10 | `#408` | Multi-quantity validation: capped "Received now" stepper, per-row **Report a problem** (checkbox flips to rose ×), one Save commits receipts + claims |
 | Cancellation Pending | `#486` | Sky pill (vendor's move on the buyer side); rail notice explains the hold |
 | Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold, "Cancellation requested" item note; rose Claim Open overlay in the table |
-| Delivery Validated → Invoice Submission | `#674` | The post-validation state: "Delivery Confirmed" strip, sky **Awaiting vendor invoice**, violet **Receipt of Goods** doc, awaiting-invoice clock note, Write a Review |
+| Awaiting vendor invoice | live | Validate any order fully (e.g. `#512`) — the saved state is exactly this: sky **Awaiting vendor invoice** pill + clock note |
+| Awaiting Payment | `#653` | **Confirm Payment** task → confirm dialog → resting "Waiting on Vendor · Completion" (violet Payment confirmed, Paid Total goes real, Write a Review) |
+| Invoice received → Invoice Validation | `#674` | **Validate Invoice** primary appears (only now); `#674/invoice` deep-links into the **Document Review Split View** — confirm every AI-extracted value, then Validate (same-page advance to Awaiting Payment, tax joins totals) or Dispute (steps back, rose "Invoice disputed") |
 | Claim resolved | `#662` | Emerald **Claim resolved** callout with per-line outcomes; Summary rewritten: canceled line struck through + rose pill and out of the totals, replacement as its own line with **Fulfillment #2**; validate the replacement live to finish the loop |
 
 **Live-flow demo (the showstopper):** open `#512` → Start Delivery Validation → check the item → Save. Watch the whole page advance in one commit: pill → Delivery Validated, stepper step 4 done, ROG appears in Documents, strip flips to Delivery Confirmed, audit trail logs validation + ROG. Repeat on `#408` mixing received quantities with a problem report to land in the claim-held state.
@@ -32,8 +34,9 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 | Shipped (mid-Delivery) | `#shipped` | Mark as Delivered |
 | Delivered — waiting on buyer | `#delivered` | **Waiting on Buyer · Delivery Validation** (vendor no longer "uploads invoice to unblock validation") |
 | Claim Open | `#claim` | **Claim Resolution Panel**: buyer-request chips (emerald keep / rose cancel), Send replacement vs Cancel affected quantity cards, Resolve claim → invoice released (transitions to `#tax`) |
-| Delivery Validated — Submit Invoice | `#tax` | Buyer's **Receipt of Goods** now in the vendor's Documents; Action Required · Submit Invoice |
-| Invoice submitted — buyer QCing | `#invoiced` | Waiting on Buyer · Invoice Validation |
+| Delivery Validated — Upload Invoice | `#tax` | Buyer's **Receipt of Goods** in Documents; Upload Invoice modal → "Upload for AI review" kicks off the live flow |
+| Invoice pending review | `#review` | Scout AI processing → Ready for review; Documents shows the **Pending review** block; Review modal with extracted number + tax and the **two required confirmation cards** — accept to advance |
+| Invoice submitted — buyer QCing | `#invoiced` | Waiting on Buyer · Invoice Validation; emerald Invoice #001042755 doc-row |
 | Invoice validated | `#validated` | Invoice Posted · Awaiting Payment |
 | Buyer paid | `#paid` | Mark as Paid (capture) |
 | Captured | `#captured` | Complete Order |

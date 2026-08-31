@@ -804,7 +804,7 @@
 .buyer .wl-side-head { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
 .buyer .wl-side-head b { display: block; font-size: 14px; }
 .buyer .wl-side-head span { font-size: 12px; color: var(--muted-foreground); }
-.buyer .wl-item { display: block; width: 100%; text-align: left; padding: 12px 14px; border: none; border-left: 3px solid transparent; border-radius: var(--radius-md); background: transparent; cursor: pointer; }
+.buyer .wl-item { display: block; width: 100%; text-align: left; padding: 12px 14px; border: none; border-left: 3px solid transparent; border-radius: var(--radius-md); background: transparent; cursor: pointer; font: inherit; color: var(--foreground); }
 .buyer .wl-item:hover { background: var(--accent); }
 .buyer .wl-item.active { background: var(--rose-soft); border-left-color: var(--rose); }
 .buyer .wl-item b { display: block; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

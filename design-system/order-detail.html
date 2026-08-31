@@ -727,9 +727,8 @@
     .confirm-card .cc-t { display: block; font-size: 13px; font-weight: 600; }
     .confirm-card .cc-d { display: block; font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
     .confirm-card.on { border-color: var(--sky); background: var(--sky-soft); box-shadow: 0 0 0 1px var(--sky); }
-    .claim-head-callout { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border: 1px dashed var(--amber); background: var(--amber-soft); border-radius: var(--radius-md); margin-bottom: 6px; }
-    .claim-head-callout > svg { width: 18px; height: 18px; color: var(--amber); flex-shrink: 0; margin-top: 1px; }
     .claim-line { padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .claim-line:first-child { padding-top: 4px; }
     .claim-line:last-of-type { border-bottom: 0; }
     .claim-ln-name { font-size: 14px; font-weight: 600; }
     .claim-ln-issue { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
@@ -1021,11 +1020,6 @@
 
       <!-- Claim Resolution (claim state) -->
       <div class="panel" id="panel-claim" style="display:none">
-        <div class="claim-head-callout">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-          <div><div style="font-size:14px;font-weight:600">Action required &mdash; claim</div>
-          <div style="font-size:13px;color:var(--muted-foreground);margin-top:1px">The buyer reported a difference during delivery validation. Resolve every affected line to release the invoice.</div></div>
-        </div>
         <div class="claim-line">
           <div class="claim-ln-name">1&times; 700 W Compact Microwave in Black</div>
           <div class="claim-ln-issue">Missing item or quantity</div>

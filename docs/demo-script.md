@@ -20,6 +20,7 @@ Walk the lifecycle top to bottom; every order also appears in Order Tracking (`b
 | Awaiting Payment | `#653` | **Confirm Payment** task → confirm dialog → resting "Waiting on Vendor · Completion" (violet Payment confirmed, Paid Total goes real, Write a Review) |
 | Invoice with variance (dispute demo) | `#664` | `#664/invoice`: the invoice still bills a claim-canceled unit — rose Variance, amber attestation copy, canceled unit as ROG "—" row; Dispute → rose "Invoice disputed"; pairs with vendor `#disputed` |
 | Invoice received → Invoice Validation | `#674` | **Validate Invoice** primary appears (only now); `#674/invoice` deep-links into the **Document Review Split View** — confirm every AI-extracted value, then Validate (same-page advance to Awaiting Payment, tax joins totals) or Dispute (steps back, rose "Invoice disputed") |
+| Canceled (terminal) | `#153` | No stepper, no tasks — Order Status card with the vendor's quoted reason, "Nothing was charged." Closed tab's Canceled row |
 | Completed / closed | `#515` | The vendor demo order from the buyer's lens — all 8 steps done, "Order Complete" resting strip, Paid Total = $253.03, Write a Review only. Pair with vendor `#completed` for the one-order-two-lenses beat |
 | Claim resolved | `#662` | Emerald **Claim resolved** callout with per-line outcomes; Summary rewritten: canceled line struck through + rose pill and out of the totals, replacement as its own line with **Fulfillment #2**; validate the replacement live to finish the loop |
 
@@ -32,6 +33,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 | State | Hash | What to show |
 |---|---|---|
 | Placed | `#placed` | Action Required · Fulfill Items |
+| Cancellation requested | `#cancelreq` | Buyer asked to cancel: rose strip + **Cancel Order** → modal with required buyer-visible reason (live: confirm lands on `#canceled`, stepper gone) |
 | Fulfilled | `#fulfilled` | Mark as Shipped |
 | Shipped (mid-Delivery) | `#shipped` | Mark as Delivered |
 | Delivered — waiting on buyer | `#delivered` | **Waiting on Buyer · Delivery Validation** (vendor no longer "uploads invoice to unblock validation") |

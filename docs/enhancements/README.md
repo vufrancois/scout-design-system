@@ -34,6 +34,7 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | **Buyer App** · Vendor Invoice Upload & AI Review | [buyer/vendor-invoice-upload.md](buyer/vendor-invoice-upload.md) |
 | **Buyer App** · Invoice Validation (split view) | [buyer/invoice-validation.md](buyer/invoice-validation.md) |
 | **Buyer App** · Awaiting Payment | [buyer/awaiting-payment.md](buyer/awaiting-payment.md) |
+| **Buyer App** · Cancellation Resolution | [buyer/cancellation.md](buyer/cancellation.md) |
 
 All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass.
 

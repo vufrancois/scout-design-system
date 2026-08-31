@@ -1020,6 +1020,21 @@
         <button class="toolbar-btn btn-primary-fill" id="task-cta"></button>
       </div>
 
+      <!-- Claim Resolution, pre-fulfillment (claimpre state) -->
+      <div class="panel" id="panel-claim-pre" style="display:none">
+        <div class="claim-line">
+          <div class="claim-ln-name">1&times; 700 W Compact Microwave in Black</div>
+          <div class="claim-ln-issue">Missing item or quantity &middot; reported before fulfillment</div>
+          <span class="claim-req cancel">Buyer: Cancel this item</span>
+          <div class="claim-opts">
+            <button class="claim-opt" onclick="claimPick(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="co-t">Fulfill as ordered</span><span class="co-d">Keep this line &mdash; it ships with the normal fulfillment.</span></button>
+            <button class="claim-opt danger selected" onclick="claimPick(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span class="co-t">Cancel affected quantity</span><span class="co-d">Removes the line before it ships. If no merchandise remains, cancel the order.</span></button>
+          </div>
+        </div>
+        <textarea class="claim-note" placeholder="Optional note to the buyer"></textarea>
+        <div class="claim-cta-row"><button class="toolbar-btn btn-primary-fill" onclick="resolveClaimPre()">Resolve claim</button></div>
+      </div>
+
       <!-- Claim Resolution (claim state) -->
       <div class="panel" id="panel-claim" style="display:none">
         <div class="claim-line">
@@ -1563,6 +1578,15 @@
         feedHidden: [['Items delivered','2 items \u00B7 Fulfillment #1','4m ago'], ['Items shipped','2 items \u00B7 Fulfillment #1','6m ago'], ['Items fulfilled','2 items \u00B7 Fulfillment #1','8m ago']],
         feedTail: [['Order placed','$236.14 USD \u00B7 2 items','10m ago']]
       },
+      claimpre: {
+        noCancel: true,
+        doneSteps: ['placed'], current: 'fulfilled',
+        pills: [['dot-fulfill','To Fulfill','Order placed 07/23/2026'], ['dot-claim','Claim Open','The buyer reported a problem before fulfillment']],
+        progress: '1 of 8',
+        panels: { unfulfilled: true, fulfillment: false, claimPre: true },
+        task: { tone: 'action', icon: 'claim', title: 'Action Required \u00B7 Resolve Claim', desc: 'The buyer reported a problem before anything shipped. Nothing is invoiced yet \u2014 resolve the line to unblock the order.', cta: ['Review Claim', 'scrollToClaimPre()'] },
+        feed: [['Claim raised by buyer','1\u00D7 700 W Compact Microwave \u2014 Missing item or quantity \u00B7 cancellation requested','Just now'], ['Order placed','$236.14 USD \u00B7 2 items','1h ago']]
+      },
       cancelreq: {
         noCancel: true,
         doneSteps: ['placed'], current: 'fulfilled',
@@ -1709,6 +1733,7 @@
       document.getElementById('panel-unfulfilled').style.display = s.panels.unfulfilled ? '' : 'none';
       document.getElementById('panel-fulfillment').style.display = s.panels.fulfillment ? '' : 'none';
       document.getElementById('panel-claim').style.display = s.panels.claim ? '' : 'none';
+      document.getElementById('panel-claim-pre').style.display = s.panels.claimPre ? '' : 'none';
       const t = s.task;
       const strip = document.getElementById('task-strip');
       strip.className = 'task-strip ' + t.tone;
@@ -1779,6 +1804,20 @@
 
     function openShip() { document.getElementById('ship-modal').classList.add('open'); }
     function scrollToClaim() { document.getElementById('panel-claim').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    function scrollToClaimPre() { document.getElementById('panel-claim-pre').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    function resolveClaimPre() {
+      const cancel = !!document.querySelector('#panel-claim-pre .claim-opt.danger.selected');
+      if (cancel) {
+        STATES.cancelreq.pills[1] = ['dot-claim', 'Cancellation Required', 'No merchandise remains after the claim'];
+        STATES.cancelreq.task.desc = 'No merchandise remains after the claim resolution. Cancel this order to waive shipping and close the balance.';
+        STATES.cancelreq.feed = [['Claim resolved', '1 line canceled before fulfillment \u00B7 no merchandise remains', 'Just now']].concat(STATES.cancelreq.feed);
+        showToast('Claim resolved', '1 line canceled \u2014 no merchandise remains: cancel the order to close it out');
+        location.hash = '#cancelreq';
+      } else {
+        showToast('Claim resolved', 'Line kept \u2014 it ships with the normal fulfillment');
+        location.hash = '#placed';
+      }
+    }
     function claimPick(el) {
       el.closest('.claim-line').querySelectorAll('.claim-opt').forEach(o => o.classList.remove('selected'));
       el.classList.add('selected');

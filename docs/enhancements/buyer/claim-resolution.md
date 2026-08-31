@@ -30,6 +30,10 @@ Built on `buyer/order-detail.html` — seeded showcase **#662** (Bayou, 2× Alab
 - Strip desc becomes "All items are received or resolved by the vendor."; activity logs "Claim resolved by vendor · 1 replacement queued · 1 unit canceled — invoice released". The tracking table's Claim Open overlay clears on resolution (rule; #404 stays the unresolved example).
 - New CSS: `.callout.emerald` + outcome line `.co.keep/.co.cancel` (light + dark).
 
+## Stage-aware resolution + invoiced-tab overlay (follow-up pass)
+- **Vendor `#claimpre`** — a claim on a never-fulfilled order (the counterpart to buyer #404): "The buyer reported a problem before anything shipped. Nothing is invoiced yet." The resolution cards speak the stage — **Fulfill as ordered** ("keep this line — it ships with the normal fulfillment") vs **Cancel affected quantity** ("removes the line before it ships") — no stock/shipping/invoice language. Canceling the last line flows live into `#cancelreq` with the reference's all-merchandise-canceled copy ("No merchandise remains … waive shipping and close the balance") and a "Cancellation Required" pill; keeping the line returns the order to `#placed`.
+- **Invoiced-tab Claim Open overlay** — the claim window stays open until invoice validation, so a claim-held invoice now shows rose **Claim Open** (instead of Awaiting Validation) and loses its Validate button until resolution. Seeded **#641** (GE Profile Range, damaged-keep claim, invoice received-but-held): buyer detail shows the rose "Invoice held · claim open" strip pill + claim callout; Invoiced counts still reconcile.
+
 ## Held for a later pass
 - Vendor-side visible Fulfillment #2 for the replacement (buyer side now shows it on #662).
 

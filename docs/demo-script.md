@@ -16,6 +16,7 @@ Walk the lifecycle top to bottom; every order also appears in Order Tracking (`b
 | Partially Delivered · 4/10 | `#408` | Multi-quantity validation: capped "Received now" stepper, per-row **Report a problem** (checkbox flips to rose ×), one Save commits receipts + claims |
 | Cancellation Pending | `#486` | Sky pill (vendor's move on the buyer side); rail notice explains the hold |
 | Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold, "Cancellation requested" item note; rose Claim Open overlay in the table |
+| Claim held at invoice stage | `#641` | Invoice received but a claim is open: strip pill rose "Invoice held · claim open"; the Invoiced tab shows Claim Open instead of Awaiting Validation, Validate gone |
 | Awaiting vendor invoice | live | Validate any order fully (e.g. `#512`) — the saved state is exactly this: sky **Awaiting vendor invoice** pill + clock note |
 | Awaiting Payment | `#653` | **Confirm Payment** task → confirm dialog → resting "Waiting on Vendor · Completion" (violet Payment confirmed, Paid Total goes real, Write a Review) |
 | Invoice with variance (dispute demo) | `#664` | `#664/invoice`: the invoice still bills a claim-canceled unit — rose Variance, amber attestation copy, canceled unit as ROG "—" row; Dispute → rose "Invoice disputed"; pairs with vendor `#disputed` |
@@ -37,6 +38,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 | Fulfilled | `#fulfilled` | Mark as Shipped |
 | Shipped (mid-Delivery) | `#shipped` | Mark as Delivered |
 | Delivered — waiting on buyer | `#delivered` | **Waiting on Buyer · Delivery Validation** (vendor no longer "uploads invoice to unblock validation") |
+| Claim Open — pre-fulfillment | `#claimpre` | Nothing shipped, nothing invoiced: stage-correct options (Fulfill as ordered / Cancel affected quantity); canceling the last line flows live into `#cancelreq` ("No merchandise remains") |
 | Claim Open | `#claim` | **Claim Resolution Panel**: buyer-request chips (emerald keep / rose cancel), Send replacement vs Cancel affected quantity cards, Resolve claim → invoice released (transitions to `#tax`) |
 | Delivery Validated — Upload Invoice | `#tax` | Buyer's **Receipt of Goods** in Documents; Upload Invoice modal → "Upload for AI review" kicks off the live flow |
 | Invoice disputed — correct & resubmit | `#disputed` | Buyer rejected the invoice: rose pill, disputed Documents note ("Validation blocked"), Upload Corrected Invoice re-enters the upload → AI review pipeline |

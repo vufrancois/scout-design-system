@@ -40,6 +40,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 | Delivered — waiting on buyer | `#delivered` | **Waiting on Buyer · Delivery Validation** (vendor no longer "uploads invoice to unblock validation") |
 | Claim Open — pre-fulfillment | `#claimpre` | Nothing shipped, nothing invoiced: stage-correct options (Fulfill as ordered / Cancel affected quantity); canceling the last line flows live into `#cancelreq` ("No merchandise remains") |
 | Claim Open | `#claim` | **Claim Resolution Panel**: buyer-request chips (emerald keep / rose cancel), Send replacement vs Cancel affected quantity cards, Resolve claim → invoice released (transitions to `#tax`) |
+| Replacement to ship | `#replacement` | After resolving with Send replacement: emerald "Claim resolved" note, **Fulfillment #2 · Replacement** panel, Ship Replacement task — shipping lands on `#delivered` (buyer re-validates before invoicing) |
 | Delivery Validated — Upload Invoice | `#tax` | Buyer's **Receipt of Goods** in Documents; Upload Invoice modal → "Upload for AI review" kicks off the live flow |
 | Invoice disputed — correct & resubmit | `#disputed` | Buyer rejected the invoice: rose pill, disputed Documents note ("Validation blocked"), Upload Corrected Invoice re-enters the upload → AI review pipeline |
 | Invoice pending review | `#review` | Scout AI processing → Ready for review; Documents shows the **Pending review** block; Review modal with extracted number + tax and the **two required confirmation cards** — accept to advance |

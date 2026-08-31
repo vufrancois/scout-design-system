@@ -1020,6 +1020,30 @@
         <button class="toolbar-btn btn-primary-fill" id="task-cta"></button>
       </div>
 
+      <!-- Claim resolved note (replacement state) -->
+      <div id="claim-resolved-note" style="display:none;border:1px solid var(--emerald);background:var(--emerald-soft);border-radius:var(--radius-md);padding:14px 16px">
+        <div style="display:flex;gap:10px;align-items:flex-start"><svg style="width:18px;height:18px;color:var(--emerald);flex-shrink:0;margin-top:1px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg><div><div style="font-size:14px;font-weight:600">Claim resolved</div><div style="font-size:13px;color:var(--muted-foreground);margin-top:1px">Fulfill the replacement line separately. The buyer can validate the updated delivery.</div></div></div>
+      </div>
+
+      <!-- Fulfillment #2 — replacement (replacement state) -->
+      <div class="panel" id="panel-fulfillment2" style="display:none">
+        <div class="panel-head">
+          <span class="panel-title">Fulfillment #2 &middot; Replacement</span>
+          <div class="panel-badges">
+            <span class="badge-neutral">From claim resolution</span>
+            <span class="status-dot-item"><span class="status-dot dot-ship"></span><span class="status-dot-label">To Ship</span></span>
+          </div>
+        </div>
+        <div class="line-item" style="padding-top:0">
+          <div class="line-thumb" style="width:40px;height:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+          <div class="line-info">
+            <div class="line-name">700 W Compact Microwave in Black</div>
+            <div class="line-sku">10101352 &middot; Default &middot; replaces the claimed unit at no charge</div>
+          </div>
+          <span class="line-qty">&times; 1</span>
+        </div>
+      </div>
+
       <!-- Claim Resolution, pre-fulfillment (claimpre state) -->
       <div class="panel" id="panel-claim-pre" style="display:none">
         <div class="claim-line">
@@ -1587,6 +1611,19 @@
         task: { tone: 'action', icon: 'claim', title: 'Action Required \u00B7 Resolve Claim', desc: 'The buyer reported a problem before anything shipped. Nothing is invoiced yet \u2014 resolve the line to unblock the order.', cta: ['Review Claim', 'scrollToClaimPre()'] },
         feed: [['Claim raised by buyer','1\u00D7 700 W Compact Microwave \u2014 Missing item or quantity \u00B7 cancellation requested','Just now'], ['Order placed','$236.14 USD \u00B7 2 items','1h ago']]
       },
+      replacement: {
+        noCancel: true,
+        doneSteps: ['placed','fulfilled','shipped','delivered'], current: 'tax',
+        pills: [['dot-ship','Replacement To Ship','1 replacement unit queued by the claim resolution'], ['dot-tax','Needs Tax &amp; Invoice','Invoice after the buyer validates the updated delivery']],
+        progress: '4 of 8',
+        panels: { unfulfilled: false, fulfillment: true, fulfillment2: true },
+        fulfillment: { pill: ['dot-delivered','Delivered'], cancel: false },
+        task: { tone: 'action', icon: 'ship', title: 'Action Required \u00B7 Ship Replacement', desc: 'The claim resolution queued 1 replacement unit \u2014 fulfill it separately. The buyer validates the updated delivery before you invoice.', cta: ['Mark Replacement as Shipped', 'shipReplacement()'] },
+        docsRog: true, claimNote: true,
+        feed: [['Claim resolved','1 replacement queued \u00B7 1 unit canceled \u2014 invoice held for the updated delivery','Just now'], ['Claim raised by buyer','2\u00D7 700 W Compact Microwave \u2014 Missing item or quantity','1h ago']],
+        feedHidden: [['Delivery validated by buyer','Receipt of Goods generated','2h ago'], ['Items delivered','2 items \u00B7 Fulfillment #1','3h ago']],
+        feedTail: [['Order placed','$236.14 USD \u00B7 2 items','5h ago']]
+      },
       cancelreq: {
         noCancel: true,
         doneSteps: ['placed'], current: 'fulfilled',
@@ -1734,6 +1771,8 @@
       document.getElementById('panel-fulfillment').style.display = s.panels.fulfillment ? '' : 'none';
       document.getElementById('panel-claim').style.display = s.panels.claim ? '' : 'none';
       document.getElementById('panel-claim-pre').style.display = s.panels.claimPre ? '' : 'none';
+      document.getElementById('panel-fulfillment2').style.display = s.panels.fulfillment2 ? '' : 'none';
+      document.getElementById('claim-resolved-note').style.display = s.claimNote ? '' : 'none';
       const t = s.task;
       const strip = document.getElementById('task-strip');
       strip.className = 'task-strip ' + t.tone;
@@ -1825,8 +1864,19 @@
     function resolveClaim() {
       const picks = [...document.querySelectorAll('#panel-claim .claim-line')].map(l => l.querySelector('.claim-opt.selected .co-t').textContent);
       const rep2 = picks.filter(p => p === 'Send replacement').length, can = picks.length - rep2;
-      showToast('Claim resolved', (rep2 ? rep2 + ' replacement' + (rep2 === 1 ? '' : 's') + ' queued' : '') + (rep2 && can ? ' \u00B7 ' : '') + (can ? can + ' unit' + (can === 1 ? '' : 's') + ' canceled' : '') + ' \u2014 invoice released');
-      location.hash = '#tax';
+      const outcome = (rep2 ? rep2 + ' replacement' + (rep2 === 1 ? '' : 's') + ' queued' : '') + (rep2 && can ? ' \u00B7 ' : '') + (can ? can + ' unit' + (can === 1 ? '' : 's') + ' canceled' : '');
+      if (rep2 > 0) {
+        showToast('Claim resolved', outcome + ' \u2014 fulfill the replacement separately; invoice after the buyer re-validates');
+        location.hash = '#replacement';
+      } else {
+        showToast('Claim resolved', outcome + ' \u2014 invoice released');
+        location.hash = '#tax';
+      }
+    }
+    function shipReplacement() {
+      STATES.delivered.feed = [['Replacement shipped', 'Fulfillment #2 \u00B7 1 item', 'Just now'], ['Claim resolved', '1 replacement queued \u00B7 1 unit canceled', '1h ago']].concat(STATES.delivered.feed);
+      showToast('Replacement shipped', 'Fulfillment #2 on its way \u2014 the buyer validates the updated delivery');
+      location.hash = '#delivered';
     }
     let curState;
     function expandFeed() {

@@ -342,8 +342,9 @@
   pick();
 
   const itemTotal = () => Math.round(O.items.reduce((a, i) => a + (i.canceled ? 0 : i.qty * i.price), 0) * 100) / 100;
-  const invTax = () => (O.prog.done || 0) >= 6 ? Math.round(itemTotal() * (O.taxRate || 0.105) * 100) / 100 : 0;
-  const grand = () => Math.round((itemTotal() + invTax() + O.ship[1]) * 100) / 100;
+  const invTax = () => (O.prog.done || 0) >= 6 ? (O.invAccepted ? O.invAccepted.tax : Math.round(itemTotal() * (O.taxRate || 0.105) * 100) / 100) : 0;
+  const invVar = () => O.invAccepted ? Math.round((O.invAccepted.sub - itemTotal()) * 100) / 100 : 0;
+  const grand = () => O.invAccepted ? O.invAccepted.grand : Math.round((itemTotal() + invTax() + O.ship[1]) * 100) / 100;
   const pillHtml = (label, dot) => dot === 'neutral'
     ? '<span class="status-dot-item"><span class="status-dot" style="background:var(--muted-foreground)"></span><span class="status-dot-label">' + label + '</span></span>'
     : '<span class="status-dot-item"><span class="status-dot ' + dot + '"></span><span class="status-dot-label">' + label + '</span></span>';
@@ -452,6 +453,7 @@
 
         main += '<div class="card"><div class="det-card-head hd"><h2>Summary</h2></div>' + O.items.map(i => itemRow(i, true)).join('') +
       '<div class="det-totals"><div class="tot-row"><span>Item Total</span><span>' + money(itemTotal()) + '</span></div>' +
+      (invVar() ? '<div class="tot-row"><span>Invoice variance · accepted at validation</span><span style="color:#b45309">+' + money(invVar()) + '</span></div>' : '') +
       (invTax() ? '<div class="tot-row"><span>Sales tax · Invoice #' + invN() + '</span><span>' + money(invTax()) + '</span></div>' : '') +
       '<div class="tot-row"><span>Shipping · ' + O.ship[0] + '</span><span>' + money(O.ship[1]) + '</span></div>' +
       '<div class="tot-row grand"><span>Total</span><span>' + money(grand()) + '</span></div>' +
@@ -749,6 +751,7 @@
       '<div class="ivt-side"><div class="ivt-scroll">' +
       '<h3>SKUs and quantities</h3><p class="ivt-sub">ROG quantities include resolved returns and write-offs.</p>' +
       '<div class="ivt-table"><div class="ivt-row hd"><span>Confirm</span><span>Item</span><span class="ivt-sku">SKU</span><span class="ivt-c">ROG Qty</span><span class="ivt-c ivt-ai">Invoice Qty<em>Extracted by Scout AI</em></span></div>' + skuRows + '</div>' +
+      '<button class="act-more" style="padding:8px 0 0;font-size:12px" onclick="closeInvTk(); openClaim()">Something wrong with the goods themselves? Report a problem \u2014 an open claim holds the invoice.</button>' +
       '<h3 style="margin-top:22px">Invoice amounts</h3><p class="ivt-sub">Shipping, subtotal, sales tax, and total from the invoice.</p>' +
       '<div class="ivt-table"><div class="ivt-row hd amt"><span>Confirm</span><span class="ivt-amt-l">Amount</span><span class="ivt-c">Order/ROG</span><span class="ivt-c ivt-ai">Invoice<em>Extracted by Scout AI</em></span><span class="ivt-c">Variance</span></div>' +
       amtRow('sub', 'Subtotal', a.sub, b.sub) +
@@ -799,6 +802,7 @@
     let ov = document.getElementById('dispute-ov');
     if (!ov) { ov = document.createElement('div'); ov.id = 'dispute-ov'; ov.className = 'overlay center'; ov.style.zIndex = '500'; document.body.appendChild(ov); ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); }); }
     ov.innerHTML = '<div class="val-modal" style="width:520px"><div class="val-head"><h2>Dispute this invoice?</h2><p>The vendor will be asked to correct and resubmit the invoice. The order will not be changed, and invoice validation will stay blocked until the replacement is reviewed.</p></div>' +
+      '<div class="val-body" style="padding:14px 22px"><label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px">What should the vendor correct? <span style="font-weight:400;color:var(--muted-foreground)">(optional \u2014 sent with the dispute)</span></label><textarea id="dispute-note" class="claim-note" style="margin-top:0" placeholder="e.g. The invoice still bills the canceled LEVOLOR shade \u2014 1 unit should come off."></textarea></div>' +
       '<div class="val-foot"><button class="btn" onclick="document.getElementById(\'dispute-ov\').classList.remove(\'open\')">Cancel</button><button class="btn btn-danger" onclick="confirmDispute()">Dispute and request correction</button></div></div>';
     ov.classList.add('open');
   }
@@ -808,15 +812,19 @@
     O.docs = O.docs.filter(d => d[0].indexOf('Invoice') !== 0);
     O.invDisputed = true;
     O.prog = { done: 4, active: 4, dates: (O.prog.dates || []).slice(0, 4) };
-    O.activity.unshift({ t: 'Invoice disputed by Alicia Grant', sub: '#' + invN() + ' · vendor asked to correct and resubmit', when: 'Just now', hi: true });
+    const dnEl = document.getElementById('dispute-note');
+    const dn = dnEl ? dnEl.value.trim() : '';
+    if (dn) O.disputeNote = dn;
+    O.activity.unshift({ t: 'Invoice disputed by Alicia Grant', sub: '#' + invN() + ' · vendor asked to correct and resubmit' + (dn ? ' — \u201C' + dn + '\u201D' : ''), when: 'Just now', hi: true });
     renderPage();
     showToast('Invoice disputed', '#' + invN() + ' sent back to the vendor · validation stays blocked until the replacement is reviewed');
   }
   function validateInvoice() {
-    const a = invAmounts();
+    if (O.invBilledWrong) O.invAccepted = billedAmounts();
+    const a = O.invAccepted || invAmounts();
     closeInvTk();
     O.prog = { done: 6, active: 6, dates: (O.prog.dates || []).slice(0, 5).concat(['Aug 28']) };
-    O.activity.unshift({ t: 'Invoice validated by Alicia Grant', sub: '#' + invN() + ' · ' + money(a.grand) + ' on the books', when: 'Just now', hi: true });
+    O.activity.unshift({ t: 'Invoice validated by Alicia Grant', sub: '#' + invN() + ' · ' + money(a.grand) + ' on the books' + (O.invAccepted ? ' · ' + money(invVar()) + ' variance accepted' : ''), when: 'Just now', hi: true });
     renderPage();
     showToast('Invoice validated', '#' + invN() + ' · ' + money(a.grand) + ' \u2014 payment processing begins');
   }

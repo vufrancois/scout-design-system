@@ -25,6 +25,13 @@
 - **Variance treatment**: mismatched amount rows show a rose Variance figure + amber warning under the label ("The extracted amount doesn't match your records — confirm only if you reviewed the PDF and accept the difference; otherwise dispute"); the billed-but-canceled unit appears as its own SKU row (ROG "—" vs Invoice 1, amber "Canceled after your claim — the invoice still bills it"). Checking a mismatched row is an explicit attestation; Validate stays unlockable for accepted differences, Dispute is the refusal path — both verified live on #664.
 - **Vendor `#disputed` state**: rose "Invoice Disputed" pill, "Action Required · Correct & Resubmit Invoice" strip with the buyer's reason, rose Documents note ("Invoice #001042755 disputed … Validation blocked" chip); **Upload Corrected Invoice re-enters the standard upload → AI review → accept pipeline** (verified: upload from #disputed lands on #review).
 
+## Gap-closure pass (post-review)
+1. **Tracking tables open the right validation**: Invoiced-tab Validate buttons deep-link `#num/invoice` (the split view) instead of the delivery modal; Open-tab rows with a received invoice (#674) turn actionable again — amber attention, "Invoice received — awaiting your validation" tooltip, Validate primary (label stays "Validate" everywhere — only the destination changes with the stage).
+2. **Claim entry inside the split view** — per the claim-window rule ("raising one during invoice review is a first-class entry"): a quiet Report-a-problem link under the SKU table closes the review and opens the claim modal; goods-level exception vs Dispute's document-level refusal.
+3. **Accepting a variance adopts the billed amounts** — validating #664 with attested mismatches writes `O.invAccepted`: totals gain an amber "Invoice variance · accepted at validation +$47.20" row, tax/Total become the accepted figures ($97.74), and the audit entry records "$47.20 variance accepted."
+4. **Disputes carry an optional note** — "What should the vendor correct?" textarea in the dispute dialog; the note is stored, quoted in the audit entry, and delivered with the dispute. (Fix along the way: `.claim-note` was only styled in the vendor stylesheet, so the buyer textarea rendered in raw browser monospace — now defined in `buyer-components.css` with Inter, card background, radius, and focus ring, light + dark.)
+5. **One Validate label** — the table button reads "Validate" at every stage; only the destination changes (delivery modal pre-validation, invoice split view after). The row tooltip says which.
+
 ## Held
 - Write a Review remains a stub.
 

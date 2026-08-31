@@ -236,7 +236,7 @@
 
   // Open: 62 = To Fulfill 36 · To Ship 11 · Shipped 7 · Delivered 8 (reconciled to Home)
   const OPEN = [
-    { num: 674, v: 'SD', prop: 'bayou', total: 42.39, count: 1, stage: 'delivered', validated: true, date: '2026-08-28', items: [['47 x 64 in. Vinyl Cordless Plus Mini Blind', 1, 30.40]] },
+    { num: 674, v: 'SD', prop: 'bayou', total: 42.39, count: 1, stage: 'delivered', validated: true, invReady: true, attn: true, date: '2026-08-28', items: [['47 x 64 in. Vinyl Cordless Plus Mini Blind', 1, 30.40]] },
     { num: 669, v: 'SD', prop: 'magnolia', total: 979.11, count: 1, stage: 'ship', date: '2026-08-26', items: [['Whirlpool 24 in. Front Control Dishwasher in White', 1, 971.12]] },
     { num: 668, v: 'ID', prop: 'magnolia', total: 322.58, count: 2, stage: 'transit', date: '2026-08-26', items: [['T6 PRO Z-Wave Z-Wave Pro Thermostat', 2, 161.29]] },
     { num: 662, v: 'SD', prop: 'bayou', total: 81.97, count: 2, stage: 'delivered', part: { done: 1, of: 2 }, date: '2026-08-27', items: [['CORDLESS MINI BLIND 69X60 - ALABASTER', 2, 34.99]] },
@@ -405,12 +405,13 @@
           : r.sub ? pill(r.sub[0] + ' · ' + r.sub[1] + '/' + r.sub[2], 'dot-revision')
           : pill(STAGE[r.stage][0], STAGE[r.stage][1]);
         statusCells = '<td>' + pill('Pending', 'dot-pending') + '</td><td>' + st + '</td>';
-        action = r.validated ? rowMenu(r.num, true) : '<button class="btn btn-primary btn-sm" onclick="validateOrder(' + r.num + ')">Validate</button>';
+        action = r.invReady ? '<button class="btn btn-primary btn-sm" onclick="validateInvoice(' + r.num + ')">Validate</button>'
+          : r.validated ? rowMenu(r.num, true) : '<button class="btn btn-primary btn-sm" onclick="validateOrder(' + r.num + ')">Validate</button>';
       } else if (t === 'invoiced') {
         const f = r.inv === 'await' ? pill('Awaiting Validation', 'dot-pending') : pill('Validated', 'dot-revision');
         const p = r.inv === 'paid' ? pill('Paid', 'dot-approved') : pill('Not Paid', 'dot-rejected');
         statusCells = '<td>' + f + '</td><td>' + p + '</td>';
-        action = r.inv === 'await' ? '<button class="btn btn-primary btn-sm" onclick="validateOrder(' + r.num + ')">Validate</button>' : rowMenu(r.num);
+        action = r.inv === 'await' ? '<button class="btn btn-primary btn-sm" onclick="validateInvoice(' + r.num + ')">Validate</button>' : rowMenu(r.num);
       } else {
         const s = r.cl === 'completed' ? pill('Completed', 'dot-approved') : pill('Canceled', 'dot-rejected');
         const p = r.cl === 'completed' ? pill('Paid', 'dot-approved') : pill('—', 'p-neutral-dot');
@@ -419,7 +420,7 @@
       }
       const main = '<tr class="data-row' + (r.attn ? ' row-attn' : '') + '">' +
         '<td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(' + r.num + ')" title="Order items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
-        '<td class="mono" style="font-weight:700"><a class="table-link" style="font-family:inherit;font-weight:700" href="order-detail.html#' + r.num + '">#' + r.num + '</a>' + (r.attn ? '<span class="row-warn" data-tip="Delivered — awaiting your validation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>' : '') + '</td>' +
+        '<td class="mono" style="font-weight:700"><a class="table-link" style="font-family:inherit;font-weight:700" href="order-detail.html#' + r.num + '">#' + r.num + '</a>' + (r.attn ? '<span class="row-warn" data-tip="' + (r.invReady ? 'Invoice received — awaiting your validation' : 'Delivered — awaiting your validation') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>' : '') + '</td>' +
         '<td class="col-hide cell-clip" title="' + (prop ? prop.name : '') + '">' + (prop ? prop.name : '—') + '</td>' +
         '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + r.v + '</span><span class="nm">' + VEN[r.v] + '</span></span></td>' +
         '<td class="num" style="font-weight:600">' + money(r.total) + '</td>' + statusCells +
@@ -505,6 +506,7 @@
   let toastTimer;
   function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
   function validateOrder(num) { location.href = 'order-detail.html#' + num + '/validate'; }
+  function validateInvoice(num) { location.href = 'order-detail.html#' + num + '/invoice'; }
   function rowAct(what, num) { document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none'); showToast(what + ' — Order #' + num, 'Demo action'); }
 
   renderPage();

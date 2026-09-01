@@ -1630,7 +1630,7 @@
         pills: [['dot-fulfill','To Fulfill','Order placed 07/23/2026'], ['dot-claim','Cancellation Requested','The buyer asked to cancel this order before fulfillment']],
         progress: '1 of 8',
         panels: { unfulfilled: true, fulfillment: false },
-        task: { tone: 'danger', icon: 'claim', title: 'Action Required \u00B7 Cancel Order', desc: 'The buyer asked to cancel this order before fulfillment. Canceling releases the items back to stock, waives shipping, and closes the balance.', cta: ['Cancel Order', 'openCancelOrder()', 'danger'] },
+        task: { tone: 'danger', icon: 'claim', title: 'Action Required \u00B7 Cancel Order', desc: 'The buyer asked to cancel this order before fulfillment. Cancel to release the items and close the balance \u2014 or decline with a reason and the order continues.', cta: ['Cancel Order', 'openCancelOrder()', 'danger'], cta2: ['Decline Request', 'openDeclineCancel()'] },
         feed: [['Cancellation requested by buyer','Whole order \u00B7 before fulfillment','Just now'], ['Order placed','$236.14 USD \u00B7 2 items','1h ago']]
       },
       canceled: {
@@ -1942,6 +1942,34 @@
       STATES.canceled.feed = [['Order canceled', '\u201C' + reason.slice(0, 60) + (reason.length > 60 ? '\u2026' : '') + '\u201D \u00B7 shared with the buyer', 'Just now']].concat(STATES.canceled.feed.slice(1));
       showToast('Order canceled', 'The buyer has been notified \u00B7 reason shared');
       location.hash = '#canceled';
+    }
+    function openDeclineCancel() {
+      let ov = document.getElementById('decline-cancel-modal');
+      if (!ov) {
+        ov = document.createElement('div'); ov.id = 'decline-cancel-modal'; ov.className = 'modal-overlay';
+        document.body.appendChild(ov);
+        ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+      }
+      ov.innerHTML = '<div class="modal" style="max-width:520px">' +
+        '<div class="modal-head"><span class="modal-title">Decline the cancellation request?</span><span class="esc-chip">esc</span><button class="modal-close" onclick="document.getElementById(\'decline-cancel-modal\').classList.remove(\'open\')" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>' +
+        '<div class="modal-body"><p style="font-size:13px;color:var(--muted-foreground);padding:14px 0 14px;line-height:1.5">The order continues on its normal path and the buyer is notified. They keep their claim rights \u2014 declining only ends the cancellation request.</p>' +
+        '<div class="form-label">Reason for declining</div>' +
+        '<textarea id="decline-reason" maxlength="500" oninput="updateDeclineCancel()" placeholder="e.g. The items were already picked for shipment" style="width:100%;min-height:96px;margin-top:8px;border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;font:inherit;font-size:13px;line-height:1.5;background:var(--card);color:var(--foreground);resize:vertical"></textarea>' +
+        '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted-foreground);margin-top:6px"><span>Required. This reason will be visible to the buyer.</span><span id="decline-count">0/500</span></div><div style="height:16px"></div></div>' +
+        '<div class="modal-footer"><button class="toolbar-btn" onclick="document.getElementById(\'decline-cancel-modal\').classList.remove(\'open\')">Back</button><button class="toolbar-btn btn-primary-fill" id="decline-confirm-btn" disabled onclick="confirmDeclineCancel()">Decline Request</button></div></div>';
+      ov.classList.add('open');
+    }
+    function updateDeclineCancel() {
+      const v = document.getElementById('decline-reason').value;
+      document.getElementById('decline-count').textContent = v.length + '/500';
+      document.getElementById('decline-confirm-btn').disabled = !v.trim();
+    }
+    function confirmDeclineCancel() {
+      const reason = document.getElementById('decline-reason').value.trim();
+      document.getElementById('decline-cancel-modal').classList.remove('open');
+      STATES.placed.feed = [['Cancellation declined', '\u201C' + reason.slice(0, 60) + (reason.length > 60 ? '\u2026' : '') + '\u201D \u00B7 shared with the buyer \u00B7 the order continues', 'Just now'], ['Cancellation requested by buyer', 'Whole order \u00B7 before fulfillment', '1h ago']].concat(STATES.placed.feed);
+      showToast('Cancellation declined', 'The buyer has been notified \u2014 the order continues on its normal path');
+      location.hash = '#placed';
     }
     function openInvoice() { document.getElementById('invoice-modal').classList.add('open'); }
     function closeInvoice() { document.getElementById('invoice-modal').classList.remove('open'); }

@@ -15,6 +15,7 @@ Walk the lifecycle top to bottom; every order also appears in Order Tracking (`b
 | Delivered — awaiting validation | `#657` | Amber attention row in the table; the buyer's move. `#657/validate` deep-links straight into the **Delivery Validation modal** |
 | Partially Delivered · 4/10 | `#408` | Multi-quantity validation: capped "Received now" stepper, per-row **Report a problem** (checkbox flips to rose ×), one Save commits receipts + claims |
 | Cancellation Pending | `#486` | Sky pill (vendor's move on the buyer side); rail notice explains the hold |
+| Cancellation declined | `#420` | The vendor declined with a reason: rail notice quotes it, the order simply continues its lifecycle |
 | Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold, "Cancellation requested" item note; rose Claim Open overlay in the table |
 | Claim held at invoice stage | `#641` | Invoice received but a claim is open: strip pill rose "Invoice held · claim open"; the Invoiced tab shows Claim Open instead of Awaiting Validation, Validate gone |
 | Awaiting vendor invoice | live | Validate any order fully (e.g. `#512`) — the saved state is exactly this: sky **Awaiting vendor invoice** pill + clock note |
@@ -34,7 +35,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 | State | Hash | What to show |
 |---|---|---|
 | Placed | `#placed` | Action Required · Fulfill Items |
-| Cancellation requested | `#cancelreq` | Buyer asked to cancel: rose strip + **Cancel Order** → modal with required buyer-visible reason (live: confirm lands on `#canceled`, stepper gone) |
+| Cancellation requested | `#cancelreq` | Buyer asked to cancel: rose strip with **Cancel Order** (→ modal, required buyer-visible reason → `#canceled`, stepper gone) or **Decline Request** (→ modal, required reason → order continues on `#placed`) |
 | Fulfilled | `#fulfilled` | Mark as Shipped |
 | Shipped (mid-Delivery) | `#shipped` | Mark as Delivered |
 | Delivered — waiting on buyer | `#delivered` | **Waiting on Buyer · Delivery Validation** (vendor no longer "uploads invoice to unblock validation") |
@@ -52,8 +53,9 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 
 ## The claims loop in one arc (cross-app)
 
-1. Buyer `#408` — raise a problem inside the validation modal (or `#404` for a standing claim).
-2. Vendor `#claim` — the same request arrives with the buyer's keep/cancel choice pre-selected; resolve it.
-3. Buyer `#662` — the resolved rendering: emerald callout, adjusted invoice, cleared overlay.
+1. Buyer `#408` — raise a problem inside the validation modal (or `#404` for a standing claim; `#claimpre` is the vendor's pre-fulfillment counterpart).
+2. Vendor `#claim` — the same request arrives with the buyer's keep/cancel choice pre-selected; resolve it. All-cancel releases the invoice; a replacement detours through fulfillment.
+3. Vendor `#replacement` — the replacement is a real Fulfillment #2 (at no charge); ship it and the invoice waits for the updated delivery.
+4. Buyer `#662` — the resolved rendering: emerald callout, adjusted invoice, replacement line with Fulfillment #2; validate it live to finish the loop.
 
 Rule of the loop: *the buyer requests, the vendor decides; a claim never blocks delivery validation — it holds the invoice.*

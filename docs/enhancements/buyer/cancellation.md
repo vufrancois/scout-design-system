@@ -16,9 +16,11 @@
 - **Canceled is terminal on both apps: no stepper, no tasks.** The Order Status card is the one statement (state expressed once).
 - The same Cancel Order flow covers the all-merchandise-canceled trigger (every line claim-canceled — cancel to waive shipping and close the balance), per the vendor reference.
 
+## Decline path (follow-up pass — hold resolved)
+The `#cancelreq` strip gained a secondary **Decline Request** beside the danger Cancel Order. Its modal is the mirror of the cancel modal: consequences stated ("the order continues on its normal path and the buyer is notified — they keep their claim rights; declining only ends the cancellation request") + a **required, buyer-visible reason** (500-char counter, disabled until written). Confirming returns the order live to `#placed` with "Cancellation declined · '<reason>' · shared with the buyer · the order continues" atop the feed. Buyer side seeded on **#420**: a neutral "Cancellation declined" rail notice quoting the vendor's reason ("The items were already picked for shipment"), with the lifecycle simply continuing — no terminal state, no lost claim rights.
+
 ## Held
-- Vendor deny/partial-approve path (Keep Order simply closes the modal today — a "decline the cancellation with a reason back to the buyer" flow is unmodeled).
-- Buyer-side live transition (#486 stays pending as the demo of the requesting state; #153 is the resolved demo).
+- Buyer-side live transition (#486 stays pending as the demo of the requesting state; #153 approved / #420 declined are the resolved demos).
 
 ## Components cascaded
 Design-doc cancellation rule (Buyer Order Detail section); `.task-strip.danger` (vendor); demo-script rows for `#cancelreq` and buyer `#153`; `docs/design.md` regenerated.

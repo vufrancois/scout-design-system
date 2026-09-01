@@ -347,6 +347,16 @@
       { t: 'Claim raised by Alicia Grant', sub: '1× GE Profile Range — Damaged item', when: '6d ago' },
       { t: 'Delivery validated by Alicia Grant', sub: 'Purchase order receipt confirmed', when: '6d ago', more: true },
       { t: 'Order placed', sub: '$856.82', when: 'Aug 18' }] };
+  ORDERS[420] = { v: 'ID', status: ['Not Fulfilled', 'neutral'], placed: 'Jul 16, 2026, 8:44 AM', ship: ['Local Delivery', 0],
+    items: [{ name: 'Thermostat Batteries AA (12-pack)', sku: '10004481', price: 37.02, qty: 1, rec: 0, st: null }],
+    prog: { done: 1, active: 1, dates: ['Jul 16'] },
+    note: ['neutral', 'Cancellation declined', 'You asked to cancel this order; the vendor declined \u2014 \u201CThe items were already picked for shipment.\u201D The order continues, and you can still report a problem after delivery.'],
+    fulfillments: [],
+    docs: [['Purchase Order #420', 'PDF']],
+    activity: [
+      { t: 'Cancellation declined by vendor', sub: '\u201CThe items were already picked for shipment.\u201D', when: 'Jul 18, 2026', hi: true },
+      { t: 'Cancellation requested by Alicia Grant', sub: 'Whole order', when: 'Jul 17, 2026' },
+      { t: 'Order placed', sub: '$37.02', when: 'Jul 16, 2026' }] };
   function genericOrder(num) {
     let sv = num; const rnd = () => { sv = (sv * 1103515245 + 12345) % 2147483648; return sv / 2147483648; };
     const price = Math.round((100 + rnd() * 2500) * 100) / 100;

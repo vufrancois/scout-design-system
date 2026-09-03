@@ -940,9 +940,9 @@
 .buyer .dropdown-item:hover, .buyer .dropdown-item.selected { background: var(--accent); color: var(--accent-foreground); }
 
 /* ===== Approval Request detail ===== */
-.buyer .back-link { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,.85); font-size: 14px; font-weight: 500; text-decoration: none; margin-bottom: 18px; }
-.buyer .back-link:hover { color: #fff; }
-.buyer .back-link svg { width: 18px; height: 18px; }
+.buyer .hero .back-link { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,.85); font-size: 14px; font-weight: 500; text-decoration: none; margin-bottom: 18px; }
+.buyer .hero .back-link:hover { color: #fff; }
+.buyer .hero .back-link svg { width: 18px; height: 18px; }
 .buyer .det-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; margin-top: -76px; position: relative; z-index: 2; }
 .buyer .det-main, .buyer .det-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 .buyer .det-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }

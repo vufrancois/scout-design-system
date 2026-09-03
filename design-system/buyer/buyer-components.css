@@ -1219,9 +1219,9 @@
 .dark .buyer .tab-item.active, .buyer.dark .tab-item.active { background: #2740b8; }
 
 /* Row attention tints */
-.buyer .tbl tbody tr.row-attn td { background: var(--amber-soft); }
-.buyer .tbl tbody tr.row-attn:hover td { background: color-mix(in srgb, var(--amber) 16%, var(--card)); }
-.buyer .row-warn { display: inline-flex; width: 15px; height: 15px; color: var(--amber); vertical-align: -2px; margin-left: 6px; }
+.buyer .tbl tbody tr.row-claim td { background: color-mix(in srgb, var(--rose) 7%, var(--card)); }
+.buyer .tbl tbody tr.row-claim:hover td { background: color-mix(in srgb, var(--rose) 13%, var(--card)); }
+.buyer .row-warn { display: inline-flex; width: 15px; height: 15px; color: var(--rose); vertical-align: -2px; margin-left: 6px; }
 
 /* Row overflow menu */
 .buyer .row-menu-wrap { position: relative; display: inline-block; }

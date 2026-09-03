@@ -47,3 +47,7 @@ Colors flip by viewer per whose-turn: pre-delivery reads amber to the vendor, gr
 
 ## Components cascaded
 Gallery section **Buyer App · Order Tracking** (Filter Tabs, Attention Row, Row Overflow Menu, Pager) + design-doc **Order Tracking** rules; `stat-violet` card variant added; `docs/design.md` regenerated.
+
+
+## Addendum — the row highlight moves to claims (09/03/2026)
+The amber attention tint + warning triangle originally marked arrived-but-unvalidated rows. User call: the highlight should mark the graver state. Now **the row highlight is reserved for claims** — rose-tinted row + rose triangle (tooltip: "Claim open — the invoice is on hold until it's resolved") on any tab; routine your-move rows carry no tint or icon, the navy Validate primary alone is their cue. One highlight, one meaning. (`row-attn` retired in favor of `row-claim`; the amber treatment stays available to whose-turn contexts elsewhere.) Gallery card renamed **Claim Row**; design-doc rule rewritten.

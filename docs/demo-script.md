@@ -12,11 +12,11 @@ Walk the lifecycle top to bottom; every order also appears in Order Tracking (`b
 | Partially Fulfilled | `#373` | Unfulfilled Items card + Fulfillment #1 mini-stepper; sky "Partially Fulfilled" |
 | Fulfilled | `#669` | Mini-stepper: Fulfilled done, Shipped active |
 | Shipped | `#668` | Tracking number on the fulfillment card |
-| Delivered — awaiting validation | `#657` | Amber attention row in the table; the buyer's move. `#657/validate` deep-links straight into the **Delivery Validation modal** |
+| Delivered — awaiting validation | `#657` | The navy Validate primary is the row's cue. `#657/validate` deep-links straight into the **Delivery Validation modal** |
 | Partially Delivered · 4/10 | `#408` | Multi-quantity validation: capped "Received now" stepper, per-row **Report a problem** (checkbox flips to rose ×), one Save commits receipts + claims |
 | Cancellation Pending | `#486` | Sky pill (vendor's move on the buyer side); rail notice explains the hold |
 | Cancellation declined | `#420` | The vendor declined with a reason: rail notice quotes it, the order simply continues its lifecycle |
-| Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold, "Cancellation requested" item note; rose Claim Open overlay in the table |
+| Claim Open (unresolved) | `#404` | Rose **Claim under review** rail callout, invoice on hold; in the table the row itself is rose-tinted with a rose warning triangle — the highlight is reserved for claims |
 | Claim held at invoice stage | `#641` | Invoice received but a claim is open: strip pill rose "Invoice held · claim open"; the Invoiced tab shows Claim Open instead of Awaiting Validation, Validate gone |
 | Awaiting vendor invoice | live | Validate any order fully (e.g. `#512`) — the saved state is exactly this: sky **Awaiting vendor invoice** pill + clock note |
 | Awaiting Payment | `#653` | **Confirm Payment** task → confirm dialog → resting "Waiting on Vendor · Completion" (violet Payment confirmed, Paid Total goes real, Write a Review) |

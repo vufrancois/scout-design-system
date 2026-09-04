@@ -46,3 +46,25 @@ Gallery section **Buyer App · Order Approvals** + design-doc rules **Order Appr
 - `buyer.css` resets `svg { display:block }` — inline table icons (sort chevrons) need explicit `display:inline-block`.
 - Generic class names collide across apps: a 16px `.stat-card-icon` rule for the new cards shrank Home's 40px KPI icon tiles until scoped under `.stat-card-colored`.
 - Rebuilding a menu's innerHTML from its own click handler detaches the clicked node before the document-level outside-click handler runs — guard with `e.target.isConnected`.
+
+---
+
+## Addendum (2026-09-04) — comment requirement made explicit
+
+The decision panel only revealed the comment requirement after a failed click (rose field ring). Now it is stated up front:
+
+- Field label **"Comment to the buyer"** with an amber **Required for revision or rejection** chip (new shared `.buyer .req-chip`, mirroring the vendor confirm-card pattern).
+- **Request revision** and **Reject** start **disabled** (45% opacity, not-allowed cursor) and enable live as the comment gains text (`oninput` gate).
+- Inline hint beside the buttons narrates the state: "Approving needs no comment." → "Your comment goes to the buyer with the decision."
+- The rose-ring + focus fallback in `decide()` is kept for edge cases.
+
+---
+
+## Addendum (2026-09-04) — multi-vendor approval requests
+
+An approval request now covers the whole over-budget checkout, not a single vendor's slice. Items carry a per-line vendor; a request's vendors derive from its items.
+
+- **List** (`approvals.html`): multi-vendor rows show stacked vendor avatars + "N vendors" (full names in the tooltip); the vendor filter and search match any vendor on the request; the expanded Items sub-row groups lines under vendor sub-headers.
+- **Detail** (`approval.html`): Order details groups items per vendor (avatar + name + count · vendor subtotal); the rail's vendor card stacks one entry per vendor ("Vendor 1 of N") with the note "One request covers the whole checkout — approving creates one order per vendor."; totals still close as one Request total.
+- **Approve** creates one order per vendor (shipping rides on the first), and the "Orders placed" card lists each with vendor · amount.
+- Demo seed: the pending `#K4PT2N` is now multi-vendor (Scout Demo Vendor + an Ideal DEV expansion tank, $1,977.48) so the pending-review demo shows the model.

@@ -238,10 +238,11 @@
 
   const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const VEN = { SD: 'Scout Demo Vendor', ID: 'Ideal DEV', CH: 'API Test - Chadwell', GB: 'Gorman Bros' };
-  const item = (name, sku, qty, price) => ({ name, sku, qty, price });
+  const item = (name, sku, qty, price, v) => ({ name, sku, qty, price, v });
+  const vends = r => [...new Set(r.items.map(i => i.v || r.v))];
   const REQS = [
     { id: '9MS9D4', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-07-16', amt: 415.39, items: [item('24 in. 2-Cycle Built-in Dishwasher in White', '8339618', 1, 390.39)] },
-    { id: 'K4PT2N', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'pending', level: 'Supervisor', date: '2026-08-21', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1455.09), item('Dryer Vent Kit, 4 in. x 8 ft.', '7719928', 2, 24.63)] },
+    { id: 'K4PT2N', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'pending', level: 'Supervisor', date: '2026-08-21', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1455.09), item('Dryer Vent Kit, 4 in. x 8 ft.', '7719928', 2, 24.63), item('Expansion Tank, 2 gal.', '5527703', 1, 473.13, 'ID')] },
     { id: 'CT3CPQ', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-25', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1467.08)] },
     { id: 'VJXT0Z', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-24', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1467.08)] },
     { id: '2XX1Z9', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-15', items: [item('27 in. 7.4 cu. ft. Electric Dryer in White', '7411520', 1, 1062.13)] },
@@ -273,12 +274,12 @@
     const q = (document.getElementById('req-search').value || '').trim().toLowerCase();
     const min = dateDays ? cutoff(dateDays) : null;
     return scoped().filter(r =>
-      (!facets.vendor || r.v === facets.vendor) &&
+      (!facets.vendor || vends(r).includes(facets.vendor)) &&
       (!facets.buyer || r.buyer === facets.buyer) &&
       (!facets.level || r.level === facets.level) &&
       (!facets.status || r.status === facets.status) &&
       (!min || r.date >= min) &&
-      (!q || (VEN[r.v] + ' ' + r.buyer + ' #' + r.id + ' ' + PROPERTIES.find(x => x.id === r.prop).name + ' ' + r.items.map(i => i.name + ' ' + i.sku).join(' ')).toLowerCase().includes(q))
+      (!q || (vends(r).map(v => VEN[v]).join(' ') + ' ' + r.buyer + ' #' + r.id + ' ' + PROPERTIES.find(x => x.id === r.prop).name + ' ' + r.items.map(i => i.name + ' ' + i.sku).join(' ')).toLowerCase().includes(q))
     );
   }
   function setFacet(k, v, label) {
@@ -316,7 +317,7 @@
     const rows = scoped();
     let opts;
     if (view === 'status') opts = ['pending', 'revision', 'approved', 'rejected'].map(v => ({ v, label: STATUS[v][1] }));
-    else if (view === 'vendor') opts = [...new Set(rows.map(r => r.v))].map(v => ({ v, label: VEN[v] }));
+    else if (view === 'vendor') opts = [...new Set(rows.flatMap(vends))].map(v => ({ v, label: VEN[v] }));
     else if (view === 'buyer') opts = [...new Set(rows.map(r => r.buyer))].map(v => ({ v, label: v }));
     else opts = [...new Set(rows.map(r => r.level))].map(v => ({ v, label: v }));
     if (view !== 'status') opts.sort((a, b) => a.label.localeCompare(b.label));
@@ -336,24 +337,28 @@
       th.querySelector('.sort-ic').innerHTML = on ? (sortDir === 1 ? ARROWS.asc : ARROWS.desc) : ARROWS.neutral;
     });
     let list = rows.filter(r => filter === 'all' || r.status === filter);
-    const val = r => sortK === 'amount' ? r.amount : sortK === 'status' ? ORDER[r.status] : sortK === 'vendor' ? VEN[r.v] : sortK === 'prop' ? PROPERTIES.find(x => x.id === r.prop).name : r[sortK];
+    const val = r => sortK === 'amount' ? r.amount : sortK === 'status' ? ORDER[r.status] : sortK === 'vendor' ? vends(r).map(v => VEN[v]).join(', ') : sortK === 'prop' ? PROPERTIES.find(x => x.id === r.prop).name : r[sortK];
     list.sort((a, b) => { const av = val(a), bv = val(b); const d = typeof av === 'number' ? av - bv : String(av).localeCompare(String(bv)); return d * sortDir || b.date.localeCompare(a.date); });
     document.getElementById('tbody').innerHTML = list.length ? list.map(row).join('') : '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted-foreground)">No requests match the current filters.</td></tr>';
   }
   function row(r) {
-    const p = STATUS[r.status]; const prop = PROPERTIES.find(x => x.id === r.prop);
+    const p = STATUS[r.status]; const prop = PROPERTIES.find(x => x.id === r.prop); const vv = vends(r);
     const main = '<tr class="data-row"><td><button class="expander' + (open.has(r.id) ? ' open' : '') + '" onclick="toggleRow(\'' + r.id + '\')" title="Items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
       '<td class="mono"><a class="table-link" style="font-family:inherit" href="approval.html#' + r.id + '">#' + r.id + '</a></td>' +
       '<td class="col-hide cell-clip" title="' + prop.name + '">' + prop.name + '</td>' +
-      '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + r.v + '</span><span class="nm">' + VEN[r.v] + '</span></span></td>' +
+      '<td>' + (vv.length > 1
+        ? '<span class="cell-entity" title="' + vv.map(v => VEN[v]).join(' · ') + '"><span style="display:inline-flex">' + vv.map((v, i) => '<span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px' + (i ? ';margin-left:-9px;box-shadow:0 0 0 2px var(--card)' : '') + '">' + v + '</span>').join('') + '</span><span class="nm">' + vv.length + ' vendors</span></span>'
+        : '<span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + vv[0] + '</span><span class="nm">' + VEN[vv[0]] + '</span></span>') + '</td>' +
       '<td>' + r.buyer + '</td>' +
       '<td class="num" style="font-weight:600">' + money(r.amount) + '</td>' +
       '<td class="col-hide"><span class="pill p-neutral" data-tip="' + (r.level === 'Master' ? 'Approves amounts over $5,000' : 'Approves amounts over $2,500') + '">' + r.level + '</span></td>' +
       '<td><span class="status-dot-item"><span class="status-dot ' + p[0] + '"></span><span class="status-dot-label">' + p[1] + '</span></span></td>' +
       '<td style="white-space:nowrap;color:var(--muted-foreground)">' + fmtDate(r.date) + '</td>' +
       '<td>' + (r.status === 'pending' ? '<button class="btn btn-primary btn-sm" onclick="reviewReq(\'' + r.id + '\')">Review</button>' : '') + '</td></tr>';
-    const items = open.has(r.id) ? '<tr class="items-block"><td colspan="10"><div class="items-label">Items</div>' + r.items.map(i =>
-      '<div class="item-line"><span class="thumb">' + glyph + '</span><span class="item-nm">' + i.name + '<span class="item-sku">' + i.sku + '</span></span><span class="qty">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total">' + money(i.qty * i.price) + '</span></div>').join('') + '</td></tr>' : '';
+    const iline = i => '<div class="item-line"><span class="thumb">' + glyph + '</span><span class="item-nm">' + i.name + '<span class="item-sku">' + i.sku + '</span></span><span class="qty">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total">' + money(i.qty * i.price) + '</span></div>';
+    const items = open.has(r.id) ? '<tr class="items-block"><td colspan="10">' + (vv.length > 1
+      ? vv.map(v => '<div class="items-label">' + VEN[v] + '</div>' + r.items.filter(i => (i.v || r.v) === v).map(iline).join('')).join('')
+      : '<div class="items-label">Items</div>' + r.items.map(iline).join('')) + '</td></tr>' : '';
     return main + items;
   }
   function toggleRow(id) { open.has(id) ? open.delete(id) : open.add(id); renderAll(); }

@@ -31,3 +31,7 @@ Marketplace is the active nav chip; Demo Environment tag and chat bubble dropped
 - **Promo Carousel** — Marketing Card rail with dots + arrows, paged by viewport, no autoplay
 - **Category Tile** — tonal tile, title top-left, art slot bottom-right; `.sm` variant for subcategories
 - **Browse Modal** — wide Modal variant with header pager (‹ › n / N) and scrollable body
+
+
+## Addendum — the Property Gate (09/03/2026)
+"All properties" is not a shopping context: products, pricing, and availability are tailored per property. On the four shopping surfaces (marketplace, product listing, product detail, compare) the Context Switcher now drops the "All" option and its kicker reads **"Shopping for"**; an unset visitor is met by the **Property Gate** — a centered modal ("Choose a property to shop for · Products, pricing, and availability are tailored to each property — pick one to browse its marketplace") listing the properties with address + unit badges, with no dismiss affordance; picking is the only way through. The choice persists via `scout-shop-prop` across all shopping pages (and pre-answers the cart's property — the old silent all→primary default is gone); the switcher can change it anytime. Aggregation pages (Home, Orders, Approvals, Wishlists) keep "All properties."

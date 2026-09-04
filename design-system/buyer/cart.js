@@ -48,3 +48,81 @@ const CART = (() => {
   document.addEventListener('DOMContentLoaded', syncBadge);
   return { itemsFor, totalCount, countFor, subtotalFor, add, setQty, remove, setMeta, clear, syncBadge };
 })();
+
+
+/* Scout Buyer — app-level Search Palette (search icon in the bar, or press / or cmd/ctrl+K) */
+(() => {
+  const MAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
+  const SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>';
+  const CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  const TILE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>';
+  const RECENTS = ['24 in. dishwasher', 'PTAC air filter 16x25', 'LED bulbs 60W equivalent'];
+  const CATS = ['Appliances', 'Plumbing', 'Lighting', 'HVAC Parts'];
+  let spMode = 'keyword';
+
+  function goSearch() { location.href = 'products.html'; }
+
+  function scopeText() {
+    const echo = document.getElementById('echo-name');
+    const t = echo ? echo.textContent.trim() : '';
+    if (t && t !== 'All properties' && t.indexOf('Choose') !== 0) return 'Scoped to ' + t;
+    return 'Across all properties';
+  }
+
+  function ensurePal() {
+    if (document.getElementById('sp-ov')) return;
+    const ov = document.createElement('div');
+    ov.id = 'sp-ov'; ov.className = 'sp-ov';
+    ov.innerHTML = '<div class="sp" role="dialog" aria-label="Search products">' +
+      '<div class="sp-head"><span class="mag">' + MAG + '</span>' +
+      '<input class="sp-input" id="sp-input" placeholder="Search products, parts, or vendors\u2026">' +
+      '<div class="sp-mode"><button id="sp-kw" class="active">Keyword</button><button id="sp-ai">' + SPARK + 'AI Search</button></div></div>' +
+      '<div class="sp-body">' +
+      '<div class="sp-label">Recent searches</div>' +
+      RECENTS.map(r => '<button class="sp-item sp-go">' + CLOCK + r + '</button>').join('') +
+      '<div class="sp-label">Jump to a category</div>' +
+      CATS.map(ct => '<button class="sp-item sp-go">' + TILE + ct + '<span class="k">Browse</span></button>').join('') +
+      '</div>' +
+      '<div class="sp-foot"><span><kbd>\u21B5</kbd> search</span><span><kbd>esc</kbd> close</span><span><kbd>\u2318K</kbd> anywhere</span><span class="sp-scope" id="sp-scope"></span></div></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e => { if (e.target === ov) closeSearchPal(); });
+    ov.querySelectorAll('.sp-go').forEach(b => b.addEventListener('click', goSearch));
+    document.getElementById('sp-kw').addEventListener('click', () => setSpMode('keyword'));
+    document.getElementById('sp-ai').addEventListener('click', () => setSpMode('ai'));
+    document.getElementById('sp-input').addEventListener('keydown', e => { if (e.key === 'Enter') goSearch(); });
+  }
+  function setSpMode(m) {
+    spMode = m;
+    document.getElementById('sp-kw').classList.toggle('active', m === 'keyword');
+    document.getElementById('sp-ai').classList.toggle('active', m === 'ai');
+    document.getElementById('sp-input').placeholder = m === 'ai' ? 'Describe what you need, e.g. \u201Creplacement igniter for a 2019 GE range\u201D' : 'Search products, parts, or vendors\u2026';
+    document.getElementById('sp-input').focus();
+  }
+  function openSearchPal() {
+    ensurePal();
+    document.getElementById('sp-scope').innerHTML = MAG.replace('viewBox', 'style="display:none" viewBox') + scopeText();
+    document.getElementById('sp-ov').classList.add('open');
+    document.getElementById('sp-input').focus();
+  }
+  function closeSearchPal() {
+    const ov = document.getElementById('sp-ov');
+    if (ov) ov.classList.remove('open');
+  }
+
+  document.addEventListener('keydown', e => {
+    const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearchPal(); }
+    else if (e.key === '/' && !typing) { e.preventDefault(); openSearchPal(); }
+    else if (e.key === 'Escape') closeSearchPal();
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const themeBtn = document.getElementById('theme-btn');
+    if (!themeBtn) return;
+    const b = document.createElement('button');
+    b.className = 'icon-btn'; b.title = 'Search (\u2318K)';
+    b.innerHTML = MAG;
+    b.addEventListener('click', openSearchPal);
+    themeBtn.parentNode.insertBefore(b, themeBtn);
+  });
+})();

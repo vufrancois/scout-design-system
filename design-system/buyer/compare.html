@@ -46,7 +46,7 @@
     <div class="menu-anchor ctx-switch" id="ctx-switch">
       <button class="ctx-echo" onclick="toggleCtx()" title="Change property">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/></svg>
-        <span><span class="ctx-kicker" style="display:block">Current Property:</span><span class="ctx-name" id="echo-name" style="display:block">All properties</span></span>
+        <span><span class="ctx-kicker" style="display:block">Shopping for</span><span class="ctx-name" id="echo-name" style="display:block">Choose a property&hellip;</span></span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </button>
       <div class="ctx-list" id="ctx-list"></div>
@@ -64,7 +64,15 @@
 
 
 <main class="page" style="padding-top:32px">
-  <a class="back-link" href="products.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Dishwashers</a>
+  <a class="back-link" id="cmp-back" href="products.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span id="cmp-back-lbl">Back to Dishwashers</span></a>
+  <script>
+    (() => {
+      if (document.referrer && /\/product(\.html)?([?#]|$)/.test(document.referrer) && history.length > 1) {
+        document.getElementById('cmp-back-lbl').textContent = 'Back to product';
+        document.getElementById('cmp-back').addEventListener('click', e => { e.preventDefault(); history.back(); });
+      }
+    })();
+  </script>
   <div class="cmp-head">
     <div><h1>Compare products</h1><div class="sub" id="cmp-sub">Live price, availability, delivery and normalized specifications for your active property.</div></div>
     <button class="btn" onclick="clearAllCmp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>Clear comparison</button>
@@ -121,7 +129,7 @@
   const bIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
   const pinIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
   function renderCtxList() {
-    document.getElementById('ctx-list').innerHTML = PROPERTIES.map(p => {
+    document.getElementById('ctx-list').innerHTML = PROPERTIES.filter(p => p.id !== 'all').map(p => {
       const active = p.id === currentProp;
       const body = p.id === 'all'
         ? '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.desc + '</span>'
@@ -132,6 +140,9 @@
   }
   function selectProp(id) {
     currentProp = id;
+    localStorage.setItem('scout-shop-prop', id);
+    const gate = document.getElementById('prop-gate');
+    if (gate) gate.classList.remove('open');
     const p = PROPERTIES.find(x => x.id === id);
     document.getElementById('echo-name').textContent = p.name;
     document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
@@ -144,7 +155,19 @@
     closeMenus();
     if (!wasOpen) el.classList.add('open');
   }
+  function openPropGate() {
+    let ov = document.getElementById('prop-gate');
+    if (!ov) { ov = document.createElement('div'); ov.id = 'prop-gate'; ov.className = 'overlay center'; document.body.appendChild(ov); }
+    ov.innerHTML = '<div class="val-modal" style="width:560px;max-width:calc(100vw - 40px)"><div class="val-head"><h2>Choose a property to shop for</h2><p>Products, pricing, and availability are tailored to each property \u2014 pick one to browse its marketplace. You can switch anytime from the bar above.</p></div><div class="val-body" style="padding:10px 14px;max-height:60vh;overflow:auto">' +
+      PROPERTIES.filter(p => p.id !== 'all').map(p => '<button class="ctx-option" style="width:100%" onclick="selectProp(\'' + p.id + '\')"><span class="opt-tile">' + bIcon + '</span><span class="opt-body"><span class="opt-name">' + p.name + '</span><span class="opt-addr">' + p.addr + '</span><span class="opt-city">' + pinIcon + p.city + '</span></span><span class="units-badge"><b>' + p.units + '</b><span>units</span></span></button>').join('') + '</div></div>';
+    ov.classList.add('open');
+  }
+  const savedProp = localStorage.getItem('scout-shop-prop');
+  if (savedProp && savedProp !== 'all' && PROPERTIES.some(p => p.id === savedProp)) currentProp = savedProp;
   renderCtxList();
+  window.addEventListener('DOMContentLoaded', () => {
+    if (currentProp === 'all') openPropGate(); else selectProp(currentProp);
+  });
 
 
 

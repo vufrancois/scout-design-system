@@ -34,3 +34,15 @@ Star Rating in its empty state with Empty State copy; vendor panel with avatar, 
 - **AI Block** — tinted AI-content card with sparkles header and provenance footnote
 - **Product Gallery** — main image + thumbnail strip
 - **Alternatives grid** — Product Card variant with "vs. this item" delta in the price slot and a spec-match footer
+
+
+## Addendum — sky AI accent (09/03/2026)
+"Explore AI alternatives" traded its plain outline for a new **`.btn-ai`** treatment: sky-soft fill, sky border and text, sparkle icon (light + dark; user direction — tried violet first, settled on blue). Rule: AI features get the sky accent — obvious at a glance, but never competing with the buy box's one navy primary.
+
+
+## Addendum — Reviews tab (09/03/2026)
+Product details gained a **Reviews** tab (AI Summary · Description · Specifications · Spec Sheets · Reviews). The buy box's "See reviews" now activates it and scrolls to it instead of toasting. With no reviews (this product's truth — the buy box says "No ratings yet") it shows an honest empty state: five hollow stars, "Reviews come from verified property managers after delivery is validated · Be the first to review this product," and a Write a Review button (still the named review-flow hold).
+
+
+## Addendum — alternatives sort options (09/03/2026)
+The AI-powered alternatives sort menu is now **Recommended (default) · Most Relevant · Price Low to High · Price High to Low · Name A to Z**. "Recommended" absorbs the old "Best spec match" (spec match, relevance as tiebreaker); each option verified to reorder the grid.

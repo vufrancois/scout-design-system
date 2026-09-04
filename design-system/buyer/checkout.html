@@ -185,7 +185,7 @@
     { id: 's35', name: '3 - 5 Business Days', price: 7.99, eta: 'Arrives Thu, Aug 27 – Mon, Aug 31' },
     { id: 'pick', name: 'In-Store Pickup', price: 0, eta: 'Ready today · 8 mi away', free: true }
   ];
-  const state = { ship: {}, pay: {}, phone: '' };
+  const state = { ship: {}, pay: {} };
   const openItems = new Set();
   let lastStep = null;
   const plural = n => n + (n === 1 ? ' item' : ' items');
@@ -216,7 +216,7 @@
   }
 
   function buyerDetailsCard(prop) {
-    return '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Buyer details</h2><a class="table-link" onclick="location.hash=\'#address\'">Edit</a></div>' +
+    return '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Buyer details</h2></div>' +
       '<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:10px"><span class="v-avatar">AG</span><div><div style="font-size:14px;font-weight:600">Alicia Grant</div><div style="font-size:12px;color:var(--muted-foreground)">alicia.grant@demoinc.com</div></div></div>' +
       '<div class="deliver-card" style="padding:0"><span class="icon-tile tile-sky" style="width:40px;height:40px">' + IC.bld + '</span><div><div class="ven-eyebrow">Delivering to</div><div class="ven-name" style="margin-bottom:2px">' + prop.name + '</div><div style="font-size:13px;color:var(--muted-foreground)">' + prop.addr + ', ' + prop.city + '</div></div></div></div>';
   }
@@ -275,10 +275,8 @@
         '<div class="chk-box"><span class="icon-tile tile-sky">' + IC.bld + '</span><div><div style="font-size:14px;font-weight:700">' + prop.name + '</div><div style="font-size:13px;color:var(--muted-foreground);margin-top:2px">' + prop.addr + ', ' + prop.city + '</div></div></div>' + '</div>' +
         '<div class="card"><div class="det-card-head hd"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.user + '</span>Contact</h2></div>' +
         '<div class="chk-box" style="align-items:center"><span class="v-avatar">AG</span><div><div style="font-size:14px;font-weight:600">Alicia Grant</div><div style="font-size:12px;color:var(--muted-foreground)">alicia.grant@demoinc.com</div></div></div>' +
-        '<div class="gl-field" style="margin-top:14px"><label>Phone Number (optional)</label><input id="phone-in" placeholder="(555) 123-4567" value="' + state.phone + '"></div>' +
-        '<button class="btn btn-primary btn-block" style="margin-top:16px" onclick="state.phone = document.getElementById(\'phone-in\').value; location.hash = \'#shipping\'">Proceed</button></div>';
+        '<button class="btn btn-primary btn-block" style="margin-top:16px" onclick="location.hash = \'#shipping\'">Proceed</button></div>';
       side.innerHTML = '<div class="card"><div class="det-card-head"><h2>Order Summary</h2></div>' +
-        '<div class="coupon-row"><input placeholder="Enter coupon code"><button class="btn" style="height:40px">Apply</button></div>' +
         (vendors.length > 1 ? vendors.map(v => '<div class="sum-vendor"><span class="ven-logo" style="width:30px;height:30px;font-size:10px">' + v + '</span>' + VEN[v] + '<span class="sv-total">' + money(items.filter(i => i.vendor === v).reduce((a, i) => a + i.qty * i.price, 0)) + '</span></div>').join('') : '') +
         '<div class="sum-row"><span class="muted">Subtotal (' + plural(CART.countFor(currentProp)) + ')</span><span>' + money(sub) + '</span></div>' +
         '<div class="sum-row"><span class="muted">Shipping</span><span class="hint">Calculated after address</span></div>' +
@@ -323,6 +321,7 @@
     } else {
       const total = sub + shipCost;
       side.innerHTML = '<div class="card"><div class="det-card-head"><h2>Review Order</h2></div>' +
+        '<div class="coupon-row"><input placeholder="Enter coupon code"><button class="btn" style="height:40px">Apply</button></div>' +
         (vendors.length > 1 ? vendors.map(v =>
           '<div class="sum-vendor"><span class="ven-logo" style="width:30px;height:30px;font-size:10px">' + v + '</span>' + VEN[v] + '<span style="color:var(--emerald);display:inline-flex;width:15px;height:15px;margin-left:6px;flex-shrink:0">' + IC.check + '</span><span class="sv-total">' + money(items.filter(i => i.vendor === v).reduce((a, i) => a + i.qty * i.price, 0)) + '</span></div>').join('') : '') +
         '<div class="sum-row"><span class="muted">Subtotal</span><span>' + money(sub) + '</span></div>' +

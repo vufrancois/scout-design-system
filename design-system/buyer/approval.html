@@ -162,11 +162,12 @@
   const VEN = { SD: 'Scout Demo Vendor', ID: 'Ideal DEV', CH: 'API Test - Chadwell', GB: 'Gorman Bros' };
   const STATUS = { pending: ['dot-pending', 'Pending'], approved: ['dot-approved', 'Approved'], rejected: ['dot-rejected', 'Rejected'], revision: ['dot-revision', 'Revision Requested'] };
   const item = (name, sku, qty, price, flags) => Object.assign({ name, sku, qty, price }, flags || {});
+  const vends = () => [...new Set(R.items.map(i => i.v || R.v))];
   const REQS = {
     K4PT2N: { v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'pending', level: 'Supervisor', date: '08/21/2026',
-      items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1455.09), item('Dryer Vent Kit, 4 in. x 8 ft.', '7719928', 2, 24.63)],
+      items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1455.09), item('Dryer Vent Kit, 4 in. x 8 ft.', '7719928', 2, 24.63), item('Expansion Tank, 2 gal.', '5527703', 1, 473.13, { v: 'ID' })],
       shipping: ['Local Delivery', 0], eligible: ['Supervisor', 'Master'],
-      history: [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1504.35, when: '8/21/2026, 9:14:02 AM', items: [['Commercial 6.7 cu. ft. Non Coin Electric Dryer in White · Qty 1', 1455.09], ['Dryer Vent Kit, 4 in. x 8 ft. · Qty 2', 49.26]] }] },
+      history: [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: 1977.48, when: '8/21/2026, 9:14:02 AM', items: [['Commercial 6.7 cu. ft. Non Coin Electric Dryer in White · Qty 1', 1455.09], ['Dryer Vent Kit, 4 in. x 8 ft. · Qty 2', 49.26], ['Expansion Tank, 2 gal. · Qty 1 — Ideal DEV', 473.13]] }] },
     '9MS9D4': { v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '07/16/2026',
       items: [item('24 in. 2-Cycle Built-in Dishwasher in White', '8339618', 1, 390.39)],
       shipping: ['Expedited', 25], eligible: ['Supervisor', 'Master'], decidedBy: 'Priya Nair', order: ['#411', 415.39],
@@ -297,12 +298,13 @@
 
     if (st === 'pending') {
       main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span class="pill p-neutral">' + R.level + ' approval</span></div>' +
-        '<p style="font-size:13px;color:var(--muted-foreground);margin-bottom:10px">A comment is required to request a revision or reject.</p>' +
-        '<textarea class="dec-comment" id="dec-comment" placeholder="Add a comment for the buyer (required for revision or rejection)…"></textarea>' +
+        '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px">Comment to the buyer <span class="req-chip">Required for revision or rejection</span></div>' +
+        '<textarea class="dec-comment" id="dec-comment" placeholder="Explain what should change, or why this is being rejected…" oninput="decGate()"></textarea>' +
         '<div class="decision-actions">' +
         '<button class="btn btn-primary" onclick="decide(\'approved\')">Approve</button>' +
-        '<button class="btn btn-outline-sky" onclick="decide(\'revision\')">Request revision</button>' +
-        '<button class="btn btn-outline-rose" onclick="decide(\'rejected\')">Reject</button>' +
+        '<button class="btn btn-outline-sky" id="dec-rev" disabled data-tip="Add a comment first" onclick="decide(\'revision\')">Request revision</button>' +
+        '<button class="btn btn-outline-rose" id="dec-rej" disabled data-tip="Add a comment first" onclick="decide(\'rejected\')">Reject</button>' +
+        '<span id="dec-hint" style="font-size:12.5px;color:var(--muted-foreground);align-self:center">Approving needs no comment.</span>' +
         '</div></div>';
     }
 
@@ -310,7 +312,12 @@
       '<button class="btn" style="height:36px;font-size:13px;display:inline-flex;align-items:center;gap:8px" onclick="refreshInv()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Refresh inventory</button></div>' +
       (R.legacy ? '<div class="callout violet" style="margin:10px 0"><b>' + IC.warn + 'Legacy approval · Recreate cart required</b>This approval was created before live inventory classification was added. Request a revision so the buyer can clear all items from the cart, add the same items again, and resubmit it for approval.</div>' : '') +
       (R.unavailable ? '<div class="callout rose" style="margin:10px 0"><b>A product in this request is no longer available</b>The vendor no longer lists the product(s) marked below, so this request can no longer be approved. Please reject it and ask the buyer to place a new order with available items.</div>' : '') +
-      R.items.map(itemLine).join('') +
+      (() => { const vv = vends();
+        if (vv.length === 1) return R.items.map(itemLine).join('');
+        return vv.map(v => { const vi = R.items.filter(i => (i.v || R.v) === v);
+          const vt = Math.round(vi.reduce((a, i) => a + i.qty * i.price, 0) * 100) / 100;
+          return '<div style="display:flex;align-items:center;gap:10px;margin:14px 0 4px"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + v + '</span><span style="font-size:13.5px;font-weight:700">' + VEN[v] + '</span><span style="margin-left:auto;font-size:12.5px;color:var(--muted-foreground)">' + vi.length + (vi.length === 1 ? ' item · ' : ' items · ') + money(vt) + '</span></div>' + vi.map(itemLine).join('');
+        }).join(''); })() +
       (() => { const sub = Math.round(R.items.reduce((a, i) => a + i.qty * i.price, 0) * 100) / 100;
         return '<div class="det-totals">' +
         '<div class="tot-row"><span>Items subtotal</span><span>' + money(sub) + '</span></div>' +
@@ -330,7 +337,9 @@
 
 
     let side = '';
-    side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + R.v + '</span><div><div class="ven-eyebrow">Vendor</div><div class="ven-name"><a href="products.html" style="color:inherit;text-decoration:none">' + VEN[R.v] + '</a></div></div></div></div>';
+    const vv = vends();
+    side += '<div class="card">' + vv.map((v, i) => '<div class="ven-card"' + (i ? ' style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"' : '') + '><span class="ven-logo">' + v + '</span><div><div class="ven-eyebrow">' + (vv.length > 1 ? 'Vendor ' + (i + 1) + ' of ' + vv.length : 'Vendor') + '</div><div class="ven-name"><a href="products.html" style="color:inherit;text-decoration:none">' + VEN[v] + '</a></div></div></div>').join('') +
+      (vv.length > 1 ? '<p style="font-size:12.5px;color:var(--muted-foreground);margin:12px 0 0">One request covers the whole checkout &mdash; approving creates one order per vendor.</p>' : '') + '</div>';
 
     const prop = PROPERTIES.find(x => x.id === R.prop);
     side += '<div class="card"><dl class="fact-rows wide">' +
@@ -341,17 +350,26 @@
       (R.status === 'revision' && R.comment ? '<div class="callout amber" style="margin-top:14px"><b>Note to buyer</b>' + R.comment + '</div>' : '') +
       (R.status === 'rejected' && R.comment ? '<div class="callout rose" style="margin-top:14px"><b>Rejection reason</b>' + R.comment + '</div>' : '') + '</div>';
 
-    if (R.status === 'approved' && R.order) {
+    if (R.status === 'approved' && (R.orders || R.order)) {
+      const orders = R.orders || [Object.assign([R.order[0], R.order[1]], { v: R.v })];
       side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Orders placed</h2></div>' +
-        '<p style="font-size:13px;color:var(--muted-foreground)">Created when this request was approved.</p>' +
-        '<div class="order-row"><div class="onum">Order ' + R.order[0] + '</div>' +
-        '<a class="toolbar-btn" style="text-decoration:none" href="#">View order <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></div>';
+        '<p style="font-size:13px;color:var(--muted-foreground)">' + (orders.length > 1 ? 'One order per vendor, created when this request was approved.' : 'Created when this request was approved.') + '</p>' +
+        orders.map(o => '<div class="order-row"><div class="onum">Order ' + o[0] + (orders.length > 1 ? '<span style="display:block;font-size:11.5px;font-weight:500;color:var(--muted-foreground)">' + VEN[o.v] + ' · ' + money(o[1]) + '</span>' : '') + '</div>' +
+        '<a class="toolbar-btn" style="text-decoration:none" href="#">View order <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div>').join('') + '</div>';
     }
 
     document.getElementById('det-main').innerHTML = main;
     document.getElementById('det-side').innerHTML = side;
   }
 
+  function decGate() {
+    const has = !!(document.getElementById('dec-comment').value || '').trim();
+    const rev = document.getElementById('dec-rev'), rej = document.getElementById('dec-rej');
+    if (rev) { rev.disabled = !has; rej.disabled = !has; }
+    const hint = document.getElementById('dec-hint');
+    if (hint) hint.textContent = has ? 'Your comment goes to the buyer with the decision.' : 'Approving needs no comment.';
+    document.getElementById('dec-comment').style.borderColor = '';
+  }
   function decide(next) {
     const c = (document.getElementById('dec-comment').value || '').trim();
     if ((next === 'revision' || next === 'rejected') && !c) {
@@ -360,7 +378,8 @@
     }
     const now = '8/24/2026, 10:15:00 AM';
     if (next === 'approved') {
-      R.status = 'approved'; R.decidedBy = 'You (Supervisor)'; R.order = ['#498', R.amount];
+      R.status = 'approved'; R.decidedBy = 'You (Supervisor)';
+      R.orders = vends().map((v, i) => { const vt = Math.round((R.items.filter(x => (x.v || R.v) === v).reduce((a, x) => a + x.qty * x.price, 0) + (i === 0 ? (R.shipping ? R.shipping[1] : 0) : 0)) * 100) / 100; return Object.assign(['#' + (498 + i), vt], { v }); });
       R.history.push({ t: 'Approved', actor: 'Supervisor', rev: 0, amt: R.amount, when: now, comment: c || null, items: R.history[0].items });
     } else if (next === 'revision') {
       R.status = 'revision'; R.decidedBy = 'You (Supervisor)'; R.comment = c;

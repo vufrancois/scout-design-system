@@ -39,3 +39,11 @@ Page numbers are friction on a browse grid (they're right for the vendor's data 
 - **Progressive Loading** — auto-load sentinel with skeleton row, progress line + bar, 3-page auto cap then "Show more", back-to-top
 - **Results Header** — breadcrumb + title + count + sort, with applied-filter chip row
 - **Compare Tray** — floating selection tray (two products; acts at 2)
+
+
+## Addendum — non-sticky App Bar (09/03/2026)
+The App Bar is static on this page (scrolls away). While browsing results, three stacked sticky layers (nav + search/sort + filter rail) read as clutter; the in-page search/sort bar and filter rail are the chrome that earns persistence, now re-anchored to `top: 12px`. Every other buyer page keeps the sticky bar.
+
+
+## Addendum — vendor avatar on cards (09/03/2026)
+The product card's vendor identity moved **into the media frame**: a 34px card-surface circle with initials at the **bottom-right**, mirroring the compare toggle top-right (pickup badge stays bottom-left); the vendor name appears as a hover tooltip anchored above-right to stay inside the frame. The old eyebrow row (small chip + text name) is gone entirely, tightening the card. Applied everywhere the card renders — listing, product-detail "related", wishlists, and both gallery demos.

@@ -53,3 +53,7 @@ The "Demo Environment" hanging tag and floating chat bubble were dropped as envi
 - **Needs-your-action cards** reuse the Insights stat-card anatomy; the doc records the buyer ordering (Deliveries → Invoices → Approvals)
 - Gallery header gained a **Buyer App** entry point beside Vendor App
 - **Switch** now has a live usage (include-shipping)
+
+
+## Addendum — app-level Search Palette (09/03/2026)
+Product search joined the App Bar without costing it any width: a **search icon** leads the icon cluster on every buyer page (injected by the shared `cart.js` — zero per-page markup), opening a centered **Search Palette**: large input, the Keyword / ✦ AI Search mode segment from the marketplace hero, recent searches, category jump rows, and a footer with keyboard hints plus the property scope ("Scoped to Magnolia Place Apartments" — honors the Shopping-for choice). `⌘K` / `Ctrl+K` / `/` open it from anywhere; Esc or outside-click closes. Rationale: the bar had no room for a field (five nav items + switcher + four icons), and nav search's real value is global reach from non-shopping pages — the shopping pages keep their own in-page search surfaces. New CSS: `.sp-*` family in `buyer-components.css`, light + dark.

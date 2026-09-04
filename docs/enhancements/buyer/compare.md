@@ -26,3 +26,7 @@ With one product selected an **"Add another product"** dashed column links back 
 ## Design system additions
 
 - **Comparison Table** — pinned label column, product-header columns, grouped attribute rows, differences-only mode, "Best" markers, add-slot column
+
+
+## Addendum — history-aware back link (09/03/2026)
+Arriving at Compare from a product page's AI-alternatives "Compare →" now returns you there: the back link reads **"Back to product"** and uses `history.back()` (restoring scroll) when the referrer is a product page; otherwise it stays "Back to Dishwashers" → the listing. Referrer match handles both clean URLs and `.html` paths.

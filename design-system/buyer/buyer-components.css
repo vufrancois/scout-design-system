@@ -252,13 +252,15 @@
 .dark .buyer .menu-item svg, .buyer.dark .menu-item svg, .dark .buyer .menu-item svg, .buyer.dark .menu-item svg { color: #8da0fb; }
 .dark .buyer .brand .wordmark, .buyer.dark .brand .wordmark, .dark .buyer .brand .wordmark, .buyer.dark .brand .wordmark, .dark .buyer .brand .avatar-ring, .buyer.dark .brand .avatar-ring, .dark .buyer .brand .avatar-ring, .buyer.dark .brand .avatar-ring { color: #8da0fb; border-color: #8da0fb; }
 .dark .buyer .bd-row, .buyer.dark .bd-row, .dark .buyer .bd-row, .buyer.dark .bd-row { background: var(--muted); }
+@media (max-width: 1280px) {
+  .buyer .nav-chip span.lbl { display: none; }
+  .buyer .nav-chip { padding: 0 11px; }
+  .buyer .ctx-echo .ctx-name { max-width: 110px; }
+}
 @media (max-width: 1100px) {
   .buyer .kpi-grid, .buyer .kpi-grid.cols-5 { grid-template-columns: repeat(2, 1fr); }
   .buyer .bd-grid { grid-template-columns: 1fr 1fr; }
   .buyer .chart-grid { grid-template-columns: 1fr; }
-  .buyer .nav-chip span.lbl { display: none; }
-  .buyer .nav-chip { padding: 0 11px; }
-  .buyer .ctx-echo .ctx-name { max-width: 110px; }
   .buyer .menu-panel.cols-2 { min-width: 520px; }
   .buyer .action-grid { grid-template-columns: 1fr; }
 }
@@ -440,8 +442,8 @@
 .buyer .pc-compare:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .buyer .pc-compare[data-tip]:hover::after { bottom: auto; top: calc(100% + 8px); left: auto; right: 0; transform: none; }
 /* slot: vendor eyebrow (1 line) */
-.buyer .pc-vendor { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted-foreground); height: 20px; margin-bottom: 6px; }
-.buyer .pc-vendor .v-avatar { width: 18px; height: 18px; border-radius: 5px; background: var(--muted); color: var(--muted-foreground); font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.buyer .pc-media .pc-vendor-badge { position: absolute; bottom: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--foreground); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: help; }
+.buyer .pc-media .pc-vendor-badge[data-tip]:hover::after { left: auto; right: 0; transform: none; }
 .buyer .pc-vendor .v-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* slot: title (2 lines reserved) */
 .buyer .pc-title { font-size: 15px; font-weight: 600; line-height: 1.3; height: 39px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px; }
@@ -1374,3 +1376,37 @@
 /* Activity: vendor feed dividers + emerald dots */
 .buyer .act-ev + .act-ev { border-top: 1px solid var(--border); }
 .buyer .act-ev .adot { background: var(--emerald); }
+
+/* App-level Search Palette (injected by cart.js; opens from the bar's search icon, ⌘K, or /) */
+.buyer .sp-ov { position: fixed; inset: 0; z-index: 400; background: rgba(13, 18, 38, .45); display: none; align-items: flex-start; justify-content: center; padding: 12vh 20px 20px; }
+.buyer .sp-ov.open { display: flex; }
+.buyer .sp { width: 640px; max-width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 24px 60px rgba(10, 15, 35, .35); overflow: hidden; }
+.buyer .sp-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.buyer .sp-head .mag { width: 18px; height: 18px; color: var(--muted-foreground); flex-shrink: 0; }
+.buyer .sp-input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font: inherit; font-size: 15px; color: var(--foreground); }
+.buyer .sp-input::placeholder { color: var(--muted-foreground); }
+.buyer .sp-mode { display: flex; background: var(--muted); border-radius: 999px; padding: 3px; flex-shrink: 0; }
+.buyer .sp-mode button { border: 0; background: transparent; font: inherit; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; color: var(--muted-foreground); cursor: pointer; display: inline-flex; gap: 5px; align-items: center; }
+.buyer .sp-mode button svg { width: 12px; height: 12px; }
+.buyer .sp-mode button.active { background: var(--card); color: var(--foreground); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+.buyer .sp-body { padding: 10px 8px; max-height: 46vh; overflow: auto; }
+.buyer .sp-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); padding: 8px 10px 4px; }
+.buyer .sp-item { display: flex; width: 100%; align-items: center; gap: 10px; padding: 9px 10px; border: 0; background: transparent; border-radius: var(--radius-md); font: inherit; font-size: 13.5px; color: var(--foreground); cursor: pointer; text-align: left; }
+.buyer .sp-item:hover, .buyer .sp-item:focus-visible { background: var(--accent); outline: none; }
+.buyer .sp-item svg { width: 15px; height: 15px; color: var(--muted-foreground); flex-shrink: 0; }
+.buyer .sp-item .k { margin-left: auto; font-size: 11.5px; color: var(--muted-foreground); }
+.buyer .sp-foot { display: flex; gap: 14px; align-items: center; padding: 10px 16px; border-top: 1px solid var(--border); font-size: 11.5px; color: var(--muted-foreground); }
+.buyer .sp-foot kbd { font: 600 10.5px "JetBrains Mono", ui-monospace, monospace; background: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; }
+.buyer .sp-scope { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; }
+.buyer .sp-scope svg { width: 12px; height: 12px; }
+
+/* AI-feature button: sky accent — visible, but never competing with the page's one navy primary */
+.buyer .btn-ai { background: var(--sky-soft); border: 1px solid color-mix(in srgb, var(--sky) 40%, transparent); color: var(--sky); font-weight: 600; }
+.buyer .btn-ai svg { color: var(--sky); }
+.buyer .btn-ai:hover { background: color-mix(in srgb, var(--sky) 18%, var(--card)); border-color: var(--sky); }
+.dark .buyer .btn-ai, .buyer.dark .btn-ai { color: #93c5fd; }
+.dark .buyer .btn-ai svg, .buyer.dark .btn-ai svg { color: #93c5fd; }
+
+.buyer .req-chip { font-size: 10.5px; font-weight: 600; background: var(--amber-soft); color: #b45309; border-radius: 6px; padding: 2px 7px; }
+.dark .buyer .req-chip, .buyer.dark .req-chip { color: #fbbf24; }
+.buyer .decision-actions .btn:disabled { opacity: .45; cursor: not-allowed; }

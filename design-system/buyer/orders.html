@@ -259,7 +259,7 @@
     const pf = OPEN.find(r => !r.part && r.stage === 'fulfill' && r.count >= 3 && r.num < 395); if (pf) pf.sub = ['Partially Fulfilled', 1, pf.count];
     const ps = OPEN.find(r => r.stage === 'ship' && r.count >= 2); if (ps) ps.sub = ['Partially Shipped', 1, ps.count]; })();
 
-  // Invoiced: 16 = Awaiting Validation 11 · Validated 4 · Buyer Paid 1 · Captured 0
+  // Invoiced: 16 = Awaiting Validation 11 · Validated 4 · Buyer Paid 1
   const INVOICED = [
     { num: 641, v: 'SD', prop: 'magnolia', total: 856.82, count: 1, inv: 'await', claimOpen: true, date: '2026-08-18', items: [['GE Profile 30 in. Slide-In Electric Range in Stainless', 1, 764.55]] },
     { num: 645, v: 'SD', prop: 'magnolia', total: 1060.00, count: 4, inv: 'await', attn: true, date: '2026-08-19', items: [['Gold® 23-7/8 in. Dishwasher with Pocket Handle', 3, 505.13], ['Gold® 23-7/8 in. Dishwasher with Pocket Handle', 1, 505.13]] },
@@ -326,12 +326,11 @@
         card('transit', 'stat-violet', IC.truck, 'Shipped', c(r => r.stage === 'transit'), 'On the way') +
         card('delivered', 'stat-emerald', IC.check, 'Delivered', c(r => r.stage === 'delivered'), 'Awaiting your validation');
     } else if (t === 'invoiced') {
-      el.className = 'kpi-grid cols-5';
+      el.className = 'kpi-grid';
       el.innerHTML = card('all', 'stat-gray', IC.doc, 'Total Invoices', rows.length, 'Invoice-eligible orders') +
         card('await', 'stat-amber', IC.warn, 'Awaiting Validation', c(r => r.inv === 'await'), 'Buyer review required') +
         card('validated', 'stat-sky', IC.check, 'Validated', c(r => r.inv === 'validated'), 'Awaiting buyer payment') +
-        card('paid', 'stat-violet', IC.card, 'Buyer Paid', c(r => r.inv === 'paid'), 'Payment submitted') +
-        card('captured', 'stat-emerald', IC.dollar, 'Captured', 0, 'Payment complete');
+        card('paid', 'stat-violet', IC.card, 'Buyer Paid', c(r => r.inv === 'paid'), 'Payment submitted');
     } else if (t === 'closed') {
       el.className = 'kpi-grid';
       el.style.gridTemplateColumns = 'repeat(3, 1fr)';

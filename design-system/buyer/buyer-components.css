@@ -1410,3 +1410,133 @@
 .buyer .req-chip { font-size: 10.5px; font-weight: 600; background: var(--amber-soft); color: #b45309; border-radius: 6px; padding: 2px 7px; }
 .dark .buyer .req-chip, .buyer.dark .req-chip { color: #fbbf24; }
 .buyer .decision-actions .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ===== Service POs (SPO) ===== */
+/* Violet = with Accounting / payment (whose-turn palette) */
+.buyer .status-dot.dot-violet { background: var(--violet); }
+/* Lifecycle stepper: a third actor (Accounting) and a halted node (vendor rejected) */
+.buyer .ls-step.active.acct .ls-dot { border-color: var(--violet); color: var(--violet); background: var(--violet-soft); }
+.buyer .ls-actor.acct { background: var(--violet-soft); color: #6d28d9; }
+.dark .buyer .ls-actor.acct, .buyer.dark .ls-actor.acct { color: #c4b5fd; }
+.buyer .ls-step.halted .ls-dot { border-color: var(--rose); color: var(--rose); background: var(--rose-soft); }
+.buyer .ls-step.halted .ls-label { color: var(--rose); }
+.buyer .ls-step.skipped .ls-dot { background: var(--muted); border-color: var(--border); color: var(--muted-foreground); }
+/* SPO line: description, qty × price, total, then its GL/unit allocation */
+.buyer .spo-line { display: grid; grid-template-columns: 1fr auto auto; align-items: baseline; gap: 4px 16px; padding: 14px 0; }
+.buyer .spo-line + .spo-line { border-top: 1px solid var(--border); }
+.buyer .spo-line .sl-desc { font-size: 14px; font-weight: 600; min-width: 0; }
+.buyer .spo-line .sl-qty { font-size: 13px; color: var(--muted-foreground); white-space: nowrap; }
+.buyer .spo-line .sl-total { font-size: 14px; font-weight: 700; min-width: 92px; text-align: right; }
+.buyer .spo-line .alloc-row { grid-column: 1 / -1; }
+/* Allocation chip: GL + unit (+ dollar share when a line is split) */
+.buyer .alloc-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.buyer .alloc-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 1; padding: 5px 9px; border: 1px solid var(--border); border-radius: var(--radius-pill); background: var(--background); color: var(--foreground); white-space: nowrap; }
+.buyer .alloc-chip .code { font-family: "JetBrains Mono", ui-monospace, monospace; font-weight: 600; }
+.buyer .alloc-chip .sep { width: 1px; height: 11px; background: var(--border); }
+.buyer .alloc-chip .amt { color: var(--muted-foreground); font-weight: 600; }
+.buyer .alloc-chip.warn { border-color: color-mix(in srgb, var(--amber) 55%, transparent); background: var(--amber-soft); color: #92610a; }
+.dark .buyer .alloc-chip.warn, .buyer.dark .alloc-chip.warn { color: #fbbf24; }
+.buyer .spo-scope { font-size: 14px; line-height: 1.6; }
+.buyer .spo-manage { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--border); margin-top: 14px; padding-top: 14px; }
+.buyer .spo-manage .lbl { font-size: 13px; font-weight: 600; margin-right: auto; }
+.buyer .tab-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+/* Activity: exception events (vendor rejected, canceled) read rose, not the default emerald */
+.buyer .act-ev.bad .adot { background: var(--rose); }
+/* SPO wizard — currency input: typed whole numbers are dollars ("600" = $600.00), never cents */
+.buyer .money-in { display: inline-flex; align-items: center; gap: 4px; height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--background); }
+.buyer .money-in:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent); }
+.buyer .money-in .cur { color: var(--muted-foreground); font-size: 13px; }
+.buyer .money-in input { width: 96px; border: none; outline: none; background: transparent; font: inherit; font-size: 14px; font-weight: 600; color: var(--foreground); text-align: right; }
+.buyer .money-in input::placeholder { color: var(--muted-foreground); font-weight: 400; }
+.buyer .money-in.err { border-color: var(--amber); background: var(--amber-soft); }
+.buyer .w-line { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; background: var(--card); }
+.buyer .w-line + .w-line { margin-top: 12px; }
+.buyer .w-line-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.buyer .w-line-head .n { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground); }
+.buyer .w-line-head .tot { margin-left: auto; font-size: 14px; font-weight: 700; }
+.buyer .w-grid { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: end; }
+.buyer .w-field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted-foreground); margin-bottom: 5px; }
+.buyer .w-field .text-in { width: 100%; height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md); font: inherit; font-size: 14px; background: var(--background); color: var(--foreground); }
+.buyer .w-field .text-in:focus { outline: none; border-color: var(--primary); }
+.buyer .w-field textarea.text-in { height: auto; min-height: 120px; padding: 10px 12px; line-height: 1.55; resize: vertical; }
+.buyer .w-alloc { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 10px; align-items: end; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.buyer .w-alloc.single { grid-template-columns: 1fr 1fr; }
+.buyer .w-alloc .row-action { margin-bottom: 4px; }
+.buyer .w-note { display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; margin-top: 8px; color: var(--muted-foreground); }
+.buyer .w-note svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+.buyer .w-note.warn { color: #b45309; }
+.dark .buyer .w-note.warn, .buyer.dark .w-note.warn { color: #fbbf24; }
+.buyer .w-blockers { margin: 10px 0 0; padding-left: 18px; font-size: 12.5px; color: #b45309; line-height: 1.6; }
+.dark .buyer .w-blockers, .buyer.dark .w-blockers { color: #fbbf24; }
+.buyer .w-linkbtn { border: none; background: none; padding: 0; font: inherit; font-size: 13px; font-weight: 600; color: var(--sky); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.buyer .w-linkbtn svg { width: 14px; height: 14px; }
+@media (max-width: 720px) { .buyer .w-grid, .buyer .w-alloc { grid-template-columns: 1fr 1fr; } .buyer .w-grid .w-field:first-child { grid-column: 1 / -1; } }
+/* Budget meter: spent · committed · this SPO against the GL's period budget */
+.buyer .bmeter + .bmeter { margin-top: 16px; }
+.buyer .bmeter-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; margin-bottom: 6px; }
+.buyer .bmeter-head .gl { font-weight: 600; }
+.buyer .bmeter-head .gl code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; margin-right: 4px; }
+.buyer .bmeter-head .pct { font-weight: 700; white-space: nowrap; }
+.buyer .bmeter.over .bmeter-head .pct { color: var(--rose); }
+.buyer .bmeter-bar { position: relative; display: flex; height: 8px; border-radius: var(--radius-pill); background: var(--muted); overflow: hidden; }
+.buyer .bmeter-bar span { height: 100%; }
+.buyer .bmeter-bar .sp { background: color-mix(in srgb, var(--primary) 45%, var(--muted)); }
+.buyer .bmeter-bar .cm { background: color-mix(in srgb, var(--sky) 55%, var(--muted)); }
+.buyer .bmeter-bar .me { background: var(--amber); }
+.buyer .bmeter.over .bmeter-bar .me { background: var(--rose); }
+.buyer .bmeter-bar .cap { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--foreground); opacity: .55; }
+.buyer .bmeter-sub { font-size: 12px; color: var(--muted-foreground); margin-top: 6px; }
+.buyer .bmeter-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted-foreground); margin-top: 14px; }
+.buyer .bmeter-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+/* SPO Line Match — invoice lines → SPO lines, inside the Document Review Split View */
+.buyer .lm-row { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; background: var(--card); }
+.buyer .lm-row + .lm-row { margin-top: 10px; }
+.buyer .lm-row.ok { border-color: color-mix(in srgb, var(--emerald) 45%, var(--border)); }
+.buyer .lm-row.attn { border-color: color-mix(in srgb, var(--amber) 60%, var(--border)); }
+.buyer .lm-row.gone { opacity: .62; }
+.buyer .lm-top { display: flex; align-items: flex-start; gap: 12px; }
+.buyer .lm-top .chk { margin-top: 1px; }
+.buyer .lm-inv { flex: 1; min-width: 0; }
+.buyer .lm-inv .d { font-size: 13.5px; font-weight: 600; }
+.buyer .lm-inv .m { font-size: 11.5px; color: var(--muted-foreground); margin-top: 2px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.buyer .lm-amt { font-size: 14px; font-weight: 700; white-space: nowrap; background: color-mix(in srgb, var(--sky) 9%, transparent); border-radius: 6px; padding: 2px 8px; }
+.buyer .lm-ai { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--sky); }
+.dark .buyer .lm-ai, .buyer.dark .lm-ai { color: #93c5fd; }
+.buyer .lm-ai svg { width: 11px; height: 11px; }
+.buyer .lm-targets { margin: 10px 0 0 32px; display: flex; flex-direction: column; gap: 10px; }
+.buyer .lm-t { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 4px 8px; align-items: start; font-size: 13px; }
+.buyer .lm-t .arr { color: var(--muted-foreground); line-height: 20px; }
+.buyer .lm-t .nm { font-weight: 600; }
+.buyer .lm-t .alloc-row { margin-top: 5px; }
+.buyer .lm-t .rt { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.buyer .lm-var { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.buyer .lm-var.on { color: var(--emerald); }
+.buyer .lm-var.over { color: #b45309; }
+.buyer .lm-var.under { color: var(--sky); }
+.dark .buyer .lm-var.over, .buyer.dark .lm-var.over { color: #fbbf24; }
+.buyer .lm-res { margin: 10px 0 0 32px; display: flex; flex-direction: column; gap: 8px; }
+.buyer .lm-opt { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.buyer .lm-opt:hover { border-color: color-mix(in srgb, var(--primary) 40%, var(--border)); }
+.buyer .lm-opt.sel { border-color: var(--primary); background: var(--accent); }
+.buyer .lm-opt .rd { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; margin-top: 2px; }
+.buyer .lm-opt.sel .rd { border: 5px solid var(--primary); }
+.buyer .lm-opt b { display: block; font-size: 13px; }
+.buyer .lm-opt span.s { display: block; font-size: 12px; color: var(--muted-foreground); margin-top: 1px; }
+.buyer .lm-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 2px 0 2px 26px; }
+.buyer .lm-fields label { display: block; font-size: 11px; font-weight: 600; color: var(--muted-foreground); margin-bottom: 4px; }
+.buyer .lm-change { margin: 8px 0 0 32px; font-size: 12px; }
+/* File Drop — ported verbatim from the vendor app (order-detail.html) per the porting rule; buyer version is a <button> */
+.buyer .file-drop { display: block; width: 100%; font: inherit; color: inherit; background: none; margin-top: 4px; padding: 26px 20px; text-align: center; cursor: pointer; border: 1.5px dashed var(--border); border-radius: var(--radius-md); transition: border-color 0.15s, background 0.15s; }
+.buyer .file-drop:hover { border-color: var(--primary); background: var(--accent); }
+.buyer .file-drop-icon { width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 10px; background: var(--primary); color: var(--primary-foreground); display: flex; align-items: center; justify-content: center; }
+.buyer .file-drop-icon svg { width: 18px; height: 18px; }
+.buyer .file-drop-title { font-size: 14px; font-weight: 600; }
+.buyer .file-drop-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+.buyer .file-drop.selected { border-style: solid; border-color: var(--emerald); background: var(--emerald-soft); cursor: default; }
+.buyer .file-drop.selected .file-drop-icon { background: var(--emerald); }
+/* Home: 4 tiles / breakdown cards (Service POs added) sit 2x2; 4-across truncates titles and meta at the page max-width */
+.buyer .action-grid.cols-4, .buyer .bd-grid.cols-4 { grid-template-columns: 1fr 1fr; }
+@media (max-width: 820px) { .buyer .action-grid.cols-4, .buyer .bd-grid.cols-4 { grid-template-columns: 1fr; } }
+/* SPO list: expanded row — scope + line items share the Order Items inset */
+.buyer .items-block .spo-line { padding: 14px 20px; }
+.buyer .items-block .spo-exp-scope { padding: 0 20px; margin: 0 0 18px; color: var(--muted-foreground); max-width: 820px; }

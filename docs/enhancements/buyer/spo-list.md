@@ -1,0 +1,94 @@
+# Service POs — Nav, List & Home
+
+**Status:** ✅ built and cascaded (10/07/2026)
+**Pages:** `design-system/buyer/spos.html` (list) · SPOs nav chip on all 12 buyer pages · `design-system/buyer/home.html` (tile + breakdown card)
+**Reference:** live SPO UX audit of scout-dev (`spo-audit/SPO-audit-report.md`, 58 findings in `spo-audit/spo-audit-findings.csv`). SPOs are **buyer-side only**: the vendor answers by email, so there is no vendor-app surface.
+
+## What the feature is
+A Service PO (SPO) buys labor, not catalog goods: make-ready painting, plumbing, carpet cleaning. The buyer drafts it, gets approval if needed, sends it to a service vendor, maps the vendor's invoice to the SPO lines, and sends a payment packet to Accounting. This log covers how SPOs are found: the nav, the list, and Home.
+
+## What shipped
+- **SPOs nav chip** (wrench glyph) with a mega menu: **Service POs** (live) and **Unit History** (listed, not yet built). Inserted before the Admin anchor on all 12 buyer pages (`buyer/index.html` is a redirect and was skipped).
+- **One store for every SPO surface:** `buyer/spo-data.js` (`window.SPO`) holds 16 seeds (one or more per state) plus a localStorage overlay (`scout-spos-v2`). It exposes the state model, vendors, GL codes, unit master, budget math, and formatting helpers. Open any SPO page with `#reset-spos` to restore the seeds.
+- **List = the Order Tracking pattern:** Filter Tabs over hash states. **Open** (Draft · Pending Approval · Awaiting Vendor · Vendor Rejected · Awaiting Invoice), **Invoices** (Invoice to Map · Ready for Accounting · With Accounting), **Closed** (Paid · Canceled). Each tab gets its own selectable metric cards, and the cards sum to the tab count:
+  - Open: Total Open = Your Move + With Vendor + Vendor Rejected
+  - Invoices: Total Invoices = Your Move + With Accounting
+  - Closed: Total Closed = Paid + Canceled
+
+  Seed counts: Open 8 · Invoices 5 · Closed 3.
+- **One status vocabulary**, in the whose-turn colors: amber = you, sky = vendor, rose = rejected/canceled, violet = with Accounting, emerald = paid. Spelled "Canceled" everywhere.
+- **Expandable Data Table:** columns are SPO # · Property · Vendor · Total · Status · Created. Every column sorts, and the pager shows 10 rows. Expanding a row shows the **Scope** text, then its SPO lines with **allocation chips** (GL + unit), inset like Order Tracking's Order Items. Scope is not a column: long free text forced the table to scroll sideways and clipped the row actions.
+- **One primary per row, only on your move:** Draft → Continue · Pending Approval → Review · Vendor Rejected → Change Vendor · Invoice to Map → Map invoice · Ready → Send to Accounting. Vendor and Accounting states get no button.
+- **Toolbar:** Add filter (Vendor, Property; the property facet hides when a property is in scope), Date range, and search (SPO #, vendor, property, scope, line text). The page header has a "New Service PO" primary that opens `spo-new.html#new`.
+- **Home** (audit SPO-33):
+  - A 4th Needs-Your-Action tile, **SPO Invoices to Map** (count = Invoice to Map). The meta line adds "· n ready for Accounting", and the action is Map Invoices → `spos.html#invoices`. When the count is zero it shows "View Service POs".
+  - A 4th breakdown card, **Service POs**. The header count is active SPOs; rows are Your move, With vendor, Vendor rejected, With Accounting, and Paid ("closed · not counted").
+  - Home's **Approvals** card now includes SPO approval requests, so its total matches the Approvals queue (16). The meta line names them ("· 1 Service PO").
+  - All of it follows the property scope.
+
+## Deviations from the live product
+- One status vocabulary replaces the live badge, which stayed "Open" in every state (SPO-25), and the unreconciled tabs/cards (SPO-01, SPO-02).
+- Tabs are lifecycle buckets only. **Scheduled** is a different axis (recurrence), so it is not a tab (SPO-49). It is deferred (see Held).
+- Vendor names in the list are clean. There are no TEMP codes or asterisk placeholders (SPO-03).
+- Created dates use one format, MM/DD/YYYY (SPO-06).
+
+## Held
+- **Recurring schedules** (SPO-49, SPO-50): a series and its instances, shown as a filter or badge, not a tab.
+- **Unit History** page: the menu entry exists and the page is not built (SPO-48 is its data model).
+- **Notifications** for SPO events (SPO-56..58).
+- **App bar injection:** the nav chip is pasted into each page. The plan is to inject it via `cart.js` instead.
+
+## Pitfalls
+- When building a page from another page's shell, anchor on `'\n  renderCtxList();\n'`, not `renderCtxList();`. The bare call also appears inside `selectProp` and cuts the script short ("Unexpected end of input").
+- Clean-URL hosting drops query strings, so demo reset is the hash `#reset-spos`, not `?reset`.
+- Home's 4-card grids: four across truncates titles and meta at the page max-width, so `.cols-4` is 2×2 on desktop and 1 column under 820px.
+
+## Components cascaded
+Gallery **Buyer App · Service POs** · design-doc **Service POs (SPO)** + **SPO Lifecycle Matrix** · `.status-dot.dot-violet` (Status Dots rule) · `.action-grid.cols-4` / `.bd-grid.cols-4`. `docs/design.md` regenerated.
+
+---
+
+## Tickets
+
+### TKT-SPO-01 · SPOs navigation entry
+**Summary:** Add an SPOs nav chip with a mega menu (Service POs, Unit History) to the buyer app bar.
+**Acceptance criteria:**
+- [ ] The chip appears on every buyer page between the existing chips and Admin, with a wrench icon and a chevron.
+- [ ] Its menu lists Service POs (→ list) and Unit History; the chip is active on all SPO pages.
+- [ ] Under 1280px the label collapses to the icon, like the other chips.
+**Audit findings:** —
+**Files:** all `design-system/buyer/*.html` pages (app bar)
+
+### TKT-SPO-02 · Service PO list with lifecycle tabs
+**Summary:** Build the SPO list with Open / Invoices / Closed tabs, per-tab metric cards, and the expandable table.
+**Acceptance criteria:**
+- [ ] Tab counts equal their Total card, and the colored cards sum to the Total on every tab, under every filter and property scope.
+- [ ] The status pill uses the lifecycle labels in the SPO Lifecycle Matrix; no row shows a generic "Open".
+- [ ] Every column sorts. Default sort is Created, descending. Pager shows 10 per page.
+- [ ] Expanding a row shows the scope and each line with its GL code and unit chips.
+- [ ] The table never scrolls horizontally at desktop widths; long property and vendor names truncate with a tooltip.
+- [ ] Only your-move rows have a primary, and it deep-links to that task's route.
+- [ ] Vendor and property filters, date range, and search compose with the cards.
+- [ ] Vendor names never show TEMP codes or placeholder asterisks; dates are MM/DD/YYYY.
+**Audit findings:** SPO-01, SPO-02, SPO-03, SPO-06, SPO-25, SPO-30, SPO-49, SPO-53
+**Files:** `buyer/spos.html`, `buyer/spo-data.js`, `buyer/buyer-components.css` (`.spo-line`, `.alloc-chip`, `.dot-violet`)
+
+### TKT-SPO-03 · SPO data model & states
+**Summary:** Back every SPO surface with one state model: 10 states, whose-turn groups, and an event timestamp per transition.
+**Acceptance criteria:**
+- [ ] States are draft, approval, sent, rejected, invoice, mapping, ready, accounting, paid, canceled, each with a fixed label, color, tab, and owner.
+- [ ] Each transition records a timestamp and a named actor. Activity is derived from these, so it is never empty.
+- [ ] Each line carries one or more allocations (GL + unit + amount) that sum to the line total.
+- [ ] Units resolve against the property's BBUU unit master. GL codes are sorted.
+**Audit findings:** SPO-10, SPO-20, SPO-24, SPO-48, SPO-51
+**Files:** `buyer/spo-data.js`
+
+### TKT-SPO-04 · Home: SPO tile and breakdown card
+**Summary:** Show SPO work on Home: an "SPO Invoices to Map" action tile and a Service POs breakdown card. Count SPO approvals in the Approvals card.
+**Acceptance criteria:**
+- [ ] The tile count equals the list's Invoice to Map count for the current property scope, and it links to `spos.html#invoices`.
+- [ ] The breakdown rows (Your move, With vendor, Vendor rejected, With Accounting) sum to the card's header count. Paid is shown but not counted.
+- [ ] The Approvals card total equals the Approvals queue total, including SPO requests.
+- [ ] With 4 tiles/cards the grids are 2×2 on desktop and 1 column on mobile.
+**Audit findings:** SPO-33, SPO-34
+**Files:** `buyer/home.html`, `buyer/buyer-components.css` (`.cols-4`)

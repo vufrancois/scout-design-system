@@ -51,6 +51,28 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 | Captured | `#captured` | Complete Order |
 | Completed | `#completed` | Closed out |
 
+## Buyer App — Service POs `buyer/spo.html#<id>`
+
+SPOs are buyer-side only. The list is `buyer/spos.html` (Open 8 · Invoices 5 · Closed 3), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
+
+| State | SPO | What to show |
+|---|---|---|
+| Draft | `#866` | Continue editing → the wizard opens on Review; **Send to vendor** is emerald (under budget) |
+| Draft (new) | `spo-new.html#new` | **Try an example** → Scout AI drafts lines: unit 1805 flagged (not coerced), an unpriced line left empty; type `600` → $600.00; Review shows the **Budget Meter** at 112% on 6035 → amber **Submit for approval** |
+| Pending Approval | `#864` | Strip → Review in Approvals; `approval.html#SPO-864` shows Service PO lines + Approve → the SPO flips to Awaiting Vendor |
+| Awaiting Vendor | `#863` | Sky whose-turn ring on Vendor Response; Resend PO |
+| Vendor Rejected | `#861` | Stepper **halts** in rose; the strip quotes the vendor; **Change Vendor** (same trade first) re-sends the PO; activity dots turn rose for the rejection |
+| Awaiting Invoice | `#860` | Upload invoice → File Drop → mapping opens; **Dispute** with a note → "Corrected invoice" strip |
+| Invoice to Map (clean) | `#858` | `#858/invoice`: one line, pre-matched; confirm → Validate mapping |
+| Invoice to Map (messy) | `#857` | `#857/invoice`: the $800 combined line covers 2 SPO lines (+$30 over); the $125 dump fee goes through the resolver → extra on 6045/0105; tax is invoice-level; Validate shows a +$155 variance; close and reopen → progress kept (autosave) |
+| Extraction failed | `#849` | "Invoice needs attention" → Retry extraction or Enter lines from the PDF |
+| Ready for Accounting | `#856` | Send to Accounting → packet: PO · Invoice · **GL allocation** (sums to the cent) → With Accounting |
+| With Accounting | `#855` | Violet **ACCOUNTING** actor; no buyer button |
+| Paid | `#854` | All 8 steps dated; approved by Priya Nair |
+| Canceled | `#852` | No stepper; SPO Status card names who canceled and quotes the reason; Clone SPO only |
+
+**Home tie-in:** the "SPO Invoices to Map" tile (3) and the Service POs breakdown card. The Approvals card total (16) matches the queue, which now includes SPO-864.
+
 ## The claims loop in one arc (cross-app)
 
 1. Buyer `#408` — raise a problem inside the validation modal (or `#404` for a standing claim; `#claimpre` is the vendor's pre-fulfillment counterpart).

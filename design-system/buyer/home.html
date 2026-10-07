@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
+<script src="spo-data.js"></script>
 </head>
 <body class="buyer">
 
@@ -20,7 +21,6 @@
     <div class="nav-chips">
       <a class="nav-chip active" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
       <a class="nav-chip" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
-      <a class="nav-chip" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="lbl">Messages</span></a>
       <div class="menu-anchor">
         <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel cols-2" id="menu-orders">
@@ -32,6 +32,13 @@
           <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span><span class="menu-item-title">Purchase History</span><span class="menu-item-desc" style="display:block">Your procurement history</span></span></a>
           <span></span>
           <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg><span><span class="menu-item-title">Funding Report</span><span class="menu-item-desc" style="display:block">Validated invoices awaiting payment</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-spos">
+          <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
         </div>
       </div>
       <div class="menu-anchor">
@@ -53,6 +60,7 @@
     </div>
     <div class="bar-actions">
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      <button class="icon-btn" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></button>
       <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
       <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
       <button class="icon-btn primary" title="Cart" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
@@ -126,7 +134,7 @@
   <!-- Needs your action -->
   <section>
     <div class="section-label">Needs your action</div>
-    <div class="action-grid">
+    <div class="action-grid cols-4">
       <div class="action-card">
         <div class="ac-head"><span class="ac-title"><svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Deliveries to Validate</span></div>
         <div class="ac-count" id="ac-rog">5</div>
@@ -145,11 +153,17 @@
         <div class="ac-meta" id="ac-apr-meta">Order request awaiting your approval &middot; 1d</div>
         <a class="ac-action" href="approvals.html">Review Request &rarr;</a>
       </div>
+      <div class="action-card">
+        <div class="ac-head"><span class="ac-title"><svg class="ac-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>SPO Invoices to Map</span></div>
+        <div class="ac-count" id="ac-spo">3</div>
+        <div class="ac-meta" id="ac-spo-meta">Match vendor invoices to SPO lines</div>
+        <a class="ac-action" href="spos.html#invoices">Map Invoices &rarr;</a>
+      </div>
     </div>
   </section>
 
   <!-- Status breakdowns -->
-  <div class="bd-grid">
+  <div class="bd-grid cols-4">
     <div class="card">
       <div class="card-head">
         <span class="card-title"><span class="icon-tile tile-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>Open Orders <span class="bd-card-count" id="bd-open-total">62</span></span>
@@ -188,6 +202,20 @@
         <div class="bd-row c-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg><span class="bd-label">Revision requested<span class="bd-meta">back with buyer</span></span><span class="bd-count" id="bd-apr-1">1</span><svg class="tip-icon" data-tip="Sent back to the buyer for changes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
         <div class="bd-row c-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><span class="bd-label">Approved</span><span class="bd-count" id="bd-apr-2">9</span><svg class="tip-icon" data-tip="Approved and released to the vendor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
         <div class="bd-row c-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span class="bd-label">Rejected</span><span class="bd-count" id="bd-apr-3">3</span><svg class="tip-icon" data-tip="Declined requests" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title"><span class="icon-tile tile-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>Service POs <span class="bd-card-count" id="bd-spo-total">13</span></span>
+        <a class="text-link" href="spos.html">View All <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+      <div class="bd-rows">
+        <div class="bd-row c-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="bd-label">Your move<span class="bd-meta">drafts, approvals, invoices</span></span><span class="bd-count" id="bd-spo-0">7</span><svg class="tip-icon" data-tip="Drafts to finish, approvals to decide, invoices to map or send to Accounting" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-sky"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span class="bd-label">With vendor<span class="bd-meta">response or invoice</span></span><span class="bd-count" id="bd-spo-1">4</span><svg class="tip-icon" data-tip="Waiting on the vendor to accept, or to send their invoice" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-rose" id="bd-spo-rej-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span class="bd-label">Vendor rejected<span class="bd-meta">choose another vendor</span></span><span class="bd-count" id="bd-spo-2">1</span><svg class="tip-icon" data-tip="The vendor declined; pick another vendor or cancel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg><span class="bd-label">With Accounting<span class="bd-meta">awaiting payment</span></span><span class="bd-count" id="bd-spo-3">1</span><svg class="tip-icon" data-tip="Payment packet sent; Accounting releases the payment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+        <div class="bd-row c-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><span class="bd-label">Paid<span class="bd-meta">closed &middot; not counted</span></span><span class="bd-count" id="bd-spo-4">2</span><svg class="tip-icon" data-tip="Paid and closed; excluded from the active count" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
       </div>
     </div>
   </div>
@@ -330,9 +358,13 @@
     const w = weightOf(currentProp);
     const open = BASE.open.map(v => sc(v, w)), partial = BASE.partial.map((v, i) => Math.min(sc(v, w), open[i]));
     const inv = BASE.invoices[range].map(v => sc(v, w)), apr = BASE.approvals[range].map(v => sc(v, w));
+    const spos = SPO.list().filter(s => currentProp === 'all' || s.prop === currentProp);
+    spos.filter(s => s.ev.approvalReq).forEach(s => { apr[s.state === 'approval' ? 0 : s.ev.approved ? 2 : s.state === 'canceled' ? 3 : 1]++; });
+    const sc2 = st => spos.filter(s => st.indexOf(s.state) >= 0).length;
+    const spo = { map: sc2(['mapping']), ready: sc2(['ready']), you: sc2(['draft', 'approval', 'mapping', 'ready']), vendor: sc2(['sent', 'invoice']), rejected: sc2(['rejected']), acct: sc2(['accounting']), paid: sc2(['paid']), sprApr: sc2(['approval']) };
     const rog = Math.min(sc(BASE.rog, w), open[3]);
     return {
-      w, open, partial, canceled: sc(BASE.canceled, w), inv, apr, rog,
+      w, open, partial, canceled: sc(BASE.canceled, w), inv, apr, rog, spo,
       paid: BASE.paid[range] * w, shipping: BASE.shipping[range] * w,
       cats: BASE.cats[range].map(c => [c[0], Math.round(c[1] * w)]),
       delta: BASE.deltas[range] + (currentProp === 'all' ? 0 : ((PROPERTIES.findIndex(p => p.id === currentProp) % 3) - 1) * 4.2)
@@ -349,9 +381,15 @@
     $('ac-rog-meta').textContent = m.rog ? 'Confirm receipt of goods · oldest 3d' : 'All deliveries validated';
     $('bd-open-m3').textContent = m.rog ? m.rog + ' awaiting your validation' : 'validated · awaiting payment';
     $('ac-inv-meta').textContent = m.inv[0] ? 'Check invoices against delivery · oldest 6d' : 'Nothing waiting on you — all invoices validated';
-    $('ac-apr-meta').textContent = m.apr[0] ? (m.apr[0] === 1 ? 'Order request awaiting your approval · 1d' : m.apr[0] + ' order requests awaiting your approval · oldest 1d') : 'No requests waiting for approval';
+    $('ac-apr-meta').textContent = m.apr[0] ? (m.apr[0] === 1 ? (m.spo.sprApr ? 'Service PO' : 'Order request') + ' awaiting your approval · 1d' : m.apr[0] + ' requests awaiting your approval' + (m.spo.sprApr ? ' · ' + m.spo.sprApr + ' Service PO' + (m.spo.sprApr > 1 ? 's' : '') : '') + ' · oldest 1d') : 'No requests waiting for approval';
+    $('ac-spo').textContent = m.spo.map;
+    $('ac-spo-meta').textContent = m.spo.map ? 'Match vendor invoices to SPO lines' + (m.spo.ready ? ' · ' + m.spo.ready + ' ready for Accounting' : '') : (m.spo.ready ? m.spo.ready + ' ready to send to Accounting' : 'No SPO invoices waiting on you');
+    const spoActive = m.spo.you + m.spo.vendor + m.spo.rejected + m.spo.acct;
+    $('bd-spo-total').textContent = spoActive;
+    [m.spo.you, m.spo.vendor, m.spo.rejected, m.spo.acct, m.spo.paid].forEach((v, i) => $('bd-spo-' + i).textContent = v);
+    $('bd-spo-rej-row').classList.toggle('c-rose', m.spo.rejected > 0); $('bd-spo-rej-row').classList.toggle('c-muted', m.spo.rejected === 0);
     const cards = document.querySelectorAll('.action-card');
-    [[m.rog, 'Validate Deliveries', 'View Deliveries'], [m.inv[0], 'Review Invoices', 'View Invoices'], [m.apr[0], 'Review Request', 'View Approvals']].forEach(([n, act, calm], i) => {
+    [[m.rog, 'Validate Deliveries', 'View Deliveries'], [m.inv[0], 'Review Invoices', 'View Invoices'], [m.apr[0], 'Review Request', 'View Approvals'], [m.spo.map, 'Map Invoices', 'View Service POs']].forEach(([n, act, calm], i) => {
       cards[i].classList.toggle('calm', n === 0);
       cards[i].querySelector('.ac-action').innerHTML = (n > 0 ? act : calm) + ' &rarr;';
     });

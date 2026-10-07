@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order Approvals — Scout Buyer</title>
+<title>Service POs — Scout Buyer</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="menu-anchor">
-        <button class="nav-chip" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-chip active" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel" id="menu-spos">
           <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
           <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
@@ -72,53 +72,28 @@
 
 
 
+
 <section class="hero page-hero">
   <div class="hero-bg"></div>
-  <div class="hero-inner">
+  <div class="hero-inner" style="flex-direction:column;gap:0">
     <div class="hero-title-block">
-      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></div>
-      <div><h1>Order Approvals</h1><p>Review and decide on order approval requests</p></div>
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div><h1>Service POs</h1><p>Request services from vendors, map their invoices, and send them to Accounting</p></div>
     </div>
   </div>
 </section>
 
 <main class="page">
-  <div class="kpi-grid cols-5">
-    <div class="stat-card-colored stat-gray active" data-f="all" onclick="setFilter('all')">
-      <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>Total Requests</span>
-      <div class="stat-card-count" id="c-all">14</div>
-      <div class="stat-card-desc">All approval requests</div>
-    </div>
-    <div class="stat-card-colored stat-amber" data-f="pending" onclick="setFilter('pending')">
-      <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending</span>
-      <div class="stat-card-count" id="c-pending">1</div>
-      <div class="stat-card-desc">Awaiting your decision</div>
-    </div>
-    <div class="stat-card-colored stat-sky" data-f="revision" onclick="setFilter('revision')">
-      <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Revision Requested</span>
-      <div class="stat-card-count" id="c-revision">1</div>
-      <div class="stat-card-desc">Back with the buyer</div>
-    </div>
-    <div class="stat-card-colored stat-emerald" data-f="approved" onclick="setFilter('approved')">
-      <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>Approved</span>
-      <div class="stat-card-count" id="c-approved">10</div>
-      <div class="stat-card-desc">Approved requests</div>
-    </div>
-    <div class="stat-card-colored stat-rose" data-f="rejected" onclick="setFilter('rejected')">
-      <span class="stat-card-title"><svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Rejected</span>
-      <div class="stat-card-count" id="c-rejected">3</div>
-      <div class="stat-card-desc">Rejected requests</div>
-    </div>
+  <div class="kpi-grid" id="stat-cards"></div>
+  <div class="tab-row">
+    <div class="tab-bar" id="tab-bar"></div>
+    <a class="btn btn-primary" href="spo-new.html#new" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Service PO</a>
   </div>
-
-
-  <div class="toolbar">
+  <div class="toolbar" id="tbar" style="margin-top:16px">
     <div class="toolbar-group">
-      <span class="filter-chip" id="chip-vendor" style="display:none"><span class="filter-chip-attr">Vendor</span><span class="filter-chip-value" id="chip-vendor-value"></span><button class="filter-chip-remove" onclick="setFacet('vendor', null)" title="Remove filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
-      <span class="filter-chip" id="chip-buyer" style="display:none"><span class="filter-chip-attr">Buyer</span><span class="filter-chip-value" id="chip-buyer-value"></span><button class="filter-chip-remove" onclick="setFacet('buyer', null)" title="Remove filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
-      <span class="filter-chip" id="chip-level" style="display:none"><span class="filter-chip-attr">Level</span><span class="filter-chip-value" id="chip-level-value"></span><button class="filter-chip-remove" onclick="setFacet('level', null)" title="Remove filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
-      <span class="filter-chip" id="chip-status" style="display:none"><span class="filter-chip-attr">Status</span><span class="filter-chip-value" id="chip-status-value"></span><button class="filter-chip-remove" onclick="setFacet('status', null)" title="Remove filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
-      <span class="filter-chip" id="chip-date" style="display:none"><span class="filter-chip-attr">Requested</span><span class="filter-chip-value" id="chip-date-value"></span><button class="filter-chip-remove" onclick="setDateFilter(null)" title="Remove filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
+      <span class="filter-chip" id="chip-vendor" style="display:none"><span class="filter-chip-attr">Vendor</span><span class="filter-chip-value" id="chip-vendor-value"></span><button class="filter-chip-remove" onclick="setVendor(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
+      <span class="filter-chip" id="chip-prop" style="display:none"><span class="filter-chip-attr">Property</span><span class="filter-chip-value" id="chip-prop-value"></span><button class="filter-chip-remove" onclick="setPropF(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
+      <span class="filter-chip" id="chip-date" style="display:none"><span class="filter-chip-attr">Created</span><span class="filter-chip-value" id="chip-date-value"></span><button class="filter-chip-remove" onclick="setDateFilter(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
       <div class="filter-menu-wrap">
         <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-11"/><path d="M7 12H3"/><path d="M21 20h-3"/><path d="M15 20H3"/><circle cx="14" cy="4" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="18" cy="20" r="2"/></svg>
@@ -134,39 +109,19 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="filter-menu" id="date-menu" style="display:none">
-          <div class="dropdown-item" onclick="setDateFilter(7, 'Last 7 days')">Last 7 days</div>
           <div class="dropdown-item" onclick="setDateFilter(30, 'Last 30 days')">Last 30 days</div>
           <div class="dropdown-item" onclick="setDateFilter(90, 'Last 90 days')">Last 90 days</div>
           <div class="dropdown-item" onclick="setDateFilter(365, 'Last 12 months')">Last 12 months</div>
         </div>
       </div>
-      <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFacets()">Clear all</button>
+      <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
     </div>
     <div class="search-wrap">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-      <input class="search-field" id="req-search" placeholder="Search requests..." oninput="renderAll()" />
+      <input class="search-field" id="spo-search" placeholder="Search SPO, vendor, scope, or unit…" oninput="page = 1; renderPage()">
     </div>
   </div>
-
-  <div class="tbl-wrap">
-    <div style="overflow-x:auto">
-      <table class="tbl">
-        <thead><tr>
-          <th style="width:36px"></th>
-          <th class="sortable" data-k="id" onclick="setSort('id')">Request #<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable col-hide" data-k="prop" onclick="setSort('prop')">Property<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable" data-k="vendor" onclick="setSort('vendor')">Vendor<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable" data-k="buyer" onclick="setSort('buyer')">Buyer<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable" data-k="amount" onclick="setSort('amount')">Amount<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable col-hide" data-k="level" onclick="setSort('level')">Level<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable" data-k="status" onclick="setSort('status')">Status<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th class="sortable" data-k="date" onclick="setSort('date')">Date<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></th>
-          <th style="width:1%"></th>
-        </tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-  </div>
+  <div id="tbl-zone"></div>
 </main>
 
 <script>
@@ -231,7 +186,7 @@
     document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
     renderCtxList();
     document.getElementById('ctx-switch').classList.remove('open');
-    renderAll();
+    page = 1; renderPage();
   }
   function toggleCtx() {
     const el = document.getElementById('ctx-switch');
@@ -241,149 +196,196 @@
   }
   renderCtxList();
 
-
-
-
-  const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const VEN = { SD: 'Scout Demo Vendor', ID: 'Ideal DEV', CH: 'API Test - Chadwell', GB: 'Gorman Bros' };
-  Object.keys(SPO.VEN).forEach(k => { if (!VEN[k]) VEN[k] = SPO.VEN[k].name; });
-  const item = (name, sku, qty, price, v) => ({ name, sku, qty, price, v });
-  const vends = r => [...new Set(r.items.map(i => i.v || r.v))];
-  const REQS = [
-    { id: '9MS9D4', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-07-16', amt: 415.39, items: [item('24 in. 2-Cycle Built-in Dishwasher in White', '8339618', 1, 390.39)] },
-    { id: 'K4PT2N', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'pending', level: 'Supervisor', date: '2026-08-21', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1455.09), item('Dryer Vent Kit, 4 in. x 8 ft.', '7719928', 2, 24.63), item('Expansion Tank, 2 gal.', '5527703', 1, 473.13, 'ID')] },
-    { id: 'CT3CPQ', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-25', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1467.08)] },
-    { id: 'VJXT0Z', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-24', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1467.08)] },
-    { id: '2XX1Z9', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-15', items: [item('27 in. 7.4 cu. ft. Electric Dryer in White', '7411520', 1, 1062.13)] },
-    { id: 'RBQ90M', v: 'SD', buyer: 'Priya Nair', prop: 'bayou', status: 'rejected', level: 'Master', date: '2026-06-15', items: [item('Packaged Terminal Air Conditioner 12k BTU', '6231145', 8, 790.79)] },
-    { id: 'GNZSXC', v: 'ID', buyer: 'Ravi Buyer Demo', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-12', items: [item('50 gal. Tall Electric Water Heater', '5521904', 2, 946.27), item('Expansion Tank, 2 gal.', '5527703', 2, 473.13)] },
-    { id: '0ZS6B5', v: 'ID', buyer: 'Alicia Grant', prop: 'magnolia', status: 'rejected', level: 'Supervisor', date: '2026-06-10', items: [item('24 in. Top Control Dishwasher with 3rd Rack', '7719814', 1, 1170.00)] },
-    { id: 'ADAKB7', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-08', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1463.08)] },
-    { id: 'NRE2YP', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'approved', level: 'Supervisor', date: '2026-06-05', items: [item('Commercial 6.7 cu. ft. Non Coin Electric Dryer in White', '7503672', 1, 1461.62)] },
-    { id: 'J8RG6V', v: 'SD', buyer: 'Jordan Ellis', prop: 'lonestar', status: 'revision', level: 'Supervisor', date: '2026-07-15', items: [item('1.6 cu. ft. Refrigerator in Black', '6118834', 3, 357.17)] },
-    { id: 'HW3K1A', v: 'GB', buyer: 'Jordan Ellis', prop: 'bayou', status: 'approved', level: 'Supervisor', date: '2026-05-28', items: [item('LED High Bay Fixture, 150W', '4412907', 6, 189.54)] },
-    { id: 'PX8Q4D', v: 'CH', buyer: 'Priya Nair', prop: 'central', status: 'approved', level: 'Master', date: '2026-05-20', items: [item('WHIRLPOOL® ENERGY STAR® 24" Dishwasher - Black', '301085', 4, 376.38), item('Dishwasher Install Kit', '301122', 4, 38.95)] },
-    { id: 'MM2V7E', v: 'SD', buyer: 'Alicia Grant', prop: 'magnolia', status: 'rejected', level: 'Supervisor', date: '2026-05-12', items: [item('Hospitality 32 in. LED TV (case of 4)', '8890021', 2, 1044.00)] }
+  const money = SPO.money, fmtD = SPO.fmtDate;
+  const SV = '<svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  const IC = {
+    wrench: SV + '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    pen: SV + '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
+    send: SV + '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>',
+    x: SV + '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>',
+    doc: SV + '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>',
+    card: SV + '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
+    check: SV + '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>',
+    archive: SV + '<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>',
+    ban: SV + '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>'
+  };
+  const TABS = [
+    { id: 'open', label: 'Open', icon: IC.wrench, states: ['draft', 'approval', 'sent', 'rejected', 'invoice'] },
+    { id: 'invoices', label: 'Invoices', icon: IC.doc, states: ['mapping', 'ready', 'accounting'] },
+    { id: 'closed', label: 'Closed', icon: IC.archive, states: ['paid', 'canceled'] }
   ];
-  /* Service POs that needed approval share this queue (one approvals surface for orders and services). */
-  SPO.list().filter(sp => sp.ev.approvalReq).forEach(sp => REQS.push({
-    id: 'SPO-' + sp.id, spo: true, v: sp.v, buyer: sp.by, prop: sp.prop, level: 'Supervisor', date: sp.ev.approvalReq.slice(0, 10),
-    status: sp.state === 'approval' ? 'pending' : sp.ev.approved ? 'approved' : sp.state === 'canceled' ? 'rejected' : 'revision',
-    items: sp.lines.map(l => item(l.desc, l.alloc.map(a => a.gl + ' \u00B7 ' + SPO.unitLabel(a.unit)).join(' + '), l.qty, l.price))
-  }));
-  REQS.forEach(r => r.amount = r.amt || Math.round(r.items.reduce((a, i) => a + i.qty * i.price, 0) * 100) / 100);
-  const glyph = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><circle cx="8" cy="5" r="0.6"/><circle cx="11" cy="5" r="0.6"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
-  const STATUS = { pending: ['dot-pending', 'Pending'], approved: ['dot-approved', 'Approved'], rejected: ['dot-rejected', 'Rejected'], revision: ['dot-revision', 'Revision Requested'] };
-  const ARROWS = { neutral: '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>', asc: '<path d="m7 14.5 5-5 5 5"/>', desc: '<path d="m7 9.5 5 5 5-5"/>' };
-  const ORDER = { pending: 0, revision: 1, approved: 2, rejected: 3 };
-  let filter = 'all', sortK = 'status', sortDir = 1;
-  const TODAY = '2026-08-24';
-  const facets = { vendor: null, buyer: null, level: null, status: null };
-  let dateDays = null, dateLabel = '';
-  const open = new Set();
-  const fmtDate = d => { const [y, m, dd] = d.split('-'); return m + '/' + dd + '/' + y; };
+  const vInit = v => v;
+  let cardFilter = 'all', vendorF = null, propF = null, dateDays = null, page = 1, sortK = 'date', sortDir = -1;
+  const PER = 10;
+  const openRows = new Set();
+  const tab = () => { const t = (location.hash || '#open').replace('#', ''); return TABS.some(x => x.id === t) ? t : 'open'; };
+  window.addEventListener('hashchange', () => { cardFilter = 'all'; page = 1; openRows.clear(); renderPage(); window.scrollTo(0, 0); });
+  const propName = id => (PROPERTIES.find(x => x.id === id) || {}).name || id;
 
-  function scoped() { return REQS.filter(r => currentProp === 'all' || r.prop === currentProp); }
-  function cutoff(days) { const d = new Date(TODAY + 'T00:00:00'); d.setDate(d.getDate() - days); return d.toISOString().slice(0, 10); }
-  function filtered() {
-    const q = (document.getElementById('req-search').value || '').trim().toLowerCase();
-    const min = dateDays ? cutoff(dateDays) : null;
-    return scoped().filter(r =>
-      (!facets.vendor || vends(r).includes(facets.vendor)) &&
-      (!facets.buyer || r.buyer === facets.buyer) &&
-      (!facets.level || r.level === facets.level) &&
-      (!facets.status || r.status === facets.status) &&
-      (!min || r.date >= min) &&
-      (!q || (vends(r).map(v => VEN[v]).join(' ') + ' ' + r.buyer + ' #' + r.id + ' ' + PROPERTIES.find(x => x.id === r.prop).name + ' ' + r.items.map(i => i.name + ' ' + i.sku).join(' ')).toLowerCase().includes(q))
-    );
+  function scoped(states) {
+    const q = (document.getElementById('spo-search').value || '').trim().toLowerCase();
+    let min = null;
+    if (dateDays) { const d = new Date(SPO.TODAY); d.setDate(d.getDate() - dateDays); min = d.toISOString().slice(0, 10); }
+    return SPO.list().filter(s => states.indexOf(s.state) >= 0 &&
+      (currentProp === 'all' || s.prop === currentProp) &&
+      (!propF || s.prop === propF) &&
+      (!vendorF || s.v === vendorF) &&
+      (!min || s.ev.created.slice(0, 10) >= min) &&
+      (!q || ('spo-' + s.id + ' ' + SPO.VEN[s.v].name + ' ' + propName(s.prop) + ' ' + s.scope + ' ' +
+        s.lines.map(l => l.desc + ' ' + l.alloc.map(a => a.unit + ' ' + a.gl + ' ' + SPO.glName(a.gl)).join(' ')).join(' ')).toLowerCase().includes(q)));
   }
-  function setFacet(k, v, label) {
-    facets[k] = v; closeFilterMenus();
-    const chip = document.getElementById('chip-' + k);
-    chip.style.display = v ? '' : 'none';
-    if (v) document.getElementById('chip-' + k + '-value').textContent = label || v;
-    syncClear(); renderAll();
+
+  function statCards(t, rows) {
+    const el = document.getElementById('stat-cards');
+    const card = (key, cls, icon, title, n, desc) => '<div class="stat-card-colored ' + cls + (cardFilter === key ? ' active' : '') + '" onclick="setCard(\'' + key + '\')"><span class="stat-card-title">' + icon + title + '</span><div class="stat-card-count">' + n + '</div><div class="stat-card-desc">' + desc + '</div></div>';
+    const g = k => rows.filter(s => SPO.STATES[s.state].group === k).length;
+    el.style.gridTemplateColumns = '';
+    if (t === 'open') {
+      el.className = 'kpi-grid';
+      el.innerHTML = card('all', 'stat-gray', IC.wrench, 'Total Open', rows.length, 'Not yet invoiced') +
+        card('you', 'stat-amber', IC.pen, 'Your Move', g('you'), 'Drafts & approvals') +
+        card('vendor', 'stat-sky', IC.send, 'With Vendor', g('vendor'), 'Response or invoice pending') +
+        card('rejected', 'stat-rose', IC.x, 'Vendor Rejected', g('rejected'), 'Choose another vendor');
+    } else if (t === 'invoices') {
+      el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(3, 1fr)';
+      el.innerHTML = card('all', 'stat-gray', IC.doc, 'Total Invoices', rows.length, 'Invoice received') +
+        card('you', 'stat-amber', IC.pen, 'Your Move', g('you'), 'Map invoice or send to Accounting') +
+        card('accounting', 'stat-violet', IC.card, 'With Accounting', g('accounting'), 'Awaiting payment');
+    } else {
+      el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(3, 1fr)';
+      el.innerHTML = card('all', 'stat-gray', IC.archive, 'Total Closed', rows.length, 'Paid or canceled') +
+        card('paid', 'stat-emerald', IC.check, 'Paid', g('paid'), 'Released by Accounting') +
+        card('canceled', 'stat-rose', IC.ban, 'Canceled', g('canceled'), 'Withdrawn before payment');
+    }
+  }
+
+  function pill(s) { const st = SPO.STATES[s.state]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; }
+  function allocChips(l) {
+    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span>' + SPO.unitLabel(a.unit) + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
+  }
+  const sortIc = k => '<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (sortK === k ? (sortDir === 1 ? '<path d="m7 14.5 5-5 5 5"/>' : '<path d="m7 9.5 5 5 5-5"/>') : '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>') + '</svg>';
+  const th = (k, label, extra) => '<th class="sortable' + (sortK === k ? ' sorted' : '') + (extra || '') + '" onclick="setSort(\'' + k + '\')">' + label + sortIc(k) + '</th>';
+
+  /* Only the buyer's own move gets a primary button; everything else is the overflow menu. */
+  const ACTION = {
+    draft: ['Continue', s => 'spo-new.html#' + s.id],
+    approval: ['Review', s => 'approval.html#SPO-' + s.id],
+    rejected: ['Change vendor', s => 'spo.html#' + s.id + '/vendor'],
+    mapping: ['Map invoice', s => 'spo.html#' + s.id + '/invoice'],
+    ready: ['Send', s => 'spo.html#' + s.id + '/accounting']
+  };
+
+  function renderPage() {
+    const t = tab();
+    document.getElementById('tab-bar').innerHTML = TABS.map(tb =>
+      '<button class="tab-item' + (tb.id === t ? ' active' : '') + '" onclick="location.hash=\'#' + tb.id + '\'">' + tb.icon.replace('stat-card-icon', '') + tb.label + '<span class="tab-count">' + scoped(tb.states).length + '</span></button>').join('');
+    const rows = scoped(TABS.find(x => x.id === t).states);
+    statCards(t, rows);
+
+    let list = rows.filter(s => cardFilter === 'all' || SPO.STATES[s.state].group === cardFilter);
+    const sortVal = s => sortK === 'num' ? s.id : sortK === 'total' ? SPO.total(s) : sortK === 'prop' ? propName(s.prop)
+      : sortK === 'vendor' ? SPO.VEN[s.v].name : sortK === 'status' ? SPO.STATES[s.state].rank : s.ev.created;
+    list = list.slice().sort((a, b) => { const va = sortVal(a), vb = sortVal(b); const d = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb)); return d * sortDir || b.id - a.id; });
+    const pages = Math.max(1, Math.ceil(list.length / PER));
+    if (page > pages) page = pages;
+    const slice = list.slice((page - 1) * PER, page * PER);
+
+    const cols = th('num', 'SPO #') + th('prop', 'Property', ' col-hide') + th('vendor', 'Vendor') + th('total', 'Total') + th('status', 'Status') + th('date', 'Created');
+    const body = slice.map(s => {
+      const isOpen = openRows.has(s.id);
+      const act = ACTION[s.state];
+      const action = act ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + act[1](s) + '">' + act[0] + '</a>' : rowMenu(s);
+      const main = '<tr class="data-row">' +
+        '<td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(' + s.id + ')" title="Line items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
+        '<td class="mono" style="font-weight:700"><a class="table-link" style="font-family:inherit;font-weight:700" href="spo.html#' + s.id + '">SPO-' + s.id + '</a></td>' +
+        '<td class="col-hide cell-clip" title="' + propName(s.prop) + '">' + propName(s.prop) + '</td>' +
+        '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + vInit(s.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[s.v].name + '">' + SPO.VEN[s.v].name + '</span></span></td>' +
+        '<td class="num" style="font-weight:600">' + money(SPO.total(s)) + '</td>' +
+        '<td>' + pill(s) + '</td>' +
+        '<td style="white-space:nowrap;color:var(--muted-foreground)">' + fmtD(s.ev.created) + '</td>' +
+        '<td>' + action + '</td></tr>';
+      const items = isOpen ? '<tr class="items-block"><td colspan="8"><div class="items-label">Scope</div><p class="spo-scope spo-exp-scope">' + s.scope + '</p><div class="items-label">Line Items</div>' +
+        s.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(l.qty * l.price) + '</span>' + allocChips(l) + '</div>').join('') + '</td></tr>' : '';
+      return main + items;
+    }).join('');
+
+    document.getElementById('tbl-zone').innerHTML = '<div class="tbl-wrap" style="margin-top:4px"><div style="overflow-x:auto"><table class="tbl">' +
+      '<thead><tr><th style="width:36px"></th>' + cols + '<th style="width:1%"></th></tr></thead>' +
+      '<tbody>' + (body || '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted-foreground)">No Service POs match the current filters.</td></tr>') + '</tbody></table></div>' +
+      (list.length > PER ? '<div class="pager"><span>Showing ' + ((page - 1) * PER + 1) + '–' + Math.min(page * PER, list.length) + ' of ' + list.length + ' SPOs</span><span class="pg-btns"><button class="btn btn-sm"' + (page <= 1 ? ' disabled' : '') + ' onclick="page--; renderPage()">Previous</button><button class="btn btn-sm"' + (page >= pages ? ' disabled' : '') + ' onclick="page++; renderPage()">Next</button></span></div>' : '') + '</div>';
+
+    document.getElementById('filter-clear').style.display = (vendorF || propF || dateDays) ? '' : 'none';
+    if (currentProp !== 'all' && propF) setPropF(null);
+  }
+
+  function rowMenu(s) {
+    return '<div class="row-menu-wrap"><button class="icon-btn" style="width:32px;height:32px" onclick="toggleMenuRow(event, ' + s.id + ')" title="More actions"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>' +
+      '<div class="row-menu" id="rm-' + s.id + '" style="display:none">' +
+      '<button onclick="location.href=\'spo.html#' + s.id + '\'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>View SPO</button>' +
+      '<button onclick="rowAct(\'Download PO\', ' + s.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Download PO (PDF)</button>' +
+      '<button onclick="location.href=\'spo-new.html#clone-' + s.id + '\'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Clone SPO</button></div></div>';
+  }
+  function toggleMenuRow(e, id) {
+    e.stopPropagation();
+    const el = document.getElementById('rm-' + id), was = el.style.display !== 'none';
+    document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none');
+    el.style.display = was ? 'none' : '';
+  }
+  document.addEventListener('click', e => { if (e.target.isConnected && !e.target.closest('.row-menu-wrap')) document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none'); });
+
+  function setCard(k) { cardFilter = cardFilter === k ? 'all' : k; page = 1; renderPage(); }
+  function setSort(k) { if (sortK === k) sortDir *= -1; else { sortK = k; sortDir = (k === 'date' || k === 'total' || k === 'num') ? -1 : 1; } renderPage(); }
+  function toggleRow(id) { openRows.has(id) ? openRows.delete(id) : openRows.add(id); renderPage(); }
+  function setVendor(v) {
+    vendorF = v; closeFMenus();
+    document.getElementById('chip-vendor').style.display = v ? '' : 'none';
+    if (v) document.getElementById('chip-vendor-value').textContent = SPO.VEN[v].name;
+    page = 1; renderPage();
   }
   function setDateFilter(days, label) {
-    dateDays = days; dateLabel = label || ''; closeFilterMenus();
-    const chip = document.getElementById('chip-date');
-    chip.style.display = days ? '' : 'none';
+    dateDays = days; closeFMenus();
+    document.getElementById('chip-date').style.display = days ? '' : 'none';
     if (days) document.getElementById('chip-date-value').textContent = label;
-    syncClear(); renderAll();
+    page = 1; renderPage();
   }
-  function clearFacets() {
-    facets.vendor = facets.buyer = facets.level = facets.status = null; dateDays = null;
-    document.getElementById('req-search').value = '';
-    ['vendor', 'buyer', 'level', 'status', 'date'].forEach(k => document.getElementById('chip-' + k).style.display = 'none');
-    syncClear(); renderAll();
+  function setPropF(p) {
+    propF = p; closeFMenus();
+    document.getElementById('chip-prop').style.display = p ? '' : 'none';
+    if (p) document.getElementById('chip-prop-value').textContent = propName(p);
+    page = 1; renderPage();
   }
-  function syncClear() { document.getElementById('filter-clear').style.display = (facets.vendor || facets.buyer || facets.level || facets.status || dateDays) ? '' : 'none'; }
-  function closeFilterMenus() { document.getElementById('filter-menu').style.display = 'none'; document.getElementById('date-menu').style.display = 'none'; }
-  function toggleDateMenu() { const m = document.getElementById('date-menu'), was = m.style.display !== 'none'; closeFilterMenus(); if (!was) m.style.display = ''; }
-  function toggleFilterMenu() { const m = document.getElementById('filter-menu'), was = m.style.display !== 'none'; closeFilterMenus(); if (!was) { renderFilterMenu('root'); m.style.display = ''; } }
+  function clearFilters() {
+    vendorF = null; propF = null; dateDays = null; document.getElementById('spo-search').value = '';
+    ['chip-vendor', 'chip-prop', 'chip-date'].forEach(id => document.getElementById(id).style.display = 'none');
+    page = 1; renderPage();
+  }
+  function closeFMenus() { document.getElementById('filter-menu').style.display = 'none'; document.getElementById('date-menu').style.display = 'none'; }
+  function toggleFilterMenu() { const m = document.getElementById('filter-menu'); const was = m.style.display !== 'none'; closeFMenus(); if (!was) { renderFilterMenu('root'); m.style.display = ''; } }
   function renderFilterMenu(view) {
     const m = document.getElementById('filter-menu');
-    const esc = v => v.replace(/'/g, "\\'");
+    const rows = SPO.list();
     if (view === 'root') {
-      m.innerHTML = ['vendor', 'buyer', 'level', 'status'].map(k =>
-        '<div class="dropdown-item" onclick="renderFilterMenu(\'' + k + '\')">' + k[0].toUpperCase() + k.slice(1) + ' <span style="color:var(--muted-foreground)">&rsaquo;</span></div>').join('');
+      m.innerHTML = '<div class="dropdown-item" onclick="renderFilterMenu(\'vendor\')">Vendor <span style="color:var(--muted-foreground)">&rsaquo;</span></div>' +
+        (currentProp === 'all' ? '<div class="dropdown-item" onclick="renderFilterMenu(\'prop\')">Property <span style="color:var(--muted-foreground)">&rsaquo;</span></div>' : '');
       return;
     }
-    const rows = scoped();
-    let opts;
-    if (view === 'status') opts = ['pending', 'revision', 'approved', 'rejected'].map(v => ({ v, label: STATUS[v][1] }));
-    else if (view === 'vendor') opts = [...new Set(rows.flatMap(vends))].map(v => ({ v, label: VEN[v] }));
-    else if (view === 'buyer') opts = [...new Set(rows.map(r => r.buyer))].map(v => ({ v, label: v }));
-    else opts = [...new Set(rows.map(r => r.level))].map(v => ({ v, label: v }));
-    if (view !== 'status') opts.sort((a, b) => a.label.localeCompare(b.label));
-    m.innerHTML = '<div class="dropdown-item" onclick="renderFilterMenu(\'root\')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>' +
-      opts.map(o => '<div class="dropdown-item' + (facets[view] === o.v ? ' selected' : '') + '" onclick="setFacet(\'' + view + '\', \'' + esc(o.v) + '\', \'' + esc(o.label) + '\')">' + o.label + '</div>').join('');
+    const back = '<div class="dropdown-item" onclick="renderFilterMenu(\'root\')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>';
+    if (view === 'vendor') {
+      const vs = [...new Set(rows.map(s => s.v))].sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
+      m.innerHTML = back + vs.map(v => '<div class="dropdown-item' + (vendorF === v ? ' selected' : '') + '" onclick="setVendor(\'' + v + '\')">' + SPO.VEN[v].name + '</div>').join('');
+    } else {
+      const ps = [...new Set(rows.map(s => s.prop))].sort((a, b) => propName(a).localeCompare(propName(b)));
+      m.innerHTML = back + ps.map(p => '<div class="dropdown-item' + (propF === p ? ' selected' : '') + '" onclick="setPropF(\'' + p + '\')">' + propName(p) + '</div>').join('');
+    }
   }
-  document.addEventListener('click', e => { if (e.target.isConnected && !e.target.closest('.filter-menu-wrap')) closeFilterMenus(); });
-  function renderAll() {
-    const rows = filtered();
-    const counts = { all: rows.length, pending: 0, revision: 0, approved: 0, rejected: 0 };
-    rows.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
-    ['all', 'pending', 'revision', 'approved', 'rejected'].forEach(k => document.getElementById('c-' + k).textContent = counts[k]);
-    document.querySelectorAll('.stat-card-colored').forEach(c => c.classList.toggle('active', c.dataset.f === filter));
-    document.querySelectorAll('th.sortable').forEach(th => {
-      const on = th.dataset.k === sortK;
-      th.classList.toggle('sorted', on);
-      th.querySelector('.sort-ic').innerHTML = on ? (sortDir === 1 ? ARROWS.asc : ARROWS.desc) : ARROWS.neutral;
-    });
-    let list = rows.filter(r => filter === 'all' || r.status === filter);
-    const val = r => sortK === 'amount' ? r.amount : sortK === 'status' ? ORDER[r.status] : sortK === 'vendor' ? vends(r).map(v => VEN[v]).join(', ') : sortK === 'prop' ? PROPERTIES.find(x => x.id === r.prop).name : r[sortK];
-    list.sort((a, b) => { const av = val(a), bv = val(b); const d = typeof av === 'number' ? av - bv : String(av).localeCompare(String(bv)); return d * sortDir || b.date.localeCompare(a.date); });
-    document.getElementById('tbody').innerHTML = list.length ? list.map(row).join('') : '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted-foreground)">No requests match the current filters.</td></tr>';
-  }
-  function row(r) {
-    const p = STATUS[r.status]; const prop = PROPERTIES.find(x => x.id === r.prop); const vv = vends(r);
-    const main = '<tr class="data-row"><td><button class="expander' + (open.has(r.id) ? ' open' : '') + '" onclick="toggleRow(\'' + r.id + '\')" title="Items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
-      '<td class="mono"><a class="table-link" style="font-family:inherit" href="approval.html#' + r.id + '">' + (r.spo ? '' : '#') + r.id + '</a></td>' +
-      '<td class="col-hide cell-clip" title="' + prop.name + '">' + prop.name + '</td>' +
-      '<td>' + (vv.length > 1
-        ? '<span class="cell-entity" title="' + vv.map(v => VEN[v]).join(' · ') + '"><span style="display:inline-flex">' + vv.map((v, i) => '<span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px' + (i ? ';margin-left:-9px;box-shadow:0 0 0 2px var(--card)' : '') + '">' + v + '</span>').join('') + '</span><span class="nm">' + vv.length + ' vendors</span></span>'
-        : '<span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + vv[0] + '</span><span class="nm">' + VEN[vv[0]] + '</span></span>') + '</td>' +
-      '<td>' + r.buyer + '</td>' +
-      '<td class="num" style="font-weight:600">' + money(r.amount) + '</td>' +
-      '<td class="col-hide"><span class="pill p-neutral" data-tip="' + (r.level === 'Master' ? 'Approves amounts over $5,000' : 'Approves amounts over $2,500') + '">' + r.level + '</span></td>' +
-      '<td><span class="status-dot-item"><span class="status-dot ' + p[0] + '"></span><span class="status-dot-label">' + p[1] + '</span></span></td>' +
-      '<td style="white-space:nowrap;color:var(--muted-foreground)">' + fmtDate(r.date) + '</td>' +
-      '<td>' + (r.status === 'pending' ? '<button class="btn btn-primary btn-sm" onclick="reviewReq(\'' + r.id + '\')">Review</button>' : '') + '</td></tr>';
-    const iline = i => '<div class="item-line"><span class="thumb">' + glyph + '</span><span class="item-nm">' + i.name + '<span class="item-sku">' + i.sku + '</span></span><span class="qty">' + i.qty + ' × ' + money(i.price) + '</span><span class="line-total">' + money(i.qty * i.price) + '</span></div>';
-    const items = open.has(r.id) ? '<tr class="items-block"><td colspan="10">' + (vv.length > 1
-      ? vv.map(v => '<div class="items-label">' + VEN[v] + '</div>' + r.items.filter(i => (i.v || r.v) === v).map(iline).join('')).join('')
-      : '<div class="items-label">Items</div>' + r.items.map(iline).join('')) + '</td></tr>' : '';
-    return main + items;
-  }
-  function toggleRow(id) { open.has(id) ? open.delete(id) : open.add(id); renderAll(); }
-  function setFilter(f) { filter = f; renderAll(); }
-  function setSort(k) { if (sortK === k) sortDir *= -1; else { sortK = k; sortDir = (k === 'date' || k === 'amount') ? -1 : 1; } renderAll(); }
-  function reviewReq(id) { location.href = 'approval.html#' + id; }
+  function toggleDateMenu() { const m = document.getElementById('date-menu'); const was = m.style.display !== 'none'; closeFMenus(); if (!was) m.style.display = ''; }
+  document.addEventListener('click', e => { if (e.target.isConnected && !e.target.closest('.filter-menu-wrap')) closeFMenus(); });
 
   let toastTimer;
-  function showToast(title, desc) { let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(t); } t.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; t.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = 0, 3000); }
-  renderAll();
+  function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
+  function rowAct(what, id) { document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none'); showToast(what + ' — SPO-' + id, 'Demo action'); }
+
+  renderPage();
 </script>
 </body>
 </html>

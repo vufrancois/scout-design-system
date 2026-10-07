@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
+<script src="spo-data.js"></script>
 </head>
 <body class="buyer">
 
@@ -20,7 +21,6 @@
     <div class="nav-chips">
       <a class="nav-chip" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
       <a class="nav-chip" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
-      <a class="nav-chip" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="lbl">Messages</span></a>
       <div class="menu-anchor">
         <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel cols-2" id="menu-orders">
@@ -32,6 +32,13 @@
           <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span><span class="menu-item-title">Purchase History</span><span class="menu-item-desc" style="display:block">Your procurement history</span></span></a>
           <span></span>
           <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg><span><span class="menu-item-title">Funding Report</span><span class="menu-item-desc" style="display:block">Validated invoices awaiting payment</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-spos">
+          <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
         </div>
       </div>
       <div class="menu-anchor">
@@ -53,6 +60,7 @@
     </div>
     <div class="bar-actions">
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      <button class="icon-btn" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></button>
       <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
       <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
       <button class="icon-btn primary" title="Cart" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
@@ -160,6 +168,7 @@
 
   const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const VEN = { SD: 'Scout Demo Vendor', ID: 'Ideal DEV', CH: 'API Test - Chadwell', GB: 'Gorman Bros' };
+  Object.keys(SPO.VEN).forEach(k => { if (!VEN[k]) VEN[k] = SPO.VEN[k].name; });
   const STATUS = { pending: ['dot-pending', 'Pending'], approved: ['dot-approved', 'Approved'], rejected: ['dot-rejected', 'Rejected'], revision: ['dot-revision', 'Revision Requested'] };
   const item = (name, sku, qty, price, flags) => Object.assign({ name, sku, qty, price }, flags || {});
   const vends = () => [...new Set(R.items.map(i => i.v || R.v))];
@@ -226,6 +235,20 @@
         .concat(status === 'approved' ? [{ t: 'Approved', actor: level, rev: 0, amt, when: date + ', 11:30:00 AM', items: [[nm + ' · Qty ' + qty, amt]] }]
           : status === 'rejected' ? [{ t: 'Rejected', actor: level, rev: 0, amt, when: date + ', 11:30:00 AM', comment: 'Declined — over the property budget for this period.', items: [[nm + ' · Qty ' + qty, amt]] }] : []) };
   });
+  /* Service POs that needed approval come from the shared SPO store, so the queue and the SPO always agree. */
+  function spoReq(s) {
+    const over = SPO.glOver(s), lim = SPO.total(s) > SPO.APPROVAL_LIMIT;
+    const items = s.lines.map(l => item(l.desc, l.alloc.map(a => a.gl + ' ' + SPO.glName(a.gl) + ' \u00B7 ' + SPO.unitLabel(a.unit)).join(' + '), l.qty, l.price));
+    const snap = s.lines.map(l => [l.desc + ' \u00B7 Qty ' + l.qty, Math.round(l.qty * l.price * 100) / 100]);
+    const status = s.state === 'approval' ? 'pending' : s.ev.approved ? 'approved' : s.state === 'canceled' ? 'rejected' : 'revision';
+    const hist = [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: SPO.total(s), when: SPO.fmtDT(s.ev.approvalReq), items: snap }];
+    if (s.ev.approved) hist.push({ t: 'Approved', actor: 'Supervisor', rev: 0, amt: SPO.total(s), when: SPO.fmtDT(s.ev.approved), items: snap });
+    return { spo: s.id, v: s.v, buyer: s.by, prop: s.prop, status, level: 'Supervisor', date: SPO.fmtDate(s.ev.approvalReq), items, shipping: null,
+      eligible: ['Supervisor', 'Master'], decidedBy: s.ev.approved ? ((s.approval && s.approval.by) || 'Priya Nair') : null,
+      reasonTxt: lim && over.length ? 'Over $2,500 and GL budget' : lim ? 'Over $2,500' : over.length ? 'Over ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' budget' : 'Amount threshold',
+      comment: s.cancel ? s.cancel.reason : null, history: hist };
+  }
+  SPO.list().filter(s => s.ev.approvalReq).forEach(s => { REQS['SPO-' + s.id] = spoReq(s); });
   Object.values(REQS).forEach(r => r.amount = Math.round((r.items.reduce((a, i) => a + i.qty * i.price, 0) + (r.shipping ? r.shipping[1] : 0)) * 100) / 100);
 
   let R, curId;
@@ -256,22 +279,22 @@
       { l: 'Requested', s: 'done', i: IC.check, dt: d[0] || R.date },
       { l: 'Under Review', s: 'done', i: IC.check, dt: d[1] || R.date },
       { l: 'Approved', s: 'done', i: IC.check, dt: d[2] || R.date },
-      { l: 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
+      { l: R.spo ? 'Sent to Vendor' : 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
     else if (st === 'rejected') steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Under Review', s: 'done', i: IC.check, dt: R.date },
       { l: 'Rejected', s: 'rejected', i: IC.cross, dt: R.date },
-      { l: 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.spo ? 'Sent to Vendor' : 'Order Created', s: 'future', i: IC.cart }];
     else if (st === 'revision') steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Buyer revision', s: 'active sky', i: IC.refresh },
       { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.spo ? 'Sent to Vendor' : 'Order Created', s: 'future', i: IC.cart }];
     else steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Under Review', s: 'active', i: IC.eye, dt: 'your move' },
       { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.spo ? 'Sent to Vendor' : 'Order Created', s: 'future', i: IC.cart }];
     return '<div class="ap-stepper">' + steps.map((sp, i) => {
       const conn = i < steps.length - 1
         ? '<div class="ap-conn' + (steps[i + 1].s === 'rejected' || sp.s === 'rejected' && false ? ' rose' : (sp.s === 'done' && steps[i + 1].s.startsWith('done')) ? ' done' : sp.s === 'done' && steps[i + 1].s !== 'future' ? ' done' : '') + '"></div>' : '';
@@ -290,14 +313,14 @@
   }
 
   function renderPage() {
-    document.getElementById('hero-sub').textContent = '#' + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
+    document.getElementById('hero-sub').textContent = (R.spo ? 'Service PO ' : '#') + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
     const st = R.status;
     let main = '';
 
     main += '<div class="card"><div class="det-card-head"><h2>Approval Progress</h2>' + statusPill(st) + '</div>' + stepper(st) + '</div>';
 
     if (st === 'pending') {
-      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span class="pill p-neutral">' + R.level + ' approval</span></div>' +
+      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span style="display:flex;gap:8px">' + (R.spo ? '<span class="pill p-neutral">Service PO</span>' : '') + '<span class="pill p-neutral">' + R.level + ' approval</span></span></div>' +
         '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px">Comment to the buyer <span class="req-chip">Required for revision or rejection</span></div>' +
         '<textarea class="dec-comment" id="dec-comment" placeholder="Explain what should change, or why this is being rejected…" oninput="decGate()"></textarea>' +
         '<div class="decision-actions">' +
@@ -308,8 +331,8 @@
         '</div></div>';
     }
 
-    main += '<div class="card"><div class="det-card-head"><div><h2>Order details</h2><div class="sub" id="inv-checked">Checked just now</div></div>' +
-      '<button class="btn" style="height:36px;font-size:13px;display:inline-flex;align-items:center;gap:8px" onclick="refreshInv()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Refresh inventory</button></div>' +
+    main += '<div class="card"><div class="det-card-head"><div><h2>' + (R.spo ? 'Service PO lines' : 'Order details') + '</h2>' + (R.spo ? '<div class="sub">GL code and unit for every dollar</div>' : '<div class="sub" id="inv-checked">Checked just now</div>') + '</div>' +
+      (R.spo ? '<a class="btn" style="height:36px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center" href="spo.html#' + R.spo + '">View SPO</a>' : '<button class="btn" style="height:36px;font-size:13px;display:inline-flex;align-items:center;gap:8px" onclick="refreshInv()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Refresh inventory</button>') + '</div>' +
       (R.legacy ? '<div class="callout violet" style="margin:10px 0"><b>' + IC.warn + 'Legacy approval · Recreate cart required</b>This approval was created before live inventory classification was added. Request a revision so the buyer can clear all items from the cart, add the same items again, and resubmit it for approval.</div>' : '') +
       (R.unavailable ? '<div class="callout rose" style="margin:10px 0"><b>A product in this request is no longer available</b>The vendor no longer lists the product(s) marked below, so this request can no longer be approved. Please reject it and ask the buyer to place a new order with available items.</div>' : '') +
       (() => { const vv = vends();
@@ -319,6 +342,7 @@
           return '<div style="display:flex;align-items:center;gap:10px;margin:14px 0 4px"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + v + '</span><span style="font-size:13.5px;font-weight:700">' + VEN[v] + '</span><span style="margin-left:auto;font-size:12.5px;color:var(--muted-foreground)">' + vi.length + (vi.length === 1 ? ' item · ' : ' items · ') + money(vt) + '</span></div>' + vi.map(itemLine).join('');
         }).join(''); })() +
       (() => { const sub = Math.round(R.items.reduce((a, i) => a + i.qty * i.price, 0) * 100) / 100;
+        if (R.spo) return '<div class="det-totals"><div class="tot-row grand"><span>SPO estimate</span><span>' + money(R.amount) + '</span></div></div>';
         return '<div class="det-totals">' +
         '<div class="tot-row"><span>Items subtotal</span><span>' + money(sub) + '</span></div>' +
         '<div class="tot-row"><span>Shipping · ' + R.shipping[0] + '</span><span>' + money(R.shipping[1]) + '</span></div>' +
@@ -343,14 +367,19 @@
 
     const prop = PROPERTIES.find(x => x.id === R.prop);
     side += '<div class="card"><dl class="fact-rows wide">' +
-      '<dt>Reason</dt><dd>Amount threshold</dd>' +
+      '<dt>Reason</dt><dd>' + (R.reasonTxt || 'Amount threshold') + '</dd>' +
       '<dt>Property</dt><dd>' + prop.name + '</dd>' +
       '<dt>Approvers</dt><dd>' + R.eligible.map(e => '<span class="lvl-pill">' + e + '</span>').join('') + '</dd>' +
       (R.decidedBy ? '<dt>Decided by</dt><dd>' + R.decidedBy + '</dd>' : '') + '</dl>' +
       (R.status === 'revision' && R.comment ? '<div class="callout amber" style="margin-top:14px"><b>Note to buyer</b>' + R.comment + '</div>' : '') +
       (R.status === 'rejected' && R.comment ? '<div class="callout rose" style="margin-top:14px"><b>Rejection reason</b>' + R.comment + '</div>' : '') + '</div>';
 
-    if (R.status === 'approved' && (R.orders || R.order)) {
+    if (R.spo && R.status === 'approved') {
+      const sp = SPO.get(R.spo), v = SPO.VEN[sp.v];
+      side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Sent to vendor</h2></div>' +
+        '<p style="font-size:13px;color:var(--muted-foreground)">Approving emailed the PO to ' + v.email + '. ' + v.name + ' accepts or rejects it next.</p>' +
+        '<div class="order-row"><div class="onum">SPO-' + sp.id + '</div><a class="toolbar-btn" style="text-decoration:none" href="spo.html#' + sp.id + '">View SPO <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></div>';
+    } else if (R.status === 'approved' && (R.orders || R.order)) {
       const orders = R.orders || [Object.assign([R.order[0], R.order[1]], { v: R.v })];
       side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Orders placed</h2></div>' +
         '<p style="font-size:13px;color:var(--muted-foreground)">' + (orders.length > 1 ? 'One order per vendor, created when this request was approved.' : 'Created when this request was approved.') + '</p>' +
@@ -389,10 +418,26 @@
       R.history.push({ t: 'Rejected', actor: 'Supervisor', rev: 0, amt: R.amount, when: now, comment: c, items: R.history[0].items });
     }
     R.history.forEach(ev => { if (ev.comment === null) delete ev.comment; });
+    if (R.spo) syncSpo(next, c);
     renderPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /* An approval decision on a Service PO moves the SPO itself. */
+  function syncSpo(next, c) {
+    const s = SPO.get(R.spo), v = SPO.VEN[s.v];
+    if (next === 'approved') {
+      s.state = 'sent'; s.ev.approved = SPO.now(); s.ev.sent = SPO.now(); s.approval = { by: 'Alicia Grant', reason: R.reasonTxt };
+      SPO.log(s, 'Approved', 'by Alicia Grant (Supervisor)' + (c ? ' \u00B7 \u201C' + c + '\u201D' : ''), true);
+      SPO.log(s, 'Sent to vendor', 'PO emailed to ' + v.email);
+    } else if (next === 'revision') {
+      s.state = 'draft'; SPO.log(s, 'Revision requested', 'by Alicia Grant (Supervisor) \u00B7 \u201C' + c + '\u201D');
+    } else {
+      s.state = 'canceled'; s.ev.canceled = SPO.now(); s.cancel = { by: 'Alicia Grant (Supervisor)', reason: c };
+      SPO.log(s, 'Rejected in approval', 'by Alicia Grant (Supervisor) \u00B7 \u201C' + c + '\u201D', false, true);
+    }
+    SPO.save(s);
+  }
   function refreshInv() {
     const el = document.getElementById('inv-checked');
     el.textContent = 'Checked 0 seconds ago';

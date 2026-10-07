@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Service PO — Scout Buyer</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buyer.css">
+<script src="cart.js"></script>
+<script src="spo-data.js"></script>
+</head>
+<body class="buyer">
+
+<!-- ===== App Bar ===== -->
+<div class="app-bar-wrap">
+  <nav class="app-bar">
+    <div class="brand">
+      <span class="avatar-ring">AG</span>
+      <span class="wordmark"><svg class="logo" viewBox="0 0 592 116" xmlns="http://www.w3.org/2000/svg" aria-label="Scout"><path fill="currentColor" d="M368.921 24.0615C369.027 24.0452 369.13 24.0312 369.237 24.0193C394.599 21.02 413.592 34.7995 416.669 61.022C419.492 85.0688 410.296 111.346 382.626 114.34C358.328 118.032 337.745 104.403 334.506 79.5118C331.05 52.9541 339.398 28.8412 368.921 24.0615ZM377.059 98.6156C398.048 96.5091 401.22 71.0955 395.783 54.677C392.869 45.877 383.88 38.9518 374.268 39.9686C374.112 39.9852 373.956 40.0065 373.8 40.0327C349.315 42.1918 346.678 81.0129 362.884 94.4005C366.729 97.5713 371.668 99.1037 376.633 98.6665C376.776 98.6529 376.919 98.6359 377.059 98.6156Z"/><path fill="currentColor" d="M112.681 0.22147C116.656 -0.0887322 123.344 -0.0229021 127.331 0.116074C128.859 6.12993 130.114 37.4859 126.805 41.2283C124.225 41.0029 118.858 34.206 115.122 32.124L114.991 32.0522C107.163 33.4416 97.9848 39.7162 90.3365 42.5914C80.7606 46.1915 71.4784 49.9355 62.0854 53.9884C62.4117 54.9314 63.0516 56.7636 63.8188 57.3312C76.9084 66.4314 91.6422 66.3822 104.163 77.5225C115.962 88.0205 102.225 110.521 90.5078 114.174C85.4041 115.764 71.6144 115.414 65.3493 115.42L37.5858 115.417C28.8031 115.496 20.0195 115.439 11.2384 115.245C8.50338 115.162 1.40473 115.53 0.00704319 113.332C-0.0933617 111.956 0.899447 110.61 1.72667 109.576C11.6325 97.1926 55.4695 90.1437 59.7624 84.0178C59.9988 83.68 60.1714 83.0879 60.1096 82.6813C59.6097 79.3981 53.1218 76.3542 50.5789 74.4328C45.1303 70.3154 37.8755 65.6066 36.9074 58.2914C34.5996 40.8523 52.4088 36.4216 65.3277 32.2627C74.9917 29.1514 85.3738 26.6455 93.9114 21.0209C96.121 19.5654 98.016 18.4053 99.6486 16.2758C95.1379 11.5912 91.3425 8.37316 88.8751 2.31641C94.9191 0.817933 106.164 0.292952 112.681 0.22147Z"/><path fill="currentColor" d="M191.172 24.7498C199.619 23.243 212.635 26.1442 219.285 31.3122C226.233 36.7123 228.162 42.5031 229.396 50.843C223.509 50.954 217.43 50.8297 211.526 50.7801C209.668 42.0343 202.483 39.9536 194.379 40.0969C188.328 40.204 180.593 43.5644 181.313 50.7326C181.955 57.1098 190.137 59.5821 195.326 60.5729C204.947 62.6792 215.496 63.9047 223.542 70.0452C232.923 77.5981 232.858 95.513 225.098 104.283C217.59 112.768 209.801 114.396 199.064 115.312L198.904 115.322C183.008 116.247 163.38 110.878 161.197 92.2132C161.052 90.9734 160.992 89.6873 160.916 88.4399C165.59 88.7561 173.465 88.5616 178.381 88.5905C181.737 98.4897 188.534 100.313 198.262 99.8146C202.693 99.5875 207.148 98.1482 210.124 94.7187C213.315 91.3338 212.492 84.9961 208.399 82.6222C200.502 78.0433 189.943 77.7723 181.275 74.9559C177.204 73.6007 173.418 71.5051 170.107 68.7748C159.085 59.6623 160.482 39.1737 172.293 31.4479C178.989 27.0675 183.212 25.4596 191.172 24.7498Z"/><path fill="currentColor" d="M443.451 25.8357C446.294 25.7981 449.195 25.9048 452.038 25.976C452.025 26.4225 452.018 26.869 452.012 27.3159L452.025 62.4807C452.008 69.8903 451.649 77.1952 452.474 84.5778C453.754 97.0045 466.778 101.155 477.374 97.3965C487.321 93.8683 487.438 83.9654 487.394 75.0673C487.371 70.7804 487.401 66.4814 487.401 62.2314C487.441 50.3117 487.404 38.3914 487.291 26.472C491.568 25.5241 501.16 25.9085 505.886 26.0159C505.763 34.3774 505.889 43.058 505.896 51.4458C505.882 60.1178 506.601 85.7146 504.768 92.4529C503.431 97.3829 500.807 101.87 497.172 105.457C484.355 118.319 455.021 118.063 442.107 105.154C438.273 101.379 435.589 96.5896 434.378 91.3461C432.925 85.1461 433.371 71.4367 433.377 64.4333L433.427 26.2207C436.673 25.9065 440.168 25.9018 443.451 25.8357Z"/><path fill="currentColor" d="M277.918 24.5402C284.762 24.242 291.251 23.987 297.836 26.3658C312.619 31.7091 320.231 41.5451 321.455 57.0289L303.396 57.0126C303.23 56.4112 303.06 55.8107 302.887 55.2116C299.475 43.4033 290.055 38.1711 277.979 41.4507C263.42 45.8238 261.513 63.6629 262.869 76.4001C264.467 91.4088 275.194 103.105 290.988 98.1378C295.634 96.645 299.498 93.3734 301.74 89.0389C302.156 87.2665 302.808 85.4003 303.376 83.6574C308.328 83.4975 315.695 83.2322 320.551 83.5025C323.577 85.6047 317.933 97.5779 316.114 100.142C310.713 107.805 302.475 112.992 293.229 114.548C268.91 118.683 248.414 107.249 244.343 81.6825C242.146 67.882 243.493 50.1739 252.018 38.5621C258.271 30.0454 267.717 26.1411 277.918 24.5402Z"/><path fill="currentColor" d="M542.279 28.1452C547.913 27.9853 590.091 27.8633 591.354 28.9625C591.64 30.3735 591.644 41.5511 591.68 43.9629C583.103 44.0929 574.406 43.9555 565.793 44.0476C566.464 66.4005 565.237 90.0606 565.949 112.506C565.992 113.591 566.095 114.093 565.55 115.014C562.836 115.721 551.229 115.163 547.305 115.39L547.261 68.383C547.265 60.4348 547.125 51.8642 547.431 43.9742C538.604 43.9273 529.761 44.0968 520.945 43.9968C521.39 39.3221 521.244 33.4559 520.988 28.7816C524.982 27.9122 537.457 28.1515 542.279 28.1452Z""/></svg></span>
+    </div>
+    <div class="nav-chips">
+      <a class="nav-chip" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
+      <a class="nav-chip" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel cols-2" id="menu-orders">
+          <a class="menu-item" href="orders.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span><span class="menu-item-title">Order Tracking</span><span class="menu-item-desc" style="display:block">Review orders and invoices</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span><span class="menu-item-title">Reviews</span><span class="menu-item-desc" style="display:block">Rate your purchases</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span><span class="menu-item-title">Quotes</span><span class="menu-item-desc" style="display:block">Requests &amp; negotiated pricing</span></span></a>
+          <div class="menu-item disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span><span class="menu-item-title">Budgets</span><a class="menu-item-link" href="#">Contact SCOUT to enable Budgets <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></span></div>
+          <a class="menu-item" href="approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg><span><span class="menu-item-title">Order Approvals</span><span class="menu-item-desc" style="display:block">Approve pending requests</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span><span class="menu-item-title">Purchase History</span><span class="menu-item-desc" style="display:block">Your procurement history</span></span></a>
+          <span></span>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg><span><span class="menu-item-title">Funding Report</span><span class="menu-item-desc" style="display:block">Validated invoices awaiting payment</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip active" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-spos">
+          <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-admin" onclick="toggleMenu('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span class="lbl">Admin</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-admin">
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg><span><span class="menu-item-title">Vendor Select</span><span class="menu-item-desc" style="display:block">Shop approved vendors</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h8"/><path d="M8 17h8"/></svg><span><span class="menu-item-title">Shopping Lists</span><span class="menu-item-desc" style="display:block">Product-level restrictions</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span><span class="menu-item-title">Organization</span><span class="menu-item-desc" style="display:block">Org settings &amp; properties</span></span></a>
+        </div>
+      </div>
+    </div>
+    <div class="menu-anchor ctx-switch" id="ctx-switch">
+      <button class="ctx-echo" onclick="toggleCtx()" title="Change property">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/></svg>
+        <span><span class="ctx-kicker" style="display:block">Current Property:</span><span class="ctx-name" id="echo-name" style="display:block">All properties</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="ctx-list" id="ctx-list"></div>
+    </div>
+    <div class="bar-actions">
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      <button class="icon-btn" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></button>
+      <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
+      <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn primary" title="Cart" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
+    </div>
+  </nav>
+</div>
+
+
+
+
+
+
+<section class="hero page-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner" style="flex-direction:column;gap:0">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;width:100%">
+      <div class="hero-title-block">
+        <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+        <div><h1 id="w-title">New Service PO</h1><p id="w-sub">Request a service from an approved vendor</p></div>
+      </div>
+      <a class="back-link" href="spos.html" style="margin:8px 0 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to Service POs</a>
+    </div>
+    <div class="chk-steps" id="chk-steps"></div>
+  </div>
+</section>
+
+<main class="page">
+  <div class="det-grid" id="w-grid">
+    <div class="det-main" id="w-main"></div>
+    <div class="det-side sticky" id="w-side"></div>
+  </div>
+</main>
+
+<script>
+  /* ---------- Theme ---------- */
+  function applyTheme() {
+    const dark = localStorage.getItem('scout-theme') === 'dark';
+    document.body.classList.toggle('dark', dark);
+    const b = document.getElementById('theme-btn');
+    b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+    b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+  }
+  function toggleTheme() { localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark'); applyTheme(); }
+  applyTheme();
+
+  /* ---------- Menus ---------- */
+  function closeMenus() {
+    document.querySelectorAll('.menu-panel').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-chip').forEach(c => c.classList.remove('open'));
+  }
+  function toggleMenu(id) {
+    const panel = document.getElementById('menu-' + id), chip = document.getElementById('nav-' + id);
+    const wasOpen = panel.classList.contains('open');
+    closeMenus(); document.getElementById('ctx-switch').classList.remove('open');
+    if (!wasOpen) { panel.classList.add('open'); chip.classList.add('open'); }
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-anchor')) closeMenus();
+    if (!e.target.closest('.ctx-switch')) document.getElementById('ctx-switch').classList.remove('open');
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); document.getElementById('ctx-switch').classList.remove('open'); } });
+
+  /* ---------- Context switcher ---------- */
+  const PROPERTIES = [
+    { id: 'all', name: 'All properties', desc: 'Combined dashboard for every accessible property', units: null },
+    { id: 'magnolia', name: 'Magnolia Place Apartments', addr: '4201 Veterans Memorial Blvd', city: 'Metairie, LA 70006', units: 51 },
+    { id: 'bayou', name: 'Bayou Crossing Apartments', addr: '3850 Airline Dr', city: 'Baton Rouge, LA 70805', units: 120 },
+    { id: 'lonestar', name: 'Lone Star Flats', addr: '7200 Westheimer Rd', city: 'Houston, TX 77057', units: 78 },
+    { id: 'central', name: 'Central Park View', addr: '1501 Canal St', city: 'New Orleans, LA 70112', units: 96 },
+    { id: 'cypress', name: 'Cypress Lake Apartments', addr: '9100 Cypress Lake Dr', city: 'Lafayette, LA 70508', units: 64 },
+    { id: 'beauchene', name: 'Beau Chene Villas', addr: '225 Beau Chene Blvd', city: 'Mandeville, LA 70471', units: 40 },
+    { id: 'sherwood', name: 'Sherwood Acres', addr: '1250 Sherwood Forest Blvd', city: 'Baton Rouge, LA 70815', units: 88 },
+    { id: 'cyprus', name: 'Cyprus Glenn', addr: '4800 Cyprus Glenn Way', city: 'Shreveport, LA 71105', units: 32 },
+    { id: 'heights', name: 'Magnolia Heights Apartments', addr: '6301 Magnolia Heights Rd', city: 'Houston, TX 77004', units: 110 }
+  ];
+  let currentProp = 'all';
+  const bIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
+  const pinIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  function renderCtxList() {
+    document.getElementById('ctx-list').innerHTML = PROPERTIES.map(p => {
+      const active = p.id === currentProp;
+      const body = p.id === 'all'
+        ? '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.desc + '</span>'
+        : '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.addr + '</span><span class="opt-city">' + pinIcon + p.city + '</span>';
+      const units = p.units ? '<span class="units-badge"><b>' + p.units + '</b><span>units</span></span>' : '';
+      return '<button class="ctx-option' + (active ? ' active' : '') + '" onclick="selectProp(\'' + p.id + '\')"><span class="opt-tile">' + bIcon + '</span><span class="opt-body">' + body + '</span>' + units + '</button>';
+    }).join('');
+  }
+  function selectProp(id) {
+    currentProp = id;
+    const p = PROPERTIES.find(x => x.id === id);
+    document.getElementById('echo-name').textContent = p.name;
+    document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
+    renderCtxList();
+    document.getElementById('ctx-switch').classList.remove('open');
+    renderPage();
+  }
+  function toggleCtx() {
+    const el = document.getElementById('ctx-switch');
+    const wasOpen = el.classList.contains('open');
+    closeMenus();
+    if (!wasOpen) el.classList.add('open');
+  }
+  renderCtxList();
+
+  const money = SPO.money, r2 = SPO.r2;
+  const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  const IC = {
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    sparkle: SVG + '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>',
+    plus: SVG + '<path d="M5 12h14"/><path d="M12 5v14"/></svg>',
+    minus: SVG + '<path d="M5 12h14"/></svg>',
+    trash: SVG + '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>',
+    split: SVG + '<path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>',
+    warn: SVG + '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+    info: SVG + '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+    send: SVG + '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>',
+    shield: SVG + '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+    pin: SVG + '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
+    store: SVG + '<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/></svg>',
+    search: SVG + '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+    wrench: SVG + '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    chart: SVG + '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg>',
+    save: SVG + '<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>'
+  };
+  const STEP_LIST = [['property', 'Property & Vendor', 'Where and who'], ['scope', 'Scope', 'Describe the work'], ['costs', 'Costs & GL', 'Price and allocate'], ['review', 'Review', 'Budget and submit']];
+  const PERIOD = 'Aug 2026';
+  const WKEY = 'scout-spo-wip';
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const propOf = id => PROPERTIES.find(p => p.id === id);
+
+  /* ---------- work-in-progress SPO (survives step navigation) ---------- */
+  function blankW() { return { id: null, created: null, prop: currentProp !== 'all' ? currentProp : null, v: null, scope: '', period: PERIOD, lines: [], drafted: false, ai: null }; }
+  function loadW() { try { return JSON.parse(sessionStorage.getItem(WKEY)) || blankW(); } catch (e) { return blankW(); } }
+  function saveW() { try { sessionStorage.setItem(WKEY, JSON.stringify(W)); } catch (e) { /* session only */ } }
+  let W = loadW();
+  function fromSpo(d, keep) {
+    return { id: keep ? d.id : null, created: keep ? d.ev.created : null, prop: d.prop, v: d.v, scope: d.scope, period: keep ? d.period : PERIOD, lines: clone(d.lines), drafted: true, ai: null, cloneOf: keep ? null : d.id };
+  }
+
+  const lineTotal = l => r2((l.qty || 0) * (l.price || 0));
+  const wTotal = () => r2(W.lines.reduce((a, l) => a + lineTotal(l), 0));
+  const asSpo = () => ({ id: W.id || -1, prop: W.prop, period: W.period, lines: W.lines.map(l => ({ desc: l.desc, qty: l.qty, price: l.price || 0, alloc: l.alloc.map(a => ({ gl: a.gl, unit: a.unit, amt: a.amt || 0 })) })) });
+  function syncAlloc(l) { if (l.alloc.length === 1) l.alloc[0].amt = lineTotal(l); }
+
+  /* ---------- step guard ---------- */
+  function blockers() {
+    const out = [], pName = W.prop ? propOf(W.prop).name : 'this property';
+    if (!W.lines.length) out.push('Add at least one line');
+    W.lines.forEach((l, i) => {
+      const n = 'Line ' + (i + 1);
+      if (!(l.desc || '').trim()) out.push(n + ': add a description');
+      if (!(l.price > 0)) out.push(n + ': add a price — none was given in the scope');
+      l.alloc.forEach(a => {
+        if (!a.gl) out.push(n + ': choose a GL code');
+        if (!a.unit) out.push(a.warnUnit ? n + ': unit ' + a.warnUnit + ' isn’t at ' + pName + ' — choose the right unit' : n + ': choose a unit or Common area');
+      });
+      if (l.alloc.length > 1) { const sum = r2(l.alloc.reduce((s, a) => s + (a.amt || 0), 0)); if (Math.abs(sum - lineTotal(l)) > 0.005) out.push(n + ': split amounts total ' + money(sum) + ' of ' + money(lineTotal(l))); }
+    });
+    return [...new Set(out)];
+  }
+  function stepOk(k) {
+    if (k === 'property') return !!(W.prop && W.v);
+    if (k === 'scope') return (W.scope || '').trim().length >= 10;
+    if (k === 'costs') return blockers().length === 0;
+    return true;
+  }
+
+  function route() {
+    let h = (location.hash || '').replace('#', '');
+    if (/^\d+$/.test(h)) { const d = SPO.get(h); if (d && d.state === 'draft') { W = fromSpo(d, true); saveW(); } location.replace('#review'); return null; }
+    if (/^clone-\d+$/.test(h)) { const d = SPO.get(h.slice(6)); if (d) { W = fromSpo(d, false); saveW(); } location.replace('#costs'); return null; }
+    if (h === 'new' || !h) { W = blankW(); saveW(); location.replace('#property'); return null; }
+    if (h.indexOf('done-') === 0) return 'done';
+    if (!STEP_LIST.some(s => s[0] === h)) h = 'property';
+    const idx = STEP_LIST.findIndex(s => s[0] === h);
+    const maxOk = !stepOk('property') ? 0 : !stepOk('scope') ? 1 : !stepOk('costs') ? 2 : 3;
+    if (idx > maxOk) { location.replace('#' + STEP_LIST[maxOk][0]); return null; }
+    return h;
+  }
+
+  function stepBand(cur) {
+    const idx = STEP_LIST.findIndex(s => s[0] === cur);
+    document.getElementById('chk-steps').innerHTML = STEP_LIST.map(([id, t, d], i) => {
+      const cls = i < idx ? 'done' : i === idx ? 'active' : '';
+      return '<div class="chk-step ' + cls + '"' + (i < idx ? ' onclick="location.hash=\'#' + id + '\'"' : '') + '><span class="n">' + (i < idx ? IC.check : (i + 1)) + '</span><span><span class="t">' + t + '</span><br><span class="d">' + d + '</span></span></div>' + (i < STEP_LIST.length - 1 ? '<div class="chk-conn' + (i < idx ? ' done' : '') + '"></div>' : '');
+    }).join('');
+  }
+
+  /* ---------- combo box (from the cart's GL / Unit picker) ---------- */
+  const combo = { open: null, q: '' };
+  function comboHtml(key, placeholder, opts, selVal, warn) {
+    const isOpen = combo.open === key, q = isOpen ? combo.q.toLowerCase() : '';
+    const list = opts.filter(o => !q || (o[1] + ' ' + o[2] + ' ' + (o[3] || '')).toLowerCase().includes(q));
+    const sel = opts.find(o => o[0] === selVal);
+    return '<div class="combo' + (isOpen ? ' open' : '') + '" data-key="' + key + '">' +
+      '<button class="combo-trigger"' + (warn ? ' style="border-color:var(--amber);background:var(--amber-soft)"' : '') + ' onclick="comboToggle(\'' + key + '\')">' + (sel ? sel[4] : '<span class="ph">' + placeholder + '</span>') +
+      '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>' +
+      '<div class="combo-pop"><div class="combo-search">' + IC.search + '<input id="combo-in-' + key + '" placeholder="Search…" value="' + combo.q.replace(/"/g, '&quot;') + '" oninput="comboFilter(\'' + key + '\', this.value)"></div>' +
+      '<div class="combo-list">' + (list.length ? list.map(o => '<button class="combo-opt' + (o[0] === selVal ? ' selected' : '') + '" onclick="comboPick(\'' + key + '\', \'' + o[0] + '\')">' + (o[1] ? '<span class="code">' + o[1] + '</span>' : '') + '<span>' + o[2] + (o[3] ? '<span class="sub">' + o[3] + '</span>' : '') + '</span></button>').join('') : '<div class="combo-empty">No matches</div>') + '</div></div></div>';
+  }
+  function comboToggle(key) { combo.open = combo.open === key ? null : key; combo.q = ''; renderPage(); if (combo.open) { const el = document.getElementById('combo-in-' + key); if (el) el.focus(); } }
+  function comboFilter(key, v) { combo.q = v; renderPage(); const el = document.getElementById('combo-in-' + key); if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }
+  function comboPick(key, val) {
+    const [kind, a, b] = key.split('~');
+    if (kind === 'prop') setProp(val);
+    else { const al = W.lines[+a].alloc[+b]; if (kind === 'gl') al.gl = val; else { al.unit = val; al.warnUnit = null; } }
+    combo.open = null; combo.q = ''; saveW(); renderPage();
+  }
+  document.addEventListener('click', e => { if (combo.open && e.target.isConnected && !e.target.closest('.combo')) { combo.open = null; combo.q = ''; renderPage(); } });
+
+  const glOpts = () => SPO.GL.map(([c, n]) => [c, c, n, '', c + ' · ' + n]);
+  const unitOpts = () => [['COMMON', '', 'Common area', 'Grounds, amenities, shared spaces', 'Common area']]
+    .concat(SPO.units(W.prop).map(u => [u.code, u.code, 'Building ' + u.bldg, u.plan, 'Unit ' + u.code + ' · Bldg ' + u.bldg]));
+  const propOpts = () => PROPERTIES.filter(p => p.id !== 'all').map(p => [p.id, '', p.name, p.city + ' · ' + p.units + ' units', p.name]);
+
+  function setProp(id) {
+    if (W.prop === id) return;
+    W.prop = id;
+    const codes = SPO.units(id).map(u => u.code);
+    W.lines.forEach(l => l.alloc.forEach(a => { if (a.unit && a.unit !== 'COMMON' && codes.indexOf(a.unit) < 0) { a.warnUnit = a.unit; a.unit = null; } }));
+  }
+
+  /* ---------- Scout AI: draft lines from the scope ---------- */
+  const TRADES = [
+    [/dryer vent/i, 'Dryer vent repair', '6060'], [/sewer|hydro-?jet|main line/i, 'Sewer line clearing', '6100'], [/drain|clog/i, 'Drain clearing', '6100'],
+    [/leak|plumb|toilet|faucet|water heater/i, 'Plumbing repair', '6100'], [/gfci|outlet|circuit|breaker|electric/i, 'Electrical repair', '6075'],
+    [/wall-?pack|light|fixture/i, 'Lighting repair', '6075'], [/hvac|condenser|refrigerant|a\/c|furnace|thermostat/i, 'HVAC service', '6115'],
+    [/fence|gate/i, 'Fence & gate repair', '6090'], [/dishwasher|washer|refrigerator|range|oven|appliance/i, 'Appliance repair', '6060'],
+    [/carpet/i, 'Carpet cleaning', '6035'], [/paint|repaint/i, 'Interior paint', '6140'], [/drywall|sheetrock|patch/i, 'Drywall repair', '6025'],
+    [/clean/i, 'Make-ready cleaning', '6045', true], [/roof|siding|gutter|exterior/i, 'Exterior repair', '6020', true]
+  ];
+  const COMMON_RE = /clubhouse|common|pool|stairwell|hallway|lobby|exterior|grounds|roof|rooftop|parking|leasing office|fitness/i;
+  function unitNums(t) {
+    const out = [], re = /\b(?:units?|apt\.?|apartment)\s*#?\s*((?:\d{2,4}(?:\s*(?:,|and|&|\/)\s*(?:#|units?\s*)?)?)+)/gi;
+    let m; while ((m = re.exec(t))) (m[1].match(/\d{2,4}/g) || []).forEach(n => out.push(n));
+    return [...new Set(out)];
+  }
+  /* Resolve against the property's unit master. Never coerce: "1805" is only 1805. */
+  function resolveUnit(n) { const cand = n.length >= 4 ? n : n.padStart(4, '0'); return SPO.units(W.prop).some(u => u.code === cand) ? cand : null; }
+
+  function aiDraft() {
+    const sentences = W.scope.split(/(?<=[.;!?])\s+|\n+/).map(s => s.replace(/^[-•\s]+/, '').trim()).filter(Boolean);
+    const lines = [], unmatched = [];
+    let noPrice = 0;
+    sentences.forEach(t => {
+      /* specific trades first; generic ones ("clean", "exterior") only when nothing specific matched */
+      const trades = []; TRADES.forEach(([re, label, gl, generic]) => { if (!generic && re.test(t) && !trades.some(x => x[1] === gl)) trades.push([label, gl]); });
+      if (!trades.length) TRADES.forEach(([re, label, gl, generic]) => { if (generic && !trades.length && re.test(t)) trades.push([label, gl]); });
+      if (!trades.length) return;
+      const pm = t.match(/\$\s?([\d,]+(?:\.\d{1,2})?)/), price = pm ? parseFloat(pm[1].replace(/,/g, '')) : null;
+      const per = /per unit|each|\/\s?unit|apiece/i.test(t);
+      const nums = unitNums(t).map(n => ({ raw: n, code: resolveUnit(n) }));
+      nums.forEach(u => { if (!u.code) unmatched.push(u.raw); });
+      const common = !nums.length && COMMON_RE.test(t);
+      const unitOf = u => u ? { unit: u.code, warnUnit: u.code ? null : u.raw } : { unit: common ? 'COMMON' : null, warnUnit: null };
+      if (price === null) noPrice++;
+      if (trades.length > 1) {
+        const u = unitOf(nums[0]);
+        const share = price !== null ? r2(price / trades.length) : null;
+        lines.push({ desc: trades.map(x => x[0]).join(' + ') + (nums[0] ? ', unit ' + nums[0].raw : ''), qty: 1, price, alloc: trades.map(x => Object.assign({ gl: x[1], amt: share }, u)) });
+      } else if (nums.length > 1 && per) {
+        nums.forEach(u => lines.push({ desc: trades[0][0] + ', unit ' + u.raw, qty: 1, price, alloc: [Object.assign({ gl: trades[0][1], amt: price }, unitOf(u))] }));
+      } else if (nums.length > 1) {
+        const share = price !== null ? r2(price / nums.length) : null;
+        lines.push({ desc: trades[0][0] + ' (' + nums.length + ' units)', qty: 1, price, alloc: nums.map(u => Object.assign({ gl: trades[0][1], amt: share }, unitOf(u))) });
+      } else {
+        lines.push({ desc: trades[0][0] + (nums[0] ? ', unit ' + nums[0].raw : ''), qty: 1, price, alloc: [Object.assign({ gl: trades[0][1], amt: price }, unitOf(nums[0]))] });
+      }
+    });
+    W.lines = lines.length ? lines : [{ desc: '', qty: 1, price: null, alloc: [{ gl: null, unit: null, amt: null }] }];
+    W.lines.forEach(syncAlloc);
+    W.drafted = true;
+    W.ai = { lines: lines.length, priced: lines.filter(l => l.price !== null).length, noPrice: lines.filter(l => l.price === null).length, unmatched: [...new Set(unmatched)] };
+    saveW();
+  }
+
+  /* ---------- line editing ---------- */
+  function parseMoney(v) { const n = parseFloat(String(v).replace(/[$,\s]/g, '')); return isNaN(n) || n < 0 ? null : r2(n); }
+  function setDesc(i, v) { W.lines[i].desc = v; saveW(); renderPage(); }
+  function setQty(i, v) { const n = Math.max(1, parseInt(v, 10) || 1); W.lines[i].qty = n; rebalance(W.lines[i]); saveW(); renderPage(); }
+  function bumpQty(i, d) { setQty(i, (W.lines[i].qty || 1) + d); }
+  function setPrice(i, v) { W.lines[i].price = parseMoney(v); rebalance(W.lines[i]); saveW(); renderPage(); }
+  function setAmt(i, k, v) { W.lines[i].alloc[k].amt = parseMoney(v); saveW(); renderPage(); }
+  function rebalance(l) { if (l.alloc.length === 1) syncAlloc(l); else splitEven(l, true); }
+  function splitEven(l, silent) {
+    const t = lineTotal(l), n = l.alloc.length, each = r2(t / n);
+    l.alloc.forEach((a, k) => { a.amt = k === n - 1 ? r2(t - each * (n - 1)) : each; });
+    if (!silent) { saveW(); renderPage(); }
+  }
+  function addSplit(i) { const l = W.lines[i]; const last = l.alloc[l.alloc.length - 1]; l.alloc.push({ gl: last.gl, unit: null, amt: 0 }); splitEven(l, true); saveW(); renderPage(); }
+  function rmAlloc(i, k) { const l = W.lines[i]; l.alloc.splice(k, 1); rebalance(l); saveW(); renderPage(); }
+  function addLine() { W.lines.push({ desc: '', qty: 1, price: null, alloc: [{ gl: null, unit: null, amt: null }] }); saveW(); renderPage(); }
+  function rmLine(i) { W.lines.splice(i, 1); saveW(); renderPage(); }
+  /* A description that names a unit the allocation doesn't use is flagged — never silently disagreeing (audit SPO-15). */
+  function descMismatch(l) {
+    const named = unitNums(l.desc).map(n => n.length >= 4 ? n : n.padStart(4, '0'));
+    if (!named.length) return null;
+    const used = l.alloc.map(a => a.unit).filter(Boolean);
+    if (!used.length || used.some(u => named.indexOf(u) >= 0)) return null;
+    return unitNums(l.desc)[0];
+  }
+
+  /* ---------- render ---------- */
+  function railSummary(showCta) {
+    const p = W.prop ? propOf(W.prop) : null, v = W.v ? SPO.VEN[W.v] : null, t = wTotal();
+    const appr = W.lines.length && W.prop ? SPO.needsApproval(asSpo()) : false;
+    return '<div class="card"><div class="det-card-head"><h2>Service PO</h2></div>' +
+      '<div class="sum-row"><span class="muted">Property</span><span style="text-align:right">' + (p ? p.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
+      '<div class="sum-row"><span class="muted">Vendor</span><span style="text-align:right">' + (v ? v.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
+      '<div class="sum-row"><span class="muted">Spend period</span><span>' + W.period + '</span></div>' +
+      '<div class="sum-row"><span class="muted">Lines</span><span>' + W.lines.length + '</span></div>' +
+      '<div class="sum-grand"><span>Estimate</span><span class="amt">' + money(t) + '</span></div>' +
+      (W.lines.length && t > 0 ? '<div class="w-note' + (appr ? ' warn' : '') + '" style="margin-top:12px">' + (appr ? IC.shield : IC.info) + '<span>' + (appr ? 'Needs Supervisor approval before it goes to the vendor' : 'Within budget — no approval needed') + '</span></div>' : '') +
+      (showCta || '') + '</div>';
+  }
+
+  function viewProperty() {
+    const q = (W.vq || '').toLowerCase();
+    const vs = Object.keys(SPO.VEN).filter(k => { const o = SPO.VEN[k]; return !q || (o.name + ' ' + o.trade).toLowerCase().includes(q); }).sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
+    return '<div class="card"><div class="det-card-head hd"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.pin + '</span>Property</h2></div>' +
+      '<div class="w-field" style="margin-top:10px"><label>This SPO is for</label>' + comboHtml('prop', 'Choose a property…', propOpts(), W.prop) + '</div>' +
+      '<div class="w-note">' + IC.info + '<span>Units and GL budgets come from this property.</span></div></div>' +
+      '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.store + '</span>Vendor</h2><div class="sub">Approved service vendors · the PO goes to the email on file</div></div></div>' +
+      '<div class="search-wrap" style="margin:12px 0;max-width:none">' + IC.search.replace('<svg', '<svg class="search-icon"') + '<input class="search-field" placeholder="Search vendors or trades…" value="' + (W.vq || '').replace(/"/g, '&quot;') + '" oninput="W.vq = this.value; renderPage(); const f = document.querySelector(\'.search-field\'); f.focus(); f.setSelectionRange(f.value.length, f.value.length)"></div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px">' + (vs.length ? vs.map(k => { const o = SPO.VEN[k]; return '<button class="opt-row' + (W.v === k ? ' selected' : '') + '" onclick="W.v = \'' + k + '\'; saveW(); renderPage()"><span class="opt-ic" style="font-size:11px;font-weight:700">' + k + '</span><span class="opt-body"><span class="opt-name">' + o.name + '</span><span class="opt-desc">' + o.trade + ' · ' + o.email + '</span></span><span class="opt-radio">' + IC.check + '</span></button>'; }).join('') : '<div class="combo-empty">No vendors match</div>') + '</div>' +
+      '<button class="btn btn-primary btn-block" style="margin-top:16px"' + (stepOk('property') ? '' : ' disabled') + ' onclick="location.hash=\'#scope\'">Continue</button>' +
+      (stepOk('property') ? '' : '<div class="w-note" style="justify-content:center">' + IC.info + '<span>Choose a property and a vendor to continue.</span></div>') + '</div>';
+  }
+
+  function viewScope() {
+    return '<div class="card"><div class="det-card-head hd"><div><h2>Scope of work</h2><div class="sub">Describe the work only — property, requester and spend period are added for you</div></div></div>' +
+      '<div class="w-field" style="margin-top:12px"><textarea class="text-in" id="scope-in" placeholder="e.g. Interior paint for Units 0102 and 0103 at $400 per unit. Carpet cleaning for Unit 0104, flat $200." oninput="W.scope = this.value; saveW(); scopeGate()">' + W.scope + '</textarea></div>' +
+      '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px">' +
+      '<button class="btn btn-ai" id="ai-btn" style="display:inline-flex;align-items:center;gap:8px"' + (stepOk('scope') ? '' : ' disabled') + ' onclick="draftAndGo()"><span style="display:inline-flex;width:15px;height:15px">' + IC.sparkle + '</span>' + (W.drafted ? 'Re-draft line items with Scout AI' : 'Draft line items with Scout AI') + '</button>' +
+      '<button class="w-linkbtn" onclick="tryExample()">Try an example scope</button></div>' +
+      (W.drafted ? '<div class="w-note">' + IC.info + '<span>Re-drafting replaces your current ' + W.lines.length + ' line' + (W.lines.length === 1 ? '' : 's') + '. Continue keeps them.</span></div>' : '') +
+      '<div class="sum-row" style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px"><span class="muted">Spend period</span><span>' + W.period + ' · set by the budget calendar</span></div>' +
+      '<button class="btn btn-primary btn-block" id="scope-go" style="margin-top:16px"' + (stepOk('scope') ? '' : ' disabled') + ' onclick="scopeContinue()">Continue</button></div>';
+  }
+  function scopeGate() { const ok = stepOk('scope'); ['ai-btn', 'scope-go'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !ok; }); }
+  function tryExample() {
+    W.scope = 'Make-ready for three vacant units. Interior paint for Units 0102 and 0103 at $400 per unit. Carpet cleaning for Unit 0104, flat $200. Repair the dryer vent in Unit 1805.';
+    saveW(); renderPage();
+  }
+  function draftAndGo() { aiDraft(); location.hash = '#costs'; }
+  function scopeContinue() { if (!W.drafted) aiDraft(); location.hash = '#costs'; }
+
+  function aiBlock() {
+    if (!W.ai) return '';
+    const a = W.ai, pName = propOf(W.prop).name, items = [];
+    items.push(a.priced + ' of ' + a.lines + ' line' + (a.lines === 1 ? '' : 's') + ' priced from your scope');
+    if (a.noPrice) items.push(a.noPrice + ' line' + (a.noPrice === 1 ? ' has' : 's have') + ' no price — none was given, so none was guessed');
+    a.unmatched.forEach(u => items.push('Unit ' + u + ' isn’t at ' + pName + ' — choose the right unit'));
+    items.push('GL codes suggested from the trade on each line');
+    return '<div class="ai-block"><div class="ai-head"><span class="ai-icon">' + IC.sparkle + '</span>Scout AI drafted ' + a.lines + ' line' + (a.lines === 1 ? '' : 's') + '</div><ul>' + items.map(t => '<li>' + t + '</li>').join('') + '</ul>' +
+      '<div class="ai-foot">Suggestions only — check every price, GL code and unit before submitting.</div></div>';
+  }
+
+  function viewCosts() {
+    const pName = propOf(W.prop).name;
+    const lines = W.lines.map((l, i) => {
+      const multi = l.alloc.length > 1, sum = r2(l.alloc.reduce((s, a) => s + (a.amt || 0), 0)), mism = descMismatch(l);
+      return '<div class="w-line"><div class="w-line-head"><span class="n">Line ' + (i + 1) + '</span><span class="tot">' + money(lineTotal(l)) + '</span>' +
+        (W.lines.length > 1 ? '<button class="row-action" title="Remove line" onclick="rmLine(' + i + ')">' + IC.trash + '</button>' : '') + '</div>' +
+        '<div class="w-grid"><div class="w-field"><label>Description</label><input class="text-in" value="' + (l.desc || '').replace(/"/g, '&quot;') + '" placeholder="What is being done" onchange="setDesc(' + i + ', this.value)"></div>' +
+        '<div class="w-field"><label>Qty</label><span class="stepper" style="height:38px"><button onclick="bumpQty(' + i + ', -1)"' + (l.qty <= 1 ? ' disabled' : '') + '>' + IC.minus + '</button><input value="' + l.qty + '" onchange="setQty(' + i + ', this.value)"><button onclick="bumpQty(' + i + ', 1)">' + IC.plus + '</button></span></div>' +
+        '<div class="w-field"><label>Unit price</label><span class="money-in' + (l.price > 0 ? '' : ' err') + '"><span class="cur">$</span><input inputmode="decimal" placeholder="0.00" value="' + (l.price !== null && l.price !== undefined ? l.price.toFixed(2) : '') + '" onfocus="this.select()" onchange="setPrice(' + i + ', this.value)"></span></div></div>' +
+        l.alloc.map((a, k) => '<div class="w-alloc' + (multi ? '' : ' single') + '">' +
+          '<div class="w-field"><label>GL code' + (multi ? ' · portion ' + (k + 1) : '') + '</label>' + comboHtml('gl~' + i + '~' + k, 'Select GL code…', glOpts(), a.gl) + '</div>' +
+          '<div class="w-field"><label>Unit</label>' + comboHtml('unit~' + i + '~' + k, a.warnUnit ? 'Unit ' + a.warnUnit + ' not found' : 'Select unit…', unitOpts(), a.unit, !!a.warnUnit) + '</div>' +
+          (multi ? '<div class="w-field"><label>Amount</label><span class="money-in"><span class="cur">$</span><input inputmode="decimal" value="' + (a.amt || 0).toFixed(2) + '" onfocus="this.select()" onchange="setAmt(' + i + ', ' + k + ', this.value)"></span></div><button class="row-action" title="Remove portion" onclick="rmAlloc(' + i + ', ' + k + ')">' + IC.trash + '</button>' : '') + '</div>' +
+          (a.warnUnit ? '<div class="w-note warn">' + IC.warn + '<span>Your scope names unit ' + a.warnUnit + ', which isn’t in ' + pName + '’s unit list. Choose the unit this work is for — Scout won’t guess.</span></div>' : '')).join('') +
+        (mism ? '<div class="w-note warn">' + IC.warn + '<span>The description mentions unit ' + mism + ' but this line is allocated elsewhere — update one so they agree.</span></div>' : '') +
+        (multi && Math.abs(sum - lineTotal(l)) > 0.005 ? '<div class="w-note warn">' + IC.warn + '<span>Portions total ' + money(sum) + ' — they need to add up to ' + money(lineTotal(l)) + '.</span></div>' : '') +
+        '<div style="display:flex;gap:16px;margin-top:12px"><button class="w-linkbtn" onclick="addSplit(' + i + ')">' + IC.split + 'Split across GL codes or units</button>' + (multi ? '<button class="w-linkbtn" onclick="splitEven(W.lines[' + i + '])">Split evenly</button>' : '') + '</div></div>';
+    }).join('');
+    const bl = blockers();
+    return aiBlock() + '<div class="card"><div class="det-card-head hd"><div><h2>Costs &amp; GL allocation</h2><div class="sub">Every dollar gets a GL code and a unit</div></div></div><div style="margin-top:12px">' + lines + '</div>' +
+      '<button class="btn" style="margin-top:12px;display:inline-flex;align-items:center;gap:8px" onclick="addLine()"><span style="display:inline-flex;width:15px;height:15px">' + IC.plus + '</span>Add line</button>' +
+      '<button class="btn btn-primary btn-block" style="margin-top:16px"' + (bl.length ? ' disabled' : '') + ' onclick="location.hash=\'#review\'">Continue to review</button>' +
+      (bl.length ? '<ul class="w-blockers">' + bl.map(b => '<li>' + b + '</li>').join('') + '</ul>' : '') + '</div>';
+  }
+
+  function budgetMeters() {
+    const bud = SPO.budget(W.prop, W.period, W.id || -1), mine = {};
+    W.lines.forEach(l => l.alloc.forEach(a => { if (a.gl) mine[a.gl] = r2((mine[a.gl] || 0) + (a.amt || 0)); }));
+    return Object.keys(mine).sort().map(g => {
+      const b = bud[g], after = r2(b.spent + b.committed + mine[g]), over = after > b.budget, scale = Math.max(b.budget, after);
+      const w = v => (v / scale * 100).toFixed(2) + '%';
+      return '<div class="bmeter' + (over ? ' over' : '') + '"><div class="bmeter-head"><span class="gl"><code>' + g + '</code>' + SPO.glName(g) + '</span><span class="pct">' + Math.round(after / b.budget * 100) + '% of budget</span></div>' +
+        '<div class="bmeter-bar"><span class="sp" style="width:' + w(b.spent) + '"></span><span class="cm" style="width:' + w(b.committed) + '"></span><span class="me" style="width:' + w(mine[g]) + '"></span>' + (over ? '<span class="cap" style="left:' + w(b.budget) + '"></span>' : '') + '</div>' +
+        '<div class="bmeter-sub">' + money(after) + ' of ' + money(b.budget) + (over ? ' · <b style="color:var(--rose)">over by ' + money(r2(after - b.budget)) + '</b>' : ' · ' + money(r2(b.budget - after)) + ' left') + ' · this SPO ' + money(mine[g]) + '</div></div>';
+    }).join('') +
+    '<div class="bmeter-legend"><span><i style="background:color-mix(in srgb, var(--primary) 45%, var(--muted))"></i>Spent</span><span><i style="background:color-mix(in srgb, var(--sky) 55%, var(--muted))"></i>Committed on open SPOs</span><span><i style="background:var(--amber)"></i>This SPO</span></div>';
+  }
+
+  function viewReview() {
+    const p = propOf(W.prop), v = SPO.VEN[W.v], t = wTotal(), s = asSpo();
+    const over = SPO.glOver(s), overLimit = t > SPO.APPROVAL_LIMIT, appr = overLimit || over.length > 0;
+    const allocChips = l => '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span>' + SPO.unitLabel(a.unit) + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
+    const edit = h => '<a class="text-link" href="#' + h + '" style="font-size:13px">Edit</a>';
+    const main = '<div class="card"><div class="det-card-head hd"><h2>Property &amp; vendor</h2>' + edit('property') + '</div><dl class="fact-rows wide" style="margin-top:10px">' +
+      '<dt>Property</dt><dd>' + p.name + '</dd><dt>Vendor</dt><dd>' + v.name + '</dd><dt>PO goes to</dt><dd>' + v.email + '</dd><dt>Requested by</dt><dd>Alicia Grant</dd><dt>Spend period</dt><dd>' + W.period + '</dd></dl></div>' +
+      '<div class="card"><div class="det-card-head hd"><h2>Scope of work</h2>' + edit('scope') + '</div><p class="spo-scope" style="margin-top:8px">' + W.scope + '</p></div>' +
+      '<div class="card"><div class="det-card-head hd"><h2>Line items</h2>' + edit('costs') + '</div>' +
+      W.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(lineTotal(l)) + '</span>' + allocChips(l) + '</div>').join('') +
+      '<div class="det-totals"><div class="tot-row grand"><span>SPO estimate</span><span>' + money(t) + '</span></div></div></div>' +
+      '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.chart + '</span>Budget check</h2><div class="sub">' + p.name + ' · ' + W.period + '</div></div></div><div style="margin-top:12px">' + budgetMeters() + '</div></div>';
+    const why = overLimit && over.length ? 'Over ' + money(SPO.APPROVAL_LIMIT) + ' and over the ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' budget.'
+      : overLimit ? 'Over ' + money(SPO.APPROVAL_LIMIT) + '.' : over.length ? 'Pushes ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' over its ' + W.period + ' budget.' : '';
+    const cta = appr
+      ? '<div class="callout amber" style="margin-top:14px"><b>Supervisor approval required</b>' + why + ' Submitting sends it to Order Approvals — ' + v.name + ' gets nothing until it’s approved.</div>' +
+        '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="submitSpo()"><span style="display:inline-flex;width:16px;height:16px">' + IC.shield + '</span>Submit for approval</button>'
+      : '<div class="callout emerald" style="margin-top:14px"><b>No approval needed</b>Within budget and under ' + money(SPO.APPROVAL_LIMIT) + '. Submitting emails the PO to ' + v.email + '.</div>' +
+        '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="submitSpo()"><span style="display:inline-flex;width:16px;height:16px">' + IC.send + '</span>Send to ' + v.name + '</button>';
+    const side = railSummary(cta + '<button class="btn btn-block" style="margin-top:10px;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="saveDraft()"><span style="display:inline-flex;width:15px;height:15px">' + IC.save + '</span>Save draft</button>');
+    return [main, side];
+  }
+
+  function persist(state) {
+    const id = W.id || SPO.nextId(), existing = W.id ? SPO.get(W.id) : null;
+    const s = existing || { id, by: 'Alicia Grant', ev: { created: SPO.now() } };
+    Object.assign(s, { state, prop: W.prop, v: W.v, scope: W.scope.trim(), period: W.period, lines: W.lines.map(l => ({ desc: l.desc, qty: l.qty, price: l.price, alloc: l.alloc.map(a => ({ gl: a.gl, unit: a.unit, amt: a.amt })) })) });
+    if (!s.log) s.log = [{ at: s.ev.created, t: state === 'draft' ? 'Draft saved' : 'SPO created', sub: 'by Alicia Grant' + (W.cloneOf ? ' · cloned from SPO-' + W.cloneOf : ''), hi: false }];
+    return s;
+  }
+  function saveDraft() {
+    const s = persist('draft');
+    if (W.id) SPO.log(s, 'Draft saved', 'by Alicia Grant');
+    SPO.save(s); W.id = s.id; saveW();
+    showToast('Draft saved', 'SPO-' + s.id + ' — pick it up from Service POs any time.');
+  }
+  function submitSpo() {
+    const appr = SPO.needsApproval(asSpo());
+    const s = persist(appr ? 'approval' : 'sent'), v = SPO.VEN[W.v];
+    if (appr) { s.ev.approvalReq = SPO.now(); SPO.log(s, 'Sent for approval', wTotal() > SPO.APPROVAL_LIMIT ? 'Over ' + money(SPO.APPROVAL_LIMIT) + ' · Supervisor sign-off' : 'Over the GL budget · Supervisor sign-off'); }
+    else { s.ev.sent = SPO.now(); SPO.log(s, 'Sent to vendor', 'PO emailed to ' + v.email); }
+    SPO.save(s);
+    try { sessionStorage.removeItem(WKEY); } catch (e) { /* noop */ }
+    location.hash = '#done-' + s.id;
+  }
+
+  function viewDone(id) {
+    const s = SPO.get(id), v = SPO.VEN[s.v], p = propOf(s.prop), appr = s.state === 'approval';
+    const steps = appr
+      ? [['Supervisor review', 'It’s in Order Approvals now. You’ll be notified when it’s decided.'], ['Sent to ' + v.name, 'Once approved, the PO goes to ' + v.email + ' automatically.'], ['Vendor response', 'The vendor accepts or rejects before any work is scheduled.']]
+      : [['Vendor response', v.name + ' accepts or rejects the PO before any work is scheduled.'], ['Invoice', 'Their invoice arrives by email, or you upload it on the SPO.'], ['Map & send to Accounting', 'Match the invoice to these lines, then send the payment packet.']];
+    return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px' + (appr ? ';background:var(--amber-soft);color:var(--amber)' : '') + '"><span style="display:inline-flex;width:34px;height:34px">' + (appr ? IC.shield : IC.send) + '</span></div>' +
+      '<h1 style="margin-bottom:0">' + (appr ? 'SPO-' + s.id + ' sent for approval' : 'SPO-' + s.id + ' sent to ' + v.name) + '</h1>' +
+      '<div class="confirm-sub">' + p.name + ' · ' + money(SPO.total(s)) + ' estimate</div>' +
+      '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">What happens next?</h2></div>' + steps.map((st, i) => '<div class="next-step"><span class="nn">' + (i + 1) + '</span><div><b>' + st[0] + '</b><span>' + st[1] + '</span></div></div>').join('') + '</div>' +
+      '<div class="confirm-actions"><a class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" href="spo.html#' + s.id + '"><span style="display:inline-flex;width:16px;height:16px">' + IC.wrench + '</span>View SPO-' + s.id + '</a>' +
+      '<a class="btn" href="spos.html">Back to Service POs</a></div></div>';
+  }
+
+  function renderPage() {
+    const cur = route(); if (!cur) return;
+    const main = document.getElementById('w-main'), side = document.getElementById('w-side'), grid = document.getElementById('w-grid');
+    document.getElementById('w-title').textContent = W.id ? 'Draft SPO-' + W.id : 'New Service PO';
+    document.getElementById('w-sub').textContent = W.prop && W.v ? propOf(W.prop).name + ' · ' + SPO.VEN[W.v].name : 'Request a service from an approved vendor';
+    if (cur === 'done') {
+      document.getElementById('chk-steps').style.display = 'none';
+      document.querySelector('.hero-title-block').style.visibility = 'hidden';
+      grid.style.gridTemplateColumns = '1fr'; grid.style.marginTop = '-36px';
+      main.innerHTML = viewDone(location.hash.replace('#done-', '')); side.innerHTML = '';
+      return;
+    }
+    document.getElementById('chk-steps').style.display = ''; document.querySelector('.hero-title-block').style.visibility = '';
+    grid.style.gridTemplateColumns = ''; grid.style.marginTop = '';
+    stepBand(cur);
+    if (cur === 'review') { const [m, sd] = viewReview(); main.innerHTML = m; side.innerHTML = sd; return; }
+    main.innerHTML = cur === 'property' ? viewProperty() : cur === 'scope' ? viewScope() : viewCosts();
+    side.innerHTML = railSummary();
+  }
+
+  let toastTimer;
+  function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:600;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
+
+  window.addEventListener('hashchange', () => { combo.open = null; renderPage(); window.scrollTo(0, 0); });
+  renderPage();
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
    One source of truth so the list, detail, Home and Approvals counts always reconcile.
    Seeds + a localStorage overlay (live transitions persist across pages). */
 (function () {
-  const KEY = 'scout-spos-v3';
+  const KEY = 'scout-spos-v4';
   const SKEY = 'scout-schedules-v1';
   const TODAY = '2026-08-24';
   const APPROVAL_LIMIT = 2500;
@@ -174,12 +174,15 @@
       invoice: { num: 'INV-6120', date: '2026-08-08', file: 'INV-6120.pdf', tax: 0, ship: 0, validated: true,
         lines: [{ desc: 'Grounds maintenance — August', amt: 650, maps: [{ line: 0, amt: 650 }], conf: 'high' }] },
       ev: { created: '2026-08-01 07:00', sent: '2026-08-01 10:30', accepted: '2026-08-01 14:00', invoiced: '2026-08-08 09:00', mapped: '2026-08-10 10:15', accounting: '2026-08-10 10:20', paid: '2026-08-20 12:00' } },
-    { id: 845, state: 'paid', prop: 'magnolia', v: 'CC', by: 'Alicia Grant', period: 'Aug 2026', series: 'SCH-01', run: '2026-08-12',
+    /* SCH-01's vendor bills monthly: 842, 845 and 847 wait on one August statement (multi-SPO intake demo) */
+    { id: 845, state: 'invoice', prop: 'magnolia', v: 'CC', by: 'Alicia Grant', period: 'Aug 2026', series: 'SCH-01', run: '2026-08-12',
       scope: 'Weekly common-area cleaning: clubhouse, mail room, laundry rooms and breezeways.',
       lines: [L('Common-area cleaning — weekly visit', 1, 180, [A('6045', 'COMMON', 180)])],
-      invoice: { num: 'INV-3391', date: '2026-08-14', file: 'INV-3391.pdf', tax: 0, ship: 0, validated: true,
-        lines: [{ desc: 'Common-area cleaning — 08/12', amt: 180, maps: [{ line: 0, amt: 180 }], conf: 'high' }] },
-      ev: { created: '2026-08-12 08:00', sent: '2026-08-12 08:00', accepted: '2026-08-12 08:40', invoiced: '2026-08-14 10:00', mapped: '2026-08-15 09:30', accounting: '2026-08-15 09:35', paid: '2026-08-22 11:00' } },
+      ev: { created: '2026-08-12 08:00', sent: '2026-08-12 08:00', accepted: '2026-08-12 08:40' } },
+    { id: 842, state: 'invoice', prop: 'magnolia', v: 'CC', by: 'Alicia Grant', period: 'Aug 2026', series: 'SCH-01', run: '2026-08-05',
+      scope: 'Weekly common-area cleaning: clubhouse, mail room, laundry rooms and breezeways.',
+      lines: [L('Common-area cleaning — weekly visit', 1, 180, [A('6045', 'COMMON', 180)])],
+      ev: { created: '2026-08-05 08:00', sent: '2026-08-05 08:00', accepted: '2026-08-05 09:05' } },
     { id: 844, state: 'paid', prop: 'bayou', v: 'PX', by: 'Alicia Grant', period: 'Aug 2026', series: 'SCH-04', run: '2026-08-10',
       scope: 'Bi-weekly pest control: interior perimeter treatment of common areas and service of the exterior bait stations.',
       lines: [L('Pest control service — common areas', 1, 240, [A('6160', 'COMMON', 240)])],
@@ -264,7 +267,7 @@
     return TODAY + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
   }
   function log(s, t, sub, hi, bad) { s.log = s.log || buildLog(s); s.log.push({ at: now(), t, sub, hi: !!hi, bad: !!bad }); }
-  function reset() { try { localStorage.removeItem(KEY); localStorage.removeItem(SKEY); } catch (e) { /* noop */ } }
+  function reset() { try { localStorage.removeItem(KEY); localStorage.removeItem(SKEY); localStorage.removeItem('scout-intake-v1'); } catch (e) { /* noop */ } }
   /* Demo reset: open any SPO page with #reset-spos (clean-URL hosting drops query strings, hashes survive). */
   try { if (location.hash === '#reset-spos') { reset(); history.replaceState(null, '', location.pathname); } } catch (e) { /* noop */ }
 
@@ -300,7 +303,7 @@
       scope: 'Weekly common-area cleaning: clubhouse, mail room, laundry rooms and breezeways.',
       lines: [L('Common-area cleaning — weekly visit', 1, 180, [A('6045', 'COMMON', 180)])],
       cadence: { freq: 'weekly', dow: 3, time: '08:00' }, start: '2026-06-03', end: { type: 'never' }, mode: 'auto',
-      status: 'active', skipped: [], prior: 10, approval: { by: 'Priya Nair' }, approvedRuns: 52,
+      status: 'active', skipped: [], prior: 9, approval: { by: 'Priya Nair' }, approvedRuns: 52,
       ev: { created: '2026-05-27 10:00', approvalReq: '2026-05-27 10:01', approved: '2026-05-28 09:15' } },
     { id: 'SCH-02', name: 'Grounds maintenance', prop: 'lonestar', v: 'BG', by: 'Alicia Grant',
       scope: 'Monthly grounds maintenance: mowing, edging, shrub trimming, bed weeding and debris removal.',

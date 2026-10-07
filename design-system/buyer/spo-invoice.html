@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Invoice — Scout Buyer</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buyer.css">
+<script src="cart.js"></script>
+<script src="spo-data.js"></script>
+<script src="spo-map.js"></script>
+</head>
+<body class="buyer">
+
+<!-- ===== App Bar ===== -->
+<div class="app-bar-wrap">
+  <nav class="app-bar">
+    <div class="brand">
+      <span class="avatar-ring">AG</span>
+      <span class="wordmark"><svg class="logo" viewBox="0 0 592 116" xmlns="http://www.w3.org/2000/svg" aria-label="Scout"><path fill="currentColor" d="M368.921 24.0615C369.027 24.0452 369.13 24.0312 369.237 24.0193C394.599 21.02 413.592 34.7995 416.669 61.022C419.492 85.0688 410.296 111.346 382.626 114.34C358.328 118.032 337.745 104.403 334.506 79.5118C331.05 52.9541 339.398 28.8412 368.921 24.0615ZM377.059 98.6156C398.048 96.5091 401.22 71.0955 395.783 54.677C392.869 45.877 383.88 38.9518 374.268 39.9686C374.112 39.9852 373.956 40.0065 373.8 40.0327C349.315 42.1918 346.678 81.0129 362.884 94.4005C366.729 97.5713 371.668 99.1037 376.633 98.6665C376.776 98.6529 376.919 98.6359 377.059 98.6156Z"/><path fill="currentColor" d="M112.681 0.22147C116.656 -0.0887322 123.344 -0.0229021 127.331 0.116074C128.859 6.12993 130.114 37.4859 126.805 41.2283C124.225 41.0029 118.858 34.206 115.122 32.124L114.991 32.0522C107.163 33.4416 97.9848 39.7162 90.3365 42.5914C80.7606 46.1915 71.4784 49.9355 62.0854 53.9884C62.4117 54.9314 63.0516 56.7636 63.8188 57.3312C76.9084 66.4314 91.6422 66.3822 104.163 77.5225C115.962 88.0205 102.225 110.521 90.5078 114.174C85.4041 115.764 71.6144 115.414 65.3493 115.42L37.5858 115.417C28.8031 115.496 20.0195 115.439 11.2384 115.245C8.50338 115.162 1.40473 115.53 0.00704319 113.332C-0.0933617 111.956 0.899447 110.61 1.72667 109.576C11.6325 97.1926 55.4695 90.1437 59.7624 84.0178C59.9988 83.68 60.1714 83.0879 60.1096 82.6813C59.6097 79.3981 53.1218 76.3542 50.5789 74.4328C45.1303 70.3154 37.8755 65.6066 36.9074 58.2914C34.5996 40.8523 52.4088 36.4216 65.3277 32.2627C74.9917 29.1514 85.3738 26.6455 93.9114 21.0209C96.121 19.5654 98.016 18.4053 99.6486 16.2758C95.1379 11.5912 91.3425 8.37316 88.8751 2.31641C94.9191 0.817933 106.164 0.292952 112.681 0.22147Z"/><path fill="currentColor" d="M191.172 24.7498C199.619 23.243 212.635 26.1442 219.285 31.3122C226.233 36.7123 228.162 42.5031 229.396 50.843C223.509 50.954 217.43 50.8297 211.526 50.7801C209.668 42.0343 202.483 39.9536 194.379 40.0969C188.328 40.204 180.593 43.5644 181.313 50.7326C181.955 57.1098 190.137 59.5821 195.326 60.5729C204.947 62.6792 215.496 63.9047 223.542 70.0452C232.923 77.5981 232.858 95.513 225.098 104.283C217.59 112.768 209.801 114.396 199.064 115.312L198.904 115.322C183.008 116.247 163.38 110.878 161.197 92.2132C161.052 90.9734 160.992 89.6873 160.916 88.4399C165.59 88.7561 173.465 88.5616 178.381 88.5905C181.737 98.4897 188.534 100.313 198.262 99.8146C202.693 99.5875 207.148 98.1482 210.124 94.7187C213.315 91.3338 212.492 84.9961 208.399 82.6222C200.502 78.0433 189.943 77.7723 181.275 74.9559C177.204 73.6007 173.418 71.5051 170.107 68.7748C159.085 59.6623 160.482 39.1737 172.293 31.4479C178.989 27.0675 183.212 25.4596 191.172 24.7498Z"/><path fill="currentColor" d="M443.451 25.8357C446.294 25.7981 449.195 25.9048 452.038 25.976C452.025 26.4225 452.018 26.869 452.012 27.3159L452.025 62.4807C452.008 69.8903 451.649 77.1952 452.474 84.5778C453.754 97.0045 466.778 101.155 477.374 97.3965C487.321 93.8683 487.438 83.9654 487.394 75.0673C487.371 70.7804 487.401 66.4814 487.401 62.2314C487.441 50.3117 487.404 38.3914 487.291 26.472C491.568 25.5241 501.16 25.9085 505.886 26.0159C505.763 34.3774 505.889 43.058 505.896 51.4458C505.882 60.1178 506.601 85.7146 504.768 92.4529C503.431 97.3829 500.807 101.87 497.172 105.457C484.355 118.319 455.021 118.063 442.107 105.154C438.273 101.379 435.589 96.5896 434.378 91.3461C432.925 85.1461 433.371 71.4367 433.377 64.4333L433.427 26.2207C436.673 25.9065 440.168 25.9018 443.451 25.8357Z"/><path fill="currentColor" d="M277.918 24.5402C284.762 24.242 291.251 23.987 297.836 26.3658C312.619 31.7091 320.231 41.5451 321.455 57.0289L303.396 57.0126C303.23 56.4112 303.06 55.8107 302.887 55.2116C299.475 43.4033 290.055 38.1711 277.979 41.4507C263.42 45.8238 261.513 63.6629 262.869 76.4001C264.467 91.4088 275.194 103.105 290.988 98.1378C295.634 96.645 299.498 93.3734 301.74 89.0389C302.156 87.2665 302.808 85.4003 303.376 83.6574C308.328 83.4975 315.695 83.2322 320.551 83.5025C323.577 85.6047 317.933 97.5779 316.114 100.142C310.713 107.805 302.475 112.992 293.229 114.548C268.91 118.683 248.414 107.249 244.343 81.6825C242.146 67.882 243.493 50.1739 252.018 38.5621C258.271 30.0454 267.717 26.1411 277.918 24.5402Z"/><path fill="currentColor" d="M542.279 28.1452C547.913 27.9853 590.091 27.8633 591.354 28.9625C591.64 30.3735 591.644 41.5511 591.68 43.9629C583.103 44.0929 574.406 43.9555 565.793 44.0476C566.464 66.4005 565.237 90.0606 565.949 112.506C565.992 113.591 566.095 114.093 565.55 115.014C562.836 115.721 551.229 115.163 547.305 115.39L547.261 68.383C547.265 60.4348 547.125 51.8642 547.431 43.9742C538.604 43.9273 529.761 44.0968 520.945 43.9968C521.39 39.3221 521.244 33.4559 520.988 28.7816C524.982 27.9122 537.457 28.1515 542.279 28.1452Z""/></svg></span>
+    </div>
+    <div class="nav-chips">
+      <a class="nav-chip" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
+      <a class="nav-chip" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel cols-2" id="menu-orders">
+          <a class="menu-item" href="orders.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span><span class="menu-item-title">Order Tracking</span><span class="menu-item-desc" style="display:block">Review orders and invoices</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span><span class="menu-item-title">Reviews</span><span class="menu-item-desc" style="display:block">Rate your purchases</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span><span class="menu-item-title">Quotes</span><span class="menu-item-desc" style="display:block">Requests &amp; negotiated pricing</span></span></a>
+          <div class="menu-item disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span><span class="menu-item-title">Budgets</span><a class="menu-item-link" href="#">Contact SCOUT to enable Budgets <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></span></div>
+          <a class="menu-item" href="approvals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg><span><span class="menu-item-title">Order Approvals</span><span class="menu-item-desc" style="display:block">Approve pending requests</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span><span class="menu-item-title">Purchase History</span><span class="menu-item-desc" style="display:block">Your procurement history</span></span></a>
+          <span></span>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg><span><span class="menu-item-title">Funding Report</span><span class="menu-item-desc" style="display:block">Validated invoices awaiting payment</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip active" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-spos">
+          <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
+          <a class="menu-item" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span><span class="menu-item-title">Schedules</span><span class="menu-item-desc" style="display:block">Recurring service POs</span></span></a>
+          <a class="menu-item" href="unit-history.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
+        </div>
+      </div>
+      <div class="menu-anchor">
+        <button class="nav-chip" id="nav-admin" onclick="toggleMenu('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span class="lbl">Admin</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu-panel" id="menu-admin">
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg><span><span class="menu-item-title">Vendor Select</span><span class="menu-item-desc" style="display:block">Shop approved vendors</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h8"/><path d="M8 17h8"/></svg><span><span class="menu-item-title">Shopping Lists</span><span class="menu-item-desc" style="display:block">Product-level restrictions</span></span></a>
+          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg><span><span class="menu-item-title">Organization</span><span class="menu-item-desc" style="display:block">Org settings &amp; properties</span></span></a>
+        </div>
+      </div>
+    </div>
+    <div class="menu-anchor ctx-switch" id="ctx-switch">
+      <button class="ctx-echo" onclick="toggleCtx()" title="Change property">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/></svg>
+        <span><span class="ctx-kicker" style="display:block">Current Property:</span><span class="ctx-name" id="echo-name" style="display:block">All properties</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="ctx-list" id="ctx-list"></div>
+    </div>
+    <div class="bar-actions">
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+      <button class="icon-btn" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></button>
+      <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
+      <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn primary" title="Cart" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
+    </div>
+  </nav>
+</div>
+
+
+
+
+
+
+<section class="hero page-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner" style="flex-direction:column;gap:0">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;width:100%">
+      <div class="hero-title-block">
+        <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></div>
+        <div><h1 id="w-title">Add invoice</h1><p id="w-sub">Map one vendor invoice to every SPO it covers</p></div>
+      </div>
+      <a class="back-link" href="spos.html" style="margin:8px 0 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to Service POs</a>
+    </div>
+    <div class="chk-steps" id="chk-steps"></div>
+  </div>
+</section>
+
+<main class="page">
+  <div class="det-grid" id="w-grid">
+    <div class="det-main" id="w-main"></div>
+    <div class="det-side sticky" id="w-side"></div>
+  </div>
+</main>
+
+<script>
+  /* ---------- Theme ---------- */
+  function applyTheme() {
+    const dark = localStorage.getItem('scout-theme') === 'dark';
+    document.body.classList.toggle('dark', dark);
+    const b = document.getElementById('theme-btn');
+    b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+    b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+  }
+  function toggleTheme() { localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark'); applyTheme(); }
+  applyTheme();
+
+  /* ---------- Menus ---------- */
+  function closeMenus() {
+    document.querySelectorAll('.menu-panel').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-chip').forEach(c => c.classList.remove('open'));
+  }
+  function toggleMenu(id) {
+    const panel = document.getElementById('menu-' + id), chip = document.getElementById('nav-' + id);
+    const wasOpen = panel.classList.contains('open');
+    closeMenus(); document.getElementById('ctx-switch').classList.remove('open');
+    if (!wasOpen) { panel.classList.add('open'); chip.classList.add('open'); }
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-anchor')) closeMenus();
+    if (!e.target.closest('.ctx-switch')) document.getElementById('ctx-switch').classList.remove('open');
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); document.getElementById('ctx-switch').classList.remove('open'); } });
+
+  /* ---------- Context switcher ---------- */
+  const PROPERTIES = [
+    { id: 'all', name: 'All properties', desc: 'Combined dashboard for every accessible property', units: null },
+    { id: 'magnolia', name: 'Magnolia Place Apartments', addr: '4201 Veterans Memorial Blvd', city: 'Metairie, LA 70006', units: 51 },
+    { id: 'bayou', name: 'Bayou Crossing Apartments', addr: '3850 Airline Dr', city: 'Baton Rouge, LA 70805', units: 120 },
+    { id: 'lonestar', name: 'Lone Star Flats', addr: '7200 Westheimer Rd', city: 'Houston, TX 77057', units: 78 },
+    { id: 'central', name: 'Central Park View', addr: '1501 Canal St', city: 'New Orleans, LA 70112', units: 96 },
+    { id: 'cypress', name: 'Cypress Lake Apartments', addr: '9100 Cypress Lake Dr', city: 'Lafayette, LA 70508', units: 64 },
+    { id: 'beauchene', name: 'Beau Chene Villas', addr: '225 Beau Chene Blvd', city: 'Mandeville, LA 70471', units: 40 },
+    { id: 'sherwood', name: 'Sherwood Acres', addr: '1250 Sherwood Forest Blvd', city: 'Baton Rouge, LA 70815', units: 88 },
+    { id: 'cyprus', name: 'Cyprus Glenn', addr: '4800 Cyprus Glenn Way', city: 'Shreveport, LA 71105', units: 32 },
+    { id: 'heights', name: 'Magnolia Heights Apartments', addr: '6301 Magnolia Heights Rd', city: 'Houston, TX 77004', units: 110 }
+  ];
+  let currentProp = 'all';
+  const bIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
+  const pinIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  function renderCtxList() {
+    document.getElementById('ctx-list').innerHTML = PROPERTIES.map(p => {
+      const active = p.id === currentProp;
+      const body = p.id === 'all'
+        ? '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.desc + '</span>'
+        : '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.addr + '</span><span class="opt-city">' + pinIcon + p.city + '</span>';
+      const units = p.units ? '<span class="units-badge"><b>' + p.units + '</b><span>units</span></span>' : '';
+      return '<button class="ctx-option' + (active ? ' active' : '') + '" onclick="selectProp(\'' + p.id + '\')"><span class="opt-tile">' + bIcon + '</span><span class="opt-body">' + body + '</span>' + units + '</button>';
+    }).join('');
+  }
+  function selectProp(id) {
+    currentProp = id;
+    const p = PROPERTIES.find(x => x.id === id);
+    document.getElementById('echo-name').textContent = p.name;
+    document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
+    renderCtxList();
+    document.getElementById('ctx-switch').classList.remove('open');
+    renderPage();
+  }
+  function toggleCtx() {
+    const el = document.getElementById('ctx-switch');
+    const wasOpen = el.classList.contains('open');
+    closeMenus();
+    if (!wasOpen) el.classList.add('open');
+  }
+  renderCtxList();
+
+  const money = SPO.money, r2 = SPO.r2, fmtD = SPO.fmtDate;
+  const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  const IC = {
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    upload: SVG + '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>',
+    doc: SVG + '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>',
+    map: SVG + '<path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>',
+    ai: SVG + '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>',
+    warn: SVG + '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+    info: SVG + '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+    send: SVG + '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>',
+    shield: SVG + '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+    card: SVG + '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
+    wrench: SVG + '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>'
+  };
+  const STEP_LIST = [['vendor', 'Vendor & invoice', 'Upload and choose SPOs'], ['match', 'Match line items', 'Connect invoice to SPO lines'], ['review', 'Review & validate', 'Each SPO’s share']];
+  const DKEY = 'scout-intake-v1';
+  const propOf = id => PROPERTIES.find(p => p.id === id);
+
+  /* Demo statement Scout AI "reads": Crescent Cleaning bills its weekly runs monthly (SCH-01). */
+  const DEMO = { file: 'INV-CC-2608.pdf', v: 'CC', prop: 'magnolia', num: 'INV-CC-2608', date: '2026-08-24', tax: 55.76, ship: 0,
+    lines: [
+      { desc: 'Common-area cleaning — week of 08/03', amt: 180, maps: [{ spo: 842, line: 0, amt: 180, sug: true }] },
+      { desc: 'Common-area cleaning — week of 08/10', amt: 180, maps: [{ spo: 845, line: 0, amt: 180, sug: true }] },
+      { desc: 'Common-area cleaning — week of 08/17 (incl. pressure rinse)', amt: 195, maps: [{ spo: 847, line: 0, amt: 195, sug: true }] },
+      { desc: 'Cleaning supplies restock', amt: 35, maps: [] }
+    ],
+    why: { 842: 'Run 08/05 ↔ “week of 08/03”', 845: 'Run 08/12 ↔ “week of 08/10”', 847: 'Run 08/19 ↔ “week of 08/17”' } };
+
+  /* ---------- drafts: one per vendor + invoice number, autosaved (audit SPO-47) ---------- */
+  const loadD = () => { try { return JSON.parse(localStorage.getItem(DKEY)) || {}; } catch (e) { return {}; } };
+  const saveD = m => { try { localStorage.setItem(DKEY, JSON.stringify(m)); } catch (e) { /* session only */ } };
+  const blank = () => ({ key: null, file: null, v: null, prop: currentProp !== 'all' ? currentProp : 'magnolia', num: '', date: SPO.TODAY, spoIds: [], why: {}, showAll: false, inv: null, attest: false, manual: false, edit: false });
+  let W = blank(), view = 'lines', page = 1;
+  function persist() {
+    if (!W.v || !W.num) return;
+    W.key = W.v + ':' + W.num;
+    const d = loadD(); d[W.key] = Object.assign({}, W, { saved: SPO.now() }); saveD(d);
+  }
+  function dropDraft() { if (!W.key) return; const d = loadD(); delete d[W.key]; saveD(d); }
+
+  const candidates = () => SPO.list().filter(s => s.v === W.v && s.prop === W.prop && (W.showAll ? ['invoice', 'sent', 'mapping'].indexOf(s.state) >= 0 : s.state === 'invoice')).sort((a, b) => (a.run || a.ev.created).localeCompare(b.run || b.ev.created));
+  const selected = () => W.spoIds.map(id => SPO.get(id)).filter(Boolean);
+  const dup = () => W.v && W.num && SPO.list().some(s => s.v === W.v && s.invoice && s.invoice.num.toLowerCase() === W.num.trim().toLowerCase());
+
+  function route() {
+    const h = (location.hash || '').replace('#', '');
+    if (h === 'new' || !h) { W = blank(); location.replace('#vendor'); return null; }
+    if (h.indexOf('resume-') === 0) { const d = loadD()[decodeURIComponent(h.slice(7))]; if (d) W = d; location.replace(d && d.inv && d.spoIds.length ? '#match' : '#vendor'); return null; }
+    if (h.indexOf('with-') === 0) { const s = SPO.get(h.slice(5)); W = blank(); if (s) { W.v = s.v; W.prop = s.prop; W.spoIds = [s.id]; } location.replace('#vendor'); return null; }
+    if (h.indexOf('done-') === 0) return 'done';
+    const idx = STEP_LIST.findIndex(s => s[0] === h);
+    const maxOk = !step1Ok() ? 0 : !step2Ok() ? 1 : 2;
+    if (idx < 0) { location.replace('#vendor'); return null; }
+    if (idx > maxOk) { location.replace('#' + STEP_LIST[maxOk][0]); return null; }
+    return h;
+  }
+  function step1Blockers() {
+    const b = [];
+    if (!W.inv) b.push('Upload the invoice PDF, or enter its details yourself');
+    if (!W.v) b.push('Choose the vendor');
+    if (!(W.num || '').trim()) b.push('Add the invoice number');
+    if (!W.spoIds.length) b.push('Choose at least one SPO this invoice covers');
+    return b;
+  }
+  const step1Ok = () => step1Blockers().length === 0;
+  function ctx() { return CX.use({ spos: selected(), inv: W.inv, ro: false, edit: W.edit, onChange: () => { W.edit = CTX.edit; persist(); renderPage(); } }); }
+  let CTX = null;
+  function step2Blockers() {
+    if (!step1Ok()) return ['Finish step 1'];
+    CTX = ctx(); const b = [];
+    W.inv.lines.forEach((l, i) => { if (!CX.resolved(l)) b.push('Invoice line ' + (i + 1) + ': ' + (CX.status(l) === 'sug' ? 'accept or change the suggested match' : CX.status(l) === 'bad' ? 'split amounts must add up to ' + money(l.amt) : l.res ? 'finish the details' : 'connect it to an SPO line, or choose how to handle it')); });
+    if (!W.inv.lines.length) b.push('Add the invoice lines');
+    if (!CX.taxOk()) b.push('Tax shares must add up to ' + money(W.inv.tax));
+    return b;
+  }
+  const step2Ok = () => step2Blockers().length === 0;
+
+  function stepBand(cur) {
+    const idx = STEP_LIST.findIndex(s => s[0] === cur);
+    document.getElementById('chk-steps').innerHTML = STEP_LIST.map(([id, t, d], i) => {
+      const cls = i < idx ? 'done' : i === idx ? 'active' : '';
+      return '<div class="chk-step ' + cls + '"' + (i < idx ? ' onclick="location.hash=\'#' + id + '\'"' : '') + '><span class="n">' + (i < idx ? IC.check : (i + 1)) + '</span><span><span class="t">' + t + '</span><br><span class="d">' + d + '</span></span></div>' + (i < STEP_LIST.length - 1 ? '<div class="chk-conn' + (i < idx ? ' done' : '') + '"></div>' : '');
+    }).join('');
+  }
+
+  /* ---------- step 1: upload first, Scout AI fills the rest ---------- */
+  function upload() {
+    const d = JSON.parse(JSON.stringify(DEMO));
+    W.file = d.file; W.v = d.v; W.prop = d.prop; W.num = d.num; W.date = d.date; W.manual = false;
+    W.inv = { num: d.num, date: d.date, file: d.file, tax: d.tax, ship: d.ship, lines: d.lines };
+    W.why = d.why;
+    W.spoIds = Object.keys(d.why).map(Number).filter(id => { const s = SPO.get(id); return s && s.state === 'invoice'; });
+    persist(); renderPage();
+  }
+  function manual() { W.manual = true; W.file = null; W.inv = { num: W.num, date: W.date, file: null, tax: 0, ship: 0, lines: [{ desc: '', amt: 0, maps: [], manual: true }] }; W.edit = true; persist(); renderPage(); }
+  function setF(k, v) { W[k] = v; if (k === 'v') { W.spoIds = []; W.why = {}; } if (W.inv && (k === 'num' || k === 'date')) W.inv[k] = v; persist(); renderPage(); }
+  function toggleSpo(id) { const i = W.spoIds.indexOf(id); if (i >= 0) W.spoIds.splice(i, 1); else W.spoIds.push(id); persist(); renderPage(); }
+  function viewVendor() {
+    const vs = Object.keys(SPO.VEN).sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
+    const cands = W.v ? candidates() : [];
+    const left = '<div class="card"><div class="det-card-head hd"><div><h2>Vendor &amp; service orders</h2><div class="sub">Choose the SPOs this invoice covers</div></div></div>' +
+      '<div class="rec-grid"><div class="w-field"><label>Property</label><select onchange="setF(\'prop\', this.value)">' + PROPERTIES.filter(p => p.id !== 'all').map(p => '<option value="' + p.id + '"' + (W.prop === p.id ? ' selected' : '') + '>' + p.name + '</option>').join('') + '</select></div>' +
+      '<div class="w-field"><label>Vendor</label><select onchange="setF(\'v\', this.value)"><option value="">Choose vendor…</option>' + vs.map(k => '<option value="' + k + '"' + (W.v === k ? ' selected' : '') + '>' + SPO.VEN[k].name + '</option>').join('') + '</select></div>' +
+      '<div class="w-field"><label>Invoice number</label><input class="text-in" value="' + (W.num || '').replace(/"/g, '&quot;') + '" placeholder="e.g. INV-1001" onchange="setF(\'num\', this.value)"></div>' +
+      '<div class="w-field"><label>Invoice date</label><input type="date" value="' + W.date + '" onchange="setF(\'date\', this.value)"></div></div>' +
+      (dup() ? '<div class="callout amber" style="margin-top:12px"><b>' + W.num + ' was already mapped</b>' + SPO.VEN[W.v].name + ' has an SPO with this invoice number. Check it isn’t a duplicate before you continue.</div>' : '') +
+      '<div class="cx-row" style="margin:18px 0 8px"><b style="font-size:14px">' + (W.showAll ? 'Open SPOs' : 'SPOs waiting on an invoice') + (W.v ? ' · ' + SPO.VEN[W.v].name : '') + '</b><span style="display:flex;gap:12px;align-items:center"><span class="cx-k">' + W.spoIds.length + ' selected</span>' + (W.v ? '<button class="w-linkbtn" onclick="setF(\'showAll\', ' + !W.showAll + ')">' + (W.showAll ? 'Only waiting on invoice' : 'Show other states') + '</button>' : '') + '</span></div>' +
+      (!W.v ? '<div class="run-more" style="border:none;padding:6px 0 0">Choose a vendor — or upload the PDF and Scout AI fills it in.</div>'
+        : cands.length ? '<div style="display:flex;flex-direction:column;gap:8px">' + cands.map(s => {
+          const on = W.spoIds.indexOf(s.id) >= 0, st = SPO.STATES[s.state];
+          return '<button class="opt-row' + (on ? ' selected' : '') + '" onclick="toggleSpo(' + s.id + ')"><span class="opt-ic" style="font-size:10.5px;font-weight:700">' + (s.series ? 'REC' : 'SPO') + '</span><span class="opt-body"><span class="opt-name">SPO-' + s.id + ' · ' + s.lines[0].desc + (s.lines.length > 1 ? ' +' + (s.lines.length - 1) : '') + '</span><span class="opt-desc">' + (s.run ? 'Run ' + fmtD(s.run) : 'Created ' + fmtD(s.ev.created)) + ' · estimate ' + money(SPO.total(s)) + ' · ' + st.label + (W.why[s.id] ? ' · <span style="color:var(--sky);font-weight:600">Scout AI: ' + W.why[s.id] + '</span>' : '') + '</span></span><span class="opt-radio">' + IC.check + '</span></button>';
+        }).join('') + '</div>'
+        : '<div class="run-more" style="border:none;padding:6px 0 0">No ' + SPO.VEN[W.v].name + ' SPOs ' + (W.showAll ? 'open' : 'waiting on an invoice') + ' at ' + propOf(W.prop).name + '.</div>') + '</div>';
+    const right = '<div class="card"><div class="det-card-head hd"><div><h2>Invoice PDF</h2><div class="sub">Upload first — Scout AI reads the vendor, number, date and lines, and suggests the SPOs</div></div></div>' +
+      (W.inv && W.file
+        ? '<div class="file-drop selected" style="margin-top:12px;cursor:default"><div class="file-drop-icon">' + IC.check + '</div><div class="file-drop-title">' + W.file + '</div><div class="file-drop-sub">' + SPO.VEN[W.v].name + ' · ' + W.inv.lines.length + ' lines · ' + money(r2(W.inv.lines.reduce((a, l) => a + l.amt, 0) + (W.inv.tax || 0))) + ' total</div></div>' +
+          '<div class="ai-block" style="margin-top:14px"><div class="ai-head"><span class="ai-icon">' + IC.ai + '</span>Scout AI read ' + W.file + '</div><ul><li>Vendor, invoice number and date filled in</li><li>' + W.inv.lines.length + ' lines and ' + money(W.inv.tax) + ' sales tax extracted</li><li>' + Object.keys(W.why).length + ' SPOs suggested from the run dates</li></ul><div class="ai-foot">Suggestions only — you confirm every match on the next step.</div></div>' +
+          '<button class="w-linkbtn" style="margin-top:12px" onclick="W.inv = null; W.file = null; persist(); renderPage()">Replace PDF</button>'
+        : W.inv && W.manual
+          ? '<div class="callout neutral" style="margin-top:12px"><b>Entering the invoice yourself</b>You’ll type the lines on the next step, or <button class="w-linkbtn" onclick="upload()">upload the PDF</button> instead.</div>'
+          : '<button class="file-drop" style="margin-top:12px" onclick="upload()"><div class="file-drop-icon">' + IC.upload + '</div><div class="file-drop-title">Drop the vendor’s invoice PDF</div><div class="file-drop-sub">Demo: reads Crescent Cleaning’s August statement</div></button>' +
+            '<button class="w-linkbtn" style="margin-top:12px" onclick="manual()">No PDF? Enter the invoice details yourself</button>') + '</div>';
+    const bl = step1Blockers();
+    return '<div class="intake-grid">' + left + right + '</div><div class="card" style="margin-top:20px"><button class="btn btn-primary btn-block"' + (bl.length ? ' disabled' : '') + ' onclick="location.hash=\'#match\'">Continue to matching</button>' + (bl.length ? '<ul class="w-blockers">' + bl.map(b => '<li>' + b + '</li>').join('') + '</ul>' : '') + '</div>';
+  }
+
+  /* ---------- step 2: the connector board across every selected SPO ---------- */
+  function pdfText() {
+    const v = SPO.VEN[W.v], p = propOf(W.prop), inv = W.inv, PW = 62, pad = (a, b) => a + ' '.repeat(Math.max(2, PW - a.length - b.length)) + b;
+    const out = [v.name.toUpperCase(), v.email, '', pad('INVOICE', inv.num || '—'), pad('Date', fmtD(inv.date)), pad('PO references', W.spoIds.map(id => 'SPO-' + id).join(', ')), '', 'BILL TO', p.name, p.addr + ', ' + p.city, '', '-'.repeat(PW)];
+    inv.lines.forEach(l => out.push(pad((l.desc || '').slice(0, 46), money(l.amt || 0))));
+    const sub = r2(inv.lines.reduce((a, l) => a + (l.amt || 0), 0));
+    out.push('-'.repeat(PW), pad('Subtotal', money(sub)), pad('Sales tax', money(inv.tax || 0)), pad('TOTAL DUE', money(r2(sub + (inv.tax || 0) + (inv.ship || 0)))), '', 'Terms: Net 30 · Remit to ' + v.name);
+    return out.join('\n');
+  }
+  function viewMatch() {
+    CTX = ctx();
+    const bl = step2Blockers();
+    const seg = '<div class="cx-viewbar"><div class="mode-seg"><button class="' + (view === 'lines' ? 'active' : '') + '" onclick="view = \'lines\'; renderPage()">' + IC.map + '<span>Line items</span></button><button class="' + (view === 'pdf' ? 'active' : '') + '" onclick="view = \'pdf\'; renderPage()">' + IC.doc + '<span>PDF</span></button></div><span class="ivt-sub" style="margin:0">' + (W.file || 'Entered manually') + ' · ' + SPO.VEN[W.v].name + ' · ' + W.spoIds.length + ' SPO' + (W.spoIds.length === 1 ? '' : 's') + '</span></div>';
+    return '<div class="card">' + seg + (view === 'pdf' ? '<div class="cx-pdfview"><pre>' + pdfText() + '</pre></div>' : CX.board() +
+      '<h3 style="margin:26px 0 4px;font-size:15px">Totals</h3><p class="ivt-sub">Each SPO compares to its own estimate; tax is split across SPOs by what each is billed.</p>' + CX.totals()) +
+      '<div style="display:flex;gap:10px;margin-top:20px;align-items:center;flex-wrap:wrap"><span class="ivt-sub" style="margin:0">' + CX.doneCount() + ' of ' + W.inv.lines.length + ' invoice items connected · progress saves automatically</span>' +
+      '<button class="btn btn-primary" style="margin-left:auto"' + (bl.length ? ' disabled' : '') + ' onclick="location.hash=\'#review\'">Continue to review</button></div>' +
+      (bl.length ? '<ul class="w-blockers">' + bl.map(b => '<li>' + b + '</li>').join('') + '</ul>' : '') + '</div>';
+  }
+
+  /* ---------- step 3: each SPO's share, one attestation, validate all ---------- */
+  function slices() {
+    CTX = ctx();
+    const ps = CX.perSpo(), tax = CX.taxShares(), ship = CX.shipShares();
+    return selected().map((s, idx) => {
+      const lines = [];
+      W.inv.lines.forEach(l => {
+        if (l.res === 'extra' && l.resSpo === s.id) lines.push({ desc: l.desc, amt: l.amt, maps: [], extra: { gl: l.resGl, unit: l.resUnit }, how: 'One-time extra · ' + l.resGl + ' ' + SPO.glName(l.resGl) + ' · ' + SPO.unitLabel(l.resUnit) });
+        else if (l.res === 'add' && l.resSpo === s.id) lines.push({ desc: l.desc, amt: l.amt, maps: [], add: { gl: l.resGl, unit: l.resUnit }, how: 'Added to the SPO · ' + l.resGl + ' ' + SPO.glName(l.resGl) });
+        else if (!l.res) { const mine = l.maps.filter(m => m.spo === s.id); if (mine.length) { const amt = r2(mine.reduce((a, m) => a + m.amt, 0)); lines.push({ desc: l.desc, amt, maps: mine.map(m => ({ line: m.line, amt: m.amt })), conf: 'manual', how: mine.map(m => '→ Line ' + (m.line + 1) + ' · ' + s.lines[m.line].desc).join(' · ') + (amt < l.amt - 0.005 ? ' · share of ' + money(l.amt) : '') }); } }
+      });
+      return { s, idx, lines, tax: tax[s.id] || 0, ship: ship[s.id] || 0, o: ps[s.id] };
+    });
+  }
+  function viewReview() {
+    const sl = slices(), removed = W.inv.lines.filter(l => l.res === 'remove'), total = r2(W.inv.lines.filter(l => l.res !== 'remove').reduce((a, l) => a + l.amt, 0) + (W.inv.tax || 0) + (W.inv.ship || 0));
+    const vchip = d => Math.abs(d) < 0.005 ? '<span class="lm-var on">On estimate</span>' : '<span class="lm-var ' + (d > 0 ? 'over' : 'under') + '">' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + (d > 0 ? ' over' : ' under') + '</span>';
+    const cards = sl.map(x => '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><a class="table-link" href="spo.html#' + x.s.id + '" target="_blank" rel="noopener">SPO-' + x.s.id + '</a>' + (x.s.run ? '<span class="cx-k">Run ' + fmtD(x.s.run) + '</span>' : '') + '</h2><div class="sub">' + x.s.lines.map(l => l.desc).join(' · ') + ' · estimate ' + money(x.o.est) + '</div></div>' + vchip(x.o.variance) + '</div>' +
+      x.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty"></span><span class="sl-total">' + money(l.amt) + '</span><div class="cx-k" style="grid-column:1 / -1">' + l.how + '</div></div>').join('') +
+      '<div class="det-totals">' + (x.tax ? '<div class="tot-row"><span>Sales tax share</span><span>' + money(x.tax) + '</span></div>' : '') + '<div class="tot-row grand"><span>SPO-' + x.s.id + ' share of ' + W.num + '</span><span>' + money(r2(x.lines.reduce((a, l) => a + l.amt, 0) + x.tax + x.ship)) + '</span></div></div></div>').join('');
+    const rm = removed.length ? '<div class="card"><div class="det-card-head hd"><h2>Removed — not payable</h2></div>' + removed.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty"></span><span class="sl-total" style="text-decoration:line-through;color:var(--muted-foreground)">' + money(l.amt) + '</span><div class="cx-k" style="grid-column:1 / -1">“' + l.resReason + '” · the vendor sees this reason</div></div>').join('') + '</div>' : '';
+    const side = '<div class="card"><div class="det-card-head"><h2>' + W.num + '</h2></div>' +
+      '<div class="sum-row"><span class="muted">Vendor</span><span>' + SPO.VEN[W.v].name + '</span></div><div class="sum-row"><span class="muted">Property</span><span style="text-align:right">' + propOf(W.prop).name + '</span></div>' +
+      sl.map(x => '<div class="sum-row"><span class="muted">SPO-' + x.s.id + '</span><span>' + money(r2(x.lines.reduce((a, l) => a + l.amt, 0) + x.tax + x.ship)) + '</span></div>').join('') +
+      '<div class="sum-grand"><span>Invoice total</span><span class="amt">' + money(total) + '</span></div>' +
+      '<div class="cx-attest" style="margin-top:14px"><label><input type="checkbox"' + (W.attest ? ' checked' : '') + ' onchange="W.attest = this.checked; persist(); renderPage()"> I checked the work and matched every invoice item.</label><span>Validating makes ' + (sl.length > 1 ? 'all ' + sl.length + ' SPOs' : 'the SPO') + ' ready for Accounting — nothing is paid yet.</span></div>' +
+      '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px"' + (W.attest ? '' : ' disabled') + ' onclick="validateAll()"><span style="display:inline-flex;width:16px;height:16px">' + IC.shield + '</span>Validate ' + (sl.length > 1 ? sl.length + ' SPOs' : 'SPO-' + sl[0].s.id) + '</button></div>';
+    return [cards + rm, side];
+  }
+  function validateAll() {
+    if (!W.attest) return;
+    const sl = slices(), total = r2(W.inv.lines.filter(l => l.res !== 'remove').reduce((a, l) => a + l.amt, 0) + (W.inv.tax || 0) + (W.inv.ship || 0));
+    const removed = W.inv.lines.filter(l => l.res === 'remove');
+    sl.forEach((x, i) => {
+      const s = x.s, lines = x.lines.map(l => {
+        if (l.add) { s.lines.push({ desc: l.desc, qty: 1, price: l.amt, alloc: [{ gl: l.add.gl, unit: l.add.unit, amt: l.amt }] }); SPO.log(s, 'Line added to SPO', l.desc + ' · ' + money(l.amt)); return { desc: l.desc, amt: l.amt, maps: [{ line: s.lines.length - 1, amt: l.amt }], conf: 'manual' }; }
+        if (l.extra) { SPO.log(s, 'Extra charge accepted', l.desc + ' · ' + money(l.amt) + ' · ' + l.extra.gl + ' ' + SPO.glName(l.extra.gl)); return { desc: l.desc, amt: l.amt, maps: [], extra: l.extra, conf: 'manual' }; }
+        return { desc: l.desc, amt: l.amt, maps: l.maps, conf: 'manual' };
+      });
+      if (i === 0) removed.forEach(l => { lines.push({ desc: l.desc, amt: l.amt, maps: [], status: 'removed', resReason: l.resReason }); SPO.log(s, 'Invoice line removed', '“' + l.desc + '” · ' + money(l.amt) + ' · ' + l.resReason, false, true); });
+      s.invoice = { num: W.num, date: W.date, file: W.file || W.num + '.pdf', tax: x.tax, ship: x.ship, validated: true, lines,
+        shared: sl.length > 1 ? { total, spos: sl.map(y => y.s.id), idx: i + 1 } : null };
+      s.state = 'ready'; s.ev.invoiced = s.ev.invoiced || SPO.now(); s.ev.mapped = SPO.now(); delete s.mapDraft;
+      const d = r2(SPO.invSubtotal(s) - SPO.total(s));
+      SPO.log(s, 'Invoice received', W.num + (sl.length > 1 ? ' · shared invoice, ' + (i + 1) + ' of ' + sl.length + ' SPOs' : '') + ' · uploaded by Alicia Grant');
+      SPO.log(s, 'Invoice mapped & validated', money(SPO.invTotal(s)) + ' share' + (Math.abs(d) >= 0.005 ? ' · ' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + ' variance accepted' : ' · on estimate'), true);
+      SPO.save(s);
+    });
+    const key = W.key; dropDraft();
+    try { sessionStorage.setItem('scout-intake-done', JSON.stringify({ num: W.num, v: W.v, prop: W.prop, total, spos: sl.map(x => x.s.id) })); } catch (e) { /* noop */ }
+    location.hash = '#done-' + encodeURIComponent(key);
+  }
+  function viewDone() {
+    let r = null; try { r = JSON.parse(sessionStorage.getItem('scout-intake-done')); } catch (e) { /* noop */ }
+    if (!r) return '<div class="card">Nothing to show. <a class="text-link" href="spos.html#invoices">Back to Service POs</a></div>';
+    const spos = r.spos.map(id => SPO.get(id)), allReady = spos.every(s => s.state === 'ready');
+    return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px"><span style="display:inline-flex;width:34px;height:34px">' + IC.check + '</span></div>' +
+      '<h1 style="margin-bottom:0">' + r.num + ' mapped to ' + spos.length + ' SPO' + (spos.length === 1 ? '' : 's') + '</h1><div class="confirm-sub">' + SPO.VEN[r.v].name + ' · ' + propOf(r.prop).name + ' · ' + money(r.total) + '</div>' +
+      '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">SPOs updated</h2></div>' + spos.map(s => { const st = SPO.STATES[s.state]; return '<div class="run-row"><span class="rd"><b>' + (s.run || s.ev.created).slice(8, 10) + '</b><span>' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+(s.run || s.ev.created).slice(5, 7) - 1] + '</span></span><div class="rb"><div><a class="table-link" href="spo.html#' + s.id + '">SPO-' + s.id + '</a> · ' + money(SPO.invTotal(s)) + '</div><div class="m">' + s.lines[0].desc + '</div></div><span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span></div>'; }).join('') +
+      '<div class="sum-grand" style="margin-top:6px"><span>Invoice total</span><span class="amt">' + money(r.total) + '</span></div></div>' +
+      '<div class="confirm-actions">' + (allReady ? '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendAll()"><span style="display:inline-flex;width:16px;height:16px">' + IC.send + '</span>Send all to Accounting</button>' : '') +
+      '<a class="btn" href="spos.html#invoices">View Service POs</a></div></div>';
+  }
+  function sendAll() {
+    let r = null; try { r = JSON.parse(sessionStorage.getItem('scout-intake-done')); } catch (e) { return; }
+    r.spos.forEach(id => { const s = SPO.get(id); if (s.state !== 'ready') return; s.state = 'accounting'; s.ev.accounting = SPO.now(); SPO.log(s, 'Sent to Accounting', 'Packet: PO, invoice ' + s.invoice.num + ' (shared), GL allocation · ' + money(SPO.invTotal(s))); SPO.save(s); });
+    renderPage(); showToast('Sent to Accounting', r.spos.length + ' SPOs · ' + money(r.total));
+  }
+
+  function renderPage() {
+    const cur = route(); if (!cur) return;
+    const main = document.getElementById('w-main'), side = document.getElementById('w-side'), grid = document.getElementById('w-grid');
+    document.getElementById('w-title').textContent = W.num ? 'Invoice ' + W.num : 'Add invoice';
+    document.getElementById('w-sub').textContent = W.v ? SPO.VEN[W.v].name + ' · ' + propOf(W.prop).name : 'Map one vendor invoice to every SPO it covers';
+    const full = cur === 'vendor' || cur === 'match' || cur === 'done';
+    grid.style.gridTemplateColumns = full ? '1fr' : ''; side.style.display = full ? 'none' : '';
+    if (cur === 'done') {
+      document.getElementById('chk-steps').style.display = 'none'; document.querySelector('.hero-title-block').style.visibility = 'hidden'; grid.style.marginTop = '-36px';
+      main.innerHTML = viewDone(); return;
+    }
+    document.getElementById('chk-steps').style.display = ''; document.querySelector('.hero-title-block').style.visibility = ''; grid.style.marginTop = '';
+    stepBand(cur);
+    if (cur === 'vendor') main.innerHTML = viewVendor();
+    else if (cur === 'match') { main.innerHTML = viewMatch(); if (view === 'lines') { CX.mount(); requestAnimationFrame(() => CX.draw()); } }
+    else { const [m, sd] = viewReview(); main.innerHTML = m; side.innerHTML = sd; }
+  }
+  let toastTimer;
+  function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:600;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
+  window.addEventListener('hashchange', () => { renderPage(); window.scrollTo(0, 0); });
+  renderPage();
+</script>
+</body>
+</html>

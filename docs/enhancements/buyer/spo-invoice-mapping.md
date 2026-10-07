@@ -92,3 +92,15 @@
 - [ ] The buyer has no "confirm payment" action on SPOs; Paid is recorded by Accounting.
 **Audit findings:** —
 **Files:** `buyer/spo.html` (`glAllocation`, `packDoc`, `openAccounting`, `renderPack`, `sendToAccounting`)
+
+---
+
+## Addendum — mapping moved to the Line Connector (10/07/2026)
+
+The team prefers the live product's drag line-to-map interaction, so the takeover's per-line list (`.lm-row` with confirm checkboxes) was replaced by the shared **Line Connector** board (`spo-map.js`). The same board powers standalone intake.
+
+- The PDF is now a **Line items / PDF** toggle instead of a fixed left pane.
+- Per-line confirm checkboxes became Scout AI **suggestions you accept**, plus one attestation checkbox.
+- The resolver, totals, failed extraction, autosave and dispute behave as before, and the validated results (variance, extras, GL allocation) are unchanged.
+
+See [spo-invoice-intake.md](spo-invoice-intake.md) (TKT-SPO-31, TKT-SPO-32).

@@ -53,7 +53,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 
 ## Buyer App — Service POs `buyer/spo.html#<id>`
 
-SPOs are buyer-side only. The list is `buyer/spos.html` (Open 10 · Invoices 5 · Closed 7), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
+SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 · Closed 6), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
 
 | State | SPO | What to show |
 |---|---|---|
@@ -64,7 +64,7 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 10 · Invoices 5 �
 | Vendor Rejected | `#861` | Stepper **halts** in rose; the strip quotes the vendor; **Change Vendor** (same trade first) re-sends the PO; activity dots turn rose for the rejection |
 | Awaiting Invoice | `#860` | Upload invoice → File Drop → mapping opens; **Dispute** with a note → "Corrected invoice" strip |
 | Invoice to Map (clean) | `#858` | `#858/invoice`: one line, pre-matched; confirm → Validate mapping |
-| Invoice to Map (messy) | `#857` | `#857/invoice`: the $800 combined line covers 2 SPO lines (+$30 over); the $125 dump fee goes through the resolver → extra on 6045/0105; tax is invoice-level; Validate shows a +$155 variance; close and reopen → progress kept (autosave) |
+| Invoice to Map (messy) | `#857` | `#857/invoice` on the **Line Connector** (drag dot to dot, or click one on each side; dashed = Scout AI suggestion → Accept / Auto Map; PDF is a toggle): the $800 combined line covers 2 SPO lines (+$30 over); the $125 dump fee goes through the resolver → extra on 6045/0105; tax is invoice-level; Validate shows a +$155 variance; close and reopen → progress kept (autosave) |
 | Extraction failed | `#849` | "Invoice needs attention" → Retry extraction or Enter lines from the PDF |
 | Ready for Accounting | `#856` | Send to Accounting → packet: PO · Invoice · **GL allocation** (sums to the cent) → With Accounting |
 | With Accounting | `#855` | Violet **ACCOUNTING** actor; no buyer button |
@@ -82,6 +82,17 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 10 · Invoices 5 �
 | Ended | `#SCH-05` | Completed its 6 runs (Ended tab → Completed card) |
 | Make recurring (live) | `spo.html#866` → Make recurring | Wizard opens on Review with **Recurring** on: pick Weekly · Wednesday → preview shows 52 runs / $11,700 → Submit schedule for approval; SPO-866 becomes run 1 and links to the new series |
 | Edit (live) | `spo-new.html#edit-SCH-01` | Same price → "Covered by the series approval · Save changes"; raise the price → "Changes need re-approval" |
+
+### Standalone invoice intake — `buyer/spo-invoice.html`
+
+| Step | Do | What to show |
+|---|---|---|
+| Entry | Service POs → **Add invoice**, or `spo.html#847` → Upload invoice → "map them together" | The sky callout knows Crescent Cleaning has 2 other SPOs waiting at Magnolia |
+| 1 · Vendor & invoice | Drop the PDF | Scout AI fills Crescent Cleaning · INV-CC-2608 · 08/24 and pre-checks SPO-842/845/847 with reasons ("Run 08/05 ↔ 'week of 08/03'") |
+| 2 · Match | Drag a connector; then **Auto Map** | Three weekly runs on one board; 847 shows +$15 over; the $35 supplies line opens the resolver → one-time extra booked to SPO-847; tax $55.76 split 17.01 / 17.01 / 21.74 |
+| 3 · Review | Check the attestation → **Validate 3 SPOs** | Each SPO's share; total $645.76 |
+| Receipt | **Send all to Accounting** | No confetti — the three SPOs move together; each SPO's invoice PDF says "1 of 3 SPOs" |
+| Drafts | Leave mid-way, open Service POs → Invoices | "1 invoice in progress" → Resume lands back on Match |
 
 ### Unit History — `buyer/unit-history.html#<property>/<unit>`
 

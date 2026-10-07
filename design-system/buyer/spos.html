@@ -88,7 +88,7 @@
   <div class="kpi-grid" id="stat-cards"></div>
   <div class="tab-row">
     <div class="tab-bar" id="tab-bar"></div>
-    <span style="display:flex;gap:10px;align-items:center"><a class="btn" href="schedules.html" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>Schedules</a>
+    <span style="display:flex;gap:10px;align-items:center"><a class="btn" href="spo-invoice.html#new" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 12v6"/><path d="M9 15h6"/></svg>Add invoice</a><a class="btn" href="schedules.html" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>Schedules</a>
     <a class="btn btn-primary" href="spo-new.html#new" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Service PO</a></span>
   </div>
   <div class="toolbar" id="tbar" style="margin-top:16px">
@@ -123,6 +123,7 @@
       <input class="search-field" id="spo-search" placeholder="Search SPO, vendor, scope, or unit…" oninput="page = 1; renderPage()">
     </div>
   </div>
+  <div id="intake-drafts"></div>
   <div id="tbl-zone"></div>
 </main>
 
@@ -316,6 +317,10 @@
       '<tbody>' + (body || '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted-foreground)">No Service POs match the current filters.</td></tr>') + '</tbody></table></div>' +
       (list.length > PER ? '<div class="pager"><span>Showing ' + ((page - 1) * PER + 1) + '–' + Math.min(page * PER, list.length) + ' of ' + list.length + ' SPOs</span><span class="pg-btns"><button class="btn btn-sm"' + (page <= 1 ? ' disabled' : '') + ' onclick="page--; renderPage()">Previous</button><button class="btn btn-sm"' + (page >= pages ? ' disabled' : '') + ' onclick="page++; renderPage()">Next</button></span></div>' : '') + '</div>';
 
+    /* In-progress invoice intakes (one autosaved draft per vendor + invoice number) */
+    let drafts = {}; try { drafts = JSON.parse(localStorage.getItem('scout-intake-v1')) || {}; } catch (e) { /* noop */ }
+    const dl = Object.values(drafts).filter(d => d.num && (currentProp === 'all' || d.prop === currentProp));
+    document.getElementById('intake-drafts').innerHTML = t === 'invoices' && dl.length ? '<div class="task-strip" style="margin-top:16px"><span class="ts-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span><div class="ts-body"><div class="ts-title">' + dl.length + ' invoice' + (dl.length === 1 ? '' : 's') + ' in progress</div><div class="ts-desc">' + dl.map(d => d.num + ' · ' + SPO.VEN[d.v].name + ' · ' + d.spoIds.length + ' SPO' + (d.spoIds.length === 1 ? '' : 's')).join(' &nbsp;·&nbsp; ') + '</div></div>' + dl.slice(0, 2).map(d => '<a class="btn' + (dl.length === 1 ? ' btn-primary' : '') + '" style="text-decoration:none;white-space:nowrap" href="spo-invoice.html#resume-' + encodeURIComponent(d.key) + '">Resume ' + d.num + '</a>').join('') + '</div>' : '';
     document.getElementById('filter-clear').style.display = (vendorF || propF || dateDays) ? '' : 'none';
     if (currentProp !== 'all' && propF) setPropF(null);
   }

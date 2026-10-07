@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
 <script src="spo-data.js"></script>
+<script src="spo-map.js"></script>
 </head>
 <body class="buyer">
 
@@ -415,7 +416,7 @@
   function openUpload() {
     const s = S;
     modal('upload-ov', '<div class="val-modal" style="width:520px"><div class="val-head"><h2>Upload invoice for SPO-' + s.id + '</h2><p>Scout AI reads the PDF and proposes a match for every line. You confirm each one before anything goes to Accounting.</p></div>' +
-      '<div class="val-body" style="padding:16px 24px"><button class="file-drop" id="up-drop" onclick="pickUpload()">' +
+      '<div class="val-body" style="padding:16px 24px">' + (otherWaiting(s).length ? '<div class="callout sky" style="margin-bottom:12px"><b>One invoice for several SPOs?</b>' + ven(s).name + ' has ' + otherWaiting(s).length + ' other SPO' + (otherWaiting(s).length === 1 ? '' : 's') + ' waiting on an invoice at ' + propOf(s).name + ' (' + otherWaiting(s).map(x => 'SPO-' + x.id).join(', ') + '). If this invoice covers them, <a class="text-link" href="spo-invoice.html#with-' + s.id + '">map them together</a>.</div>' : '') + '<button class="file-drop" id="up-drop" onclick="pickUpload()">' +
       '<div class="file-drop-icon">' + IC.upload + '</div><div class="file-drop-title">Choose the vendor’s invoice</div><div class="file-drop-sub">PDF · up to 20 MB</div></button></div>' +
       '<div class="val-foot"><button class="btn" onclick="closeModal(\'upload-ov\')">Cancel</button><button class="btn btn-primary" id="up-go" disabled onclick="runUpload()">Upload &amp; map</button></div></div>');
   }
@@ -437,15 +438,13 @@
     location.hash = '#' + s.id + '/invoice';
   }
 
-  /* ===================== SPO Line Match (Document Review Split View) ===================== */
-  let M = null, mapRO = false, editLines = false, retrying = false;
+  /* ===================== Invoice mapping — Line Connector board (shared with standalone intake, spo-map.js) ===================== */
+  let M = null, MC = null, mapRO = false, retrying = false, mapView = 'lines', attest = false;
   const clone = o => JSON.parse(JSON.stringify(o));
-  const lineEst = i => r2(S.lines[i].qty * S.lines[i].price);
-  const sumMaps = l => r2((l.maps || []).reduce((a, m) => a + (m.amt || 0), 0));
   function openInvoiceMap(readOnly) {
-    mapRO = !!readOnly || S.state !== 'mapping'; editLines = false; retrying = false;
-    M = clone(!mapRO && S.mapDraft ? S.mapDraft : S.invoice);
-    M.lines.forEach(l => { if (l.confirmed === undefined) l.confirmed = mapRO; });
+    mapRO = !!readOnly || S.state !== 'mapping'; retrying = false; mapView = 'lines'; attest = false;
+    M = CX.prepare(clone(!mapRO && S.mapDraft ? S.mapDraft : S.invoice), S.id, mapRO);
+    MC = CX.use({ spos: [S], inv: M, ro: mapRO, edit: false, onChange: renderMapTk });
     let tk = document.getElementById('map-tk');
     if (!tk) { tk = document.createElement('div'); tk.id = 'map-tk'; tk.className = 'inv-tk'; document.body.appendChild(tk); }
     renderMapTk(); tk.classList.add('open'); document.body.style.overflow = 'hidden';
@@ -455,77 +454,7 @@
     document.body.style.overflow = '';
     const h = location.hash.split('/'); if (h.length > 1) history.replaceState(null, '', h[0]);
   }
-  function resolved(l) {
-    if (l.res === 'remove') return !!(l.resReason || '').trim();
-    if (l.res === 'add' || l.res === 'extra') return !!(l.resGl && l.resUnit);
-    return (l.maps || []).length > 0 && l.amt > 0 && Math.abs(sumMaps(l) - l.amt) < 0.005;
-  }
-  const lineOk = l => resolved(l) && l.confirmed;
-  function invoicedPerLine() { const per = {}; M.lines.forEach(l => { if (!l.res) (l.maps || []).forEach(m => { per[m.line] = r2((per[m.line] || 0) + (m.amt || 0)); }); }); return per; }
-
-  function varChip(d) {
-    if (Math.abs(d) < 0.005) return '<span class="lm-var on">On estimate</span>';
-    return '<span class="lm-var ' + (d > 0 ? 'over' : 'under') + '">' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + (d > 0 ? ' over estimate' : ' under estimate') + '</span>';
-  }
-  const chkBtn = (i, on) => '<button class="chk' + (on ? ' on' : '') + '"' + (mapRO ? ' disabled' : ' onclick="mConfirm(' + i + ')"') + ' title="Confirm this match">' + IC.check + '</button>';
-  const aiTag = l => l.manual ? '<span>Entered manually</span>' : '<span class="lm-ai">' + IC.check.replace('stroke-width="2.5"', 'stroke-width="3"') + 'Extracted by Scout AI</span>';
-  function spoChips(i) {
-    const l = S.lines[i];
-    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + S.prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + '</span>').join('') + '</div>';
-  }
-  function lineSelect(i, cur) {
-    return '<select class="ivt-map-sel" style="max-width:340px" onchange="mRemap(' + i + ', this.value)"><option value="">Change match…</option>' +
-      S.lines.map((l, k) => '<option value="' + k + '"' + (cur === k ? ' selected' : '') + '>SPO line ' + (k + 1) + ' · ' + l.desc + ' · ' + money(lineEst(k)) + '</option>').join('') +
-      '<option value="none">Not on the SPO…</option></select>';
-  }
-  function glSel(i, v) { return '<select class="ivt-map-sel" onchange="mSet(' + i + ', \'resGl\', this.value)"><option value="">GL code…</option>' + SPO.GL.map(([c, n]) => '<option value="' + c + '"' + (v === c ? ' selected' : '') + '>' + c + ' · ' + n + '</option>').join('') + '</select>'; }
-  function unitSel(i, v) { return '<select class="ivt-map-sel" onchange="mSet(' + i + ', \'resUnit\', this.value)"><option value="">Unit…</option><option value="COMMON"' + (v === 'COMMON' ? ' selected' : '') + '>Common area</option>' + SPO.units(S.prop).map(u => '<option value="' + u.code + '"' + (v === u.code ? ' selected' : '') + '>Unit ' + u.code + ' · Bldg ' + u.bldg + '</option>').join('') + '</select>'; }
-
-  function lmRow(l, i, per) {
-    const st = !resolved(l) ? 'attn' : l.confirmed ? 'ok' : '';
-    const amtCell = editLines && !mapRO
-      ? '<span class="money-in" style="height:32px"><span class="cur">$</span><input inputmode="decimal" value="' + (l.amt ? l.amt.toFixed(2) : '') + '" onfocus="this.select()" onchange="mAmt(' + i + ', this.value)"></span>'
-      : '<span class="lm-amt">' + money(l.amt) + '</span>';
-    const descCell = editLines && !mapRO
-      ? '<input class="ivt-map-sel" style="height:32px" value="' + (l.desc || '').replace(/"/g, '&quot;') + '" placeholder="Line description from the PDF" onchange="mDesc(' + i + ', this.value)">'
-      : '<div class="d">' + l.desc + '</div>';
-    let body = '';
-    if (l.res || !(l.maps || []).length) {
-      const opt = (k, t, sub) => '<button class="lm-opt' + (l.res === k ? ' sel' : '') + '"' + (mapRO ? ' disabled' : ' onclick="mRes(' + i + ', \'' + k + '\')"') + '><span class="rd"></span><span><b>' + t + '</b><span class="s">' + sub + '</span></span></button>';
-      body = (mapRO ? '' : '<div class="w-note warn" style="margin:8px 0 0 32px">' + IC.warn + '<span>This charge isn’t on SPO-' + S.id + '. Choose how to handle it — or match it to an SPO line.</span></div>') +
-        '<div class="lm-res">' +
-        opt('add', 'Add to SPO-' + S.id + ' as a new line', 'Amends the SPO — the scope now includes this work') + (l.res === 'add' ? '<div class="lm-fields"><div><label>GL code</label>' + glSel(i, l.resGl) + '</div><div><label>Unit</label>' + unitSel(i, l.resUnit) + '</div></div>' : '') +
-        opt('extra', 'Accept as a one-time extra charge', 'Booked to a GL and unit on this invoice only') + (l.res === 'extra' ? '<div class="lm-fields"><div><label>GL code</label>' + glSel(i, l.resGl) + '</div><div><label>Unit</label>' + unitSel(i, l.resUnit) + '</div></div>' : '') +
-        opt('remove', 'Remove — not payable', 'Left out of the payable total; ' + ven(S).name + ' sees your reason') + (l.res === 'remove' ? '<div style="margin-left:26px"><textarea class="claim-note" style="min-height:52px" placeholder="Why isn’t this payable?"' + (mapRO ? ' disabled' : '') + ' onchange="mSet(' + i + ', \'resReason\', this.value)">' + (l.resReason || '') + '</textarea></div>' : '') +
-        '</div>' + (mapRO ? '' : '<div class="lm-change">' + lineSelect(i, null) + '</div>');
-    } else {
-      const multi = l.maps.length > 1;
-      body = '<div class="lm-targets">' + l.maps.map((m, k) => {
-        const d = r2((per[m.line] || 0) - lineEst(m.line));
-        return '<div class="lm-t"><span class="arr">↳</span><div><div class="nm">SPO line ' + (m.line + 1) + ' · ' + S.lines[m.line].desc + '</div><div style="font-size:12px;color:var(--muted-foreground)">Estimate ' + money(lineEst(m.line)) + '</div>' + spoChips(m.line) + '</div>' +
-          '<div class="rt">' + (multi && !mapRO ? '<span class="money-in" style="height:32px"><span class="cur">$</span><input inputmode="decimal" value="' + (m.amt || 0).toFixed(2) + '" onfocus="this.select()" onchange="mSplitAmt(' + i + ', ' + k + ', this.value)"></span>' : (multi ? '<b>' + money(m.amt) + '</b>' : '')) + varChip(d) + '</div></div>';
-      }).join('') + '</div>' +
-        (multi && Math.abs(sumMaps(l) - l.amt) > 0.005 ? '<div class="w-note warn" style="margin-left:32px">' + IC.warn + '<span>Split amounts total ' + money(sumMaps(l)) + ' — they need to add up to ' + money(l.amt) + '.</span></div>' : '') +
-        (mapRO ? '' : '<div class="lm-change" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">' + (multi ? '' : lineSelect(i, l.maps[0].line)) +
-          '<button class="w-linkbtn" onclick="mAddTarget(' + i + ')">' + IC.split + (multi ? 'Cover another SPO line' : 'Split across SPO lines') + '</button></div>');
-    }
-    const meta = '<div class="m">' + aiTag(l) + (l.conf === 'split' && !mapRO ? '<span>· one invoice line covering ' + l.maps.length + ' SPO lines</span>' : '') + (l.res === 'remove' && mapRO ? '<span>· removed: “' + l.resReason + '”</span>' : '') + '</div>';
-    return '<div class="lm-row ' + st + (l.status === 'removed' ? ' gone' : '') + '"><div class="lm-top">' + chkBtn(i, l.confirmed) + '<div class="lm-inv">' + descCell + meta + '</div>' + amtCell +
-      (editLines && !mapRO && M.lines.length > 1 ? '<button class="row-action" title="Remove line" onclick="mRmLine(' + i + ')">' + IC.x + '</button>' : '') + '</div>' + body + '</div>';
-  }
-
-  function totalsTable() {
-    const est = SPO.total(S);
-    const payable = r2(M.lines.filter(l => l.res !== 'remove').reduce((a, l) => a + (l.amt || 0), 0));
-    const added = r2(M.lines.filter(l => l.res === 'add').reduce((a, l) => a + (l.amt || 0), 0));
-    const base = r2(est + added), d = r2(payable - base);
-    const row = (label, ours, theirs, v, note) => '<div class="ivt-row amt"><span></span><span><span class="ivt-amt-l">' + label + '</span>' + (note ? '<span class="ivt-warn" style="color:var(--muted-foreground)">' + note + '</span>' : '') + '</span><span class="ivt-c">' + ours + '</span><span class="ivt-c ivt-ai">' + theirs + '</span><span class="ivt-c"' + (v && v !== '—' && v !== '$0.00' ? ' style="color:#b45309;font-weight:600"' : '') + '>' + v + '</span></div>';
-    return '<div class="ivt-table"><div class="ivt-row hd amt"><span></span><span class="ivt-amt-l">Amount</span><span class="ivt-c">SPO</span><span class="ivt-c ivt-ai">Invoice<em>Extracted by Scout AI</em></span><span class="ivt-c">Variance</span></div>' +
-      row('Lines', money(base), money(payable), (d > 0 ? '+' : d < 0 ? '−' : '') + money(Math.abs(d)), added ? 'SPO estimate ' + money(est) + ' + ' + money(added) + ' added at mapping' : 'Against the SPO estimate — never a $0 baseline') +
-      row('Sales tax', '—', money(M.tax || 0), '—', 'Invoice-level · not compared to line estimates') +
-      (M.ship ? row('Shipping', '—', money(M.ship), '—', 'Invoice-level') : '') +
-      row('Invoice total', '', money(r2(payable + (M.tax || 0) + (M.ship || 0))), '') + '</div>';
-  }
+  function otherWaiting(s) { return SPO.list().filter(x => x.id !== s.id && x.v === s.v && x.prop === s.prop && x.state === 'invoice'); }
 
   function pdfLines(s, inv) {
     const W = 62, pad = (a, b) => a + ' '.repeat(Math.max(2, W - a.length - b.length)) + b;
@@ -534,64 +463,44 @@
     inv.lines.forEach(l => out.push(pad((l.desc || '').slice(0, 44), money(l.amt || 0))));
     out.push('-'.repeat(W), pad('Subtotal', money(inv.lines.reduce((a, l) => a + (l.amt || 0), 0))));
     if (inv.tax) out.push(pad('Sales tax', money(inv.tax)));
-    out.push(pad('TOTAL DUE', money(r2(inv.lines.reduce((a, l) => a + (l.amt || 0), 0) + (inv.tax || 0) + (inv.ship || 0)))), '', 'Terms: Net 30 · Remit to ' + v.name);
+    out.push(pad(inv.shared ? 'THIS SPO’S SHARE' : 'TOTAL DUE', money(r2(inv.lines.reduce((a, l) => a + (l.amt || 0), 0) + (inv.tax || 0) + (inv.ship || 0)))));
+    if (inv.shared) out.push('', 'Shared invoice · ' + inv.shared.idx + ' of ' + inv.shared.spos.length + ' SPOs (' + inv.shared.spos.map(id => 'SPO-' + id).join(', ') + ')', pad('Invoice total', money(inv.shared.total)));
+    out.push('', 'Terms: Net 30 · Remit to ' + v.name);
     return out.join('\n');
   }
 
   function renderMapTk() {
     const tk = document.getElementById('map-tk'); if (!tk) return;
-    const s = S, per = invoicedPerLine();
-    const done = M.lines.filter(lineOk).length, n = M.lines.length, allOk = done === n && n > 0;
-    const head = '<div class="ivt-head"><span class="ivt-ico">' + IC.map + '</span><div style="flex:1;min-width:0"><h2>' + (mapRO ? 'Invoice ' + M.num + ' mapping' : 'Map invoice ' + M.num + ' to SPO-' + s.id) + '</h2><p>' + ven(s).name + ' · ' + propOf(s).name + (mapRO ? ' · mapped and validated' : ' · Scout AI proposes a match for every line; GL code and unit come from the SPO line.') + '</p></div><button class="row-action" style="width:34px;height:34px" title="Close" onclick="closeMapTk()">' + IC.x + '</button></div>';
-    const pdf = '<div class="ivt-pdf"><div class="ivt-pdf-bar"><span>' + M.file + '</span><span style="margin-left:auto">1 / 1 · 77%</span></div><div class="ivt-page"><pre>' + pdfLines(s, M) + '</pre></div></div>';
-    let side;
+    const s = S;
+    const head = '<div class="ivt-head"><span class="ivt-ico">' + IC.map + '</span><div style="flex:1;min-width:0"><h2>' + (mapRO ? 'Invoice ' + M.num + ' mapping' : 'Map invoice ' + M.num + ' to SPO-' + s.id) + '</h2><p>' + ven(s).name + ' · ' + propOf(s).name + (mapRO ? ' · mapped and validated' : ' · Scout AI suggests a match for every line; GL code and unit come from the SPO line.') + '</p></div><button class="row-action" style="width:34px;height:34px" title="Close" onclick="closeMapTk()">' + IC.x + '</button></div>';
+    let body, foot;
     if (M.extractFailed && !mapRO) {
-      side = '<div class="ivt-scroll">' + (retrying
+      body = (retrying
         ? '<div style="text-align:center;padding:60px 0;color:var(--muted-foreground)"><span style="display:inline-flex;width:28px;height:28px;color:var(--sky)">' + IC.refresh + '</span><div style="margin-top:10px;font-weight:600;color:var(--foreground)">Reading ' + M.file + '…</div><div style="font-size:12.5px">Scout AI is extracting the line items again.</div></div>'
-        : '<div class="callout amber"><b>Scout AI couldn’t read the line items</b>' + M.file + ' looks like a scanned image, so no lines were extracted. That’s an extraction failure — not an invoice with no lines.</div>' +
-          '<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="mRetry()"><span style="display:inline-flex;width:15px;height:15px">' + IC.refresh + '</span>Retry extraction</button><button class="btn" onclick="mManual()">Enter lines from the PDF</button></div>') + '</div>' +
-        '<div class="ivt-foot"><span class="ivt-sub" style="margin:0">No invoice lines yet.</span><button class="btn" style="margin-left:auto" onclick="closeMapTk()">Close</button></div>';
+        : '<div class="callout amber" style="max-width:760px"><b>Scout AI couldn’t read the line items</b>' + M.file + ' looks like a scanned image, so no lines were extracted. That’s an extraction failure — not an invoice with no lines.</div>' +
+          '<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="mRetry()"><span style="display:inline-flex;width:15px;height:15px">' + IC.refresh + '</span>Retry extraction</button><button class="btn" onclick="mManual()">Enter lines from the PDF</button></div>' +
+          '<div class="cx-pdfview" style="margin-top:20px"><pre>' + pdfLines(s, M) + '</pre></div>');
+      foot = '<span class="ivt-sub" style="margin:0">No invoice lines yet.</span><button class="btn" style="margin-left:auto" onclick="closeMapTk()">Close</button>';
     } else {
-      side = '<div class="ivt-scroll">' +
-        '<div style="display:flex;align-items:baseline;gap:12px"><h3>Invoice lines → SPO lines</h3>' + (mapRO ? '' : '<button class="w-linkbtn" style="margin-left:auto" onclick="editLines = !editLines; renderMapTk()">' + IC.pen + (editLines ? 'Done editing lines' : 'Edit invoice lines') + '</button>') + '</div>' +
-        '<p class="ivt-sub">' + (mapRO ? 'How each invoice line was matched and booked.' : 'Confirm each match. Obvious matches are connected for you; a line can cover several SPO lines.') + '</p>' +
-        M.lines.map((l, i) => lmRow(l, i, per)).join('') +
-        (editLines && !mapRO ? '<button class="btn btn-sm" style="margin-top:10px;display:inline-flex;align-items:center;gap:6px" onclick="mAddLine()"><span style="display:inline-flex;width:14px;height:14px">' + IC.upload.replace('polyline points="17 8 12 3 7 8"', 'path d="M12 5v14M5 12h14"') + '</span>Add invoice line</button>' : '') +
-        '<h3 style="margin-top:22px">Totals</h3><p class="ivt-sub">Lines compare to the SPO estimate; tax and shipping are invoice-level.</p>' + totalsTable() + '</div>' +
-        '<div class="ivt-foot">' + (mapRO
-          ? '<span class="ivt-sub" style="margin:0">Validated ' + SPO.fmtDate(s.ev.mapped) + ' by Alicia Grant</span><button class="btn" style="margin-left:auto" onclick="closeMapTk()">Close</button>'
-          : '<span class="ivt-sub" style="margin:0">' + (allOk ? 'Every invoice line is matched and confirmed' : done + ' of ' + n + ' invoice lines confirmed') + ' · progress saves automatically' + '</span><button class="btn btn-danger" style="margin-left:auto" onclick="openInvDispute()">Dispute invoice</button><button class="btn btn-primary"' + (allOk ? '' : ' disabled') + ' onclick="validateMapping()">Validate mapping</button>') + '</div>';
+      const all = CX.allResolved(), n = M.lines.length, done = CX.doneCount();
+      const seg = '<div class="cx-viewbar"><div class="mode-seg"><button class="' + (mapView === 'lines' ? 'active' : '') + '" onclick="mapView = \'lines\'; renderMapTk()">' + IC.map + '<span>Line items</span></button><button class="' + (mapView === 'pdf' ? 'active' : '') + '" onclick="mapView = \'pdf\'; renderMapTk()">' + IC.doc + '<span>PDF</span></button></div><span class="ivt-sub" style="margin:0">' + M.file + ' · ' + money(SPO.invTotal({ invoice: M })) + '</span></div>';
+      body = seg + (mapView === 'pdf' ? '<div class="cx-pdfview"><pre>' + pdfLines(s, M) + '</pre></div>'
+        : CX.board() + '<h3 style="margin:26px 0 4px;font-size:15px">Totals</h3><p class="ivt-sub">Lines compare to the SPO estimate; tax and shipping are invoice-level.</p>' + CX.totals() +
+          (mapRO ? '' : '<div class="cx-attest' + (all ? '' : ' off') + '"><b>' + done + ' of ' + n + ' invoice items connected</b><label><input type="checkbox"' + (attest && all ? ' checked' : '') + (all ? '' : ' disabled') + ' onchange="attest = this.checked; renderMapTk()"> I checked the work and matched every invoice item.</label><span>' + (all ? 'Validating sends nothing yet — it makes SPO-' + s.id + ' ready for Accounting.' : 'Match or resolve each item, then check the box.') + '</span></div>'));
+      foot = mapRO
+        ? '<span class="ivt-sub" style="margin:0">Validated ' + SPO.fmtDate(s.ev.mapped) + ' by Alicia Grant</span><button class="btn" style="margin-left:auto" onclick="closeMapTk()">Close</button>'
+        : '<span class="ivt-sub" style="margin:0">' + done + ' of ' + n + ' invoice items connected · progress saves automatically</span><button class="btn btn-danger" style="margin-left:auto" onclick="openInvDispute()">Dispute invoice</button><button class="btn btn-primary"' + (all && attest ? '' : ' disabled') + ' onclick="validateMapping()">Validate mapping</button>';
     }
-    tk.innerHTML = head + '<div class="ivt-body">' + pdf + '<div class="ivt-side">' + side + '</div></div>';
+    tk.innerHTML = head + '<div class="ivt-body cx-mode">' + body + '</div><div class="ivt-foot">' + foot + '</div>';
+    if (!M.extractFailed && mapView === 'lines') { CX.mount(); requestAnimationFrame(() => CX.draw()); }
     /* Autosave: work in progress survives closing the takeover — no Save draft button (audit SPO-31/37) */
     if (!mapRO) { s.mapDraft = clone(M); SPO.save(s); }
   }
-
-  function mConfirm(i) { if (!resolved(M.lines[i])) { showToast('Resolve this line first', 'Match it to an SPO line or choose how to handle it.'); return; } M.lines[i].confirmed = !M.lines[i].confirmed; renderMapTk(); }
-  function mRemap(i, v) {
-    const l = M.lines[i]; if (v === '') return;
-    if (v === 'none') { l.maps = []; l.res = null; } else { l.maps = [{ line: +v, amt: l.amt }]; l.res = null; }
-    l.confirmed = false; l.conf = 'manual'; renderMapTk();
-  }
-  function mAddTarget(i) {
-    const l = M.lines[i], used = l.maps.map(m => m.line);
-    const next = S.lines.findIndex((x, k) => used.indexOf(k) < 0); if (next < 0) return;
-    l.maps.push({ line: next, amt: 0 }); const each = r2(l.amt / l.maps.length);
-    l.maps.forEach((m, k) => { m.amt = k === l.maps.length - 1 ? r2(l.amt - each * (l.maps.length - 1)) : each; });
-    l.confirmed = false; renderMapTk();
-  }
-  function mSplitAmt(i, k, v) { const n = parseFloat(String(v).replace(/[$,]/g, '')); M.lines[i].maps[k].amt = isNaN(n) ? 0 : r2(n); M.lines[i].confirmed = false; renderMapTk(); }
-  function mRes(i, k) { const l = M.lines[i]; l.res = l.res === k ? null : k; l.confirmed = false; renderMapTk(); }
-  function mSet(i, f, v) { M.lines[i][f] = v; M.lines[i].confirmed = false; renderMapTk(); }
-  function mAmt(i, v) { const n = parseFloat(String(v).replace(/[$,]/g, '')); const l = M.lines[i]; l.amt = isNaN(n) ? 0 : r2(n); if (l.maps && l.maps.length === 1) l.maps[0].amt = l.amt; l.confirmed = false; renderMapTk(); }
-  function mDesc(i, v) { M.lines[i].desc = v; renderMapTk(); }
-  function mAddLine() { M.lines.push({ desc: '', amt: 0, maps: [], manual: true, confirmed: false }); renderMapTk(); }
-  function mRmLine(i) { M.lines.splice(i, 1); renderMapTk(); }
   function mRetry() {
     retrying = true; renderMapTk();
-    setTimeout(() => { retrying = false; M.extractFailed = false; S.invoice.extractFailed = false; SPO.log(S, 'Invoice re-read', 'Scout AI extracted ' + M.lines.length + ' line' + (M.lines.length === 1 ? '' : 's')); SPO.save(S); renderMapTk(); }, 1400);
+    setTimeout(() => { retrying = false; M.extractFailed = false; S.invoice.extractFailed = false; CX.prepare(M, S.id, false); SPO.log(S, 'Invoice re-read', 'Scout AI extracted ' + M.lines.length + ' line' + (M.lines.length === 1 ? '' : 's')); SPO.save(S); renderMapTk(); }, 1400);
   }
-  function mManual() { M.extractFailed = false; M.lines = [{ desc: '', amt: 0, maps: [], manual: true, confirmed: false }]; editLines = true; renderMapTk(); }
+  function mManual() { M.extractFailed = false; M.lines = [{ desc: '', amt: 0, maps: [], manual: true }]; MC.edit = true; renderMapTk(); }
 
   function validateMapping() {
     const s = S, notes = [];
@@ -600,6 +509,7 @@
       else if (l.res === 'add') { s.lines.push({ desc: l.desc, qty: 1, price: l.amt, alloc: [{ gl: l.resGl, unit: l.resUnit, amt: l.amt }] }); l.maps = [{ line: s.lines.length - 1, amt: l.amt }]; SPO.log(s, 'Line added to SPO', l.desc + ' · ' + money(l.amt) + ' · ' + l.resGl + ' ' + SPO.glName(l.resGl)); }
       else if (l.res === 'extra') { l.extra = { gl: l.resGl, unit: l.resUnit }; SPO.log(s, 'Extra charge accepted', l.desc + ' · ' + money(l.amt) + ' · ' + l.resGl + ' ' + SPO.glName(l.resGl)); }
     });
+    M.lines.forEach(l => (l.maps || []).forEach(m => { delete m.sug; }));
     s.invoice = Object.assign(M, { validated: true, extractFailed: false }); delete s.mapDraft;
     const d = r2(SPO.invSubtotal(s) - SPO.total(s));
     s.state = 'ready'; s.ev.mapped = SPO.now();

@@ -22,5 +22,5 @@ Upload → AI extraction → review → accept. The vendor never types invoice d
 `.confirm-card` (required confirmation checkbox card, sky fill when checked) + `.req-chip` (amber Required chip) — cascaded to the gallery as **Invoice Upload & AI Review (vendor)** with the two-card demo; design-doc Lifecycle section gained the upload → extract → review → accept rule.
 
 ## Held
-- Multi-invoice management (Active invoices list, Manage, Attach another invoice).
+- Multi-invoice management (Active invoices list, Manage, Attach another invoice): **on hold / TBD** (10/07/2026). Workaround for now: One invoice per order; split shipments are validated per delivery and invoiced once; corrections go through dispute → corrected invoice.
 - Buyer-side Invoice Validation screens — next up, user will share references.

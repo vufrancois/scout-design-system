@@ -58,7 +58,7 @@
 - Invoices that cover more than one property.
 - Credit memos and negative lines.
 - Validating some SPOs and leaving others on a shared invoice (today it's all or nothing).
-- **One SPO receiving several invoices** (e.g. a deposit invoice, then a final one). Today an SPO holds a single invoice, and a second upload replaces the first. Vu asked to hold this case (10/07/2026).
+- **One SPO receiving several invoices**: **on hold / TBD** (Vu, 10/07/2026). It's rare for our buyers. Until it's decided, the workaround: one SPO per billing stage (Clone SPO makes it quick); recurring work is a schedule; a correction is Dispute → corrected invoice. See the design doc's Service POs rule "One invoice per SPO, and one per order".
 
 ## Pitfalls
 - **The board re-renders on every change.** A pointer listener on the board element misses the second click of a click-click connect if the new board binds in the next animation frame. Use one delegated `pointerdown` on the document and draw synchronously after render.

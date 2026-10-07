@@ -618,6 +618,12 @@ The single source of truth tying the SPO list, detail, and Home together. Every 
 - **Gating:** nothing reaches the vendor before approval when approval is required; nothing reaches Accounting before every invoice line is mapped and the invoice validated; Paid is recorded by Accounting, never by the buyer. Any row violating this is a data bug.
 - **Overlays ride a state, they never replace it:** “Corrected invoice” (disputed) rides Awaiting Invoice; “needs attention” (extraction failed) rides Invoice to Map.
 - Recurring schedules, Unit History, standalone invoice intake and Notifications shipped — see their sections.
+**One invoice per SPO, and one per order — for now.** Several invoices on one SPO or order (deposit and final, progress or split billing) is **on hold / TBD** (Vu, 10/07/2026): it's rare for our buyers, so neither SPOs nor product orders track a running billed balance yet. Until it's decided, the workaround:
+  - **Work billed in stages** (a deposit, then the final; one building at a time): create **one SPO per billing stage**. *Clone SPO* copies the vendor, lines and allocation, so each stage only needs its own amount. A recurring service is a **schedule**, which already makes one SPO per run.
+  - **A vendor's correction** to an invoice (a wrong amount, a missing or extra line) is **Dispute → corrected invoice**, never a second invoice on the same SPO.
+  - **One invoice covering several SPOs** is supported: that's standalone intake.
+  - **Product orders** follow the same rule: the vendor sends one invoice per order. A split shipment is validated delivery by delivery, then invoiced once.
+- If it's picked up, it would need an SPO-level billed vs remaining balance and a *Partially invoiced* state.
 
 ### Schedules (recurring SPOs)
 

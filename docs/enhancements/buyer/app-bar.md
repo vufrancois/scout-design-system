@@ -32,7 +32,7 @@
 - Menus, theme, property switching, search, bell and cart badge were checked on Orders and Products.
 
 ## Held (step 2)
-- **Phone layout of the bar** (existing issue): under 820px the nav chips are squeezed to nothing and the bar runs past its edge. It needs its own pass, probably a menu button.
+- **Phone layout of the bar**: under 820px the nav chips are squeezed to nothing. Vu decided this isn't needed (10/07/2026): the buyer prototype is a desktop demo.
 
 The bar's **behaviour** is still copied into every page: theme toggle, menus, Context Switcher and `PROPERTIES`. The shopping pages run their own Context Switcher (property gate, no "All properties"), so moving it is its own change.
 

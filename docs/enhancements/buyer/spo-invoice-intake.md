@@ -62,6 +62,7 @@
 
 ## Pitfalls
 - **The board re-renders on every change.** A pointer listener on the board element misses the second click of a click-click connect if the new board binds in the next animation frame. Use one delegated `pointerdown` on the document and draw synchronously after render.
+- **Unticking a suggested SPO in step 1 crashed step 2** (found by Vu, 10/07/2026). Scout AI's suggestion still pointed at the removed SPO, and the board failed looking it up. The page sat on step 1's content with the step band on step 2. Now `CX.use()` drops any connection to an SPO that isn't on the board, and intake keeps Scout AI's original suggestions so re-ticking the SPO restores them.
 - `elementFromPoint` only sees the viewport, so drag-drop targets must be on-screen (real users scroll; synthetic tests must too).
 - `CX.use()` keeps the pending selection while the invoice object is the same, so the page's own re-validation doesn't drop a half-made connection.
 

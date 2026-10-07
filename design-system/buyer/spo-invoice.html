@@ -234,7 +234,16 @@
     return b;
   }
   const step1Ok = () => step1Blockers().length === 0;
-  function ctx() { return CX.use({ spos: selected(), inv: W.inv, ro: false, edit: W.edit, onChange: () => { W.edit = CTX.edit; persist(); renderPage(); } }); }
+  /* Selection changed? Suggestions for SPOs that are selected again come back (only on lines nobody touched). */
+  function restoreSuggestions() {
+    if (!W.inv || !W.aiMaps) return;
+    W.inv.lines.forEach((l, i) => {
+      if (l.res || (l.maps && l.maps.length) || !W.aiMaps[i]) return;
+      const back = W.aiMaps[i].filter(m => W.spoIds.indexOf(m.spo) >= 0);
+      if (back.length) l.maps = back.map(m => Object.assign({}, m, { sug: true }));
+    });
+  }
+  function ctx() { restoreSuggestions(); return CX.use({ spos: selected(), inv: W.inv, ro: false, edit: W.edit, onChange: () => { W.edit = CTX.edit; persist(); renderPage(); } }); }
   let CTX = null;
   function step2Blockers() {
     if (!step1Ok()) return ['Finish step 1'];
@@ -260,6 +269,8 @@
     W.file = d.file; W.v = d.v; W.prop = d.prop; W.num = d.num; W.date = d.date; W.manual = false;
     W.inv = { num: d.num, date: d.date, file: d.file, tax: d.tax, ship: d.ship, lines: d.lines };
     W.why = d.why;
+    /* Keep Scout AI's original suggestions so re-ticking an SPO in step 1 brings its suggestion back. */
+    W.aiMaps = d.lines.map(l => l.maps.map(m => Object.assign({}, m)));
     W.spoIds = Object.keys(d.why).map(Number).filter(id => { const s = SPO.get(id); return s && s.state === 'invoice'; });
     persist(); renderPage();
   }

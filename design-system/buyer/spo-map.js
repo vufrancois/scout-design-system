@@ -291,7 +291,18 @@
   }
 
   window.CX = {
-    use(ctx) { if (!C || C.inv !== ctx.inv) sel = null; C = ctx; return C; }, prepare, resolved, status, allResolved, doneCount, perSpo, taxShares, shipShares, taxOk, sumMaps,
+    use(ctx) {
+      if (!C || C.inv !== ctx.inv) sel = null; C = ctx;
+      /* A connection to an SPO that isn't on the board (e.g. unticked in intake step 1) is dropped, never drawn. */
+      const ids = C.spos.map(s => s.id);
+      C.inv.lines.forEach(l => {
+        const before = (l.maps || []).length;
+        l.maps = (l.maps || []).filter(m => ids.indexOf(+m.spo) >= 0 && C.spos.find(s => s.id === +m.spo).lines[m.line]);
+        if (l.maps.length && l.maps.length !== before) resplit(l);
+        if ((l.res === 'add' || l.res === 'extra') && ids.indexOf(+l.resSpo) < 0) l.resSpo = ids[0];
+      });
+      return C;
+    }, prepare, resolved, status, allResolved, doneCount, perSpo, taxShares, shipShares, taxOk, sumMaps,
     board, totals, mount, draw,
     connect, unlink, setAmt, accept, autoMap, pick, res, set, lineAmt, lineDesc, addLine, rmLine, toggleEdit, setTax, resetTax
   };

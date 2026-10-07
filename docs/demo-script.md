@@ -53,7 +53,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 
 ## Buyer App — Service POs `buyer/spo.html#<id>`
 
-SPOs are buyer-side only. The list is `buyer/spos.html` (Open 8 · Invoices 5 · Closed 3), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
+SPOs are buyer-side only. The list is `buyer/spos.html` (Open 10 · Invoices 5 · Closed 7), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
 
 | State | SPO | What to show |
 |---|---|---|
@@ -71,7 +71,31 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 8 · Invoices 5 ·
 | Paid | `#854` | All 8 steps dated; approved by Priya Nair |
 | Canceled | `#852` | No stepper; SPO Status card names who canceled and quotes the reason; Clone SPO only |
 
-**Home tie-in:** the "SPO Invoices to Map" tile (3) and the Service POs breakdown card. The Approvals card total (16) matches the queue, which now includes SPO-864.
+### Schedules (recurring SPOs) — `buyer/schedules.html` · `buyer/schedule.html#SCH-<nn>`
+
+| State | Schedule | What to show |
+|---|---|---|
+| Active · auto-send | `#SCH-01` | Weekly cleaning: next run 08/26, **Skip** a date and undo it, switch Auto-send ⇄ Draft only; its SPOs (SPO-847 awaiting invoice, SPO-845 paid) show the repeat icon on the SPO list |
+| Active · draft only | `#SCH-04` | Every other Monday; 09/21 already **skipped** (struck through, Undo); today's run drafted **SPO-848** (Continue on the SPO list) |
+| Pending series approval | `#SCH-06` | `approval.html#SCH-06`: the request is the **12-month commitment** (12 × $420 = $5,040); Approve → series Active, runs need no further approval |
+| Paused | `#SCH-03` | Pause reason in the strip, **Resume schedule**; upcoming runs listed but marked as not running |
+| Ended | `#SCH-05` | Completed its 6 runs (Ended tab → Completed card) |
+| Make recurring (live) | `spo.html#866` → Make recurring | Wizard opens on Review with **Recurring** on: pick Weekly · Wednesday → preview shows 52 runs / $11,700 → Submit schedule for approval; SPO-866 becomes run 1 and links to the new series |
+| Edit (live) | `spo-new.html#edit-SCH-01` | Same price → "Covered by the series approval · Save changes"; raise the price → "Changes need re-approval" |
+
+### Unit History — `buyer/unit-history.html#<property>/<unit>`
+
+| What | Link | What to show |
+|---|---|---|
+| Property first | `unit-history.html` (All properties) | Inline property picker — unit codes only mean something inside one property |
+| Busiest units | `#magnolia` | "Most activity" ranks units by spend; the picker shows each unit's spend |
+| A make-ready unit | `#magnolia/0105` | SPO-863 carpet cleaning + Order #653 dishwasher & blind + #515 microwave; Spend by GL; type chips; switch This period / 12 months |
+| Common area | `#magnolia/COMMON` | Weekly cleaning SPOs with the recurring marker, the #657 laundry dryers, and **Upcoming**: SCH-01 next run 08/26 |
+| A split line | `#cypress/0105` | SPO-857's refresh line split across GLs ($300 of $600) + Order #512 PTAC |
+| Unit search | type `1805`, then `bldg 2 unit 16` | The miss explains the BBUU scheme and range (SPO-48); the phrase finds 0216 |
+| From an SPO | `spo.html#857` | Click a unit in any allocation chip → its history |
+
+**Home tie-in:** the "SPO Invoices to Map" tile (3) and the Service POs breakdown card. The Approvals card total (22) matches the queue, which now includes SPO-864 and the schedule requests (SCH-06 pending).
 
 ## The claims loop in one arc (cross-app)
 

@@ -38,7 +38,8 @@
         <button class="nav-chip active" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel" id="menu-spos">
           <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
-          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
+          <a class="menu-item" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span><span class="menu-item-title">Schedules</span><span class="menu-item-desc" style="display:block">Recurring service POs</span></span></a>
+          <a class="menu-item" href="unit-history.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
         </div>
       </div>
       <div class="menu-anchor">
@@ -215,7 +216,7 @@
     return '<div class="ls-stepper">' + STEPS.map(([label, actor, icon], i) => {
       let cls, cap = '', dot = icon, a = actor;
       if (s.state === 'rejected' && i === 3) { cls = 'halted'; dot = IC.x; cap = '<span class="ls-date">rejected</span>'; }
-      else if (i === 1 && approvalSkipped && i < done) { cls = 'skipped'; dot = IC.check; cap = '<span class="ls-date">not required</span>'; }
+      else if (i === 1 && approvalSkipped && i < done) { cls = 'skipped'; dot = IC.check; cap = '<span class="ls-date">' + (s.series ? 'series approved' : 'not required') + '</span>'; }
       else if (i < done) { cls = 'done'; dot = IC.check; const d = s.ev[STEP_EV[i]]; cap = d ? '<span class="ls-date">' + SPO.fmtDate(d) + '</span>' : ''; }
       else if (i === active) {
         if (s.state === 'ready' && i === 6) a = 'you';
@@ -228,7 +229,7 @@
   }
 
   function allocChips(l) {
-    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span>' + SPO.unitLabel(a.unit) + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
+    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + S.prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
   }
 
   function taskStrip(s) {
@@ -257,6 +258,13 @@
     return '';
   }
 
+  /* A schedule-generated SPO names its series; the series controls live on the series page (audit SPO-50). */
+  const REP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>';
+  function seriesLink(s) {
+    if (!s.series || !window.SCH) return '';
+    const x = SCH.get(s.series); if (!x) return '';
+    return '<div class="series-link">' + REP + '<span>Run ' + SPO.fmtDate(s.run) + ' of <b>' + x.name + '</b> · ' + SCH.cadenceText(x.cadence, false) + ' · ' + SCH.STATES[x.status].label + '</span><a class="text-link" href="schedule.html#' + x.id + '">View schedule</a></div>';
+  }
   /* Vendor names can end in a period ("Co.") — don't double it at the end of a sentence. */
   const endDot = t => /[.!?]$/.test(t) ? t : t + '.';
   const CANCELABLE = ['draft', 'approval', 'sent', 'rejected', 'invoice'];
@@ -273,10 +281,11 @@
       main += '<div class="card"><div class="det-card-head"><h2>SPO Status</h2>' + pillHtml(s) + '</div>' +
         '<div class="callout neutral" style="margin-top:10px"><b>' + IC.ban.replace('<svg', '<svg style="width:16px;height:16px"') + 'Canceled on ' + SPO.fmtDate(s.ev.canceled) + ' by ' + s.cancel.by + '</b>“' + s.cancel.reason + '”' +
         (s.ev.sent ? '<div style="margin-top:6px">' + v.name + ' was notified. Nothing was invoiced or paid.</div>' : '<div style="margin-top:6px">It was never sent to a vendor.</div>') + '</div>' +
-        '<div class="spo-manage"><span class="lbl">Manage this SPO</span>' + '<button class="btn" onclick="location.href=\'spo-new.html#clone-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + IC.copy + '</span>Clone SPO</button></div></div>';
+        seriesLink(s) + '<div class="spo-manage"><span class="lbl">Manage this SPO</span>' + '<button class="btn" onclick="location.href=\'spo-new.html#clone-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + IC.copy + '</span>Clone SPO</button></div></div>';
     } else {
-      main += '<div class="card"><div class="det-card-head"><h2>SPO Progress</h2>' + pillHtml(s) + '</div>' + stepper(s) +
+      main += '<div class="card"><div class="det-card-head"><h2>SPO Progress</h2>' + pillHtml(s) + '</div>' + stepper(s) + seriesLink(s) +
         '<div class="spo-manage"><span class="lbl">Manage this SPO</span>' +
+        (!s.series ? '<button class="btn" onclick="location.href=\'spo-new.html#recurring-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + REP + '</span>Make recurring</button>' : '') +
         '<button class="btn" onclick="location.href=\'spo-new.html#clone-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + IC.copy + '</span>Clone SPO</button>' +
         (CANCELABLE.indexOf(s.state) >= 0 && s.state !== 'rejected' ? '<button class="btn btn-outline-rose" onclick="openCancel()">Cancel SPO</button>' : '') + '</div></div>';
       main += taskStrip(s);
@@ -296,7 +305,8 @@
     side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + s.v + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
       '<div style="font-size:13px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="PO recipient">' + v.email + '</div></div></div></div>';
 
-    const approvalVal = s.state === 'approval' ? 'Pending · Supervisor' : s.ev.approved ? 'Approved by ' + ((s.approval && s.approval.by) || 'Priya Nair') : s.state === 'draft' ? (SPO.needsApproval(s) ? 'Required on submit' : 'Not required') : 'Not required';
+    const sx = s.series && window.SCH ? SCH.get(s.series) : null;
+    const approvalVal = sx ? (sx.ev.approved ? 'Series · ' + ((sx.approval && sx.approval.by) || 'Priya Nair') : 'Not required') : s.state === 'approval' ? 'Pending · Supervisor' : s.ev.approved ? 'Approved by ' + ((s.approval && s.approval.by) || 'Priya Nair') : s.state === 'draft' ? (SPO.needsApproval(s) ? 'Required on submit' : 'Not required') : 'Not required';
     side += '<div class="card"><dl class="fact-rows wide">' +
       '<dt>Property</dt><dd>' + prop.name + '</dd>' +
       '<dt>Requested by</dt><dd>' + s.by + '</dd>' +
@@ -461,7 +471,7 @@
   const aiTag = l => l.manual ? '<span>Entered manually</span>' : '<span class="lm-ai">' + IC.check.replace('stroke-width="2.5"', 'stroke-width="3"') + 'Extracted by Scout AI</span>';
   function spoChips(i) {
     const l = S.lines[i];
-    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span>' + SPO.unitLabel(a.unit) + '</span>').join('') + '</div>';
+    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + S.prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + '</span>').join('') + '</div>';
   }
   function lineSelect(i, cur) {
     return '<select class="ivt-map-sel" style="max-width:340px" onchange="mRemap(' + i + ', this.value)"><option value="">Change match…</option>' +

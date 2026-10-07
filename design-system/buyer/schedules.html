@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wishlists — Scout Buyer</title>
+<title>Schedules — Scout Buyer</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
+<script src="spo-data.js"></script>
 </head>
 <body class="buyer">
 
@@ -19,7 +20,7 @@
     </div>
     <div class="nav-chips">
       <a class="nav-chip" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
-      <a class="nav-chip active" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
+      <a class="nav-chip" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
       <div class="menu-anchor">
         <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel cols-2" id="menu-orders">
@@ -34,7 +35,7 @@
         </div>
       </div>
       <div class="menu-anchor">
-        <button class="nav-chip" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-chip active" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel" id="menu-spos">
           <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
           <a class="menu-item" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span><span class="menu-item-title">Schedules</span><span class="menu-item-desc" style="display:block">Recurring service POs</span></span></a>
@@ -62,7 +63,7 @@
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       <button class="icon-btn" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></button>
       <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
-      <button class="icon-btn active-page" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
       <button class="icon-btn primary" title="Cart" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
     </div>
   </nav>
@@ -71,56 +72,35 @@
 
 
 
-<main class="page" style="padding-top:32px">
-  <div class="wl-page-head">
-    <div><h1>Wishlists</h1><div class="sub" id="wl-sub-line">Shared product lists for Magnolia Place Apartments.</div></div>
-    <button class="btn btn-primary" style="height:40px" onclick="openNameModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New wishlist</button>
-  </div>
 
-  <div id="wl-prop-prompt" class="empty" style="display:none"><b>Wishlists are per property</b>Pick a property from "Current Property:" in the bar above to see its lists.<br><br><button class="btn" onclick="toggleCtx()">Choose a property</button></div>
 
-  <div class="wl-layout" id="wl-layout">
-    <aside class="wl-side">
-      <div id="wl-side-items"></div>
-    </aside>
-    <section>
-      <div class="wl-head-card">
-        <div class="wl-head-body">
-          <h2 id="wl-name">2x1 Turns</h2>
-          <div class="meta" id="wl-meta">2 saved products</div>
-        </div>
-        <button class="icon-btn" data-tip="Rename" onclick="openNameModal(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
-        <button class="icon-btn" data-tip="Delete" onclick="openDelete()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
-        <button class="btn btn-primary" style="height:40px" id="wl-copy" onclick="copyToCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg><span id="wl-copy-label">Add 2 to cart</span></button>
-      </div>
-      <div class="wl-toolbar" id="wl-toolbar">
-        <select class="select" id="f-vendor" onchange="renderProducts()"><option value="">All vendors</option></select>
-        <select class="select" id="f-cat" onchange="renderProducts()"><option value="">All categories</option><option>Dryers</option><option>Dishwashers</option></select>
-        <span class="spacer"></span>
-        <span class="count" id="wl-count">2 of 2</span>
-      </div>
-      <div class="product-grid" id="wl-grid" style="grid-template-columns:repeat(3,1fr)"></div>
-    </section>
+<section class="hero page-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner" style="flex-direction:column;gap:0">
+    <div class="hero-title-block">
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></div>
+      <div><h1>Schedules</h1><p>Recurring service POs — each run creates an ordinary SPO you track in Service POs</p></div>
+    </div>
   </div>
+</section>
+
+<main class="page">
+  <div class="kpi-grid" id="stat-cards"></div>
+  <div class="tab-row">
+    <div class="tab-bar" id="tab-bar"></div>
+    <a class="btn btn-primary" href="spo-new.html#recurring" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Schedule</a>
+  </div>
+  <div class="toolbar" style="margin-top:16px">
+    <div class="toolbar-group"><span style="font-size:13px;color:var(--muted-foreground)" id="sch-note"></span></div>
+    <div class="toolbar-group">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input class="search-field" id="sch-search" placeholder="Search schedule, vendor, property…" oninput="renderPage()">
+      </div>
+    </div>
+  </div>
+  <div id="tbl-zone"></div>
 </main>
-
-<!-- Name modal (create / rename) -->
-<div class="overlay center" id="name-modal" onclick="if(event.target===this)closeNameModal()">
-  <div class="wl-modal">
-    <div class="wl-modal-head"><h2 id="nm-title">New wishlist</h2><div class="wl-sub" id="nm-sub">This list is shared with everyone assigned to this property.</div></div>
-    <div class="wl-modal-body"><div class="wl-label">Wishlist name</div><input class="wl-input" id="nm-input" placeholder="e.g. Turnover supplies" oninput="document.getElementById('nm-save').disabled=!this.value.trim()" onkeydown="if(event.key==='Enter'&&this.value.trim())saveName()"></div>
-    <div class="wl-modal-foot"><button class="btn" onclick="closeNameModal()">Cancel</button><button class="btn btn-primary" id="nm-save" disabled onclick="saveName()">Create wishlist</button></div>
-  </div>
-</div>
-
-<!-- Delete confirm -->
-<div class="overlay center" id="del-modal" onclick="if(event.target===this)closeDelete()">
-  <div class="wl-modal" style="max-width:440px">
-    <div class="wl-modal-head"><h2 id="del-title">Delete list?</h2><div class="wl-sub" id="del-sub"></div></div>
-    <div class="wl-modal-foot"><button class="btn" onclick="closeDelete()">Cancel</button><button class="btn btn-danger" onclick="doDelete()">Delete wishlist</button></div>
-  </div>
-</div>
-<script src="wishlist.js"></script>
 
 <script>
   /* ---------- Theme ---------- */
@@ -184,7 +164,7 @@
     document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
     renderCtxList();
     document.getElementById('ctx-switch').classList.remove('open');
-    renderPage();
+    page = 1; renderPage();
   }
   function toggleCtx() {
     const el = document.getElementById('ctx-switch');
@@ -194,95 +174,115 @@
   }
   renderCtxList();
 
+  const money = SPO.money, fmtD = SPO.fmtDate;
+  const SV = '<svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  const IC = {
+    rep: SV + '<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',
+    play: SV + '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
+    pen: SV + '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
+    pause: SV + '<circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>',
+    archive: SV + '<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>',
+    check: SV + '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>',
+    ban: SV + '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>'
+  };
+  const TABS = [
+    { id: 'running', label: 'Running', icon: IC.rep, states: ['approval', 'revision', 'active', 'paused'] },
+    { id: 'ended', label: 'Ended', icon: IC.archive, states: ['ended'] }
+  ];
+  let cardFilter = 'all', page = 1, sortK = 'next', sortDir = 1;
+  const openRows = new Set();
+  const tab = () => { const t = (location.hash || '#running').replace('#', ''); return TABS.some(x => x.id === t) ? t : 'running'; };
+  window.addEventListener('hashchange', () => { cardFilter = 'all'; openRows.clear(); renderPage(); window.scrollTo(0, 0); });
+  const propName = id => (PROPERTIES.find(x => x.id === id) || {}).name || id;
 
+  function scoped(states) {
+    const q = (document.getElementById('sch-search').value || '').trim().toLowerCase();
+    return SCH.list().filter(x => states.indexOf(x.status) >= 0 && (currentProp === 'all' || x.prop === currentProp) &&
+      (!q || (x.id + ' ' + x.name + ' ' + SPO.VEN[x.v].name + ' ' + propName(x.prop) + ' ' + x.scope).toLowerCase().includes(q)));
+  }
+  const groupOf = x => x.status === 'approval' || x.status === 'revision' ? 'you' : x.status === 'ended' ? (x.endInfo && x.endInfo.by === 'Scout' ? 'completed' : 'stopped') : x.status;
 
-  const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  let activeList = null, renaming = false;
-  const prop = () => PROPERTIES.find(p => p.id === currentProp);
+  function statCards(t, rows) {
+    const card = (key, cls, icon, title, n, desc) => '<div class="stat-card-colored ' + cls + (cardFilter === key ? ' active' : '') + '" onclick="setCard(\'' + key + '\')"><span class="stat-card-title">' + icon + title + '</span><div class="stat-card-count">' + n + '</div><div class="stat-card-desc">' + desc + '</div></div>';
+    const g = k => rows.filter(x => groupOf(x) === k).length;
+    document.getElementById('stat-cards').innerHTML = t === 'running'
+      ? card('all', 'stat-gray', IC.rep, 'Total Running', rows.length, 'Not ended') +
+        card('active', 'stat-emerald', IC.play, 'Active', g('active'), 'Generating SPOs on schedule') +
+        card('you', 'stat-amber', IC.pen, 'Your Move', g('you'), 'Approve or revise the series') +
+        card('paused', 'stat-sky', IC.pause, 'Paused', g('paused'), 'On hold · no SPOs generated')
+      : card('all', 'stat-gray', IC.archive, 'Total Ended', rows.length, 'No further runs') +
+        card('completed', 'stat-emerald', IC.check, 'Completed', g('completed'), 'Ran to its end rule') +
+        card('stopped', 'stat-rose', IC.ban, 'Stopped Early', g('stopped'), 'Ended by a person');
+  }
+  function setCard(k) { cardFilter = cardFilter === k && k !== 'all' ? 'all' : k; renderPage(); }
+
+  const pill = x => { const st = SCH.STATES[x.status]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; };
+  const ACTION = {
+    approval: x => ['Review', 'approval.html#' + x.id],
+    revision: x => ['Edit', 'spo-new.html#edit-' + x.id]
+  };
+  function setSort(k) { if (sortK === k) sortDir = -sortDir; else { sortK = k; sortDir = k === 'next' || k === 'name' || k === 'vendor' ? 1 : -1; } renderPage(); }
+  const sortIc = k => sortK !== k ? '<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>'
+    : '<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (sortDir > 0 ? '<path d="m7 9 5-5 5 5"/>' : '<path d="m7 15 5 5 5-5"/>') + '</svg>';
+  const th = (k, label) => '<th class="sortable' + (sortK === k ? ' sorted' : '') + '" onclick="setSort(\'' + k + '\')">' + label + sortIc(k) + '</th>';
+  const nextOf = x => x.status === 'ended' ? (x.ev.ended || '').slice(0, 10) : SCH.nextRun(x) || '9999';
 
   function renderPage() {
-    const isAll = currentProp === 'all';
-    document.getElementById('wl-prop-prompt').style.display = isAll ? '' : 'none';
-    document.getElementById('wl-layout').style.display = isAll ? 'none' : '';
-    document.getElementById('wl-sub-line').textContent = isAll ? 'Shared product lists — pick a property to view its lists.' : 'Shared product lists for ' + prop().name + '.';
-    if (isAll) return;
-    const lists = WL.listsFor(currentProp);
-    if (!lists.length) { activeList = null; } else if (!activeList || !lists.some(l => l.id === activeList)) activeList = lists[0].id;
-    document.getElementById('wl-side-items').innerHTML = lists.map(l => '<button class="wl-item' + (l.id === activeList ? ' active' : '') + '" onclick="pickList(\'' + l.id + '\')"><b>' + l.name + '</b><span>' + l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + '</span></button>').join('') || '<div style="padding:14px;font-size:13px;color:var(--muted-foreground)">No lists yet</div>';
-    renderList();
-  }
-  function pickList(id) { activeList = id; renderPage(); }
-  function cur() { return WL.listsFor(currentProp).find(l => l.id === activeList); }
-  function renderList() {
-    const l = cur();
-    const sec = document.querySelector('.wl-layout section');
-    sec.style.visibility = l ? '' : 'hidden';
-    if (!l) return;
-    document.getElementById('wl-name').textContent = l.name;
-    const total = l.products.reduce((a, p) => a + p.price, 0);
-    document.getElementById('wl-meta').textContent = l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + (l.products.length ? ' · ' + money(total) : '');
-    const vendors = [...new Set(l.products.map(p => p.vendor))];
-    const fv = document.getElementById('f-vendor'); const kept = fv.value;
-    fv.innerHTML = '<option value="">All vendors</option>' + vendors.map(v => '<option' + (v === kept ? ' selected' : '') + '>' + v + '</option>').join('');
-    renderProducts();
-  }
-  function deliveryLine(p) { return p.speed === '1-2' ? 'Overnight · order by 2pm CST' : p.speed === '3-5' ? '3–5 business days' : '5–7 business days · from vendor'; }
-  const glyph = '<svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><circle cx="8" cy="5" r="0.6"/><circle cx="11" cy="5" r="0.6"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
-  function renderProducts() {
-    const l = cur(); if (!l) return;
-    const big = l.products.length >= 8;
-    document.getElementById('wl-toolbar').style.display = big ? '' : 'none';
-    const v = big ? document.getElementById('f-vendor').value : '';
-    const items = l.products.filter(p => !v || p.vendor === v);
-    document.getElementById('wl-count').textContent = v ? 'Showing ' + items.length + ' of ' + l.products.length : '';
-    document.getElementById('wl-copy-label').textContent = 'Add ' + l.products.length + ' to cart';
-    document.getElementById('wl-copy').disabled = !l.products.length;
-    document.getElementById('wl-grid').innerHTML = items.length ? items.map(p =>
-      '<div class="product-card"><div class="pc-media">' + glyph + (p.pickup ? '<span class="pc-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Pickup · ' + p.miles + ' mi</span>' : '') + '<span class="pc-vendor-badge" data-tip="' + p.vendor.replace(/"/g, '&quot;') + '">' + p.vini + '</span>' + '</div>' +
-      
-      '<div class="pc-title">' + p.name + '</div>' +
-      '<div class="pc-price"><div class="pc-price-now"><span class="now">' + money(p.price) + '</span><span class="unit">/ each</span></div><div class="pc-price-was"></div></div>' +
-      '<div class="pc-meta"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>' + deliveryLine(p) + '</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stock">In Stock</span></div></div>' +
-      '<div class="pc-actions"><button class="btn btn-primary" onclick="showToast(\'Added to cart\', \'' + p.name.replace(/'/g, "\\'") + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add to Cart</button><button class="icon-btn in-list" data-tip="Remove from this list" onclick="removeFromList(' + p.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button></div></div>'
-    ).join('') : '<div class="empty" style="grid-column:1/-1"><b>No products yet</b>Heart products in the Marketplace and choose "' + l.name + '".<br><br><a class="btn" href="marketplace.html" style="display:inline-flex">Browse Marketplace</a></div>';
-  }
-  function removeFromList(pid) { const l = cur(); WL.setLists(currentProp, WL.listsFor(currentProp).map(x => x.id === l.id ? { ...x, rev: x.rev + 1, products: x.products.filter(p => p.id !== pid) } : x)); renderPage(); }
-  function copyToCart() { const l = cur(); l.products.forEach(p => CART.add(currentProp, { id: p.id, name: p.name, sku: p.sku || '', price: p.price, vendor: 'SD' }, 1)); showToast('Added to cart', l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + ' from "' + l.name + '"'); }
+    const t = tab(), T = TABS.find(x => x.id === t);
+    document.getElementById('tab-bar').innerHTML = TABS.map(tb => '<button class="tab-item' + (tb.id === t ? ' active' : '') + '" onclick="location.hash=\'#' + tb.id + '\'">' + tb.icon.replace('stat-card-icon', '') + tb.label + '<span class="tab-count">' + scoped(tb.states).length + '</span></button>').join('');
+    const rows = scoped(T.states);
+    statCards(t, rows);
+    const act = scoped(['active']);
+    document.getElementById('sch-note').innerHTML = t === 'running' ? act.length + ' active · <b style="color:var(--foreground)">' + money(act.reduce((a, x) => a + SCH.annual(x), 0)) + '</b> committed over the next 12 months' : 'Ended schedules keep their history and the SPOs they generated';
+    let list = cardFilter === 'all' ? rows : rows.filter(x => groupOf(x) === cardFilter);
+    const val = x => sortK === 'name' ? x.name : sortK === 'vendor' ? SPO.VEN[x.v].name : sortK === 'run' ? SCH.perRun(x) : sortK === 'status' ? SCH.STATES[x.status].rank : nextOf(x);
+    list = list.slice().sort((a, b) => { const va = val(a), vb = val(b); const d = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb)); return d * sortDir; });
 
-  /* name modal */
-  function openNameModal(rename) {
-    if (currentProp === 'all') { showToast('Pick a property first', 'Wishlists belong to a property'); return; }
-    renaming = !!rename;
-    document.getElementById('nm-title').textContent = renaming ? 'Rename wishlist' : 'New wishlist';
-    document.getElementById('nm-sub').textContent = 'This list is shared with everyone assigned to ' + prop().name + '.';
-    document.getElementById('nm-save').textContent = renaming ? 'Save name' : 'Create wishlist';
-    const input = document.getElementById('nm-input');
-    input.value = renaming ? cur().name : '';
-    document.getElementById('nm-save').disabled = !input.value.trim();
-    document.getElementById('name-modal').classList.add('open'); input.focus();
+    const cols = th('name', 'Schedule') + th('vendor', 'Vendor') + '<th>Cadence</th>' + th('next', t === 'ended' ? 'Ended' : 'Next run') + th('run', 'Per run') + th('status', 'Status');
+    const body = list.map(x => {
+      const v = SPO.VEN[x.v], isOpen = openRows.has(x.id), a = ACTION[x.status];
+      const nx = x.status === 'ended' ? fmtD(x.ev.ended) : x.status === 'paused' ? '<span style="color:var(--muted-foreground)">Paused</span>' : SCH.nextRun(x) ? fmtD(SCH.nextRun(x)) : '—';
+      const action = a ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + a(x)[1] + '">' + a(x)[0] + '</a>' : rowMenu(x);
+      const main = '<tr class="data-row"><td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(\'' + x.id + '\')" title="Runs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
+        '<td><a class="table-link" style="font-weight:700" href="schedule.html#' + x.id + '">' + x.name + '</a><div style="font-size:12px;color:var(--muted-foreground);margin-top:2px;max-width:220px;overflow:hidden;text-overflow:ellipsis" title="' + propName(x.prop) + '">' + x.id + ' · ' + propName(x.prop) + '</div></td>' +
+        '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + x.v + '</span><span class="nm" title="' + v.name + '">' + v.name + '</span></span></td>' +
+        '<td style="white-space:nowrap">' + SCH.cadenceShort(x.cadence) + '<div style="font-size:12px;color:var(--muted-foreground);margin-top:2px">' + (x.mode === 'auto' ? 'Auto-send' : 'Draft only') + ' · ' + SCH.fmtTime(x.cadence.time) + '</div></td>' +
+        '<td style="white-space:nowrap">' + nx + '</td>' +
+        '<td class="num" style="font-weight:600">' + money(SCH.perRun(x)) + '</td>' +
+        '<td>' + pill(x) + '</td><td>' + action + '</td></tr>';
+      return main + (isOpen ? expRow(x) : '');
+    }).join('');
+    document.getElementById('tbl-zone').innerHTML = '<div class="tbl-wrap" style="margin-top:4px"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th style="width:36px"></th>' + cols + '<th style="width:1%"></th></tr></thead><tbody>' +
+      (body || '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted-foreground)">' + (t === 'running' ? 'No running schedules here. Make any SPO recurring from its page, or start a New Schedule.' : 'No ended schedules for this property.') + '</td></tr>') + '</tbody></table></div></div>';
   }
-  function closeNameModal() { document.getElementById('name-modal').classList.remove('open'); }
-  function saveName() {
-    const name = document.getElementById('nm-input').value.trim(); if (!name) return;
-    if (renaming) { WL.renameList(currentProp, activeList, name); showToast('Renamed', name); }
-    else { const l = WL.createList(currentProp, name); activeList = l.id; showToast('Wishlist created', name); }
-    closeNameModal(); renderPage();
-  }
-  /* delete */
-  function openDelete() {
-    const l = cur();
-    document.getElementById('del-title').textContent = 'Delete ' + l.name + '?';
-    document.getElementById('del-sub').textContent = l.products.length ? 'This removes the list and its ' + l.products.length + ' saved product' + (l.products.length === 1 ? '' : 's') + ' for everyone at this property.' : 'This removes the empty list for everyone at this property.';
-    document.getElementById('del-modal').classList.add('open');
-  }
-  function closeDelete() { document.getElementById('del-modal').classList.remove('open'); }
-  function doDelete() { const l = cur(); WL.deleteList(currentProp, activeList); activeList = null; closeDelete(); showToast('Wishlist deleted', l.name); renderPage(); }
 
-  let toastTimer;
-  function showToast(title, desc) { let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(t); } t.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; t.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = 0, 3000); }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeNameModal(); closeDelete(); } });
-  // land scoped: default to Magnolia when arriving on All properties
-  if (currentProp === 'all') selectProp('magnolia'); else renderPage();
+  function expRow(x) {
+    const up = x.status === 'active' || x.status === 'approval' || x.status === 'revision' ? SCH.upcoming(x, 3, true) : [];
+    const inst = SCH.instances(x.id).slice(0, 3);
+    const upHtml = up.length ? up.map(r => '<div class="run-row' + (r.skipped ? ' skipped' : '') + '"><span class="rd"><b>' + r.date.slice(8) + '</b><span>' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+r.date.slice(5, 7) - 1] + '</span></span><div class="rb"><div>' + fmtD(r.date) + '</div><div class="m">' + (r.skipped ? 'Skipped' : x.mode === 'auto' ? 'PO sent automatically' : 'Drafted for you to send') + '</div></div></div>').join('')
+      : '<div class="run-more" style="border:none;padding:0">' + (x.status === 'paused' ? 'Paused — no runs until it’s resumed.' : 'No further runs.') + '</div>';
+    const instHtml = inst.length ? inst.map(s => { const st = SPO.STATES[s.state]; return '<div class="run-row"><span class="rd"><b>' + s.run.slice(8) + '</b><span>' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+s.run.slice(5, 7) - 1] + '</span></span><div class="rb"><div><a class="table-link" href="spo.html#' + s.id + '">SPO-' + s.id + '</a></div><div class="m">' + money(SPO.total(s)) + '</div></div><span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span></div>'; }).join('')
+      : '<div class="run-more" style="border:none;padding:0">' + (x.prior ? x.prior + ' earlier SPOs (before this demo window)' : 'None yet — the first run creates the first SPO.') + '</div>';
+    return '<tr class="items-block"><td colspan="8"><div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:0 20px">' +
+      '<div><div class="items-label" style="padding:0">Upcoming runs</div>' + upHtml + '</div><div><div class="items-label" style="padding:0">Recent SPOs</div>' + instHtml + '</div></div></td></tr>';
+  }
+  function toggleRow(id) { if (openRows.has(id)) openRows.delete(id); else openRows.add(id); renderPage(); }
+
+  function rowMenu(x) {
+    return '<div class="row-menu-wrap"><button class="icon-btn" style="width:32px;height:32px" onclick="toggleMenuRow(event, \'' + x.id + '\')" title="More actions"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>' +
+      '<div class="row-menu" id="rm-' + x.id + '" style="display:none"><button onclick="location.href=\'schedule.html#' + x.id + '\'">' + IC.eye + 'View schedule</button>' +
+      (x.status !== 'ended' ? '<button onclick="location.href=\'spo-new.html#edit-' + x.id + '\'">' + IC.edit + 'Edit schedule</button>' : '') + '</div></div>';
+  }
+  function toggleMenuRow(e, id) {
+    e.stopPropagation();
+    const m = document.getElementById('rm-' + id), open = m.style.display === 'block';
+    document.querySelectorAll('.row-menu').forEach(x => x.style.display = 'none');
+    m.style.display = open ? 'none' : 'block';
+  }
+  document.addEventListener('click', e => { if (!e.target.isConnected) return; if (!e.target.closest('.row-menu-wrap')) document.querySelectorAll('.row-menu').forEach(x => x.style.display = 'none'); });
+  renderPage();
 </script>
 </body>
 </html>

@@ -615,7 +615,37 @@ The single source of truth tying the SPO list, detail, and Home together. Every 
 
 - **Gating:** nothing reaches the vendor before approval when approval is required; nothing reaches Accounting before every invoice line is mapped and the invoice validated; Paid is recorded by Accounting, never by the buyer. Any row violating this is a data bug.
 - **Overlays ride a state, they never replace it:** “Corrected invoice” (disputed) rides Awaiting Invoice; “needs attention” (extraction failed) rides Invoice to Map.
-- **Deferred:** recurring schedules (a separate axis from lifecycle state, so not a tab — SPO-49), Unit History, standalone multi-SPO invoice intake, and SPO notifications.
+- **Deferred:** standalone multi-SPO invoice intake and SPO notifications. (Recurring schedules and Unit History shipped — see their sections.)
+
+### Schedules (recurring SPOs)
+
+- **A schedule is its own record, never a lifecycle state.** It is a template SPO (vendor, scope, lines with allocations) plus a cadence; each run creates an *ordinary SPO* that carries its own lifecycle and links back (`series` + run date). Series are not tabs or cards on the SPO list, so SPO counts never double-count a series (SPO-49), and series controls never sit on an SPO's tracker (SPO-50). Pages: `schedules.html` (Running / Ended), `schedule.html#SCH-<nn>`; Schedules is in the SPOs menu.
+- **Cadence in plain English, everywhere:** “Every week on Wednesday · 8:00 AM”, “Every 2 weeks on Monday”, “Monthly on the 1st”, “Every 3 months on the 15th”; tables use the short form (“Every Wed”, “Monthly · 1st”) with mode · time beneath. Monthly days stop at 28 so every month has one. Ends: never, on a date, or after N runs (skipped dates don't count).
+- **Approve the series once.** The request is the series' **12-month commitment** (runs in the next 12 months × per run); it needs approval over $2,500 or when its busiest month pushes a GL past its monthly budget. Approved, its runs go out with no further approval while they match the template — generated SPOs show the Approval step as “series approved”. An edit that raises the 12-month commitment re-enters approval; other edits save and apply from the next run. Requests join Order Approvals as `SCH-<nn>` (one line per template line × N runs) and freeze the approved run count, so past approvals never rewrite their amounts.
+- **Each run is Draft only or Auto-send** (Option Rows in the wizard; switchable on the series): Draft only creates a Draft SPO for the buyer to send; Auto-send creates it and emails the PO at the run time (Awaiting Vendor).
+- **Series controls:** Skip / Undo skip per upcoming date (skipping never edits the schedule), Switch mode, Pause (optional reason) / Resume, End (required reason; created SPOs are untouched), Edit (future runs only). Every action is logged on the series. The detail's Next-Task Strip narrates the series: Series approval → Review in Approvals · Revise the schedule → Edit · Next run · *date* → Skip this run · Paused → Resume schedule · Schedule ended.
+- **Creating:** the SPO wizard's Review step gains a Repeat card (One-time / Recurring); the budget check measures the series' busiest month; the rail becomes a Schedule summary with the 12-month total. **Make recurring** on any SPO not already in a series pre-fills the wizard and links that SPO as run 1.
+
+### Schedule Lifecycle Matrix
+
+Series states only — the SPOs a series creates follow the SPO Lifecycle Matrix above.
+
+| Series state | Pill | Tab · card | Whose turn | Next-Task Strip | Runs? | Demo |
+|---|---|---|---|---|---|---|
+| Pending Approval | Pending Approval | Running · Your Move | You (Supervisor) | Series approval → Review in Approvals | No | `SCH-06` |
+| Revision Requested | Revision Requested | Running · Your Move | You | Revise the schedule → Edit schedule | No | live |
+| Active | Active | Running · Active | — | Next run · *date* (Skip this run) | Yes | `SCH-01`, `SCH-02`, `SCH-04` |
+| Paused | Paused | Running · Paused | You (resume) | Paused → Resume schedule | No | `SCH-03` |
+| Ended | Ended | Ended · Completed / Stopped Early | — | Schedule ended (no button) | No | `SCH-05` |
+
+### Unit History
+
+- **One unit, every dollar charged to it.** `unit-history.html#<property>/<unit>` merges SPO allocations and product order lines (the cart's GL Code & Unit) into one ledger, newest first; `#<property>` alone shows the property's busiest units. Reached from the SPOs menu, from the unit inside any allocation chip (dashed-underline link), and from the wizard's unknown-unit warning (“Browse units”).
+- **Always inside one property.** Unit codes are a property's own BBUU scheme, so under “All properties” the page asks for a property first (inline option rows — it never blocks the nav); changing the Context Switcher re-scopes it.
+- **Unit Picker:** sticky left pane — search by code or “bldg 2 unit 16”, Building and Floor-plan filters, rows with the unit's spend in range; Common area pinned first. A search that matches nothing **explains the scheme** (“Units here use building + unit codes, 0101–0317 … resident apartment numbers don't map”) — never a bare “No units found” and never a guessed nearest unit (SPO-48).
+- **Ranges are spend periods** (calendar months): This period · Last 3 · 12 months (default) · Custom, always followed by the exact dates. The range drives the picker's spend column, the Stat Strip, Spend by GL and the activity table together.
+- **What counts:** spend = SPO allocations past approval (sent onward) plus order lines that aren't canceled; drafts, pending approvals, vendor-rejected and canceled SPOs are listed muted with “not counted”. A split line shows the unit's share “of” the line total.
+- Sections: unit header (code · building · unit · floor plan) with Range Bar and Stat Strip (Spend in range · Service POs · Orders · Last activity); Spend by GL (Horizontal Bar Chart); **Upcoming** — active, paused or pending schedules that charge the unit, with next run; Activity (Filter Tabs All · Service POs · Orders with counts, type chips, pager).
 
 ### AI Block
 
@@ -734,7 +764,7 @@ The single source of truth tying the SPO list, detail, and Home together. Every 
 ### Status Dots
 
 - Badge treatment: 8px circle + 13px label inside a pill — 1px `--border`, `--radius-pill`, `3px 10px` padding, `--background` fill.
-- Colors: emerald (active/validated/delivered), amber (pending/partially fulfilled), muted-foreground (inactive/placed), red (error/not fulfilled), sky (info), orange (warning/payment pending), violet (with Accounting / payment in progress — buyer `.dot-violet`, SPOs).
+- Colors: emerald (active/validated/delivered), amber (pending/partially fulfilled), muted-foreground (inactive/placed), red (error/not fulfilled), sky (info), orange (warning/payment pending), violet (with Accounting / payment in progress — buyer `.dot-violet`, SPOs), muted (ended — buyer `.dot-muted`, schedules).
 - Order lifecycle mapping is documented in the Components tab under Status Dots → Order Lifecycle. Publishing lifecycle (Draft = gray, Scheduled = orange, Active = green) under Status Dots → Publishing Lifecycle — every status shows a dot, including Draft.
 
 ### Skeletons

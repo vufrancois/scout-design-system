@@ -38,7 +38,8 @@
         <button class="nav-chip active" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel" id="menu-spos">
           <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
-          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
+          <a class="menu-item" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span><span class="menu-item-title">Schedules</span><span class="menu-item-desc" style="display:block">Recurring service POs</span></span></a>
+          <a class="menu-item" href="unit-history.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
         </div>
       </div>
       <div class="menu-anchor">
@@ -184,6 +185,9 @@
     search: SVG + '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
     wrench: SVG + '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
     chart: SVG + '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg>',
+    rep: SVG + '<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',
+    pen: SVG + '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
+    one: SVG + '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
     save: SVG + '<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>'
   };
   const STEP_LIST = [['property', 'Property & Vendor', 'Where and who'], ['scope', 'Scope', 'Describe the work'], ['costs', 'Costs & GL', 'Price and allocate'], ['review', 'Review', 'Budget and submit']];
@@ -197,6 +201,25 @@
   function loadW() { try { return JSON.parse(sessionStorage.getItem(WKEY)) || blankW(); } catch (e) { return blankW(); } }
   function saveW() { try { sessionStorage.setItem(WKEY, JSON.stringify(W)); } catch (e) { /* session only */ } }
   let W = loadW();
+  /* ---------- recurrence (a schedule = this SPO as a template + a cadence) ---------- */
+  function defaultRec(name) {
+    const t = SCH.addDays(SPO.TODAY, 1), dt = new Date(t + 'T00:00:00Z');
+    return { on: true, name: (name || '').split(' — ')[0].replace(/,.*$/, ''), freq: 'monthly', dow: dt.getUTCDay(), dom: Math.min(28, dt.getUTCDate()), time: '08:00', start: t, endType: 'never', endDate: SCH.addDays(t, 364), endCount: 12, mode: 'draft' };
+  }
+  function fromSch(x) {
+    return { id: null, created: null, prop: x.prop, v: x.v, scope: x.scope, period: PERIOD, lines: clone(x.lines), drafted: true, ai: null, sched: x.id,
+      rec: { on: true, name: x.name, freq: x.cadence.freq, dow: x.cadence.dow != null ? x.cadence.dow : 1, dom: x.cadence.dom || 1, time: x.cadence.time, start: x.start,
+        endType: x.end.type, endDate: x.end.type === 'date' ? x.end.value : SCH.addDays(SPO.TODAY, 365), endCount: x.end.type === 'count' ? x.end.value : 12, mode: x.mode } };
+  }
+  const isRec = () => !!(W.rec && W.rec.on);
+  /* A schedule object built from the wizard, for the cadence engine and the approval check. */
+  function asSch() {
+    const r = W.rec, sp = asSpo();
+    return { id: W.sched || 'SCH-NEW', prop: W.prop, v: W.v, lines: sp.lines, skipped: W.sched ? (SCH.get(W.sched).skipped || []) : [],
+      cadence: { freq: r.freq, dow: +r.dow, dom: +r.dom, time: r.time || '08:00' }, start: r.start,
+      end: r.endType === 'date' ? { type: 'date', value: r.endDate } : r.endType === 'count' ? { type: 'count', value: Math.max(1, +r.endCount || 1) } : { type: 'never' } };
+  }
+  function setRec(k, v) { W.rec[k] = v; saveW(); renderPage(); }
   function fromSpo(d, keep) {
     return { id: keep ? d.id : null, created: keep ? d.ev.created : null, prop: d.prop, v: d.v, scope: d.scope, period: keep ? d.period : PERIOD, lines: clone(d.lines), drafted: true, ai: null, cloneOf: keep ? null : d.id };
   }
@@ -234,6 +257,10 @@
     if (/^\d+$/.test(h)) { const d = SPO.get(h); if (d && d.state === 'draft') { W = fromSpo(d, true); saveW(); } location.replace('#review'); return null; }
     if (/^clone-\d+$/.test(h)) { const d = SPO.get(h.slice(6)); if (d) { W = fromSpo(d, false); saveW(); } location.replace('#costs'); return null; }
     if (h === 'new' || !h) { W = blankW(); saveW(); location.replace('#property'); return null; }
+    /* Recurring: a new schedule, "Make recurring" from an SPO (that SPO becomes run 1), or editing a schedule (future runs only). */
+    if (h === 'recurring') { W = blankW(); W.rec = defaultRec(); saveW(); location.replace('#property'); return null; }
+    if (/^recurring-\d+$/.test(h)) { const d = SPO.get(h.slice(10)); if (d) { W = fromSpo(d, false); W.cloneOf = null; W.fromSpo = d.id; W.rec = defaultRec(d.lines[0] && d.lines[0].desc); saveW(); } location.replace('#review'); return null; }
+    if (/^edit-SCH-\d+$/.test(h)) { const x = SCH.get(h.slice(5)); if (x) { W = fromSch(x); saveW(); } location.replace('#review'); return null; }
     if (h.indexOf('done-') === 0) return 'done';
     if (!STEP_LIST.some(s => s[0] === h)) h = 'property';
     const idx = STEP_LIST.findIndex(s => s[0] === h);
@@ -367,7 +394,17 @@
   /* ---------- render ---------- */
   function railSummary(showCta) {
     const p = W.prop ? propOf(W.prop) : null, v = W.v ? SPO.VEN[W.v] : null, t = wTotal();
-    const appr = W.lines.length && W.prop ? SPO.needsApproval(asSpo()) : false;
+    const appr = W.lines.length && W.prop ? (isRec() ? SCH.needsApproval(asSch()) : SPO.needsApproval(asSpo())) : false;
+    if (isRec()) return '<div class="card"><div class="det-card-head"><h2>Schedule</h2></div>' +
+      '<div class="sum-row"><span class="muted">Property</span><span style="text-align:right">' + (p ? p.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
+      '<div class="sum-row"><span class="muted">Vendor</span><span style="text-align:right">' + (v ? v.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
+      '<div class="sum-row"><span class="muted">Repeats</span><span style="text-align:right">' + SCH.cadenceShort(asSch().cadence) + '</span></div>' +
+      '<div class="sum-row"><span class="muted">Per run</span><span>' + money(t) + '</span></div>' +
+      '<div class="sum-grand"><span>Next 12 months</span><span class="amt">' + money(W.prop && W.lines.length ? SCH.annual(asSch()) : 0) + '</span></div>' +
+      (W.lines.length && t > 0 && W.prop ? (W.sched && !recReapprove()
+        ? '<div class="w-note" style="margin-top:12px">' + IC.shield + '<span>Covered by the series approval</span></div>'
+        : '<div class="w-note' + (appr ? ' warn' : '') + '" style="margin-top:12px">' + (appr ? IC.shield : IC.info) + '<span>' + (appr ? 'The series needs Supervisor approval once' : 'Within budget — no approval needed') + '</span></div>') : '') +
+      (showCta || '') + '</div>';
     return '<div class="card"><div class="det-card-head"><h2>Service PO</h2></div>' +
       '<div class="sum-row"><span class="muted">Property</span><span style="text-align:right">' + (p ? p.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
       '<div class="sum-row"><span class="muted">Vendor</span><span style="text-align:right">' + (v ? v.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
@@ -433,7 +470,7 @@
           '<div class="w-field"><label>GL code' + (multi ? ' · portion ' + (k + 1) : '') + '</label>' + comboHtml('gl~' + i + '~' + k, 'Select GL code…', glOpts(), a.gl) + '</div>' +
           '<div class="w-field"><label>Unit</label>' + comboHtml('unit~' + i + '~' + k, a.warnUnit ? 'Unit ' + a.warnUnit + ' not found' : 'Select unit…', unitOpts(), a.unit, !!a.warnUnit) + '</div>' +
           (multi ? '<div class="w-field"><label>Amount</label><span class="money-in"><span class="cur">$</span><input inputmode="decimal" value="' + (a.amt || 0).toFixed(2) + '" onfocus="this.select()" onchange="setAmt(' + i + ', ' + k + ', this.value)"></span></div><button class="row-action" title="Remove portion" onclick="rmAlloc(' + i + ', ' + k + ')">' + IC.trash + '</button>' : '') + '</div>' +
-          (a.warnUnit ? '<div class="w-note warn">' + IC.warn + '<span>Your scope names unit ' + a.warnUnit + ', which isn’t in ' + pName + '’s unit list. Choose the unit this work is for — Scout won’t guess.</span></div>' : '')).join('') +
+          (a.warnUnit ? '<div class="w-note warn">' + IC.warn + '<span>Your scope names unit ' + a.warnUnit + ', which isn’t in ' + pName + '’s unit list. Choose the unit this work is for — Scout won’t guess. <a class="text-link" href="unit-history.html#' + W.prop + '" target="_blank" rel="noopener">Browse units</a></span></div>' : '')).join('') +
         (mism ? '<div class="w-note warn">' + IC.warn + '<span>The description mentions unit ' + mism + ' but this line is allocated elsewhere — update one so they agree.</span></div>' : '') +
         (multi && Math.abs(sum - lineTotal(l)) > 0.005 ? '<div class="w-note warn">' + IC.warn + '<span>Portions total ' + money(sum) + ' — they need to add up to ' + money(lineTotal(l)) + '.</span></div>' : '') +
         '<div style="display:flex;gap:16px;margin-top:12px"><button class="w-linkbtn" onclick="addSplit(' + i + ')">' + IC.split + 'Split across GL codes or units</button>' + (multi ? '<button class="w-linkbtn" onclick="splitEven(W.lines[' + i + '])">Split evenly</button>' : '') + '</div></div>';
@@ -445,23 +482,54 @@
       (bl.length ? '<ul class="w-blockers">' + bl.map(b => '<li>' + b + '</li>').join('') + '</ul>' : '') + '</div>';
   }
 
+  function recPeak() {
+    const x = asSch(), first = x.start > SPO.TODAY ? x.start : SCH.addDays(SPO.TODAY, 1);
+    let best = { n: 0, period: SCH.periodOf(first) };
+    for (let k = 0; k < 12; k++) { const d = new Date(first + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() + k); const per = SCH.periodOf(d.toISOString().slice(0, 10)), n = SCH.runsInPeriod(x, per); if (n > best.n) best = { n, period: per }; }
+    return best;
+  }
   function budgetMeters() {
-    const bud = SPO.budget(W.prop, W.period, W.id || -1), mine = {};
-    W.lines.forEach(l => l.alloc.forEach(a => { if (a.gl) mine[a.gl] = r2((mine[a.gl] || 0) + (a.amt || 0)); }));
+    const pk = isRec() ? recPeak() : null, mult = pk ? pk.n : 1;
+    const bud = SPO.budget(W.prop, pk ? pk.period : W.period, W.id || -1), mine = {};
+    W.lines.forEach(l => l.alloc.forEach(a => { if (a.gl) mine[a.gl] = r2((mine[a.gl] || 0) + (a.amt || 0) * mult); }));
     return Object.keys(mine).sort().map(g => {
       const b = bud[g], after = r2(b.spent + b.committed + mine[g]), over = after > b.budget, scale = Math.max(b.budget, after);
       const w = v => (v / scale * 100).toFixed(2) + '%';
       return '<div class="bmeter' + (over ? ' over' : '') + '"><div class="bmeter-head"><span class="gl"><code>' + g + '</code>' + SPO.glName(g) + '</span><span class="pct">' + Math.round(after / b.budget * 100) + '% of budget</span></div>' +
         '<div class="bmeter-bar"><span class="sp" style="width:' + w(b.spent) + '"></span><span class="cm" style="width:' + w(b.committed) + '"></span><span class="me" style="width:' + w(mine[g]) + '"></span>' + (over ? '<span class="cap" style="left:' + w(b.budget) + '"></span>' : '') + '</div>' +
-        '<div class="bmeter-sub">' + money(after) + ' of ' + money(b.budget) + (over ? ' · <b style="color:var(--rose)">over by ' + money(r2(after - b.budget)) + '</b>' : ' · ' + money(r2(b.budget - after)) + ' left') + ' · this SPO ' + money(mine[g]) + '</div></div>';
+        '<div class="bmeter-sub">' + money(after) + ' of ' + money(b.budget) + (over ? ' · <b style="color:var(--rose)">over by ' + money(r2(after - b.budget)) + '</b>' : ' · ' + money(r2(b.budget - after)) + ' left') + ' · ' + (pk ? 'this schedule ' + pk.n + ' × ' + money(r2(mine[g] / Math.max(1, pk.n))) : 'this SPO ' + money(mine[g])) + '</div></div>';
     }).join('') +
-    '<div class="bmeter-legend"><span><i style="background:color-mix(in srgb, var(--primary) 45%, var(--muted))"></i>Spent</span><span><i style="background:color-mix(in srgb, var(--sky) 55%, var(--muted))"></i>Committed on open SPOs</span><span><i style="background:var(--amber)"></i>This SPO</span></div>';
+    '<div class="bmeter-legend"><span><i style="background:color-mix(in srgb, var(--primary) 45%, var(--muted))"></i>Spent</span><span><i style="background:color-mix(in srgb, var(--sky) 55%, var(--muted))"></i>Committed on open SPOs</span><span><i style="background:var(--amber)"></i>' + (isRec() ? 'This schedule (busiest month)' : 'This SPO') + '</span></div>';
   }
+
+  function repeatCard() {
+    const r = W.rec || { on: false }, on = isRec(), ed = !!W.sched;
+    const seg = ed ? '' : '<div class="mode-seg" style="margin-top:12px"><button class="' + (on ? '' : 'active') + '" onclick="toggleRec(false)">' + IC.one + '<span>One-time</span></button><button class="' + (on ? 'active' : '') + '" onclick="toggleRec(true)">' + IC.rep + '<span>Recurring</span></button></div>';
+    if (!on) return '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.rep + '</span>Repeat</h2><div class="sub">Need this every week, month or quarter? Make it a schedule.</div></div></div>' + seg + '</div>';
+    const x = asSch(), weekly = r.freq === 'weekly' || r.freq === 'biweekly';
+    const opt = (val, label, sel) => '<option value="' + val + '"' + (String(sel) === String(val) ? ' selected' : '') + '>' + label + '</option>';
+    const dayField = weekly
+      ? '<div class="w-field"><label>On</label><select onchange="setRec(\'dow\', +this.value)">' + SCH.DOW.map((d, i) => opt(i, d, r.dow)).join('') + '</select></div>'
+      : '<div class="w-field"><label>On day</label><select onchange="setRec(\'dom\', +this.value)">' + Array.from({ length: 28 }, (_, i) => opt(i + 1, SCH.ord(i + 1) + ' of the month', r.dom)).join('') + '</select></div>';
+    const endVal = r.endType === 'date' ? '<div class="w-field"><label>End date</label><input type="date" value="' + r.endDate + '" onchange="setRec(\'endDate\', this.value)"></div>'
+      : r.endType === 'count' ? '<div class="w-field"><label>Number of runs</label><input type="number" min="1" max="120" value="' + r.endCount + '" onchange="setRec(\'endCount\', Math.max(1, +this.value || 1))"></div>' : '<div></div>';
+    const up = W.prop && W.v ? SCH.upcoming(x, 3) : [], yr = W.prop ? SCH.yearRuns(x) : 0;
+    return '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.rep + '</span>' + (ed ? 'Schedule · ' + W.sched : 'Repeat') + '</h2><div class="sub">' + (ed ? 'Changes apply to future runs — SPOs already created keep their own history' : 'Each run creates an ordinary SPO from these lines') + '</div></div></div>' + seg +
+      '<div class="rec-grid"><div class="w-field" style="grid-column:1 / -1"><label>Schedule name</label><input class="text-in" value="' + (r.name || '').replace(/"/g, '&quot;') + '" placeholder="e.g. Common-area cleaning" onchange="setRec(\'name\', this.value)"></div>' +
+      '<div class="w-field"><label>Repeats</label><select onchange="setRec(\'freq\', this.value)">' + Object.keys(SCH.FREQ).map(k => opt(k, SCH.FREQ[k].label, r.freq)).join('') + '</select></div>' + dayField +
+      '<div class="w-field"><label>Starts</label><input type="date" value="' + r.start + '"' + (ed ? ' disabled' : '') + ' onchange="setRec(\'start\', this.value)"></div>' +
+      '<div class="w-field"><label>Time</label><input type="time" value="' + r.time + '" onchange="setRec(\'time\', this.value)"></div>' +
+      '<div class="w-field"><label>Ends</label><select onchange="setRec(\'endType\', this.value)">' + opt('never', 'Never', r.endType) + opt('date', 'On a date', r.endType) + opt('count', 'After a number of runs', r.endType) + '</select></div>' + endVal +
+      '<div class="w-field" style="grid-column:1 / -1"><label>Each run</label><div style="display:flex;flex-direction:column;gap:8px">' +
+        ['draft', 'auto'].map(m => '<button class="opt-row' + (r.mode === m ? ' selected' : '') + '" onclick="setRec(\'mode\', \'' + m + '\')"><span class="opt-ic">' + (m === 'auto' ? IC.send : IC.pen) + '</span><span class="opt-body"><span class="opt-name">' + (m === 'auto' ? 'Auto-send' : 'Draft only') + '</span><span class="opt-desc">' + (m === 'auto' ? 'Creates the SPO and emails the PO to the vendor at the run time' : 'Drafts the SPO for you to review and send') + '</span></span><span class="opt-radio">' + IC.check + '</span></button>').join('') + '</div></div></div>' +
+      '<div class="rec-preview"><b>' + SCH.cadenceText(x.cadence) + '</b>' + (up.length ? 'Next runs ' + up.map(u => SPO.fmtDate(u.date)).join(', ') + ' · ' : 'No runs in range · ') + yr + ' run' + (yr === 1 ? '' : 's') + ' (' + money(SCH.annual(x)) + ') in the next 12 months · ' + SCH.endText(x) + '</div></div>';
+  }
+  function toggleRec(on) { if (on && !W.rec) W.rec = defaultRec(W.lines[0] && W.lines[0].desc); if (W.rec) W.rec.on = on; saveW(); renderPage(); }
 
   function viewReview() {
     const p = propOf(W.prop), v = SPO.VEN[W.v], t = wTotal(), s = asSpo();
     const over = SPO.glOver(s), overLimit = t > SPO.APPROVAL_LIMIT, appr = overLimit || over.length > 0;
-    const allocChips = l => '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span>' + SPO.unitLabel(a.unit) + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
+    const allocChips = l => '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + W.prop + '/' + a.unit + '" target=\"_blank\" rel=\"noopener\" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
     const edit = h => '<a class="text-link" href="#' + h + '" style="font-size:13px">Edit</a>';
     const main = '<div class="card"><div class="det-card-head hd"><h2>Property &amp; vendor</h2>' + edit('property') + '</div><dl class="fact-rows wide" style="margin-top:10px">' +
       '<dt>Property</dt><dd>' + p.name + '</dd><dt>Vendor</dt><dd>' + v.name + '</dd><dt>PO goes to</dt><dd>' + v.email + '</dd><dt>Requested by</dt><dd>Alicia Grant</dd><dt>Spend period</dt><dd>' + W.period + '</dd></dl></div>' +
@@ -469,7 +537,9 @@
       '<div class="card"><div class="det-card-head hd"><h2>Line items</h2>' + edit('costs') + '</div>' +
       W.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(lineTotal(l)) + '</span>' + allocChips(l) + '</div>').join('') +
       '<div class="det-totals"><div class="tot-row grand"><span>SPO estimate</span><span>' + money(t) + '</span></div></div></div>' +
-      '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.chart + '</span>Budget check</h2><div class="sub">' + p.name + ' · ' + W.period + '</div></div></div><div style="margin-top:12px">' + budgetMeters() + '</div></div>';
+      repeatCard() +
+      '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.chart + '</span>Budget check</h2><div class="sub">' + p.name + ' · ' + (isRec() ? recPeak().period + ' · the series’ busiest month' : W.period) + '</div></div></div><div style="margin-top:12px">' + budgetMeters() + '</div></div>';
+    if (isRec()) return [main, railSummary(recCta(v))];
     const why = overLimit && over.length ? 'Over ' + money(SPO.APPROVAL_LIMIT) + ' and over the ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' budget.'
       : overLimit ? 'Over ' + money(SPO.APPROVAL_LIMIT) + '.' : over.length ? 'Pushes ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' over its ' + W.period + ' budget.' : '';
     const cta = appr
@@ -479,6 +549,47 @@
         '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="submitSpo()"><span style="display:inline-flex;width:16px;height:16px">' + IC.send + '</span>Send to ' + v.name + '</button>';
     const side = railSummary(cta + '<button class="btn btn-block" style="margin-top:10px;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="saveDraft()"><span style="display:inline-flex;width:15px;height:15px">' + IC.save + '</span>Save draft</button>');
     return [main, side];
+  }
+
+  /* An edit re-enters approval only when it commits more than the series did (or a revision was asked for). */
+  function recReapprove() { const ed = W.sched ? SCH.get(W.sched) : null, x = asSch(); return !!ed && SCH.needsApproval(x) && (SCH.annual(x) > SCH.annual(ed) + 0.005 || ed.status === 'revision'); }
+  /* Series approval is judged once, on the series' 12-month commitment and its busiest month. */
+  function recCta(v) {
+    const x = asSch(), appr = SCH.needsApproval(x), ed = W.sched ? SCH.get(W.sched) : null;
+    const named = (W.rec.name || '').trim().length > 0;
+    const reapprove = ed && appr && (SCH.annual(x) > SCH.annual(ed) + 0.005 || ed.status === 'revision');
+    const block = named ? '' : '<ul class="w-blockers"><li>Name the schedule</li></ul>';
+    const go = (label, ico) => '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px"' + (named ? '' : ' disabled') + ' onclick="submitSchedule()"><span style="display:inline-flex;width:16px;height:16px">' + ico + '</span>' + label + '</button>';
+    if (ed && !reapprove) return '<div class="callout emerald" style="margin-top:14px"><b>No new approval needed</b>' + (appr ? 'The series stays within what was approved.' : 'Within budget and under ' + money(SPO.APPROVAL_LIMIT) + ' a year.') + ' Changes apply from the next run.</div>' + go('Save changes', IC.save) + block;
+    if (appr) return '<div class="callout amber" style="margin-top:14px"><b>' + (ed ? 'Changes need re-approval' : 'Series approval required') + '</b>' + SCH.reason(x) + '. A Supervisor approves the series once — its runs then go out without further approval. Nothing runs until then.</div>' + go(ed ? 'Save & resubmit for approval' : 'Submit schedule for approval', IC.shield) + block;
+    return '<div class="callout emerald" style="margin-top:14px"><b>No approval needed</b>Under ' + money(SPO.APPROVAL_LIMIT) + ' over 12 months and within budget. The first run is ' + SPO.fmtDate(SCH.nextRun(x) || x.start) + '.</div>' + go('Start schedule', IC.rep) + block;
+  }
+  function submitSchedule() {
+    const x0 = asSch(), r = W.rec, ed = W.sched ? SCH.get(W.sched) : null;
+    if (!(r.name || '').trim()) return;
+    const appr = SCH.needsApproval(x0), reapprove = ed ? appr && (SCH.annual(x0) > SCH.annual(ed) + 0.005 || ed.status === 'revision') : appr;
+    const x = ed || { id: SCH.nextId(), by: 'Alicia Grant', skipped: [], prior: 0, ev: { created: SPO.now() } };
+    Object.assign(x, { name: r.name.trim(), prop: W.prop, v: W.v, scope: W.scope.trim(), lines: x0.lines, cadence: x0.cadence, start: x0.start, end: x0.end, mode: r.mode });
+    if (!ed) x.log = [{ at: x.ev.created, t: 'Schedule created', sub: 'by Alicia Grant' + (W.fromSpo ? ' · from SPO-' + W.fromSpo : ''), hi: false }];
+    else SCH.log(x, 'Schedule edited', 'by Alicia Grant · ' + SCH.cadenceText(x.cadence) + ' · ' + money(SCH.perRun(x)) + ' per run · from the next run');
+    if (reapprove) { x.status = 'approval'; x.ev.approvalReq = SPO.now(); delete x.ev.approved; delete x.revision; SCH.log(x, 'Sent for approval', 'Series approval · ' + SCH.reason(x)); }
+    else if (!ed) { x.status = 'active'; SCH.log(x, 'Started', 'No approval needed · first run ' + SPO.fmtDate(SCH.nextRun(x) || x.start), true); }
+    SCH.save(x);
+    if (W.fromSpo) { const sp = SPO.get(W.fromSpo); if (sp && !sp.series) { sp.series = x.id; sp.run = sp.ev.created.slice(0, 10); SPO.log(sp, 'Made recurring', x.id + ' · ' + SCH.cadenceText(x.cadence)); SPO.save(sp); } }
+    try { sessionStorage.removeItem(WKEY); } catch (e) { /* noop */ }
+    location.hash = '#done-' + x.id;
+  }
+  function viewDoneSch(id) {
+    const x = SCH.get(id), v = SPO.VEN[x.v], p = propOf(x.prop), appr = x.status === 'approval';
+    const steps = appr
+      ? [['Supervisor review', 'The series is in Order Approvals. It’s approved once — not run by run.'], ['Runs start', 'From ' + SPO.fmtDate(SCH.nextRun(x) || x.start) + ', each run ' + (x.mode === 'auto' ? 'creates an SPO and emails ' + v.email : 'drafts an SPO for you to send') + '.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.']]
+      : [['First run ' + SPO.fmtDate(SCH.nextRun(x) || x.start), x.mode === 'auto' ? 'An SPO is created and its PO emailed to ' + v.email + '.' : 'An SPO is drafted for you to review and send.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.'], ['Adjust any time', 'Skip a date, pause, or edit future runs from the schedule.']];
+    return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px' + (appr ? ';background:var(--amber-soft);color:var(--amber)' : '') + '"><span style="display:inline-flex;width:34px;height:34px">' + (appr ? IC.shield : IC.rep) + '</span></div>' +
+      '<h1 style="margin-bottom:0">' + (appr ? x.name + ' sent for approval' : x.name + (W.sched ? ' updated' : ' scheduled')) + '</h1>' +
+      '<div class="confirm-sub">' + x.id + ' · ' + p.name + ' · ' + SCH.cadenceText(x.cadence) + ' · ' + money(SCH.perRun(x)) + ' per run</div>' +
+      '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">What happens next?</h2></div>' + steps.map((st, i) => '<div class="next-step"><span class="nn">' + (i + 1) + '</span><div><b>' + st[0] + '</b><span>' + st[1] + '</span></div></div>').join('') + '</div>' +
+      '<div class="confirm-actions"><a class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" href="schedule.html#' + x.id + '"><span style="display:inline-flex;width:16px;height:16px">' + IC.rep + '</span>View schedule</a>' +
+      '<a class="btn" href="schedules.html">Back to Schedules</a></div></div>';
   }
 
   function persist(state) {
@@ -520,13 +631,14 @@
   function renderPage() {
     const cur = route(); if (!cur) return;
     const main = document.getElementById('w-main'), side = document.getElementById('w-side'), grid = document.getElementById('w-grid');
-    document.getElementById('w-title').textContent = W.id ? 'Draft SPO-' + W.id : 'New Service PO';
+    document.getElementById('w-title').textContent = W.sched ? 'Edit ' + W.sched : isRec() ? 'New Schedule' : W.id ? 'Draft SPO-' + W.id : 'New Service PO';
     document.getElementById('w-sub').textContent = W.prop && W.v ? propOf(W.prop).name + ' · ' + SPO.VEN[W.v].name : 'Request a service from an approved vendor';
     if (cur === 'done') {
       document.getElementById('chk-steps').style.display = 'none';
       document.querySelector('.hero-title-block').style.visibility = 'hidden';
       grid.style.gridTemplateColumns = '1fr'; grid.style.marginTop = '-36px';
-      main.innerHTML = viewDone(location.hash.replace('#done-', '')); side.innerHTML = '';
+      const did = location.hash.replace('#done-', '');
+      main.innerHTML = did.indexOf('SCH-') === 0 ? viewDoneSch(did) : viewDone(did); side.innerHTML = '';
       return;
     }
     document.getElementById('chk-steps').style.display = ''; document.querySelector('.hero-title-block').style.visibility = '';

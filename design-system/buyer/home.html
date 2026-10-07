@@ -38,7 +38,8 @@
         <button class="nav-chip" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel" id="menu-spos">
           <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
-          <a class="menu-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
+          <a class="menu-item" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span><span class="menu-item-title">Schedules</span><span class="menu-item-desc" style="display:block">Recurring service POs</span></span></a>
+          <a class="menu-item" href="unit-history.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
         </div>
       </div>
       <div class="menu-anchor">
@@ -360,8 +361,10 @@
     const inv = BASE.invoices[range].map(v => sc(v, w)), apr = BASE.approvals[range].map(v => sc(v, w));
     const spos = SPO.list().filter(s => currentProp === 'all' || s.prop === currentProp);
     spos.filter(s => s.ev.approvalReq).forEach(s => { apr[s.state === 'approval' ? 0 : s.ev.approved ? 2 : s.state === 'canceled' ? 3 : 1]++; });
+    SCH.list().filter(x => x.ev.approvalReq && (currentProp === 'all' || x.prop === currentProp)).forEach(x => { apr[x.status === 'approval' ? 0 : x.status === 'revision' ? 1 : x.rejected ? 3 : 2]++; });
+    const schApr = SCH.list().filter(x => x.status === 'approval' && (currentProp === 'all' || x.prop === currentProp)).length;
     const sc2 = st => spos.filter(s => st.indexOf(s.state) >= 0).length;
-    const spo = { map: sc2(['mapping']), ready: sc2(['ready']), you: sc2(['draft', 'approval', 'mapping', 'ready']), vendor: sc2(['sent', 'invoice']), rejected: sc2(['rejected']), acct: sc2(['accounting']), paid: sc2(['paid']), sprApr: sc2(['approval']) };
+    const spo = { map: sc2(['mapping']), ready: sc2(['ready']), you: sc2(['draft', 'approval', 'mapping', 'ready']), vendor: sc2(['sent', 'invoice']), rejected: sc2(['rejected']), acct: sc2(['accounting']), paid: sc2(['paid']), sprApr: sc2(['approval']), schApr };
     const rog = Math.min(sc(BASE.rog, w), open[3]);
     return {
       w, open, partial, canceled: sc(BASE.canceled, w), inv, apr, rog, spo,
@@ -381,7 +384,8 @@
     $('ac-rog-meta').textContent = m.rog ? 'Confirm receipt of goods · oldest 3d' : 'All deliveries validated';
     $('bd-open-m3').textContent = m.rog ? m.rog + ' awaiting your validation' : 'validated · awaiting payment';
     $('ac-inv-meta').textContent = m.inv[0] ? 'Check invoices against delivery · oldest 6d' : 'Nothing waiting on you — all invoices validated';
-    $('ac-apr-meta').textContent = m.apr[0] ? (m.apr[0] === 1 ? (m.spo.sprApr ? 'Service PO' : 'Order request') + ' awaiting your approval · 1d' : m.apr[0] + ' requests awaiting your approval' + (m.spo.sprApr ? ' · ' + m.spo.sprApr + ' Service PO' + (m.spo.sprApr > 1 ? 's' : '') : '') + ' · oldest 1d') : 'No requests waiting for approval';
+    const extra = [m.spo.sprApr ? m.spo.sprApr + ' Service PO' + (m.spo.sprApr > 1 ? 's' : '') : '', m.spo.schApr ? m.spo.schApr + ' schedule' + (m.spo.schApr > 1 ? 's' : '') : ''].filter(Boolean).join(' · ');
+    $('ac-apr-meta').textContent = m.apr[0] ? (m.apr[0] === 1 ? (m.spo.sprApr ? 'Service PO' : m.spo.schApr ? 'Schedule' : 'Order request') + ' awaiting your approval · 1d' : m.apr[0] + ' requests awaiting your approval' + (extra ? ' · ' + extra : '') + ' · oldest 1d') : 'No requests waiting for approval';
     $('ac-spo').textContent = m.spo.map;
     $('ac-spo-meta').textContent = m.spo.map ? 'Match vendor invoices to SPO lines' + (m.spo.ready ? ' · ' + m.spo.ready + ' ready for Accounting' : '') : (m.spo.ready ? m.spo.ready + ' ready to send to Accounting' : 'No SPO invoices waiting on you');
     const spoActive = m.spo.you + m.spo.vendor + m.spo.rejected + m.spo.acct;

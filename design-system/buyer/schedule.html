@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wishlists — Scout Buyer</title>
+<title>Schedule — Scout Buyer</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
+<script src="spo-data.js"></script>
 </head>
 <body class="buyer">
 
@@ -19,7 +20,7 @@
     </div>
     <div class="nav-chips">
       <a class="nav-chip" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lbl">Home</span></a>
-      <a class="nav-chip active" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
+      <a class="nav-chip" href="marketplace.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg><span class="lbl">Marketplace</span></a>
       <div class="menu-anchor">
         <button class="nav-chip" id="nav-orders" onclick="toggleMenu('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span class="lbl">Orders</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel cols-2" id="menu-orders">
@@ -34,7 +35,7 @@
         </div>
       </div>
       <div class="menu-anchor">
-        <button class="nav-chip" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-chip active" id="nav-spos" onclick="toggleMenu('spos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span class="lbl">SPOs</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu-panel" id="menu-spos">
           <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
           <a class="menu-item" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span><span class="menu-item-title">Schedules</span><span class="menu-item-desc" style="display:block">Recurring service POs</span></span></a>
@@ -62,7 +63,7 @@
       <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       <button class="icon-btn" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></button>
       <button class="icon-btn primary" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
-      <button class="icon-btn active-page" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+      <button class="icon-btn" title="Wishlists" onclick="location.href='wishlists.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
       <button class="icon-btn primary" title="Cart" onclick="location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button>
     </div>
   </nav>
@@ -71,56 +72,25 @@
 
 
 
-<main class="page" style="padding-top:32px">
-  <div class="wl-page-head">
-    <div><h1>Wishlists</h1><div class="sub" id="wl-sub-line">Shared product lists for Magnolia Place Apartments.</div></div>
-    <button class="btn btn-primary" style="height:40px" onclick="openNameModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New wishlist</button>
+
+
+<section class="hero page-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner" style="flex-direction:column;gap:0">
+    <a class="back-link" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to Schedules</a>
+    <div class="hero-title-block">
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></div>
+      <div><h1 id="hero-title">Schedule</h1><p id="hero-sub"></p></div>
+    </div>
   </div>
+</section>
 
-  <div id="wl-prop-prompt" class="empty" style="display:none"><b>Wishlists are per property</b>Pick a property from "Current Property:" in the bar above to see its lists.<br><br><button class="btn" onclick="toggleCtx()">Choose a property</button></div>
-
-  <div class="wl-layout" id="wl-layout">
-    <aside class="wl-side">
-      <div id="wl-side-items"></div>
-    </aside>
-    <section>
-      <div class="wl-head-card">
-        <div class="wl-head-body">
-          <h2 id="wl-name">2x1 Turns</h2>
-          <div class="meta" id="wl-meta">2 saved products</div>
-        </div>
-        <button class="icon-btn" data-tip="Rename" onclick="openNameModal(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
-        <button class="icon-btn" data-tip="Delete" onclick="openDelete()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
-        <button class="btn btn-primary" style="height:40px" id="wl-copy" onclick="copyToCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg><span id="wl-copy-label">Add 2 to cart</span></button>
-      </div>
-      <div class="wl-toolbar" id="wl-toolbar">
-        <select class="select" id="f-vendor" onchange="renderProducts()"><option value="">All vendors</option></select>
-        <select class="select" id="f-cat" onchange="renderProducts()"><option value="">All categories</option><option>Dryers</option><option>Dishwashers</option></select>
-        <span class="spacer"></span>
-        <span class="count" id="wl-count">2 of 2</span>
-      </div>
-      <div class="product-grid" id="wl-grid" style="grid-template-columns:repeat(3,1fr)"></div>
-    </section>
+<main class="page">
+  <div class="det-grid">
+    <div class="det-main" id="det-main"></div>
+    <div class="det-side" id="det-side"></div>
   </div>
 </main>
-
-<!-- Name modal (create / rename) -->
-<div class="overlay center" id="name-modal" onclick="if(event.target===this)closeNameModal()">
-  <div class="wl-modal">
-    <div class="wl-modal-head"><h2 id="nm-title">New wishlist</h2><div class="wl-sub" id="nm-sub">This list is shared with everyone assigned to this property.</div></div>
-    <div class="wl-modal-body"><div class="wl-label">Wishlist name</div><input class="wl-input" id="nm-input" placeholder="e.g. Turnover supplies" oninput="document.getElementById('nm-save').disabled=!this.value.trim()" onkeydown="if(event.key==='Enter'&&this.value.trim())saveName()"></div>
-    <div class="wl-modal-foot"><button class="btn" onclick="closeNameModal()">Cancel</button><button class="btn btn-primary" id="nm-save" disabled onclick="saveName()">Create wishlist</button></div>
-  </div>
-</div>
-
-<!-- Delete confirm -->
-<div class="overlay center" id="del-modal" onclick="if(event.target===this)closeDelete()">
-  <div class="wl-modal" style="max-width:440px">
-    <div class="wl-modal-head"><h2 id="del-title">Delete list?</h2><div class="wl-sub" id="del-sub"></div></div>
-    <div class="wl-modal-foot"><button class="btn" onclick="closeDelete()">Cancel</button><button class="btn btn-danger" onclick="doDelete()">Delete wishlist</button></div>
-  </div>
-</div>
-<script src="wishlist.js"></script>
 
 <script>
   /* ---------- Theme ---------- */
@@ -194,95 +164,167 @@
   }
   renderCtxList();
 
+  const money = SPO.money, fmtD = SPO.fmtDate;
+  const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  const IC = {
+    rep: SVG + '<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',
+    pen: SVG + '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
+    shield: SVG + '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+    clock: SVG + '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    pause: SVG + '<circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>',
+    play: SVG + '<polygon points="6 3 20 12 6 21 6 3"/></svg>',
+    stop: SVG + '<rect width="14" height="14" x="5" y="5" rx="2"/></svg>',
+    flag: SVG + '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>',
+    send: SVG + '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>',
+    skip: SVG + '<polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/></svg>',
+    undo: SVG + '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>',
+    copy: SVG + '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>'
+  };
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  let X, actExpanded = false, page = 1;
+  function pick() {
+    const [id, sub] = (location.hash || '').replace('#', '').split('/');
+    X = SCH.get(id) || SCH.get('SCH-01');
+    return sub || '';
+  }
+  const propOf = x => PROPERTIES.find(p => p.id === x.prop) || PROPERTIES[1];
+  const ven = x => SPO.VEN[x.v];
+  const endDot = t => /[.!?]$/.test(t) ? t : t + '.';
+  const pillHtml = x => { const st = SCH.STATES[x.status]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; };
+  const allocChips = l => '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + X.prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
+  const dateTile = d => '<span class="rd"><b>' + d.slice(8) + '</b><span>' + MON[+d.slice(5, 7) - 1] + '</span></span>';
+  const btn = (label, onclick, kind, ico) => '<button class="btn' + (kind ? ' ' + kind : '') + '" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap" onclick="' + onclick + '">' + (ico ? '<span style="display:inline-flex;width:15px;height:15px">' + ico + '</span>' : '') + label + '</button>';
 
-
-  const money = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  let activeList = null, renaming = false;
-  const prop = () => PROPERTIES.find(p => p.id === currentProp);
+  /* The strip narrates the SERIES — whose move it is and what the next run will do. */
+  function taskStrip(x) {
+    const st = (tone, ico, title, desc, actions) => {
+      const s = tone === 'wait' ? ' style="background:var(--muted);color:var(--muted-foreground)"' : tone === 'done' ? ' style="background:var(--emerald-soft);color:var(--emerald)"' : tone === 'sky' ? ' style="background:var(--sky-soft);color:var(--sky)"' : '';
+      return '<div class="task-strip"><span class="ts-icon"' + s + '>' + ico + '</span><div class="ts-body"><div class="ts-title">' + title + '</div><div class="ts-desc">' + desc + '</div></div>' + (actions || '') + '</div>';
+    };
+    const v = ven(x), nx = SCH.nextRun(x);
+    switch (x.status) {
+      case 'approval': return st('action', IC.shield, 'Series approval', SCH.reason(x) + '. Nothing runs until a Supervisor approves the series — after that, its runs go out without further approval.', btn('Review in Approvals', "location.href='approval.html#" + x.id + "'", 'btn-primary', IC.shield));
+      case 'revision': return st('action', IC.pen, 'Revise the schedule', 'The Supervisor asked for changes: “' + ((x.revision && x.revision.comment) || '') + '”', btn('Edit schedule', "location.href='spo-new.html#edit-" + x.id + "'", 'btn-primary', IC.pen));
+      case 'active': return st('wait', IC.clock, 'Next run · ' + fmtD(nx) + ' at ' + SCH.fmtTime(x.cadence.time),
+        x.mode === 'auto' ? 'A new SPO is created and its PO emailed to ' + v.email + ' automatically.' : 'A new SPO is drafted for you to review and send to ' + endDot(v.name),
+        btn('Skip this run', "skipRun('" + nx + "')", '', IC.skip));
+      case 'paused': return st('sky', IC.pause, 'Paused', 'by ' + x.pause.by + ': “' + x.pause.reason + '”. No SPOs are created while paused' + (nx ? '; the next run would be ' + fmtD(nx) + '.' : '.'), btn('Resume schedule', 'resumeSch()', 'btn-primary', IC.play));
+      case 'ended': return st('wait', IC.flag, 'Schedule ended', (x.endInfo.by === 'Scout' ? '' : 'by ' + x.endInfo.by + ' on ' + fmtD(x.ev.ended) + ': ') + x.endInfo.reason + ' The SPOs it created keep their own history.');
+    }
+    return '';
+  }
 
   function renderPage() {
-    const isAll = currentProp === 'all';
-    document.getElementById('wl-prop-prompt').style.display = isAll ? '' : 'none';
-    document.getElementById('wl-layout').style.display = isAll ? 'none' : '';
-    document.getElementById('wl-sub-line').textContent = isAll ? 'Shared product lists — pick a property to view its lists.' : 'Shared product lists for ' + prop().name + '.';
-    if (isAll) return;
-    const lists = WL.listsFor(currentProp);
-    if (!lists.length) { activeList = null; } else if (!activeList || !lists.some(l => l.id === activeList)) activeList = lists[0].id;
-    document.getElementById('wl-side-items').innerHTML = lists.map(l => '<button class="wl-item' + (l.id === activeList ? ' active' : '') + '" onclick="pickList(\'' + l.id + '\')"><b>' + l.name + '</b><span>' + l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + '</span></button>').join('') || '<div style="padding:14px;font-size:13px;color:var(--muted-foreground)">No lists yet</div>';
-    renderList();
-  }
-  function pickList(id) { activeList = id; renderPage(); }
-  function cur() { return WL.listsFor(currentProp).find(l => l.id === activeList); }
-  function renderList() {
-    const l = cur();
-    const sec = document.querySelector('.wl-layout section');
-    sec.style.visibility = l ? '' : 'hidden';
-    if (!l) return;
-    document.getElementById('wl-name').textContent = l.name;
-    const total = l.products.reduce((a, p) => a + p.price, 0);
-    document.getElementById('wl-meta').textContent = l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + (l.products.length ? ' · ' + money(total) : '');
-    const vendors = [...new Set(l.products.map(p => p.vendor))];
-    const fv = document.getElementById('f-vendor'); const kept = fv.value;
-    fv.innerHTML = '<option value="">All vendors</option>' + vendors.map(v => '<option' + (v === kept ? ' selected' : '') + '>' + v + '</option>').join('');
-    renderProducts();
-  }
-  function deliveryLine(p) { return p.speed === '1-2' ? 'Overnight · order by 2pm CST' : p.speed === '3-5' ? '3–5 business days' : '5–7 business days · from vendor'; }
-  const glyph = '<svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16"/><circle cx="8" cy="5" r="0.6"/><circle cx="11" cy="5" r="0.6"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
-  function renderProducts() {
-    const l = cur(); if (!l) return;
-    const big = l.products.length >= 8;
-    document.getElementById('wl-toolbar').style.display = big ? '' : 'none';
-    const v = big ? document.getElementById('f-vendor').value : '';
-    const items = l.products.filter(p => !v || p.vendor === v);
-    document.getElementById('wl-count').textContent = v ? 'Showing ' + items.length + ' of ' + l.products.length : '';
-    document.getElementById('wl-copy-label').textContent = 'Add ' + l.products.length + ' to cart';
-    document.getElementById('wl-copy').disabled = !l.products.length;
-    document.getElementById('wl-grid').innerHTML = items.length ? items.map(p =>
-      '<div class="product-card"><div class="pc-media">' + glyph + (p.pickup ? '<span class="pc-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Pickup · ' + p.miles + ' mi</span>' : '') + '<span class="pc-vendor-badge" data-tip="' + p.vendor.replace(/"/g, '&quot;') + '">' + p.vini + '</span>' + '</div>' +
-      
-      '<div class="pc-title">' + p.name + '</div>' +
-      '<div class="pc-price"><div class="pc-price-now"><span class="now">' + money(p.price) + '</span><span class="unit">/ each</span></div><div class="pc-price-was"></div></div>' +
-      '<div class="pc-meta"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35a1 1 0 0 0-.78-.38H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>' + deliveryLine(p) + '</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stock">In Stock</span></div></div>' +
-      '<div class="pc-actions"><button class="btn btn-primary" onclick="showToast(\'Added to cart\', \'' + p.name.replace(/'/g, "\\'") + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add to Cart</button><button class="icon-btn in-list" data-tip="Remove from this list" onclick="removeFromList(' + p.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button></div></div>'
-    ).join('') : '<div class="empty" style="grid-column:1/-1"><b>No products yet</b>Heart products in the Marketplace and choose "' + l.name + '".<br><br><a class="btn" href="marketplace.html" style="display:inline-flex">Browse Marketplace</a></div>';
-  }
-  function removeFromList(pid) { const l = cur(); WL.setLists(currentProp, WL.listsFor(currentProp).map(x => x.id === l.id ? { ...x, rev: x.rev + 1, products: x.products.filter(p => p.id !== pid) } : x)); renderPage(); }
-  function copyToCart() { const l = cur(); l.products.forEach(p => CART.add(currentProp, { id: p.id, name: p.name, sku: p.sku || '', price: p.price, vendor: 'SD' }, 1)); showToast('Added to cart', l.products.length + ' product' + (l.products.length === 1 ? '' : 's') + ' from "' + l.name + '"'); }
+    const sub = pick(), x = X, v = ven(x), prop = propOf(x);
+    document.title = x.name + ' — Scout Buyer';
+    document.getElementById('hero-title').textContent = x.name;
+    document.getElementById('hero-sub').textContent = x.id + ' · ' + prop.name + ' · ' + v.name;
+    const nx = SCH.nextRun(x), yr = SCH.yearRuns(x);
+    const ended = x.status === 'ended';
 
-  /* name modal */
-  function openNameModal(rename) {
-    if (currentProp === 'all') { showToast('Pick a property first', 'Wishlists belong to a property'); return; }
-    renaming = !!rename;
-    document.getElementById('nm-title').textContent = renaming ? 'Rename wishlist' : 'New wishlist';
-    document.getElementById('nm-sub').textContent = 'This list is shared with everyone assigned to ' + prop().name + '.';
-    document.getElementById('nm-save').textContent = renaming ? 'Save name' : 'Create wishlist';
-    const input = document.getElementById('nm-input');
-    input.value = renaming ? cur().name : '';
-    document.getElementById('nm-save').disabled = !input.value.trim();
-    document.getElementById('name-modal').classList.add('open'); input.focus();
+    let main = '<div class="card"><div class="det-card-head"><h2>Schedule</h2>' + pillHtml(x) + '</div>' +
+      '<div class="series-cad"><span class="ic">' + IC.rep + '</span><div><div class="t">' + SCH.cadenceText(x.cadence) + '</div><div class="s">' +
+      (x.mode === 'auto' ? 'Auto-send · each run creates an SPO and emails the PO to ' + v.email : 'Draft only · each run drafts an SPO for you to review and send') + '</div></div></div>' +
+      '<div class="stat-strip"><div><div class="k">' + (ended ? 'Ended' : 'Next run') + '</div><div class="v">' + (ended ? fmtD(x.ev.ended) : x.status === 'paused' ? 'Paused' : nx ? fmtD(nx) : '—') + '</div></div>' +
+      '<div><div class="k">Per run</div><div class="v">' + money(SCH.perRun(x)) + '</div></div>' +
+      '<div><div class="k">Next 12 months</div><div class="v">' + (ended ? '—' : money(SCH.annual(x))) + '</div><div class="k">' + (ended ? '' : yr + ' run' + (yr === 1 ? '' : 's')) + '</div></div>' +
+      '<div><div class="k">Ends</div><div class="v" style="font-size:13.5px">' + SCH.endText(x).replace('Ends ', '').replace('No end date', 'Never') + '</div></div></div>' +
+      (ended ? '' : '<div class="spo-manage"><span class="lbl">Manage this schedule</span>' +
+        btn('Edit schedule', "location.href='spo-new.html#edit-" + x.id + "'", '', IC.pen) +
+        (x.status === 'active' ? btn(x.mode === 'auto' ? 'Switch to Draft only' : 'Switch to Auto-send', 'toggleMode()', '', x.mode === 'auto' ? IC.pen : IC.send) + btn('Pause', 'openPause()', '', IC.pause) : '') +
+        '<button class="btn btn-outline-rose" onclick="openEnd()">End schedule</button></div>') + '</div>';
+    main += taskStrip(x);
+
+    if (!ended) {
+      const up = SCH.upcoming(x, 6, true);
+      main += '<div class="card"><div class="det-card-head hd"><div><h2>Upcoming runs</h2><div class="sub">' + (x.status === 'paused' ? 'None of these run until you resume' : x.status === 'active' ? 'Skip a date without changing the schedule' : 'Runs start once the series is approved') + '</div></div></div>' +
+        (up.length ? up.map((r, i) => {
+          const isNext = !r.skipped && r.date === nx && x.status === 'active';
+          return '<div class="run-row' + (r.skipped ? ' skipped' : '') + (isNext ? ' next' : '') + '">' + dateTile(r.date) + '<div class="rb"><div>' + fmtD(r.date) + ' · ' + SCH.fmtTime(x.cadence.time) + '</div><div class="m">' + (r.skipped ? 'Skipped — no SPO this date' : x.mode === 'auto' ? 'SPO created and PO sent automatically' : 'SPO drafted for you to send') + '</div></div>' +
+            (x.status === 'active' ? (r.skipped ? btn('Undo skip', "unskipRun('" + r.date + "')", 'btn-sm', IC.undo) : btn('Skip', "skipRun('" + r.date + "')", 'btn-sm', IC.skip)) : '') + '</div>';
+        }).join('') : '<div class="run-more" style="border:none">No further runs — the end rule is reached.</div>') +
+        (SCH.lastRun(x) ? '<div class="run-more">Last run ' + fmtD(SCH.lastRun(x)) + ' · ' + SCH.endText(x).replace(/ · last.*/, '') + '</div>' : '') + '</div>';
+    }
+
+    const inst = SCH.instances(x.id);
+    main += '<div class="card"><div class="det-card-head hd"><div><h2>SPOs from this schedule</h2><div class="sub">Each run is an ordinary SPO with its own lifecycle</div></div></div>' +
+      (inst.length ? inst.map(s => { const st = SPO.STATES[s.state]; return '<div class="run-row">' + dateTile(s.run) + '<div class="rb"><div><a class="table-link" href="spo.html#' + s.id + '">SPO-' + s.id + '</a> · ' + money(SPO.total(s)) + '</div><div class="m">Run ' + fmtD(s.run) + '</div></div><span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span></div>'; }).join('')
+        : '<div class="run-more" style="border:none;padding-top:12px">None yet — the first run creates the first SPO.</div>') +
+      (x.prior ? '<div class="run-more">Plus ' + x.prior + ' earlier SPO' + (x.prior === 1 ? '' : 's') + ' from before this demo window</div>' : '') + '</div>';
+
+    main += '<div class="card"><div class="det-card-head hd"><div><h2>Every run orders</h2><div class="sub">The template each SPO is created from · GL code and unit for every dollar</div></div></div>' +
+      '<p class="spo-scope" style="margin-top:10px;color:var(--muted-foreground)">' + x.scope + '</p>' +
+      x.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(l.qty * l.price) + '</span>' + allocChips(l) + '</div>').join('') +
+      '<div class="det-totals"><div class="tot-row grand"><span>Per run</span><span>' + money(SCH.perRun(x)) + '</span></div></div></div>';
+
+    let side = '<div class="card"><div class="ven-card"><span class="ven-logo">' + x.v + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
+      '<div style="font-size:13px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="PO recipient">' + v.email + '</div></div></div></div>';
+    const apprVal = x.status === 'approval' ? 'Pending · Supervisor' : x.ev.approved ? 'Approved by ' + ((x.approval && x.approval.by) || 'Priya Nair') : 'Not required';
+    side += '<div class="card"><dl class="fact-rows wide"><dt>Property</dt><dd>' + prop.name + '</dd><dt>Created by</dt><dd>' + x.by + '</dd><dt>Starts</dt><dd>' + fmtD(x.start) + '</dd>' +
+      '<dt>Ends</dt><dd>' + SCH.endText(x).replace('Ends ', '').replace(/ · last.*/, '').replace('No end date', 'Never').replace('after ', 'After ') + '</dd><dt>Sending</dt><dd>' + (x.mode === 'auto' ? 'Auto-send' : 'Draft only') + '</dd>' +
+      '<dt>Series approval</dt><dd>' + apprVal + '</dd></dl>' +
+      (x.ev.approved ? '<div class="w-note" style="margin-top:12px"><span style="display:inline-flex;width:14px;height:14px">' + IC.shield + '</span><span>Approved once for the series — runs that match this template need no further approval.</span></div>' : '') + '</div>';
+    const evs = x.log.slice().sort((a, b) => b.at.localeCompare(a.at)), shown = actExpanded ? evs : evs.slice(0, 5);
+    side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Activity</h2></div><div class="act-tl">' +
+      shown.map(e => '<div class="act-ev' + (e.hi ? ' hi' : '') + (e.bad ? ' bad' : '') + '"><span class="adot"></span><div class="abody"><div class="at">' + e.t + '</div>' + (e.sub ? '<div class="asub">' + e.sub + '</div>' : '') + '</div><span class="awhen">' + fmtD(e.at) + '</span></div>').join('') +
+      (evs.length > shown.length ? '<button class="act-more" onclick="actExpanded = true; renderPage()">Show ' + (evs.length - shown.length) + ' more activities</button>' : '') + '</div></div>';
+
+    document.getElementById('det-main').innerHTML = main;
+    document.getElementById('det-side').innerHTML = side;
+    if (sub === 'pause' && x.status === 'active') setTimeout(openPause, 120);
+    if (sub === 'end' && !ended) setTimeout(openEnd, 120);
   }
-  function closeNameModal() { document.getElementById('name-modal').classList.remove('open'); }
-  function saveName() {
-    const name = document.getElementById('nm-input').value.trim(); if (!name) return;
-    if (renaming) { WL.renameList(currentProp, activeList, name); showToast('Renamed', name); }
-    else { const l = WL.createList(currentProp, name); activeList = l.id; showToast('Wishlist created', name); }
-    closeNameModal(); renderPage();
+
+  /* ---------- series actions (each logged on the series) ---------- */
+  function persist(msg, sub) { SCH.save(X); renderPage(); if (msg) showToast(msg, sub || ''); }
+  function skipRun(d) { X.skipped = (X.skipped || []).concat(d); SCH.log(X, 'Run skipped', fmtD(d) + ' · no SPO that date'); persist('Run skipped', fmtD(d) + ' won’t create an SPO.'); }
+  function unskipRun(d) { X.skipped = X.skipped.filter(s => s !== d); SCH.log(X, 'Skip undone', fmtD(d) + ' will run'); persist('Skip undone', fmtD(d) + ' is back on the schedule.'); }
+  function toggleMode() {
+    X.mode = X.mode === 'auto' ? 'draft' : 'auto';
+    SCH.log(X, X.mode === 'auto' ? 'Switched to Auto-send' : 'Switched to Draft only', 'by Alicia Grant · from the next run');
+    persist(X.mode === 'auto' ? 'Auto-send on' : 'Draft only', X.mode === 'auto' ? 'Runs email the PO automatically from ' + fmtD(SCH.nextRun(X)) + '.' : 'Runs are drafted for you to send.');
   }
-  /* delete */
-  function openDelete() {
-    const l = cur();
-    document.getElementById('del-title').textContent = 'Delete ' + l.name + '?';
-    document.getElementById('del-sub').textContent = l.products.length ? 'This removes the list and its ' + l.products.length + ' saved product' + (l.products.length === 1 ? '' : 's') + ' for everyone at this property.' : 'This removes the empty list for everyone at this property.';
-    document.getElementById('del-modal').classList.add('open');
+  function resumeSch() {
+    X.status = 'active'; delete X.ev.paused; X.ev.resumed = SPO.now();
+    SCH.log(X, 'Resumed', 'by Alicia Grant · next run ' + fmtD(SCH.nextRun(X)), true);
+    persist('Schedule resumed', 'Next run ' + fmtD(SCH.nextRun(X)) + '.');
   }
-  function closeDelete() { document.getElementById('del-modal').classList.remove('open'); }
-  function doDelete() { const l = cur(); WL.deleteList(currentProp, activeList); activeList = null; closeDelete(); showToast('Wishlist deleted', l.name); renderPage(); }
+  function modal(id, html) {
+    let ov = document.getElementById(id);
+    if (!ov) { ov = document.createElement('div'); ov.className = 'overlay center'; ov.id = id; ov.addEventListener('click', e => { if (e.target === ov) closeModal(id); }); document.body.appendChild(ov); }
+    ov.innerHTML = html; ov.classList.add('open'); document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    const ov = document.getElementById(id); if (ov) ov.classList.remove('open');
+    document.body.style.overflow = '';
+    const h = location.hash.split('/'); if (h.length > 1) history.replaceState(null, '', h[0]);
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.overlay.open').forEach(o => closeModal(o.id)); });
+  function reasonModal(id, title, desc, label, req, placeholder, go, goCls) {
+    modal(id, '<div class="val-modal" style="width:500px"><div class="val-head"><h2>' + title + '</h2><p>' + desc + '</p></div>' +
+      '<div class="val-body" style="padding:16px 24px"><label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px">' + label + (req ? ' <span class="req-chip">Required</span>' : '') + '</label>' +
+      '<textarea class="claim-note" id="' + id + '-reason" maxlength="500" placeholder="' + placeholder + '"' + (req ? ' oninput="document.getElementById(\'' + id + '-go\').disabled = !this.value.trim()"' : '') + '></textarea>' +
+      '<div style="font-size:12px;color:var(--muted-foreground);margin-top:6px">Kept in the schedule’s activity.</div></div>' +
+      '<div class="val-foot"><button class="btn" onclick="closeModal(\'' + id + '\')">Keep it running</button><button class="btn ' + goCls + '" id="' + id + '-go"' + (req ? ' disabled' : '') + ' onclick="' + go + '()">' + title + '</button></div></div>');
+    setTimeout(() => document.getElementById(id + '-reason').focus(), 50);
+  }
+  function openPause() { reasonModal('pause-ov', 'Pause schedule', 'No SPOs are created while it’s paused. Skipped and upcoming dates are kept; resume any time.', 'Why pause?', false, 'e.g. Property under renovation until October', 'confirmPause', 'btn-primary'); }
+  function confirmPause() {
+    const r = document.getElementById('pause-ov-reason').value.trim() || 'No reason given.';
+    X.status = 'paused'; X.pause = { by: 'Alicia Grant', reason: r }; X.ev.paused = SPO.now();
+    SCH.log(X, 'Paused', 'by Alicia Grant · “' + r + '”'); closeModal('pause-ov'); persist('Schedule paused', 'No SPOs are created until you resume it.');
+  }
+  function openEnd() { reasonModal('end-ov', 'End schedule', 'No further runs. SPOs already created keep their own lifecycle — cancel any you no longer need from their pages.', 'Reason', true, 'Why is this schedule ending?', 'confirmEnd', 'btn-danger'); }
+  function confirmEnd() {
+    const r = document.getElementById('end-ov-reason').value.trim(); if (!r) return;
+    X.status = 'ended'; X.endInfo = { by: 'Alicia Grant', reason: endDot(r) }; X.ev.ended = SPO.now();
+    SCH.log(X, 'Ended', 'by Alicia Grant · “' + r + '”', false, true); closeModal('end-ov'); persist('Schedule ended', 'No further runs.');
+  }
 
   let toastTimer;
-  function showToast(title, desc) { let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(t); } t.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; t.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = 0, 3000); }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeNameModal(); closeDelete(); } });
-  // land scoped: default to Magnolia when arriving on All properties
-  if (currentProp === 'all') selectProp('magnolia'); else renderPage();
+  function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:600;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
+  window.addEventListener('hashchange', () => { actExpanded = false; renderPage(); });
+  renderPage();
 </script>
 </body>
 </html>

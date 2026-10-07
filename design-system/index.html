@@ -1511,6 +1511,7 @@
           <a onclick="scrollToSection('buyer-orders')">Buyer Order Tracking</a>
           <a onclick="scrollToSection('buyer-order-detail')">Buyer Order Detail</a>
           <a onclick="scrollToSection('buyer-spo')">Buyer Service POs</a>
+          <a onclick="scrollToSection('buyer-unit-history')">Buyer Unit History</a>
           <a onclick="scrollToSection('rail-primitives')">Rail Primitives (shared)</a>
           <a onclick="scrollToSection('metric-tile')">Metric Tile</a>
           <a onclick="scrollToSection('insight-card')">Insight Card</a>
@@ -3990,6 +3991,86 @@ Ref #:001042698          INVOICE     08/26/26
         <h3 class="subsection-title">File Drop (buyer port)</h3>
         <p class="subsection-desc">The vendor File Drop ported verbatim per the porting rule; the buyer version is a <code>&lt;button&gt;</code> (with a reset) so it is keyboard-reachable. Used by Upload Invoice on an SPO.</p>
         <div class="buyer" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:620px"><button class="file-drop"><div class="file-drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></div><div class="file-drop-title">Choose the vendor&rsquo;s invoice</div><div class="file-drop-sub">PDF &middot; up to 20 MB</div></button><button class="file-drop selected"><div class="file-drop-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div class="file-drop-title">INV-2291.pdf</div><div class="file-drop-sub">184 KB</div></button></div>
+      </div>
+          <div class="comp-card" style="margin-top:16px;margin-bottom:16px">
+        <h3 class="subsection-title">Schedules &mdash; Series Card</h3>
+        <p class="subsection-desc">A recurring schedule is its <strong>own record</strong>, never a lifecycle state: each run creates an ordinary SPO (audit SPO-49/50). The series card leads <code>buyer/schedule.html#SCH-01</code>: a 40px accent icon tile with the cadence in plain English (16px/700) and the mode beneath; a 4-cell stat strip (Next run &middot; Per run &middot; Next 12 months + run count &middot; Ends); then <em>Manage this schedule</em>. Series statuses: Pending Approval / Revision Requested amber, Active emerald, Paused sky, Ended muted (<code>.dot-muted</code>).</p>
+        <div class="buyer"><div class="card" style="max-width:640px">
+          <div class="det-card-head"><h2>Schedule</h2><span class="status-dot-item"><span class="status-dot dot-approved"></span><span class="status-dot-label">Active</span></span></div>
+          <div class="series-cad"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span><div><div class="t">Every week on Wednesday &middot; 8:00 AM</div><div class="s">Auto-send &middot; each run creates an SPO and emails the PO to schedule@crescentclean.example</div></div></div>
+          <div class="stat-strip"><div><div class="k">Next run</div><div class="v">08/26/2026</div></div><div><div class="k">Per run</div><div class="v">$180.00</div></div><div><div class="k">Next 12 months</div><div class="v">$9,360.00</div><div class="k">52 runs</div></div><div><div class="k">Ends</div><div class="v" style="font-size:13.5px">Never</div></div></div>
+        </div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Run List</h3>
+        <p class="subsection-desc">Upcoming runs and the SPOs a series created share one row anatomy: a 44px date tile (day + month), the date and time with a muted line saying what the run will do, and the row action. The next run takes the primary-tinted tile; a <strong>skipped</strong> date is struck through and dimmed with <em>Undo skip</em> &mdash; skipping never edits the schedule. Created SPOs swap the action for their lifecycle pill.</p>
+        <div class="buyer"><div class="card" style="max-width:640px">
+          <div class="run-row next"><span class="rd"><b>07</b><span>Sep</span></span><div class="rb"><div>09/07/2026 &middot; 9:00 AM</div><div class="m">SPO drafted for you to send</div></div><button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:6px"><svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/></svg>Skip</button></div>
+          <div class="run-row skipped"><span class="rd"><b>21</b><span>Sep</span></span><div class="rb"><div>09/21/2026 &middot; 9:00 AM</div><div class="m">Skipped &mdash; no SPO this date</div></div><button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:6px"><svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>Undo skip</button></div>
+          <div class="run-row"><span class="rd"><b>19</b><span>Aug</span></span><div class="rb"><div><a class="table-link" href="#">SPO-847</a> &middot; $180.00</div><div class="m">Run 08/19/2026</div></div><span class="status-dot-item"><span class="status-dot dot-revision"></span><span class="status-dot-label">Awaiting Invoice</span></span></div>
+        </div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Recurring Marker &amp; Series Link</h3>
+        <p class="subsection-desc">A generated SPO says where it came from &mdash; and nothing more: the series controls live only on the series. In SPO tables a 20px accent <strong>recurring marker</strong> sits beside the SPO number (tooltip names the series; click opens it). On the SPO detail a <strong>series link</strong> sits under the tracker: run date, series, cadence, series status, <em>View schedule</em>.</p>
+        <div class="buyer" style="max-width:640px">
+          <div style="font-size:14px;font-weight:700;font-family:'JetBrains Mono',ui-monospace,monospace"><a class="table-link" href="#" style="font-family:inherit">SPO-847</a><a class="rec-mark" href="#" data-tip="Common-area cleaning · Every week on Wednesday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></a></div>
+          <div class="series-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span>Run 08/19/2026 of <b>Common-area cleaning</b> &middot; Every week on Wednesday &middot; Active</span><a class="text-link" href="#">View schedule</a></div>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <h3 class="subsection-title">Recurrence Controls (wizard)</h3>
+        <p class="subsection-desc">The SPO wizard's Review step carries a <strong>Repeat</strong> card: the pill <code>.mode-seg</code> One-time / Recurring, then a two-column grid &mdash; name, Repeats (Weekly &middot; Every 2 weeks &middot; Monthly &middot; Quarterly), day (weekday, or 1st&ndash;28th), Starts, Time, Ends (Never &middot; On a date &middot; After N runs) &mdash; and &ldquo;Each run&rdquo; as Option Rows (Draft only / Auto-send). A dashed live preview restates the cadence, the next three dates and the 12-month runs and cost. The series is approved once on that 12-month commitment.</p>
+        <div class="buyer"><div class="card" style="max-width:640px">
+          <div class="mode-seg"><button>One-time</button><button class="active">Recurring</button></div>
+          <div class="rec-preview"><b>Every week on Wednesday &middot; 8:00 AM</b>Next runs 08/26/2026, 09/02/2026, 09/09/2026 &middot; 52 runs ($11,700.00) in the next 12 months &middot; No end date</div>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="section" id="buyer-unit-history">
+      <div class="section-header">
+        <h2 class="section-title">Buyer App &middot; Unit History</h2>
+        <p class="section-desc">Every service PO line and product order line charged to one unit (<code>buyer/unit-history.html#&lt;property&gt;/&lt;unit&gt;</code>). Units are a property's own building-based codes (BBUU: 0216 = Building 02, unit 16), so the page always works inside one property. New pieces: the Unit Picker, the scheme-explaining no-match note, the spend-period Range Bar, the Stat Strip (shared with Schedules), and the Activity type chip.</p>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Unit Picker</h3>
+        <p class="subsection-desc">A sticky left-pane card: search (unit code, or &ldquo;bldg 2 unit 16&rdquo;), Building and Floor-plan selects, then rows &mdash; mono 13.5px/700 code, muted &ldquo;Bldg &middot; plan&rdquo;, and the unit's spend in the selected range on the right (&ldquo;&mdash;&rdquo; when none), so busy units stand out while scanning. <strong>Common area</strong> is pinned first, divided from the units. Active row: accent fill + 3px primary inset bar. A footer counts &ldquo;n of N units&rdquo;. Under 1100px the panes stack.</p>
+        <div class="buyer"><div class="card uh-picker" style="position:static;max-width:320px;max-height:none">
+          <div class="unit-list" style="overflow:visible">
+            <button class="unit-row common"><span><span class="uc">Common area</span><span class="um">Shared spaces &middot; property-wide</span></span><span class="us">$3,025.09</span></button>
+            <button class="unit-row"><span><span class="uc">0104</span><span class="um">Bldg 01 &middot; 2X2</span></span><span class="us zero">&mdash;</span></button>
+            <button class="unit-row active"><span><span class="uc">0105</span><span class="um">Bldg 01 &middot; 2X2</span></span><span class="us">$821.10</span></button>
+            <button class="unit-row"><span><span class="uc">0106</span><span class="um">Bldg 01 &middot; 3X2</span></span><span class="us">$250.00</span></button>
+          </div><div class="uh-count">51 of 51 units &middot; spend for last 12 spend periods</div></div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">No-Match Note (unit scheme)</h3>
+        <p class="subsection-desc">When a search finds no unit, the picker never says a bare &ldquo;No units found&rdquo; &mdash; it explains the property's scheme and its range (audit SPO-48: resident apartment numbers don't map to BBUU codes, and coercing them bills the wrong apartment). Amber note, bold first line.</p>
+        <div class="buyer" style="max-width:320px"><div class="uh-nomatch" style="margin:0"><b>No unit &ldquo;1805&rdquo; at Magnolia Place Apartments</b>Units here use building + unit codes, 0101&ndash;0317 (0216 = Building 02, unit 16). Resident apartment numbers don&rsquo;t map to these codes &mdash; check the building and unit.</div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Range Bar &amp; Stat Strip</h3>
+        <p class="subsection-desc">Ranges follow spend periods (calendar months): a <code>.mode-seg</code> of This period &middot; Last 3 &middot; 12 months &middot; Custom (Custom reveals From/To date inputs), always followed by the exact dates covered. The <strong>Stat Strip</strong> (<code>.stat-strip</code>) is a 4-cell divided grid of muted key + 15px/700 value &mdash; used on Unit History (Spend in range &middot; Service POs &middot; Orders &middot; Last activity) and the Schedule card; 2&times;2 under 720px.</p>
+        <div class="buyer"><div class="card" style="max-width:640px">
+          <div class="uh-range"><div class="mode-seg"><button>This period</button><button>Last 3</button><button class="active">12 months</button><button>Custom</button></div><span class="uh-dates">09/01/2025 &ndash; 08/31/2026</span></div>
+          <div class="stat-strip"><div><div class="k">Spend in range</div><div class="v">$821.10</div></div><div><div class="k">Service POs</div><div class="v">1</div></div><div><div class="k">Orders</div><div class="v">2</div></div><div><div class="k">Last activity</div><div class="v">08/22/2026</div></div></div>
+        </div></div>
+      </div>
+
+      <div class="comp-card">
+        <h3 class="subsection-title">Activity Type Chip &amp; Unit Ledger Row</h3>
+        <p class="subsection-desc">One ledger mixes two record types, so each row carries a type chip &mdash; <strong>Service PO</strong> (accent, wrench) or <strong>Order</strong> (muted, box) &mdash; beside its reference link. The What cell carries the GL beneath the description (mono code + name; orders add qty &times; price &middot; SKU), keeping the table narrow enough for the half-width pane. &ldquo;Unit's share&rdquo; is the amount charged to this unit, with &ldquo;of $line total&rdquo; when the line is split. Drafts, pending approvals and canceled SPOs list muted and &ldquo;not counted&rdquo;.</p>
+        <div class="buyer"><div class="tbl-wrap" style="max-width:720px"><table class="tbl"><thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>What &middot; GL</th><th style="text-align:right">Unit&rsquo;s share</th></tr></thead><tbody>
+          <tr class="data-row"><td>08/22/2026</td><td><span class="type-chip spo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Service PO</span></td><td><a class="table-link" href="#">SPO-857</a></td><td style="white-space:normal">Paint-and-carpet refresh, unit 0105<span class="share-of"><b style="font-family:'JetBrains Mono',ui-monospace,monospace;color:var(--foreground)">6140</b> Paint &amp; Plaster</span></td><td class="num" style="font-weight:600;text-align:right">$300.00<span class="share-of">of $600.00</span></td></tr>
+          <tr class="data-row"><td>08/21/2026</td><td><span class="type-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Order</span></td><td><a class="table-link" href="#">Order #653</a></td><td style="white-space:normal">Gold&reg; 23-7/8 in. Dishwasher<span class="share-of"><b style="font-family:'JetBrains Mono',ui-monospace,monospace;color:var(--foreground)">6060</b> Appliance Repair &middot; 1 &times; $505.13 &middot; SKU 7524220</span></td><td class="num" style="font-weight:600;text-align:right">$505.13</td></tr>
+        </tbody></table></div></div>
       </div>
     </section>
 

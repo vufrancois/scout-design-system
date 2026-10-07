@@ -27,7 +27,7 @@
   - "Save draft" is secondary.
 - **Confirmation (`#done-<id>`):** a receipt-style page with the SPO number and what happens next. The SPO is created with a "SPO created" activity entry, plus Sent / Approval requested events as applicable (SPO-19, SPO-20).
 - **Approvals integration:**
-  - SPO requests appear in the Order Approvals queue (`SPO-864`, a Service PO pill, no "#" prefix), and the queue cards reconcile: Total 16 = Pending 2 + Revision 1 + Approved 10 + Rejected 3.
+  - SPO requests appear in the Order Approvals queue (`SPO-864`, a Service PO pill, no "#" prefix), and the queue cards reconcile: Total 22 = Pending 3 + Revision 1 + Approved 15 + Rejected 3 (including 6 schedule requests — see [schedules.md](schedules.md)).
   - The detail page `approval.html#SPO-<id>` shows:
     - a "Service PO lines" card (allocation chips, View SPO link, no inventory refresh);
     - the estimate total;

@@ -188,7 +188,7 @@
   const propOf = id => PROPERTIES.find(p => p.id === id);
 
   /* Demo statement Scout AI "reads": Crescent Cleaning bills its weekly runs monthly (SCH-01). */
-  const DEMO = { file: 'INV-CC-2608.pdf', v: 'CC', prop: 'magnolia', num: 'INV-CC-2608', date: '2026-08-24', tax: 55.76, ship: 0,
+  const DEMO = { file: 'INV-CC-2608.pdf', size: 248320, v: 'CC', prop: 'magnolia', num: 'INV-CC-2608', date: '2026-08-24', tax: 55.76, ship: 0,
     lines: [
       { desc: 'Common-area cleaning — week of 08/03', amt: 180, maps: [{ spo: 842, line: 0, amt: 180, sug: true }] },
       { desc: 'Common-area cleaning — week of 08/10', amt: 180, maps: [{ spo: 845, line: 0, amt: 180, sug: true }] },
@@ -267,7 +267,7 @@
   function upload() {
     const d = JSON.parse(JSON.stringify(DEMO));
     W.file = d.file; W.v = d.v; W.prop = d.prop; W.num = d.num; W.date = d.date; W.manual = false;
-    W.inv = { num: d.num, date: d.date, file: d.file, tax: d.tax, ship: d.ship, lines: d.lines };
+    W.inv = { num: d.num, date: d.date, file: d.file, size: d.size, tax: d.tax, ship: d.ship, lines: d.lines };
     W.why = d.why;
     /* Keep Scout AI's original suggestions so re-ticking an SPO in step 1 brings its suggestion back. */
     W.aiMaps = d.lines.map(l => l.maps.map(m => Object.assign({}, m)));
@@ -295,7 +295,7 @@
         : '<div class="run-more" style="border:none;padding:6px 0 0">No ' + SPO.VEN[W.v].name + ' SPOs ' + (W.showAll ? 'open' : 'waiting on an invoice') + ' at ' + propOf(W.prop).name + '.</div>') + '</div>';
     const right = '<div class="card"><div class="det-card-head hd"><div><h2>Invoice PDF</h2><div class="sub">Upload first — Scout AI reads the vendor, number, date and lines, and suggests the SPOs</div></div></div>' +
       (W.inv && W.file
-        ? '<div class="file-drop selected" style="margin-top:12px;cursor:default"><div class="file-drop-icon">' + IC.check + '</div><div class="file-drop-title">' + W.file + '</div><div class="file-drop-sub">' + SPO.VEN[W.v].name + ' · ' + W.inv.lines.length + ' lines · ' + money(r2(W.inv.lines.reduce((a, l) => a + l.amt, 0) + (W.inv.tax || 0))) + ' total</div></div>' +
+        ? '<div class="file-drop selected" style="margin-top:12px;cursor:default"><div class="file-drop-icon">' + IC.check + '</div><div class="file-drop-title">' + W.file + '</div><div class="file-drop-sub">' + SPO.fileSize(W.inv.size) + ' · ' + SPO.VEN[W.v].name + ' · ' + W.inv.lines.length + ' lines · ' + money(r2(W.inv.lines.reduce((a, l) => a + l.amt, 0) + (W.inv.tax || 0))) + ' total</div></div>' +
           '<div class="ai-block" style="margin-top:14px"><div class="ai-head"><span class="ai-icon">' + IC.ai + '</span>Scout AI read ' + W.file + '</div><ul><li>Vendor, invoice number and date filled in</li><li>' + W.inv.lines.length + ' lines and ' + money(W.inv.tax) + ' sales tax extracted</li><li>' + Object.keys(W.why).length + ' SPOs suggested from the run dates</li></ul><div class="ai-foot">Suggestions only — you confirm every match on the next step.</div></div>' +
           '<button class="w-linkbtn" style="margin-top:12px" onclick="W.inv = null; W.file = null; persist(); renderPage()">Replace PDF</button>'
         : W.inv && W.manual
@@ -318,7 +318,7 @@
   function viewMatch() {
     CTX = ctx();
     const bl = step2Blockers();
-    const seg = '<div class="cx-viewbar"><div class="mode-seg"><button class="' + (view === 'lines' ? 'active' : '') + '" onclick="view = \'lines\'; renderPage()">' + IC.map + '<span>Line items</span></button><button class="' + (view === 'pdf' ? 'active' : '') + '" onclick="view = \'pdf\'; renderPage()">' + IC.doc + '<span>PDF</span></button></div><span class="ivt-sub" style="margin:0">' + (W.file || 'Entered manually') + ' · ' + SPO.VEN[W.v].name + ' · ' + W.spoIds.length + ' SPO' + (W.spoIds.length === 1 ? '' : 's') + '</span></div>';
+    const seg = '<div class="cx-viewbar"><div class="mode-seg"><button class="' + (view === 'lines' ? 'active' : '') + '" onclick="view = \'lines\'; renderPage()">' + IC.map + '<span>Line items</span></button><button class="' + (view === 'pdf' ? 'active' : '') + '" onclick="view = \'pdf\'; renderPage()">' + IC.doc + '<span>PDF</span></button></div><span class="ivt-sub" style="margin:0">' + (W.file ? W.file + ' · ' + SPO.fileSize(W.inv.size) : 'Entered manually') + ' · ' + SPO.VEN[W.v].name + ' · ' + W.spoIds.length + ' SPO' + (W.spoIds.length === 1 ? '' : 's') + '</span></div>';
     return '<div class="card">' + seg + (view === 'pdf' ? '<div class="cx-pdfview"><pre>' + pdfText() + '</pre></div>' : CX.board() +
       '<h3 style="margin:26px 0 4px;font-size:15px">Totals</h3><p class="ivt-sub">Each SPO compares to its own estimate; tax is split across SPOs by what each is billed.</p>' + CX.totals()) +
       '<div style="display:flex;gap:10px;margin-top:20px;align-items:center;flex-wrap:wrap"><span class="ivt-sub" style="margin:0">' + CX.doneCount() + ' of ' + W.inv.lines.length + ' invoice items connected · progress saves automatically</span>' +
@@ -366,7 +366,7 @@
         return { desc: l.desc, amt: l.amt, maps: l.maps, conf: 'manual' };
       });
       if (i === 0) removed.forEach(l => { lines.push({ desc: l.desc, amt: l.amt, maps: [], status: 'removed', resReason: l.resReason }); SPO.log(s, 'Invoice line removed', '“' + l.desc + '” · ' + money(l.amt) + ' · ' + l.resReason, false, true); });
-      s.invoice = { num: W.num, date: W.date, file: W.file || W.num + '.pdf', tax: x.tax, ship: x.ship, validated: true, lines,
+      s.invoice = { num: W.num, date: W.date, file: W.file || W.num + '.pdf', size: W.inv.size, tax: x.tax, ship: x.ship, validated: true, lines,
         shared: sl.length > 1 ? { total, spos: sl.map(y => y.s.id), idx: i + 1 } : null };
       s.state = 'ready'; s.ev.invoiced = s.ev.invoiced || SPO.now(); s.ev.mapped = SPO.now(); delete s.mapDraft;
       const d = r2(SPO.invSubtotal(s) - SPO.total(s));

@@ -251,6 +251,7 @@ Canonical rules for displaying currency, dates, and times. These apply across bo
 - Relative timestamps switch to the standard date after 7 days. Tooltips on relative timestamps show the full date + time.
 - 12-hour clock with AM/PM; minutes always shown (`2:00 PM`, not `2 PM`).
 - Implementation: `Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })`.
+- **File sizes pick their unit:** bytes under 1 KB, KB (one decimal under 10 KB, whole numbers above) up to 999 KB, then MB the same way — “2.6 KB”, “243 KB”, “5.5 MB”. Never a fixed unit that rounds a real file to “0.00 MB” (audit SPO-39). Shown as “PDF, 2.6 KB” wherever an uploaded document is listed (`SPO.fileSize()`).
 
 ## Charts
 

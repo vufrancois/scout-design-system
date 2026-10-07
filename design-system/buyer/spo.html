@@ -350,7 +350,7 @@
     const inv = s.invoice, mapped = s.state !== 'mapping';
     return '<div class="card"><div class="det-card-head hd"><h2>Invoice</h2>' +
       '<span class="status-dot-item"><span class="status-dot ' + (mapped ? 'dot-approved' : 'dot-pending') + '"></span><span class="status-dot-label">' + (mapped ? 'Mapped & validated' : 'Needs mapping') + '</span></span></div>' +
-      '<div class="doc-row emerald" style="margin-top:10px">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + inv.num + ' · ' + inv.file + '</div><div class="doc-date">Received ' + SPO.fmtDate(s.ev.invoiced) + ' · ' + inv.lines.length + ' line' + (inv.lines.length === 1 ? '' : 's') + ' · ' + money(SPO.invTotal(s)) + '</div></div>' +
+      '<div class="doc-row emerald" style="margin-top:10px">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + inv.num + ' · ' + inv.file + '</div><div class="doc-date">Received ' + SPO.fmtDate(s.ev.invoiced) + ' · PDF, ' + SPO.fileSize(SPO.invSize(inv)) + ' · ' + inv.lines.length + ' line' + (inv.lines.length === 1 ? '' : 's') + ' · ' + money(SPO.invTotal(s)) + '</div></div>' +
       (mapped ? '<button class="btn btn-sm" onclick="openInvoiceMap(true)">View mapping</button>' : '<button class="btn btn-primary btn-sm" onclick="location.hash=\'#' + s.id + '/invoice\'">Map invoice</button>') + '</div></div>';
   }
 
@@ -420,17 +420,17 @@
       '<div class="file-drop-icon">' + IC.upload + '</div><div class="file-drop-title">Choose the vendor’s invoice</div><div class="file-drop-sub">PDF · up to 20 MB</div></button></div>' +
       '<div class="val-foot"><button class="btn" onclick="closeModal(\'upload-ov\')">Cancel</button><button class="btn btn-primary" id="up-go" disabled onclick="runUpload()">Upload &amp; map</button></div></div>');
   }
-  let upName = null;
+  let upName = null, upSize = null;
   function pickUpload() {
-    upName = 'INV-' + (40000 + S.id * 7 % 9000) + '.pdf';
+    upName = 'INV-' + (40000 + S.id * 7 % 9000) + '.pdf'; upSize = 2662 + (S.id * 9173) % 240000;
     const d = document.getElementById('up-drop');
     d.classList.add('selected');
-    d.innerHTML = '<div class="file-drop-icon">' + IC.doc + '</div><div class="file-drop-title">' + upName + '</div><div class="file-drop-sub">From ' + ven(S).name + ' · 1 page</div>';
+    d.innerHTML = '<div class="file-drop-icon">' + IC.doc + '</div><div class="file-drop-title">' + upName + '</div><div class="file-drop-sub">From ' + ven(S).name + ' · PDF, 1 page · ' + SPO.fileSize(upSize) + '</div>';
     document.getElementById('up-go').disabled = false;
   }
   function runUpload() {
     const s = S, num = upName.replace('.pdf', '');
-    s.invoice = { num, date: SPO.TODAY, file: upName, tax: 0, ship: 0,
+    s.invoice = { num, date: SPO.TODAY, file: upName, size: upSize, tax: 0, ship: 0,
       lines: s.lines.map((l, i) => ({ desc: l.desc, amt: r2(l.qty * l.price), maps: [{ line: i, amt: r2(l.qty * l.price) }], conf: 'high' })) };
     s.state = 'mapping'; s.ev.invoiced = SPO.now(); delete s.disputed;
     SPO.log(s, 'Invoice received', num + ' · ' + money(SPO.invTotal(s)) + ' · uploaded by Alicia Grant');
@@ -483,7 +483,7 @@
       foot = '<span class="ivt-sub" style="margin:0">No invoice lines yet.</span><button class="btn" style="margin-left:auto" onclick="closeMapTk()">Close</button>';
     } else {
       const all = CX.allResolved(), n = M.lines.length, done = CX.doneCount();
-      const seg = '<div class="cx-viewbar"><div class="mode-seg"><button class="' + (mapView === 'lines' ? 'active' : '') + '" onclick="mapView = \'lines\'; renderMapTk()">' + IC.map + '<span>Line items</span></button><button class="' + (mapView === 'pdf' ? 'active' : '') + '" onclick="mapView = \'pdf\'; renderMapTk()">' + IC.doc + '<span>PDF</span></button></div><span class="ivt-sub" style="margin:0">' + M.file + ' · ' + money(SPO.invTotal({ invoice: M })) + '</span></div>';
+      const seg = '<div class="cx-viewbar"><div class="mode-seg"><button class="' + (mapView === 'lines' ? 'active' : '') + '" onclick="mapView = \'lines\'; renderMapTk()">' + IC.map + '<span>Line items</span></button><button class="' + (mapView === 'pdf' ? 'active' : '') + '" onclick="mapView = \'pdf\'; renderMapTk()">' + IC.doc + '<span>PDF</span></button></div><span class="ivt-sub" style="margin:0">' + M.file + ' · ' + SPO.fileSize(SPO.invSize(M)) + ' · ' + money(SPO.invTotal({ invoice: M })) + '</span></div>';
       body = seg + (mapView === 'pdf' ? '<div class="cx-pdfview"><pre>' + pdfLines(s, M) + '</pre></div>'
         : CX.board() + '<h3 style="margin:26px 0 4px;font-size:15px">Totals</h3><p class="ivt-sub">Lines compare to the SPO estimate; tax and shipping are invoice-level.</p>' + CX.totals() +
           (mapRO ? '' : '<div class="cx-attest' + (all ? '' : ' off') + '"><b>' + done + ' of ' + n + ' invoice items connected</b><label><input type="checkbox"' + (attest && all ? ' checked' : '') + (all ? '' : ' disabled') + ' onchange="attest = this.checked; renderMapTk()"> I checked the work and matched every invoice item.</label><span>' + (all ? 'Validating sends nothing yet — it makes SPO-' + s.id + ' ready for Accounting.' : 'Match or resolve each item, then check the box.') + '</span></div>'));

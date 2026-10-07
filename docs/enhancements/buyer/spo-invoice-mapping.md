@@ -104,3 +104,25 @@ The team prefers the live product's drag line-to-map interaction, so the takeove
 - The resolver, totals, failed extraction, autosave and dispute behave as before, and the validated results (variance, extras, GL allocation) are unchanged.
 
 See [spo-invoice-intake.md](spo-invoice-intake.md) (TKT-SPO-31, TKT-SPO-32).
+
+---
+
+## Addendum — file sizes (SPO-39, 10/07/2026)
+
+The live product rounds every upload to MB, so a 2.6 KB invoice reads "0.00 MB". `SPO.fileSize()` now picks the unit: bytes under 1 KB, then KB, then MB from 999.5 KB. It shows one decimal under 10 and whole numbers above, for example "2.6 KB", "243 KB" and "5.5 MB". Invoice files show "PDF, <size>" in four places:
+- the SPO's invoice card;
+- the upload modal;
+- the mapping view's file line;
+- the intake file drop and match header.
+
+The audit's own case is seeded: SPO-858's INV-30418.pdf is 2,662 bytes and shows **2.6 KB**. Older records without a stored size get a stable one derived from the file name. Design-doc Formatting gains a **file sizes** rule.
+
+### TKT-SPO-42 · File sizes with the right unit
+**Summary:** Show uploaded document sizes in a unit that matches the size.
+**Acceptance criteria:**
+- [ ] Under 1 KB shows bytes; up to 999 KB shows KB; above that shows MB. One decimal under 10, whole numbers above.
+- [ ] A 2.6 KB file shows "2.6 KB", never "0.00 MB".
+- [ ] Every place an invoice file is listed shows "PDF, <size>".
+**Audit findings:** SPO-39
+**Files:** `buyer/spo-data.js` (`fileSize`, `invSize`), `buyer/spo.html`, `buyer/spo-invoice.html`
+

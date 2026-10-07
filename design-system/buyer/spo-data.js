@@ -103,7 +103,7 @@
     { id: 858, state: 'mapping', prop: 'magnolia', v: 'PC', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Hot-water extraction carpet cleaning in a vacant 2 BR.',
       lines: [L('Carpet cleaning, 2 BR', 1, 250, [A('6035', '0106', 250)])],
-      invoice: { num: 'INV-30418', date: '2026-08-21', file: 'INV-30418.pdf', tax: 0, ship: 0,
+      invoice: { num: 'INV-30418', date: '2026-08-21', file: 'INV-30418.pdf', size: 2662, tax: 0, ship: 0,
         lines: [{ desc: 'Carpet cleaning, 2 BR — Unit 106', amt: 250, maps: [{ line: 0, amt: 250 }], conf: 'high' }] },
       ev: { created: '2026-08-14 10:00', sent: '2026-08-14 10:01', accepted: '2026-08-14 15:30', invoiced: '2026-08-21 16:40' } },
     { id: 857, state: 'mapping', prop: 'cypress', v: 'MR', by: 'Alicia Grant', period: 'Aug 2026',
@@ -199,6 +199,20 @@
 
   /* ---------- helpers ---------- */
   const money = v => '$' + Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  /* File sizes pick their unit — never "0.00 MB" for a 2.6 KB invoice (audit SPO-39). */
+  function fileSize(bytes) {
+    if (bytes == null || isNaN(bytes)) return '';
+    if (bytes < 1024) return bytes + ' bytes';
+    if (bytes < 999.5 * 1024) { const kb = bytes / 1024; return (kb < 10 ? kb.toFixed(1) : Math.round(kb)) + ' KB'; }
+    const mb = bytes / 1048576; return (mb < 10 ? mb.toFixed(1) : Math.round(mb)) + ' MB';
+  }
+  /* Demo invoices carry a size; older records get a stable one from their file name. */
+  function invSize(inv) {
+    if (!inv) return null;
+    if (inv.size) return inv.size;
+    let h = 0; const f = inv.file || inv.num || ''; for (let i = 0; i < f.length; i++) h = (h * 31 + f.charCodeAt(i)) >>> 0;
+    return 38000 + h % 420000;
+  }
   const r2 = v => Math.round(v * 100) / 100;
   const fmtDate = d => { if (!d) return ''; const [y, m, dd] = d.slice(0, 10).split('-'); return m + '/' + dd + '/' + y; };
   function fmtDT(s) {
@@ -472,7 +486,7 @@
 
   const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
 
-  window.SPO = { TODAY, APPROVAL_LIMIT, VEN, GL, GL_BUDGET, STATES, ICON, ORDER_LINES,
+  window.SPO = { TODAY, APPROVAL_LIMIT, VEN, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
     budget, glOver, needsApproval, list, get, save, nextId, now, log, reset, counts };
 })();

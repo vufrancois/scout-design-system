@@ -527,6 +527,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li>Relative timestamps switch to the standard date after 7 days. Tooltips on relative timestamps show the full date + time.</li>
         <li>12-hour clock with AM/PM; minutes always shown (<code>2:00 PM</code>, not <code>2 PM</code>).</li>
         <li>Implementation: <code>Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })</code>.</li>
+        <li><strong>File sizes pick their unit:</strong> bytes under 1 KB, KB (one decimal under 10 KB, whole numbers above) up to 999 KB, then MB the same way &mdash; &ldquo;2.6 KB&rdquo;, &ldquo;243 KB&rdquo;, &ldquo;5.5 MB&rdquo;. Never a fixed unit that rounds a real file to &ldquo;0.00 MB&rdquo; (audit SPO-39). Shown as &ldquo;PDF, 2.6 KB&rdquo; wherever an uploaded document is listed (<code>SPO.fileSize()</code>).</li>
       </ul>
     </section>
 

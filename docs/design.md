@@ -615,7 +615,7 @@ The single source of truth tying the SPO list, detail, and Home together. Every 
 
 - **Gating:** nothing reaches the vendor before approval when approval is required; nothing reaches Accounting before every invoice line is mapped and the invoice validated; Paid is recorded by Accounting, never by the buyer. Any row violating this is a data bug.
 - **Overlays ride a state, they never replace it:** “Corrected invoice” (disputed) rides Awaiting Invoice; “needs attention” (extraction failed) rides Invoice to Map.
-- **Deferred:** SPO notifications. (Recurring schedules, Unit History and standalone invoice intake shipped — see their sections.)
+- Recurring schedules, Unit History, standalone invoice intake and Notifications shipped — see their sections.
 
 ### Schedules (recurring SPOs)
 
@@ -665,6 +665,16 @@ Series states only — the SPOs a series creates follow the SPO Lifecycle Matrix
 - **Ranges are spend periods** (calendar months): This period · Last 3 · 12 months (default) · Custom, always followed by the exact dates. The range drives the picker's spend column, the Stat Strip, Spend by GL and the activity table together.
 - **What counts:** spend = SPO allocations past approval (sent onward) plus order lines that aren't canceled; drafts, pending approvals, vendor-rejected and canceled SPOs are listed muted with “not counted”. A split line shows the unit's share “of” the line total.
 - Sections: unit header (code · building · unit · floor plan) with Range Bar and Stat Strip (Spend in range · Service POs · Orders · Last activity); Spend by GL (Horizontal Bar Chart); **Upcoming** — active, paused or pending schedules that charge the unit, with next run; Activity (Filter Tabs All · Service POs · Orders with counts, type chips, pager).
+
+### Notifications
+
+- **One event stream.** Notifications are derived from the same logs that drive SPO and schedule Activity (plus order and product-approval events) — never a separate store that can drift. `buyer/notif.js` is injected once by `cart.js` on every buyer page; every SPO/schedule save re-counts the bell.
+- **Others' actions notify; your own don't.** Vendors (accepted, rejected, invoice received), approvers, Accounting (paid), schedules (run drafted / sent, series decisions) and Scout AI (couldn't read an invoice) notify; the buyer's own saves, sends and cancels don't.
+- **Needs action vs FYI.** Action kinds: vendor rejected, invoice to map, extraction failed, approval waiting on you (SPO, schedule series, product request), schedule run drafted, sent back for revision, order delivered, invoice to validate. **An action item stays in Needs action while its task is open and clears itself when the task is done — not when it's read** (Vu, 10/07/2026); afterwards it lives on in All with an emerald *Done* tag.
+- **One count everywhere** (SPO-57): the bell badge, the panel's count chip and the page all show the number of unread action items in the current property scope (shopping pages are always scoped to one property, so their count is that property's).
+- **Bell panel:** Needs action / All tabs, Today / Yesterday / Earlier groups, unread dot, Mark all read, settings link, “View all notifications”. Each row deep-links to the task route (`spo.html#857/invoice`, `approval.html#SCH-06`, `order-detail.html#657/validate`) and marks itself read.
+- **Notifications page:** metric cards Needs Action · Unread · All; type filter (Service POs, Invoices, Approvals, Schedules, Orders); Unread only; Mark all read; per-row Mark read / unread with Needs action / Done, type and property tags. Settings turn each type on or off for the feed and the bell; email digest is shown as coming soon.
+- **Grouping** (SPO-58): three or more of the same repetitive kind on one day (orders confirmed) collapse into one expandable row. Items older than a week start out read.
 
 ### AI Block
 

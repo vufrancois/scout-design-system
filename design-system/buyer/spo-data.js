@@ -260,14 +260,16 @@
     return out.sort((a, b) => b.id - a.id);
   }
   const get = id => list().find(s => s.id === Number(id));
-  function save(s) { const ov = load(); ov[s.id] = s; store(ov); }
+  /* Every save re-counts the bell — action items clear the moment their task is done. */
+  const ping = () => { try { if (window.NOTIF) setTimeout(window.NOTIF.changed, 0); } catch (e) { /* noop */ } };
+  function save(s) { const ov = load(); ov[s.id] = s; store(ov); ping(); }
   const nextId = () => Math.max.apply(null, list().map(s => s.id)) + 1;
   function now() {
     const d = new Date();
     return TODAY + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
   }
   function log(s, t, sub, hi, bad) { s.log = s.log || buildLog(s); s.log.push({ at: now(), t, sub, hi: !!hi, bad: !!bad }); }
-  function reset() { try { localStorage.removeItem(KEY); localStorage.removeItem(SKEY); localStorage.removeItem('scout-intake-v1'); } catch (e) { /* noop */ } }
+  function reset() { try { localStorage.removeItem(KEY); localStorage.removeItem(SKEY); localStorage.removeItem('scout-intake-v1'); localStorage.removeItem('scout-notif-read'); } catch (e) { /* noop */ } }
   /* Demo reset: open any SPO page with #reset-spos (clean-URL hosting drops query strings, hashes survive). */
   try { if (location.hash === '#reset-spos') { reset(); history.replaceState(null, '', location.pathname); } } catch (e) { /* noop */ }
 
@@ -440,7 +442,7 @@
     return out.sort((a, b) => b.id.localeCompare(a.id));
   }
   const sget = id => slist().find(x => x.id === id);
-  function ssave(x) { const ov = sload(); ov[x.id] = x; sstore(ov); }
+  function ssave(x) { const ov = sload(); ov[x.id] = x; sstore(ov); ping(); }
   const snextId = () => 'SCH-' + String(Math.max.apply(null, slist().map(x => +x.id.slice(4))) + 1).padStart(2, '0');
   function slog(x, t, sub, hi, bad) { x.log = x.log || buildSchLog(x); x.log.push({ at: now(), t, sub, hi: !!hi, bad: !!bad }); }
   const instances = id => list().filter(s => s.series === id).sort((a, b) => b.run.localeCompare(a.run));

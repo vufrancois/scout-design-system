@@ -1512,6 +1512,7 @@
           <a onclick="scrollToSection('buyer-order-detail')">Buyer Order Detail</a>
           <a onclick="scrollToSection('buyer-spo')">Buyer Service POs</a>
           <a onclick="scrollToSection('buyer-unit-history')">Buyer Unit History</a>
+          <a onclick="scrollToSection('buyer-notifications')">Buyer Notifications</a>
           <a onclick="scrollToSection('rail-primitives')">Rail Primitives (shared)</a>
           <a onclick="scrollToSection('metric-tile')">Metric Tile</a>
           <a onclick="scrollToSection('insight-card')">Insight Card</a>
@@ -4097,6 +4098,35 @@ Ref #:001042698          INVOICE     08/26/26
           <tr class="data-row"><td>08/22/2026</td><td><span class="type-chip spo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Service PO</span></td><td><a class="table-link" href="#">SPO-857</a></td><td style="white-space:normal">Paint-and-carpet refresh, unit 0105<span class="share-of"><b style="font-family:'JetBrains Mono',ui-monospace,monospace;color:var(--foreground)">6140</b> Paint &amp; Plaster</span></td><td class="num" style="font-weight:600;text-align:right">$300.00<span class="share-of">of $600.00</span></td></tr>
           <tr class="data-row"><td>08/21/2026</td><td><span class="type-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Order</span></td><td><a class="table-link" href="#">Order #653</a></td><td style="white-space:normal">Gold&reg; 23-7/8 in. Dishwasher<span class="share-of"><b style="font-family:'JetBrains Mono',ui-monospace,monospace;color:var(--foreground)">6060</b> Appliance Repair &middot; 1 &times; $505.13 &middot; SKU 7524220</span></td><td class="num" style="font-weight:600;text-align:right">$505.13</td></tr>
         </tbody></table></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="buyer-notifications">
+      <div class="section-header">
+        <h2 class="section-title">Buyer App &middot; Notifications</h2>
+        <p class="section-desc">One feed derived from the same event logs that drive SPO and schedule Activity (<code>buyer/notif.js</code>, injected on every page by <code>cart.js</code>), plus order and product-approval events. The bell panel on every page and <code>buyer/notifications.html</code> show the same list and the same count (audit SPO-56/57/58).</p>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Bell Panel</h3>
+        <p class="subsection-desc">Opens from the App Bar bell: header with the count chip, <em>Mark all read</em> and a settings link; <strong>Needs action / All</strong> pill tabs; rows grouped Today / Yesterday / Earlier; footer link to the full page. The bell's badge (the cart badge style) is the number of <strong>unread action items in the current property scope</strong> &mdash; the same number the panel and page show. Esc or an outside click closes.</p>
+        <div class="buyer"><div class="nt-panel open" style="position:static;max-height:none;width:400px">
+          <div class="nt-head"><b>Notifications</b><span class="nt-count">3</span><span class="w-linkbtn" style="margin-left:auto">Mark all read</span><span class="row-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span></div>
+          <div class="nt-tabs"><button class="active">Needs action<span>3</span></button><button>All</button></div>
+          <div class="nt-list"><div class="nt-day">Today</div>
+            <div class="nt-row unread"><span class="icon-tile sm tile-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span><a class="nt-body" href="#"><span class="nt-title">Schedule drafted SPO-848 — review and send</span><span class="nt-sub">SCH-04 · run 08/24/2026 · Pelican Pest Control</span></a><span class="nt-meta">9:00 AM</span><span class="nt-dot"></span></div>
+            <div class="nt-row unread"><span class="icon-tile sm tile-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span><a class="nt-body" href="#"><span class="nt-title">Scout AI couldn’t read the invoice for SPO-849</span><span class="nt-sub">INV-2207 · Gulf Coast Painting Co.</span></a><span class="nt-meta">Yesterday</span><span class="nt-dot"></span></div>
+            <div class="nt-row"><span class="icon-tile sm tile-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span><a class="nt-body" href="#"><span class="nt-title">Invoice to map for SPO-857</span><span class="nt-sub">INV-7781 · $1,903.30 · Southern Make-Ready Co.</span></a><span class="nt-meta">08/22/2026</span></div>
+          </div><span class="nt-foot">View all notifications</span></div></div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:16px">
+        <h3 class="subsection-title">Notification Row &amp; Grouped Row</h3>
+        <p class="subsection-desc">28px type tile (rose when something went wrong), title (700 when unread), one muted detail line (two-line clamp), time on the right, primary unread dot. On the page each row adds tags &mdash; amber <em>Needs action</em> while open, emerald <em>Done</em> once the task cleared, the type and the property &mdash; and Mark read / Mark unread. <strong>Repetitive events collapse</strong>: three or more of the same kind on one day become one expandable row (&ldquo;12 orders confirmed today&rdquo;) with the items nested under a rule.</p>
+        <div class="buyer"><div class="card" style="max-width:640px"><div class="nt-pagelist">
+          <div class="nt-row nt-group unread"><span class="icon-tile sm tile-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span><span class="nt-body"><span class="nt-title">12 orders confirmed today</span><span class="nt-sub">Order #701, Order #700, Order #699 and 9 more</span></span><span class="nt-meta">2:22 PM<span class="nt-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></span><span class="nt-dot"></span></div>
+          <div class="nt-row"><span class="icon-tile sm tile-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span><span class="nt-body"><span class="nt-title">Invoice to map for SPO-858</span><span class="nt-sub">INV-30418 · $250.00 · Pride Carpet Care</span><span class="nt-tags"><span class="nt-tag done">Done</span><span class="nt-tag">Invoices</span><span class="nt-tag">Magnolia Place Apartments</span></span></span><span class="nt-meta">08/21/2026<span class="w-linkbtn">Mark unread</span></span></div>
+        </div></div></div>
       </div>
     </section>
 

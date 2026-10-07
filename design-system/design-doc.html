@@ -943,7 +943,7 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
       <ul>
         <li><strong>Gating:</strong> nothing reaches the vendor before approval when approval is required; nothing reaches Accounting before every invoice line is mapped and the invoice validated; Paid is recorded by Accounting, never by the buyer. Any row violating this is a data bug.</li>
         <li><strong>Overlays ride a state, they never replace it:</strong> &ldquo;Corrected invoice&rdquo; (disputed) rides Awaiting Invoice; &ldquo;needs attention&rdquo; (extraction failed) rides Invoice to Map.</li>
-        <li><strong>Deferred:</strong> SPO notifications. (Recurring schedules, Unit History and standalone invoice intake shipped &mdash; see their sections.)</li>
+        <li>Recurring schedules, Unit History, standalone invoice intake and Notifications shipped &mdash; see their sections.</li>
       </ul>
 
       <h3>Schedules (recurring SPOs)</h3>
@@ -999,6 +999,17 @@ font-family: "JetBrains Mono", ui-monospace, monospace; /* code */</code></pre>
         <li><strong>Ranges are spend periods</strong> (calendar months): This period &middot; Last 3 &middot; 12 months (default) &middot; Custom, always followed by the exact dates. The range drives the picker's spend column, the Stat Strip, Spend by GL and the activity table together.</li>
         <li><strong>What counts:</strong> spend = SPO allocations past approval (sent onward) plus order lines that aren't canceled; drafts, pending approvals, vendor-rejected and canceled SPOs are listed muted with &ldquo;not counted&rdquo;. A split line shows the unit's share &ldquo;of&rdquo; the line total.</li>
         <li>Sections: unit header (code &middot; building &middot; unit &middot; floor plan) with Range Bar and Stat Strip (Spend in range &middot; Service POs &middot; Orders &middot; Last activity); Spend by GL (Horizontal Bar Chart); <strong>Upcoming</strong> &mdash; active, paused or pending schedules that charge the unit, with next run; Activity (Filter Tabs All &middot; Service POs &middot; Orders with counts, type chips, pager).</li>
+      </ul>
+
+      <h3>Notifications</h3>
+      <ul>
+        <li><strong>One event stream.</strong> Notifications are derived from the same logs that drive SPO and schedule Activity (plus order and product-approval events) &mdash; never a separate store that can drift. <code>buyer/notif.js</code> is injected once by <code>cart.js</code> on every buyer page; every SPO/schedule save re-counts the bell.</li>
+        <li><strong>Others' actions notify; your own don't.</strong> Vendors (accepted, rejected, invoice received), approvers, Accounting (paid), schedules (run drafted / sent, series decisions) and Scout AI (couldn't read an invoice) notify; the buyer's own saves, sends and cancels don't.</li>
+        <li><strong>Needs action vs FYI.</strong> Action kinds: vendor rejected, invoice to map, extraction failed, approval waiting on you (SPO, schedule series, product request), schedule run drafted, sent back for revision, order delivered, invoice to validate. <strong>An action item stays in Needs action while its task is open and clears itself when the task is done &mdash; not when it's read</strong> (Vu, 10/07/2026); afterwards it lives on in All with an emerald <em>Done</em> tag.</li>
+        <li><strong>One count everywhere</strong> (SPO-57): the bell badge, the panel's count chip and the page all show the number of unread action items in the current property scope (shopping pages are always scoped to one property, so their count is that property's).</li>
+        <li><strong>Bell panel:</strong> Needs action / All tabs, Today / Yesterday / Earlier groups, unread dot, Mark all read, settings link, &ldquo;View all notifications&rdquo;. Each row deep-links to the task route (<code>spo.html#857/invoice</code>, <code>approval.html#SCH-06</code>, <code>order-detail.html#657/validate</code>) and marks itself read.</li>
+        <li><strong>Notifications page:</strong> metric cards Needs Action &middot; Unread &middot; All; type filter (Service POs, Invoices, Approvals, Schedules, Orders); Unread only; Mark all read; per-row Mark read / unread with Needs action / Done, type and property tags. Settings turn each type on or off for the feed and the bell; email digest is shown as coming soon.</li>
+        <li><strong>Grouping</strong> (SPO-58): three or more of the same repetitive kind on one day (orders confirmed) collapse into one expandable row. Items older than a week start out read.</li>
       </ul>
 
       <h3>AI Block</h3>

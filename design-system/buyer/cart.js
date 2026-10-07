@@ -126,3 +126,11 @@ const CART = (() => {
     themeBtn.parentNode.insertBefore(b, themeBtn);
   });
 })();
+
+/* Notifications: one shared bell panel on every buyer page. Needs the SPO store, so load it first when the page didn't. */
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.querySelector('script[src="notif.js"]')) return;
+  const add = (src, cb) => { const el = document.createElement('script'); el.src = src; el.onload = cb; document.head.appendChild(el); };
+  const go = () => add('notif.js');
+  if (window.SPO) go(); else add('spo-data.js', go);
+});

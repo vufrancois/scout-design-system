@@ -94,6 +94,16 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Receipt | **Send all to Accounting** | No confetti — the three SPOs move together; each SPO's invoice PDF says "1 of 3 SPOs" |
 | Drafts | Leave mid-way, open Service POs → Invoices | "1 invoice in progress" → Resume lands back on Match |
 
+### Notifications — bell on every page · `buyer/notifications.html`
+
+| Do | What to show |
+|---|---|
+| Open the bell on any page | Badge **10** = Needs action count = page header — one number everywhere; Today / Yesterday / Earlier |
+| Click "Bayou Plumbing & Drain rejected SPO-861" | Deep-links to Change Vendor; the row marks itself read |
+| Approve `approval.html#SPO-864` | The action item **clears itself** (badge 10 → 9) — read or not; in All it shows **Done** |
+| `notifications.html` → All | "12 orders confirmed today" is one expandable row; filters by type; Unread only |
+| Settings → turn Orders off | Order items leave the feed and the bell |
+
 ### Unit History — `buyer/unit-history.html#<property>/<unit>`
 
 | What | Link | What to show |

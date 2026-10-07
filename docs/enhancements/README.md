@@ -43,6 +43,7 @@ Per-view enhancement logs from the UI/UX improvement phase. Each file documents 
 | **Buyer App** · Service POs — Unit History | [buyer/unit-history.md](buyer/unit-history.md) |
 | **Buyer App** · Service POs — Line Connector & Standalone Invoice Intake | [buyer/spo-invoice-intake.md](buyer/spo-invoice-intake.md) |
 | **Buyer App** · Notifications (bell panel + page) | [buyer/notifications.md](buyer/notifications.md) |
+| **Buyer App** · Shared App Bar (one script, page map) | [buyer/app-bar.md](buyer/app-bar.md) |
 
 All 14 views enhanced — the per-view UX pass is complete, plus a cross-cutting dark-mode and responsive pass.
 

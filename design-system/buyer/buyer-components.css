@@ -1775,3 +1775,16 @@
   .buyer .ctx-echo > span { min-width: 0; overflow: hidden; }
   .buyer .ctx-echo .ctx-name { max-width: 180px; }
 }
+/* Line Connector: dollar share on each link, and the unit-crossing warning */
+.buyer .cx-labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.buyer .cx-label { position: absolute; transform: translate(-50%, -50%); font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: var(--radius-pill); background: var(--card); border: 1px solid color-mix(in srgb, var(--emerald) 55%, var(--border)); color: var(--emerald); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.buyer .cx-label.sug { border-style: dashed; border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); color: var(--primary); }
+.buyer .cx-label.bad { border-color: color-mix(in srgb, var(--amber) 60%, var(--border)); color: #b45309; }
+.dark .buyer .cx-label.sug, .buyer.dark .cx-label.sug { color: #8da0fb; }
+.dark .buyer .cx-label.bad, .buyer.dark .cx-label.bad { color: #fbbf24; }
+.buyer .cx-map.warn > span:first-child { color: #b45309; }
+.dark .buyer .cx-map.warn > span:first-child, .buyer.dark .cx-map.warn > span:first-child { color: #fbbf24; }
+.buyer .cx-unitwarn { display: flex; gap: 6px; align-items: flex-start; font-size: 12px; color: #b45309; margin: -2px 0 4px; }
+.buyer .cx-unitwarn svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; }
+.dark .buyer .cx-unitwarn, .buyer.dark .cx-unitwarn { color: #fbbf24; }
+@media (max-width: 820px) { .buyer .cx-labels { display: none; } }

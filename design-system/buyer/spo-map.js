@@ -22,6 +22,22 @@
 
   const sumMaps = l => r2((l.maps || []).reduce((a, m) => a + (m.amt || 0), 0));
   const spo = id => C.spos.find(s => s.id === +id);
+  /* Units the invoice line names ("Unit 105", "Units 102 & 103") — only numbers after the word unit, never dates. */
+  function unitsIn(desc) {
+    const out = [], re = /units?\s*#?\s*((?:\d{2,4}(?:\s*(?:,|&|and|\/)\s*)?)+)/ig;
+    let m; while ((m = re.exec(desc || ''))) (m[1].match(/\d{2,4}/g) || []).forEach(n => out.push(n.padStart(4, '0')));
+    return out;
+  }
+  /* A connection crosses units when the invoice line names units and the SPO line is allocated to none of them. */
+  function unitMismatch(l, m) {
+    const named = unitsIn(l.desc); if (!named.length) return null;
+    const s = spo(m.spo); if (!s || !s.lines[m.line]) return null;
+    const own = [...new Set(s.lines[m.line].alloc.map(a => a.unit))];
+    if (own.some(u => named.indexOf(u) >= 0)) return null;
+    const where = own.filter(u => u !== 'COMMON').length ? own.filter(u => u !== 'COMMON').map(u => 'unit ' + u).join(', ') : 'Common area';
+    return 'Invoice line names unit ' + named.map(u => u.replace(/^0+/, '')).join(' & ') + ', but SPO-' + m.spo + ' · Line ' + (m.line + 1) + ' is ' + where;
+  }
+  const unitOf = m => { const s = spo(m.spo); if (!s || !s.lines[m.line]) return ''; const u = [...new Set(s.lines[m.line].alloc.map(a => a.unit === 'COMMON' ? 'Common area' : 'Unit ' + a.unit))]; return u.join(' + '); };
   const est = (s, k) => r2(s.lines[k].qty * s.lines[k].price);
   const live = () => C.inv.lines.filter(l => l.res !== 'remove');
 
@@ -167,20 +183,20 @@
       const desc = C.edit && !C.ro ? '<input class="ivt-map-sel" style="height:32px" value="' + (l.desc || '').replace(/"/g, '&quot;') + '" placeholder="Line description from the PDF" onchange="CX.lineDesc(' + i + ', this.value)">' : '<span class="cx-desc">' + (l.desc || '<span style="color:var(--muted-foreground)">Untitled line</span>') + '</span>';
       const amt = C.edit && !C.ro ? '<span class="money-in" style="height:32px"><span class="cur">$</span><input inputmode="decimal" value="' + (l.amt ? l.amt.toFixed(2) : '') + '" onfocus="this.select()" onchange="CX.lineAmt(' + i + ', this.value)"></span>' : '<span class="cx-amt">' + money(l.amt) + '</span>';
       let body = '';
-      if (l.maps.length > 1 || (l.maps.length && st === 'bad')) body += '<div class="cx-maps">' + l.maps.map((m, k) => '<div class="cx-map"><span>→ SPO-' + m.spo + ' · Line ' + (m.line + 1) + '</span>' +
-        (C.ro ? '<b>' + money(m.amt) + '</b>' : '<span class="money-in" style="height:30px"><span class="cur">$</span><input inputmode="decimal" value="' + (m.amt || 0).toFixed(2) + '" onfocus="this.select()" onchange="CX.setAmt(' + i + ', ' + k + ', this.value)"></span><button class="row-action" title="Remove connection" onclick="CX.unlink(' + i + ', ' + k + ')">' + I.x + '</button>') + '</div>').join('') + '</div>';
-      else if (l.maps.length === 1 && !C.ro) body += '<div class="cx-maps"><div class="cx-map"><span>→ SPO-' + l.maps[0].spo + ' · Line ' + (l.maps[0].line + 1) + ' · ' + spo(l.maps[0].spo).lines[l.maps[0].line].desc + '</span><button class="row-action" title="Remove connection" onclick="CX.unlink(' + i + ', 0)">' + I.x + '</button></div></div>';
+      if (l.maps.length > 1 || (l.maps.length && st === 'bad')) body += '<div class="cx-maps">' + l.maps.map((m, k) => '<div class="cx-map' + (unitMismatch(l, m) ? ' warn' : '') + '"><span>→ SPO-' + m.spo + ' · Line ' + (m.line + 1) + ' · ' + unitOf(m) + '</span>' +
+        (C.ro ? '<b>' + money(m.amt) + '</b>' : '<span class="money-in" style="height:30px"><span class="cur">$</span><input inputmode="decimal" value="' + (m.amt || 0).toFixed(2) + '" onfocus="this.select()" onchange="CX.setAmt(' + i + ', ' + k + ', this.value)"></span><button class="row-action" title="Remove connection" onclick="CX.unlink(' + i + ', ' + k + ')">' + I.x + '</button>') + '</div>' + (unitMismatch(l, m) ? '<div class="cx-unitwarn">' + I.warn + '<span>' + unitMismatch(l, m) + ' — check the split, or reconnect.</span></div>' : '')).join('') + '</div>';
+      else if (l.maps.length === 1 && !C.ro) body += '<div class="cx-maps"><div class="cx-map' + (unitMismatch(l, l.maps[0]) ? ' warn' : '') + '"><span>→ SPO-' + l.maps[0].spo + ' · Line ' + (l.maps[0].line + 1) + ' · ' + spo(l.maps[0].spo).lines[l.maps[0].line].desc + ' · ' + unitOf(l.maps[0]) + '</span><button class="row-action" title="Remove connection" onclick="CX.unlink(' + i + ', 0)">' + I.x + '</button></div>' + (unitMismatch(l, l.maps[0]) ? '<div class="cx-unitwarn">' + I.warn + '<span>' + unitMismatch(l, l.maps[0]) + ' — check you connected the right line.</span></div>' : '') + '</div>';
       if (!l.maps.length && !C.ro) body += resolver(l, i);
       else if (C.ro && l.res) body += '<div class="cx-k" style="margin-top:6px">' + (l.res === 'remove' ? '“' + (l.resReason || '') + '”' : 'Booked to ' + l.resGl + ' ' + SPO.glName(l.resGl) + ' · ' + SPO.unitLabel(l.resUnit) + (C.spos.length > 1 ? ' · SPO-' + l.resSpo : '')) + '</div>';
       return '<div class="cx-card cx-r ' + st + (sel && sel.side === 'r' && sel.key === key ? ' sel' : '') + (l.res === 'remove' ? ' gone' : '') + '" data-key="' + key + '">' +
         (C.ro || l.res ? '' : '<button class="cx-dot' + (l.maps.length ? ' on' : '') + '" data-side="r" data-key="' + key + '" aria-label="Connect invoice line ' + (i + 1) + '"></button>') +
         '<div class="cx-row"><span class="cx-ref">Invoice line ' + (i + 1) + (l.manual ? '' : ' <span class="lm-ai">' + I.ai + 'Scout AI</span>') + '</span><span class="cx-k">Invoice cost</span></div>' +
         '<div class="cx-row" style="gap:10px">' + desc + amt + (C.edit && !C.ro && C.inv.lines.length > 1 ? '<button class="row-action" title="Remove line" onclick="CX.rmLine(' + i + ')">' + I.x + '</button>' : '') + '</div>' +
-        '<div class="cx-row" style="margin-top:8px;justify-content:flex-start;gap:10px;flex-wrap:wrap">' + stateChip + (C.ro ? '' : '<select class="cx-pick" aria-label="Connect invoice line ' + (i + 1) + ' to an SPO line" onchange="CX.pick(' + i + ', this.value)">' + opts + '</select>') + '</div>' + body + '</div>';
+        '<div class="cx-row" style="margin-top:8px;justify-content:flex-start;gap:10px;flex-wrap:wrap">' + stateChip + (!l.res && l.maps.some(m => unitMismatch(l, m)) ? '<span class="cx-state attn">' + I.warn + 'Unit mismatch</span>' : '') + (C.ro ? '' : '<select class="cx-pick" aria-label="Connect invoice line ' + (i + 1) + ' to an SPO line" onchange="CX.pick(' + i + ', this.value)">' + opts + '</select>') + '</div>' + body + '</div>';
     }).join('') + (C.edit && !C.ro ? '<button class="btn btn-sm" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px" onclick="CX.addLine()"><span style="display:inline-flex;width:14px;height:14px">' + I.plus + '</span>Add invoice line</button>' : '');
 
     return toolbar() + '<div class="cx-board" id="cx-board"><div class="cx-col"><div class="cx-col-h"><b>SPO line items</b><span>' + (multi ? C.spos.length + ' SPOs · original descriptions and estimates' : 'Original descriptions and estimates') + '</span></div>' + left + '</div>' +
-      '<div class="cx-gutter"></div><div class="cx-col"><div class="cx-col-h"><b>Invoice line items</b><span>Invoice descriptions and costs to apply</span></div>' + right + '</div><svg class="cx-svg" id="cx-svg"></svg></div>';
+      '<div class="cx-gutter"></div><div class="cx-col"><div class="cx-col-h"><b>Invoice line items</b><span>Invoice descriptions and costs to apply</span></div>' + right + '</div><svg class="cx-svg" id="cx-svg"></svg><div class="cx-labels" id="cx-labels"></div></div>';
   }
   function resolver(l, i) {
     const multi = C.spos.length > 1, prop = C.spos[0].prop;
@@ -232,12 +248,26 @@
   function draw(tmp) {
     const b = document.getElementById('cx-board'), svg = document.getElementById('cx-svg'); if (!b || !svg) return;
     const box = b.getBoundingClientRect();
-    let p = '';
+    let p = ''; const labels = [];
     C.inv.lines.forEach((l, i) => { if (l.res) return; const st = status(l), r = anchor('r', 'r:' + i); if (!r) return;
       l.maps.forEach(m => { const le = anchor('l', m.spo + ':' + m.line); if (!le) return;
-        p += '<path class="cx-link ' + (m.sug ? 'sug' : st === 'bad' ? 'bad' : 'ok') + '" d="' + curve(edgePoint(le, 'l', box), edgePoint(r, 'r', box)) + '"/>'; }); });
+        const a = edgePoint(le, 'l', box), z = edgePoint(r, 'r', box), warn = unitMismatch(l, m);
+        p += '<path class="cx-link ' + (m.sug ? 'sug' : st === 'bad' || warn ? 'bad' : 'ok') + '" d="' + curve(a, z) + '"/>';
+        labels.push({ a, z, txt: money(m.amt || 0), cls: m.sug ? 'sug' : st === 'bad' || warn ? 'bad' : '' }); }); });
     if (tmp) p += '<path class="cx-link tmp" d="' + curve(tmp[0], tmp[1]) + '"/>';
     svg.innerHTML = p;
+    /* Each connection carries its dollar share on the line (production shows "1/4"; dollars stay true once a share is edited).
+       Labels sit at the curve's midpoint and slide along it to avoid each other. */
+    const lab = document.getElementById('cx-labels'); if (!lab) return;
+    const placed = [];
+    lab.innerHTML = tmp ? '' : labels.map(L => {
+      const dx = Math.max(40, Math.abs(L.z[0] - L.a[0]) / 2), P = [L.a, [L.a[0] + dx, L.a[1]], [L.z[0] - dx, L.z[1]], L.z];
+      const at = t => { const u = 1 - t; return [0, 1].map(k => u * u * u * P[0][k] + 3 * u * u * t * P[1][k] + 3 * u * t * t * P[2][k] + t * t * t * P[3][k]); };
+      let pt = at(0.5);
+      for (const t of [0.5, 0.36, 0.64, 0.26, 0.74]) { const q = at(t); if (!placed.some(o => Math.abs(o[0] - q[0]) < 46 && Math.abs(o[1] - q[1]) < 18)) { pt = q; break; } }
+      placed.push(pt);
+      return '<span class="cx-label ' + L.cls + '" style="left:' + pt[0].toFixed(1) + 'px;top:' + pt[1].toFixed(1) + 'px">' + L.txt + '</span>';
+    }).join('');
   }
   function onDown(e) {
     const dot = e.target.closest('.cx-dot'); if (!dot || C.ro) return;
@@ -303,7 +333,7 @@
       });
       return C;
     }, prepare, resolved, status, allResolved, doneCount, perSpo, taxShares, shipShares, taxOk, sumMaps,
-    board, totals, mount, draw,
+    board, totals, mount, draw, unitsIn, unitMismatch,
     connect, unlink, setAmt, accept, autoMap, pick, res, set, lineAmt, lineDesc, addLine, rmLine, toggleEdit, setTax, resetTax
   };
 })();

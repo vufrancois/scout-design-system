@@ -90,6 +90,7 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Entry | Service POs → **Add invoice**, or `spo.html#847` → Upload invoice → "map them together" | The sky callout knows Crescent Cleaning has 2 other SPOs waiting at Magnolia |
 | 1 · Vendor & invoice | Drop the PDF | Scout AI fills Crescent Cleaning · INV-CC-2608 · 08/24 and pre-checks SPO-842/845/847 with reasons ("Run 08/05 ↔ 'week of 08/03'") |
 | 2 · Match | Drag a connector; then **Auto Map** | Three weekly runs on one board; 847 shows +$15 over; the $35 supplies line opens the resolver → one-time extra booked to SPO-847; tax $55.76 split 17.01 / 17.01 / 21.74 |
+| Unit warning | On `spo.html#857/invoice`, connect "Carpet steam clean — Unit 104" to Line 4 (unit 0105) | Even split $115 / $115 (production's behaviour); the second link turns amber with "Unit mismatch"; dollar pills on every link |
 | 3 · Review | Check the attestation → **Validate 3 SPOs** | Each SPO's share; total $645.76 |
 | Receipt | **Send all to Accounting** | No confetti — the three SPOs move together; each SPO's invoice PDF says "1 of 3 SPOs" |
 | Drafts | Leave mid-way, open Service POs → Invoices | "1 invoice in progress" → Resume lands back on Match |

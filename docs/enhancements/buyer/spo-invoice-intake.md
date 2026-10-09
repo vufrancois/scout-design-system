@@ -138,3 +138,49 @@ Gallery: **Line Connector** replaces the SPO Line Match card, and there's a new 
 - [ ] An SPO's upload modal offers "map them together" when the vendor has other SPOs waiting at the property.
 **Audit findings:** SPO-47
 **Files:** `buyer/spo-invoice.html`, `buyer/spos.html`, `buyer/spo.html` (`openUpload`, `otherWaiting`)
+
+---
+
+## Addendum — what production shipped, and two additions (10/09/2026)
+
+**Production update** (the team's release, compared on Vu's screenshot of SPO-865):
+- **Connections run both ways:** one invoice line can map to several SPO lines, and several invoice lines to one SPO line.
+- **The money is always split evenly.** Each connection is labelled as a fraction ("1/4 · $25.00"), and each SPO line shows "n connected" plus a combined variance.
+- Units stay on each SPO line.
+- The team had described a "same GL code" rule, but the screenshot shows a paint line (6140) and a carpet line (6040) both connected to one invoice line, so it isn't enforced as described.
+
+**What this means:**
+- **The structure is solved in production.** That covers audit SPO-43's "connections are 1:1 only".
+- **The even split can put money on the wrong unit.** In the screenshot, "Paint, unit 105" ($100) is spread $25 each over paint units 105, 106 and 107 and carpet unit 105. Units 106 and 107 are each charged for unit 105's work, $25 of paint lands on the carpet GL, and nothing warns about it.
+- **What fixes it:** editable shares, which the prototype has had since TKT-SPO-31, plus the two additions below.
+
+**Added to the board:**
+- **A dollar share on each link:** a pill at the curve's midpoint (emerald mapped, dashed suggested, amber split-mismatch or unit-crossing). Pills slide along the curve to avoid overlapping. Dollars rather than fractions, because a share stops being a fraction once it's edited.
+- **Unit-crossing warning:** unit numbers are read from the invoice line, only after the word "unit(s)", so "week of 08/03" never counts. If the connected SPO line is allocated to none of them:
+  - the link and its pill turn amber;
+  - the invoice card shows a **Unit mismatch** chip;
+  - the connection row explains it ("Invoice line names unit 104, but SPO-857 · Line 4 is unit 0105").
+
+  It's a warning, not a block. Every connection row now also shows the SPO line's unit.
+- **Demo:** on `spo.html#857/invoice`, connect "Carpet steam clean — Unit 104" to Line 4 (unit 0105). The line splits $115 / $115, and the second connection turns amber with the warning.
+
+### TKT-SPO-43 · Dollar share on each connection
+**Summary:** Label each link with the amount it carries.
+**Acceptance criteria:**
+- [ ] Each connection shows its dollar share on the link: mapped, suggested, or warning style.
+- [ ] Labels stay readable when several links converge (they slide along the curve).
+- [ ] Editing a share updates its label immediately.
+**Audit findings:** SPO-43
+**Files:** `buyer/spo-map.js` (`draw`), `buyer/buyer-components.css` (`.cx-label*`)
+
+### TKT-SPO-44 · Warn when a connection crosses units
+**Summary:** Flag connections where the invoice line names units the SPO line isn't allocated to.
+**Acceptance criteria:**
+- [ ] Unit numbers are read only after "unit"/"units" ("Unit 104", "Units 102 & 103", "Unit #0216"), never from dates.
+- [ ] A crossing connection draws amber, the card shows "Unit mismatch", and the row explains which units differ.
+- [ ] It's a warning only: validation is not blocked.
+- [ ] Each connection row shows the SPO line's unit.
+**Audit findings:** SPO-43, SPO-48
+**Files:** `buyer/spo-map.js` (`unitsIn`, `unitMismatch`), `buyer/buyer-components.css` (`.cx-unitwarn`)
+
+**Production delta for TKT-SPO-15 and TKT-SPO-31:** many-to-many is shipped. Still to build: editable shares (instead of an even split), dollar labels, and the unit-crossing warning.

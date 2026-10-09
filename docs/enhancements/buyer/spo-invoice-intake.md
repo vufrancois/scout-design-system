@@ -12,7 +12,7 @@
   - **Link states:** dashed primary = suggested by Scout AI (Accept per line); solid emerald = mapped; amber = split doesn't add up.
   - **Many-to-many:**
     - A second connection splits the invoice line evenly, with the remainder on the last share.
-    - The shares are editable on the invoice card and must total the line.
+    - Only lines that share one GL code can be combined; shares are even and read-only (see the 10/09 addendum).
     - Several invoice lines can land on one SPO line.
   - **Auto Map** accepts suggestions, then connects only amount-and-words matches. It never maps everything to one line, as the live button does.
   - **The resolver opens in place** on an unconnected invoice line: add to the SPO / one-time extra / remove. With several SPOs, it also asks which SPO the line is booked to.
@@ -83,7 +83,7 @@ Gallery: **Line Connector** replaces the SPO Line Match card, and there's a new 
 - [ ] Drag dot to dot, or click one dot on each side, connects the lines; Esc cancels a half-made connection.
 - [ ] Every invoice card has a "Connect to…" select that works by keyboard; under 820px it is the only input.
 - [ ] Scout AI suggestions draw dashed and don't count as matched until accepted, per line or via Auto Map.
-- [ ] One invoice line can connect to several SPO lines. Shares are editable and must total the line, and a mismatch draws amber.
+- [ ] One invoice line can connect to several SPO lines that share one GL code; the cost splits evenly and the shares are read-only ("1/2 · $400.00").
 - [ ] An unconnected invoice line shows the resolver in place.
 - [ ] Validate is enabled only when every line is resolved and the attestation is checked.
 **Audit findings:** SPO-38, SPO-41, SPO-43, SPO-45
@@ -164,12 +164,12 @@ Gallery: **Line Connector** replaces the SPO Line Match card, and there's a new 
   It's a warning, not a block. Every connection row now also shows the SPO line's unit.
 - **Demo:** on `spo.html#857/invoice`, connect "Carpet steam clean — Unit 104" to Line 4 (unit 0105). The line splits $115 / $115, and the second connection turns amber with the warning.
 
-### TKT-SPO-43 · Dollar share on each connection
-**Summary:** Label each link with the amount it carries.
+### TKT-SPO-43 · Share on each connection
+**Summary:** Label each link with its even share, matching production's fractions.
 **Acceptance criteria:**
-- [ ] Each connection shows its dollar share on the link: mapped, suggested, or warning style.
+- [ ] Each connection shows its fraction on the link ("1/2", "1/1"): mapped, suggested, or warning style.
 - [ ] Labels stay readable when several links converge (they slide along the curve).
-- [ ] Editing a share updates its label immediately.
+- [ ] Connection rows on the invoice card show the fraction and dollars ("1/2 · $400.00") and the SPO line's unit.
 **Audit findings:** SPO-43
 **Files:** `buyer/spo-map.js` (`draw`), `buyer/buyer-components.css` (`.cx-label*`)
 
@@ -183,4 +183,38 @@ Gallery: **Line Connector** replaces the SPO Line Match card, and there's a new 
 **Audit findings:** SPO-43, SPO-48
 **Files:** `buyer/spo-map.js` (`unitsIn`, `unitMismatch`), `buyer/buyer-components.css` (`.cx-unitwarn`)
 
-**Production delta for TKT-SPO-15 and TKT-SPO-31:** many-to-many is shipped. Still to build: editable shares (instead of an even split), dollar labels, and the unit-crossing warning.
+**Production delta for TKT-SPO-15 and TKT-SPO-31:** many-to-many with the same-GL even split is shipped. Still to build: share labels on the links, the unit-crossing warning, and the itemize path for cross-GL lines (TKT-SPO-45).
+
+---
+
+## Addendum — aligned with production's same-GL rule (10/09/2026)
+
+The Scout team (Marc) confirmed how production works and why:
+- An invoice line can cover several SPO lines **only when they share a GL code**, and the cost **splits evenly**.
+- **Different GL codes can't be combined:** GL codes drive budget spend, and nobody can know how much of a "paint + carpet" line was paint.
+- **Itemized invoices are required by policy:** property managers require vendors to itemize.
+
+The prototype now matches:
+- **Even, read-only shares.** The editable share inputs are gone; a typed share would be a guess. Links carry a fraction pill ("1/2") like production, and rows show "1/2 · $400.00".
+- **Cross-GL connections are refused** with an amber callout naming the GL codes, and three ways out:
+  - **Ask the vendor to itemize:** on the SPO page this opens the dispute with the reason filled in.
+  - **Split this line:** adds an empty "(part 2)" line to fill in from the PDF.
+  - **Dismiss.**
+
+  An SPO line that itself books to two GL codes (SPO-857's paint-and-carpet line) can only be connected on its own.
+- **The unit warning stays.** With an even split, connecting the wrong line is the real risk.
+- **Audit SPO-43** is effectively closed: production's same-GL even split plus the itemization policy cover it.
+- **Earlier screenshot:** production allowed "Paint, unit 105" to connect to both paint (6140) and carpet (6040) lines. Either that predates the rule or it's a production bug; flagged to the team.
+- **Demo** (`spo.html#857/invoice`):
+  - **Refusal:** connect "Carpet steam clean — Unit 104" (6035) to Line 1 (6140).
+  - **Unit warning:** remove Invoice line 3's connection, then connect "Make-ready refresh — Unit 105" to Line 1 (unit 0102).
+
+### TKT-SPO-45 · Refuse cross-GL connections and offer itemizing
+**Summary:** An invoice line can only cover SPO lines that share one GL code; otherwise it must be itemized.
+**Acceptance criteria:**
+- [ ] Connecting an invoice line to an SPO line with a different GL code than its other connections is refused, and nothing is connected.
+- [ ] An SPO line that books to two GL codes can only be connected on its own.
+- [ ] The refusal names the GL codes and offers "Ask the vendor to itemize" (dispute pre-filled with the reason), "Split this line" (adds a line to fill in from the PDF) and "Dismiss".
+- [ ] Shares are always even and read-only.
+**Audit findings:** SPO-43
+**Files:** `buyer/spo-map.js` (`glConflict`, `connect`, `itemize`, `splitLine`), `buyer/spo.html` (`openInvDispute(prefill)`), `buyer/buyer-components.css` (`.cx-refuse`)

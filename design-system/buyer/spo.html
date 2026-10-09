@@ -392,7 +392,9 @@
   function openInvoiceMap(readOnly) {
     mapRO = !!readOnly || S.state !== 'mapping'; retrying = false; mapView = 'lines'; attest = false;
     M = CX.prepare(clone(!mapRO && S.mapDraft ? S.mapDraft : S.invoice), S.id, mapRO);
-    MC = CX.use({ spos: [S], inv: M, ro: mapRO, edit: false, onChange: renderMapTk });
+    MC = CX.use({ spos: [S], inv: M, ro: mapRO, edit: false, onChange: renderMapTk,
+      /* Itemized invoices are policy: a combined cross-GL line goes back to the vendor with the reason filled in. */
+      onItemize: i => { renderMapTk(); openInvDispute('Please itemize “' + M.lines[i].desc + '” (' + money(M.lines[i].amt) + ') by GL code — it combines work booked to different GL codes, so we can’t split it ourselves.'); } });
     let tk = document.getElementById('map-tk');
     if (!tk) { tk = document.createElement('div'); tk.id = 'map-tk'; tk.className = 'inv-tk'; document.body.appendChild(tk); }
     renderMapTk(); tk.classList.add('open'); document.body.style.overflow = 'hidden';
@@ -466,13 +468,14 @@
     showToast('Invoice ' + s.invoice.num + ' validated', 'SPO-' + s.id + ' is ready for Accounting.');
   }
 
-  function openInvDispute() {
+  function openInvDispute(prefill) {
     modal('dispute-ov', '<div class="val-modal" style="width:500px"><div class="val-head"><h2>Dispute invoice ' + M.num + '?</h2><p>' + ven(S).name + ' is asked to correct and resubmit. SPO-' + S.id + ' goes back to waiting for an invoice.</p></div>' +
       '<div class="val-body" style="padding:16px 24px"><label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px">What needs correcting <span class="req-chip">Required</span></label>' +
       '<textarea class="claim-note" id="disp-reason" maxlength="500" placeholder="e.g. Unit 104 is billed at $230; the SPO estimate is $200." oninput="document.getElementById(\'disp-go\').disabled = !this.value.trim()"></textarea>' +
       '<div style="font-size:12px;color:var(--muted-foreground);margin-top:6px">Shared with the vendor and kept in the SPO’s activity.</div></div>' +
       '<div class="val-foot"><button class="btn" onclick="closeModal(\'dispute-ov\')">Keep reviewing</button><button class="btn btn-danger" id="disp-go" disabled onclick="confirmInvDispute()">Dispute invoice</button></div></div>');
     document.getElementById('dispute-ov').style.zIndex = '500';
+    if (prefill) { const t = document.getElementById('disp-reason'); t.value = prefill; document.getElementById('disp-go').disabled = false; }
   }
   function confirmInvDispute() {
     const s = S, reason = document.getElementById('disp-reason').value.trim(); if (!reason) return;

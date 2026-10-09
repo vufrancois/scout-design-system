@@ -95,11 +95,34 @@
 
   /* ---------- actions ---------- */
   const changed = () => C.onChange();
+  /* Same-GL rule (matches production): one invoice line may cover several SPO lines only when they all book to the
+     same single GL code — then the cost splits evenly. Across GL codes nobody can know the split (GL drives budget spend),
+     so the line must be itemized: the vendor itemizes by policy, or the buyer splits it to match the PDF. */
+  const glsOf = (sp, k) => { const x = spo(sp); return x && x.lines[k] ? [...new Set(x.lines[k].alloc.map(a => a.gl))] : []; };
+  function glConflict(l, spoId, line) {
+    const all = l.maps.map(m => [m.spo, m.line]).concat([[+spoId, +line]]);
+    if (all.length < 2) return null;
+    const sets = all.map(([sp, k]) => glsOf(sp, k)), multi = all.find(([sp, k]) => glsOf(sp, k).length > 1);
+    const flat = [...new Set([].concat(...sets))];
+    if (!multi && flat.length === 1) return null;
+    return { gls: flat, multi: multi ? 'SPO-' + multi[0] + ' · Line ' + (multi[1] + 1) : null };
+  }
   function connect(i, spoId, line) {
     const l = C.inv.lines[i]; if (C.ro || !l) return;
     if (l.maps.some(m => m.spo === +spoId && m.line === +line)) { l.maps.forEach(m => { if (m.spo === +spoId && m.line === +line) m.sug = false; }); changed(); return; }
+    const clash = glConflict(l, spoId, line);
+    if (clash) { C.refuse = Object.assign({ i }, clash); changed(); return; }
+    if (C.refuse && C.refuse.i === i) C.refuse = null;
     l.res = null; l.maps.push({ spo: +spoId, line: +line, amt: 0, sug: false }); l.conf = 'manual';
     resplit(l); changed();
+  }
+  function dismissRefuse() { C.refuse = null; changed(); }
+  function itemize(i) { C.refuse = null; if (C.onItemize) C.onItemize(i); else changed(); }
+  /* Split a combined line to match the PDF: a second, empty line appears below for the other GL's amount. */
+  function splitLine(i) {
+    const l = C.inv.lines[i]; C.refuse = null;
+    C.inv.lines.splice(i + 1, 0, { desc: l.desc + ' (part 2)', amt: 0, maps: [], manual: true });
+    C.edit = true; changed();
   }
   function resplit(l) {
     if (l.maps.length === 1) { l.maps[0].amt = l.amt; return; }
@@ -107,7 +130,6 @@
     l.maps.forEach((m, k) => { m.amt = k === l.maps.length - 1 ? r2(l.amt - each * (l.maps.length - 1)) : each; });
   }
   function unlink(i, k) { const l = C.inv.lines[i]; l.maps.splice(k, 1); if (l.maps.length) resplit(l); changed(); }
-  function setAmt(i, k, v) { const n = parseFloat(String(v).replace(/[$,]/g, '')); C.inv.lines[i].maps[k].amt = isNaN(n) ? 0 : r2(n); changed(); }
   function accept(i) { C.inv.lines[i].maps.forEach(m => { m.sug = false; }); changed(); }
   /* Auto Map: accept every suggestion, then connect unmatched lines to an SPO line with the same amount and the most words in common.
      Never maps everything to one line. */
@@ -155,7 +177,7 @@
     return '<div class="alloc-row">' + s.lines[k].alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + s.prop + '/' + a.unit + '" target="_blank" rel="noopener" title="Unit history">' + SPO.unitLabel(a.unit) + '</a></span>').join('') + '</div>';
   }
   function toolbar() {
-    return '<div class="cx-toolbar"><span class="cx-hint">' + (C.ro ? 'How each invoice line was matched.' : 'Drag between connectors, or click one on each side to match.') + '</span>' +
+    return '<div class="cx-toolbar"><span class="cx-hint">' + (C.ro ? 'How each invoice line was matched.' : 'Drag between connectors, or click one on each side. Lines that share a GL code split evenly; different GL codes need an itemized line.') + '</span>' +
       '<span class="cx-legend"><span><i class="sug"></i>Suggested</span><span><i class="ok"></i>Mapped</span></span>' +
       (C.ro ? '' : '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="CX.toggleEdit()"><span style="display:inline-flex;width:14px;height:14px">' + I.pen + '</span>' + (C.edit ? 'Done editing lines' : 'Edit invoice lines') + '</button>' +
         '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="CX.autoMap()"><span style="display:inline-flex;width:14px;height:14px">' + I.wand + '</span>Auto Map</button>') + '</div>';
@@ -183,9 +205,18 @@
       const desc = C.edit && !C.ro ? '<input class="ivt-map-sel" style="height:32px" value="' + (l.desc || '').replace(/"/g, '&quot;') + '" placeholder="Line description from the PDF" onchange="CX.lineDesc(' + i + ', this.value)">' : '<span class="cx-desc">' + (l.desc || '<span style="color:var(--muted-foreground)">Untitled line</span>') + '</span>';
       const amt = C.edit && !C.ro ? '<span class="money-in" style="height:32px"><span class="cur">$</span><input inputmode="decimal" value="' + (l.amt ? l.amt.toFixed(2) : '') + '" onfocus="this.select()" onchange="CX.lineAmt(' + i + ', this.value)"></span>' : '<span class="cx-amt">' + money(l.amt) + '</span>';
       let body = '';
-      if (l.maps.length > 1 || (l.maps.length && st === 'bad')) body += '<div class="cx-maps">' + l.maps.map((m, k) => '<div class="cx-map' + (unitMismatch(l, m) ? ' warn' : '') + '"><span>→ SPO-' + m.spo + ' · Line ' + (m.line + 1) + ' · ' + unitOf(m) + '</span>' +
-        (C.ro ? '<b>' + money(m.amt) + '</b>' : '<span class="money-in" style="height:30px"><span class="cur">$</span><input inputmode="decimal" value="' + (m.amt || 0).toFixed(2) + '" onfocus="this.select()" onchange="CX.setAmt(' + i + ', ' + k + ', this.value)"></span><button class="row-action" title="Remove connection" onclick="CX.unlink(' + i + ', ' + k + ')">' + I.x + '</button>') + '</div>' + (unitMismatch(l, m) ? '<div class="cx-unitwarn">' + I.warn + '<span>' + unitMismatch(l, m) + ' — check the split, or reconnect.</span></div>' : '')).join('') + '</div>';
-      else if (l.maps.length === 1 && !C.ro) body += '<div class="cx-maps"><div class="cx-map' + (unitMismatch(l, l.maps[0]) ? ' warn' : '') + '"><span>→ SPO-' + l.maps[0].spo + ' · Line ' + (l.maps[0].line + 1) + ' · ' + spo(l.maps[0].spo).lines[l.maps[0].line].desc + ' · ' + unitOf(l.maps[0]) + '</span><button class="row-action" title="Remove connection" onclick="CX.unlink(' + i + ', 0)">' + I.x + '</button></div>' + (unitMismatch(l, l.maps[0]) ? '<div class="cx-unitwarn">' + I.warn + '<span>' + unitMismatch(l, l.maps[0]) + ' — check you connected the right line.</span></div>' : '') + '</div>';
+      if (l.maps.length) body += '<div class="cx-maps">' + l.maps.map((m, k) => {
+        const w = unitMismatch(l, m), sl = spo(m.spo) && spo(m.spo).lines[m.line];
+        return '<div class="cx-map' + (w ? ' warn' : '') + '"><span>→ SPO-' + m.spo + ' · Line ' + (m.line + 1) + (l.maps.length === 1 && sl ? ' · ' + sl.desc : '') + ' · ' + unitOf(m) + '</span>' +
+          '<b class="cx-share">1/' + l.maps.length + ' · ' + money(m.amt) + '</b>' +
+          (C.ro ? '' : '<button class="row-action" title="Remove connection" onclick="CX.unlink(' + i + ', ' + k + ')">' + I.x + '</button>') + '</div>' +
+          (w ? '<div class="cx-unitwarn">' + I.warn + '<span>' + w + ' — check you connected the right line.</span></div>' : '');
+      }).join('') + '</div>';
+      if (C.refuse && C.refuse.i === i && !C.ro) body += '<div class="cx-refuse">' + I.warn + '<div><b>Different GL codes — this line needs to be itemized</b><span>' +
+        (C.refuse.multi ? C.refuse.multi + ' books to two GL codes, so it can only be connected on its own.' : 'It would be split across ' + C.refuse.gls.map(g => g + ' ' + SPO.glName(g)).join(' and ') + '.') +
+        ' GL codes drive budget spend, so a combined line can’t be split by guess. Vendors itemize by policy, or split it to match the PDF.</span><div class="cx-refuse-acts">' +
+        (C.onItemize ? '<button class="btn btn-sm" onclick="CX.itemize(' + i + ')">Ask the vendor to itemize</button>' : '') +
+        '<button class="btn btn-sm" onclick="CX.splitLine(' + i + ')">Split this line</button><button class="w-linkbtn" onclick="CX.dismissRefuse()">Dismiss</button></div></div></div>';
       if (!l.maps.length && !C.ro) body += resolver(l, i);
       else if (C.ro && l.res) body += '<div class="cx-k" style="margin-top:6px">' + (l.res === 'remove' ? '“' + (l.resReason || '') + '”' : 'Booked to ' + l.resGl + ' ' + SPO.glName(l.resGl) + ' · ' + SPO.unitLabel(l.resUnit) + (C.spos.length > 1 ? ' · SPO-' + l.resSpo : '')) + '</div>';
       return '<div class="cx-card cx-r ' + st + (sel && sel.side === 'r' && sel.key === key ? ' sel' : '') + (l.res === 'remove' ? ' gone' : '') + '" data-key="' + key + '">' +
@@ -253,7 +284,7 @@
       l.maps.forEach(m => { const le = anchor('l', m.spo + ':' + m.line); if (!le) return;
         const a = edgePoint(le, 'l', box), z = edgePoint(r, 'r', box), warn = unitMismatch(l, m);
         p += '<path class="cx-link ' + (m.sug ? 'sug' : st === 'bad' || warn ? 'bad' : 'ok') + '" d="' + curve(a, z) + '"/>';
-        labels.push({ a, z, txt: money(m.amt || 0), cls: m.sug ? 'sug' : st === 'bad' || warn ? 'bad' : '' }); }); });
+        labels.push({ a, z, txt: '1/' + l.maps.length, cls: m.sug ? 'sug' : st === 'bad' || warn ? 'bad' : '' }); }); });
     if (tmp) p += '<path class="cx-link tmp" d="' + curve(tmp[0], tmp[1]) + '"/>';
     svg.innerHTML = p;
     /* Each connection carries its dollar share on the line (production shows "1/4"; dollars stay true once a share is edited).
@@ -333,7 +364,7 @@
       });
       return C;
     }, prepare, resolved, status, allResolved, doneCount, perSpo, taxShares, shipShares, taxOk, sumMaps,
-    board, totals, mount, draw, unitsIn, unitMismatch,
-    connect, unlink, setAmt, accept, autoMap, pick, res, set, lineAmt, lineDesc, addLine, rmLine, toggleEdit, setTax, resetTax
+    board, totals, mount, draw, unitsIn, unitMismatch, glConflict,
+    connect, unlink, accept, dismissRefuse, itemize, splitLine, autoMap, pick, res, set, lineAmt, lineDesc, addLine, rmLine, toggleEdit, setTax, resetTax
   };
 })();

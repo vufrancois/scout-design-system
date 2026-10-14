@@ -1820,3 +1820,87 @@
 .buyer #menu-admin { left: auto; right: 0; }
 .buyer .chip-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #e11d48; color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; margin-left: 2px; }
 .buyer .chip-badge[hidden] { display: none; }
+
+/* ---------- Run Calendar (Schedules · 10/14/2026) ----------
+   Month grid of schedule runs. Chips encode the run: solid = auto-send, outlined = draft only,
+   struck = skipped, faded = paused, amber = pending series approval, SPO chip (status dot) = done. */
+.buyer .seg.on-card { background: var(--muted); border-color: var(--border); }
+.buyer .seg.on-card button { color: var(--muted-foreground); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.buyer .seg.on-card button svg { width: 14px; height: 14px; }
+.buyer .seg.on-card button.active { background: var(--card); color: var(--foreground); box-shadow: var(--shadow-sm); }
+.buyer .cal-filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 14px; }
+.buyer .cal-filters select { height: 34px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card); color: var(--foreground); font: inherit; font-size: 13px; padding: 0 10px; }
+.buyer .cal-filters .sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+.buyer .cal-toggle { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 11px; border-radius: var(--radius-pill); border: 1px solid var(--border); background: var(--card); color: var(--foreground); font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; }
+.buyer .cal-toggle.off { color: var(--muted-foreground); background: transparent; border-style: dashed; }
+.buyer .cal-toggle.off i { opacity: .35; }
+.buyer .cal { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 16px; }
+.buyer .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.buyer .cal-title { font-size: 18px; font-weight: 700; display: flex; align-items: baseline; gap: 10px; }
+.buyer .cal-sub { font-size: 13px; font-weight: 500; color: var(--muted-foreground); }
+.buyer .cal-nav { display: flex; align-items: center; gap: 6px; }
+.buyer .cal-arrow { width: 32px; height: 32px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--card); color: var(--foreground); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.buyer .cal-arrow svg { width: 16px; height: 16px; }
+.buyer .cal-arrow:hover { border-color: var(--ring); }
+.buyer .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--border); border-left: 1px solid var(--border); }
+.buyer .cal-dow { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); padding: 8px 8px 6px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--muted); }
+.buyer .cal-day { min-height: 108px; padding: 6px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.buyer .cal-day .n { font-size: 12.5px; font-weight: 600; color: var(--muted-foreground); width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 1px; }
+.buyer .cal-day.today .n { background: var(--primary); color: #fff; }
+.buyer .cal-day.out { background: color-mix(in srgb, var(--muted) 55%, transparent); }
+.buyer .cal-day.out .n, .buyer .cal-day.out .cal-chip { opacity: .55; }
+.buyer .cal-chip { display: flex; align-items: center; gap: 5px; width: 100%; min-width: 0; height: 22px; padding: 0 7px; border-radius: 6px; font: inherit; font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; border: 1px solid transparent; }
+.buyer .cal-chip .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.buyer .cal-chip .status-dot { flex-shrink: 0; }
+.buyer .cal-chip:focus-visible, .buyer .cal-more:focus-visible, .buyer .cal.mini .cal-day:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+.buyer .k-auto.cal-chip { background: var(--accent); color: var(--accent-foreground); }
+.buyer .k-draft.cal-chip { background: var(--card); color: var(--foreground); border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+.buyer .k-skipped.cal-chip { background: transparent; color: var(--muted-foreground); border-color: var(--border); border-style: dashed; }
+.buyer .k-skipped.cal-chip .t { text-decoration: line-through; }
+.buyer .k-paused.cal-chip { background: var(--muted); color: var(--muted-foreground); opacity: .7; }
+.buyer .k-pending.cal-chip { background: var(--amber-soft); color: #92400e; }
+.dark .buyer .k-pending.cal-chip, .buyer.dark .k-pending.cal-chip { color: #fcd34d; }
+.buyer .k-spo.cal-chip { background: var(--card); color: var(--foreground); border-color: var(--border); }
+.buyer .k-done.cal-chip { background: var(--muted); color: var(--muted-foreground); }
+.buyer .cal-more { font: inherit; font-size: 11.5px; font-weight: 600; color: var(--primary); background: none; border: none; padding: 1px 7px; text-align: left; cursor: pointer; }
+.buyer .cal-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; }
+.buyer .cal-key, .buyer .cal-toggle { white-space: nowrap; }
+.buyer .cal-key { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted-foreground); }
+.buyer .cal-key i, .buyer .cal-toggle i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; border: 1px solid transparent; flex-shrink: 0; }
+.buyer .k-auto > i { background: var(--accent); border-color: color-mix(in srgb, var(--primary) 30%, transparent); }
+.buyer .k-draft > i { background: var(--card); border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+.buyer .k-skipped > i { border: 1px dashed var(--muted-foreground); }
+.buyer .k-paused > i { background: var(--muted); border-color: var(--border); }
+.buyer .k-pending > i { background: var(--amber-soft); border-color: var(--amber); }
+.buyer .k-spo > i { background: var(--emerald); border-radius: 50%; }
+.buyer .k-done > i { background: var(--muted); border-color: var(--muted-foreground); }
+/* mini: dates only, one series */
+.buyer .cal.mini { padding: 12px; border: none; padding: 0; }
+.buyer .cal.mini .cal-title { font-size: 15px; }
+.buyer .cal.mini .cal-grid { border: none; gap: 2px; }
+.buyer .cal.mini .cal-dow { background: none; border: none; text-align: center; padding: 4px 0; }
+.buyer .cal.mini .cal-day { min-height: 0; border: none; padding: 2px; align-items: center; justify-content: center; background: none; font: inherit; cursor: default; }
+.buyer .cal.mini .cal-day .n { width: 32px; height: 32px; font-size: 13px; color: var(--foreground); margin: 0; }
+.buyer .cal.mini .cal-day.out .n { color: var(--muted-foreground); }
+.buyer .cal.mini .cal-day.has { cursor: pointer; }
+.buyer .cal.mini .cal-day.k-auto .n { background: var(--accent); color: var(--accent-foreground); font-weight: 700; }
+.buyer .cal.mini .cal-day.k-draft .n { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--primary) 55%, var(--border)); font-weight: 700; }
+.buyer .cal.mini .cal-day.k-skipped .n { text-decoration: line-through; box-shadow: inset 0 0 0 1px var(--border); color: var(--muted-foreground); }
+.buyer .cal.mini .cal-day.k-paused .n { background: var(--muted); color: var(--muted-foreground); }
+.buyer .cal.mini .cal-day.k-pending .n { background: var(--amber-soft); color: #92400e; font-weight: 700; }
+.buyer .cal.mini .cal-day.k-spo .n, .buyer .cal.mini .cal-day.k-done .n { box-shadow: inset 0 0 0 1.5px var(--emerald); font-weight: 700; }
+.buyer .cal.mini .cal-day.today .n { background: var(--primary); color: #fff; box-shadow: none; }
+.buyer .cal.mini .cal-legend { margin-top: 10px; }
+.buyer .cal.mini .k-spo > i { background: transparent; border: 1.5px solid var(--emerald); }
+/* popover */
+.buyer .cal-pop { position: fixed; z-index: 70; display: none; background: var(--popover, var(--card)); color: var(--foreground); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); padding: 12px 14px; max-height: 70vh; overflow-y: auto; }
+.buyer .cal-pop.open { display: block; }
+.buyer .cal-pop .cp-head { display: flex; align-items: center; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.buyer .cal-pop .cp-x { border: none; background: none; font-size: 20px; line-height: 1; color: var(--muted-foreground); cursor: pointer; padding: 0 2px; }
+.buyer .cal-pop .cp-run { padding: 10px 0; }
+.buyer .cal-pop .cp-run + .cp-run { border-top: 1px solid var(--border); }
+.buyer .cal-pop .cp-name { font-size: 14px; font-weight: 700; }
+.buyer .cal-pop .cp-meta { font-size: 12.5px; color: var(--muted-foreground); margin-top: 2px; }
+.buyer .cal-pop .cp-status { font-size: 12.5px; margin-top: 6px; }
+.buyer .cal-pop .cp-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.buyer .cal-pop .cp-actions:empty { display: none; }

@@ -179,3 +179,35 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 - [ ] The mode is visible on the list, the detail and the series link, and changing it is logged.
 **Audit findings:** SPO-50
 **Files:** `buyer/spo-data.js`, `buyer/schedule.html`, `buyer/spo-new.html`
+
+## Addendum · Run Calendar (10/14/2026)
+
+**Why:** the team asked for a calendar on Schedules. The list answers "which series exist"; a calendar answers what property managers actually ask: *what service is happening this week, and where?* It also shows clashes (two vendors at one property on one day) and makes holiday skips easy to find.
+
+**What shipped**
+- **List | Calendar toggle** on the Schedules page (`.seg.on-card`, remembered per viewer). The summary cards stay over the hero; clicking one jumps back to the filtered list. The Running/Ended tabs hide in Calendar.
+- **Month grid** (`buyer/sch-cal.js`, `window.CAL`): every run of every schedule in scope. Chips by kind: solid = auto-send, outlined = draft only, dashed + struck = skipped, faded = paused, amber = pending series approval. A **past run** becomes its **SPO chip** ("SPO-847" + status dot); runs from before the demo window read "Earlier run". Three chips per day, then "+N more". Today is a filled circle; Today / ‹ › navigate months.
+- **Filters:** property (when "All properties"), trade, and a toggle per run kind. The search box applies too.
+- **Popover** on a chip: schedule, property, vendor, time and amount, and only existing actions: **Skip this date / Undo skip** (future runs of active series; same log lines as the schedule page), **Open SPO**, **Open schedule**.
+- **Mini calendar** in a schedule's rail ("Run calendar"): one series, dates tinted by kind, same popover; opens on the month of the next run. Placed in the rail rather than above Upcoming runs: a small month fits the rail, and would float in the wide main column.
+- **Not in v1:** drag to reschedule (moving one run needs cadence and re-approval rules — Skip covers most cases), one-time SPOs (no service date yet, only a spend period), week/day views.
+
+### TKT-SPO-48 · Calendar view on Schedules
+**Summary:** A month calendar of every run, as a second view of the Schedules page.
+**Acceptance criteria:**
+- [ ] A List | Calendar toggle switches views and is remembered per viewer; the summary cards stay and jump back to the filtered list.
+- [ ] The grid shows every run in scope by kind: auto-send, draft only, skipped, paused, pending approval; past runs show their SPO number and status.
+- [ ] Three runs per day, then "+N more" (opens the day's runs).
+- [ ] Filters: property (when "All properties"), trade, run kind; search applies.
+- [ ] Clicking a run opens a popover with schedule, property, vendor, time, amount and status, and only: Skip this date / Undo skip (future runs of active series), Open SPO, Open schedule.
+- [ ] Skipping from the calendar logs on the series exactly like the schedule page and updates every view.
+**Files:** `buyer/sch-cal.js` (`runs`, `mount`, `pick`, `skip`), `buyer/schedules.html` (`setView`, `renderCal`), `buyer/buyer-components.css` (`.cal*`, `.seg.on-card`, `.cal-toggle`)
+
+### TKT-SPO-49 · Run calendar on a schedule's page
+**Summary:** The schedule's rail shows its own runs on a mini month calendar.
+**Acceptance criteria:**
+- [ ] The mini calendar shows only this series, opening on the month of the next run (or the end date for an ended series).
+- [ ] Run dates are tinted by kind; a legend lists only the kinds in view.
+- [ ] Clicking a date opens the same popover; skipping updates the Upcoming runs list.
+**Files:** `buyer/schedule.html`, `buyer/sch-cal.js` (`mini`)
+

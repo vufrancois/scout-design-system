@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
 <script src="spo-data.js"></script>
+<script src="sch-cal.js"></script>
 </head>
 <body class="buyer">
 
@@ -207,6 +208,8 @@
 
     let side = '<div class="card"><div class="ven-card"><span class="ven-logo">' + x.v + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
       '<div style="font-size:13px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="PO recipient">' + v.email + '</div></div></div></div>';
+    /* Run calendar: this series only — click a date for Skip / Undo skip or the run's SPO. */
+    side += '<div class="card"><div class="det-card-head" style="margin-bottom:10px"><h2 style="font-size:16px">Run calendar</h2></div><div id="sch-cal-mini"></div></div>';
     const apprVal = x.status === 'approval' ? 'Pending · Supervisor' : x.ev.approved ? 'Approved by ' + ((x.approval && x.approval.by) || 'Priya Nair') : 'Not required';
     side += '<div class="card"><dl class="fact-rows wide"><dt>Property</dt><dd>' + prop.name + '</dd><dt>Created by</dt><dd>' + x.by + '</dd><dt>Starts</dt><dd>' + fmtD(x.start) + '</dd>' +
       '<dt>Ends</dt><dd>' + SCH.endText(x).replace('Ends ', '').replace(/ · last.*/, '').replace('No end date', 'Never').replace('after ', 'After ') + '</dd><dt>Sending</dt><dd>' + (x.mode === 'auto' ? 'Auto-send' : 'Draft only') + '</dd>' +
@@ -219,6 +222,7 @@
 
     document.getElementById('det-main').innerHTML = main;
     document.getElementById('det-side').innerHTML = side;
+    CAL.mount(document.getElementById('sch-cal-mini'), { list: () => [SCH.get(X.id)], mini: true, start: x.status === 'ended' ? (x.ev.ended || SPO.TODAY) : (SCH.nextRun(x) || SPO.TODAY), onChange: () => { X = SCH.get(X.id); renderPage(); } });
     if (sub === 'pause' && x.status === 'active') setTimeout(openPause, 120);
     if (sub === 'end' && !ended) setTimeout(openEnd, 120);
   }

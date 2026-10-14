@@ -60,8 +60,11 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Draft | `#866` | Continue editing → the wizard opens on Review; **Send to vendor** is emerald (under budget) |
 | Draft (new) | `spo-new.html#new` | **Try an example** → Scout AI drafts lines: unit 1805 flagged (not coerced), an unpriced line left empty; type `600` → $600.00; Review shows the **Budget Meter** at 112% on 6035 → amber **Submit for approval** |
 | Pending Approval | `#864` | Strip → Review in Approvals; `approval.html#SPO-864` shows Service PO lines + Approve → the SPO flips to Awaiting Vendor |
-| Awaiting Vendor | `#863` | Sky whose-turn ring on Vendor Response; Resend PO |
-| Vendor Rejected | `#861` | Stepper **halts** in rose; the strip quotes the vendor; **Change Vendor** (same trade first) re-sends the PO; activity dots turn rose for the rejection |
+| Sent · no response | `#863` | Nothing waits on the vendor: Awaiting Invoice with **Upload invoice** available now; the Sent step's label reads **No response** (grey, not amber) |
+| I spoke to the vendor | `#863/respond` | "What did Pride Carpet Care say?" → Accepted (label turns emerald), Rejected (SPO moves to Vendor Rejected) or No response. **Change their answer** edits it |
+| Recorded acceptance | `#862` | Seeded buyer-recorded acceptance — compare with `#860`, accepted by the vendor's own click |
+| Invoice with no response | `#857` | The vendor never replied but invoiced anyway: still **No response** (never inferred); Activity says so. List filter **Vendor response → No response** finds 859 and 842 too |
+| Vendor Rejected | `#861` | The one reply that changes state: the Invoice step **halts** in rose; the strip quotes the vendor; **Change Vendor** searches 1,272 approved vendors (type "plumbing" or "acadian rooter"; same-trade, used-before vendors suggested first) and re-sends the PO; activity dots turn rose for the rejection |
 | Awaiting Invoice | `#860` | Upload invoice → File Drop → mapping opens; **Dispute** with a note → "Corrected invoice" strip |
 | Invoice to Map (clean) | `#858` | `#858/invoice`: one line, pre-matched; confirm → Validate mapping |
 | Invoice to Map (messy) | `#857` | `#857/invoice` on the **Line Connector** (drag dot to dot, or click one on each side; dashed = Scout AI suggestion → Accept / Auto Map; PDF is a toggle): the $800 combined line covers 2 SPO lines (+$30 over); the $125 dump fee goes through the resolver → extra on 6045/0105; tax is invoice-level; Validate shows a +$155 variance; close and reopen → progress kept (autosave) |

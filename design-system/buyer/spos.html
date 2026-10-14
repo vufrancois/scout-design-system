@@ -43,6 +43,7 @@
     <div class="toolbar-group">
       <span class="filter-chip" id="chip-vendor" style="display:none"><span class="filter-chip-attr">Vendor</span><span class="filter-chip-value" id="chip-vendor-value"></span><button class="filter-chip-remove" onclick="setVendor(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
       <span class="filter-chip" id="chip-prop" style="display:none"><span class="filter-chip-attr">Property</span><span class="filter-chip-value" id="chip-prop-value"></span><button class="filter-chip-remove" onclick="setPropF(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
+      <span class="filter-chip" id="chip-resp" style="display:none"><span class="filter-chip-attr">Vendor response</span><span class="filter-chip-value" id="chip-resp-value"></span><button class="filter-chip-remove" onclick="setRespF(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
       <span class="filter-chip" id="chip-date" style="display:none"><span class="filter-chip-attr">Created</span><span class="filter-chip-value" id="chip-date-value"></span><button class="filter-chip-remove" onclick="setDateFilter(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
       <div class="filter-menu-wrap">
         <button class="toolbar-btn toolbar-btn-dashed" onclick="toggleFilterMenu()">
@@ -161,12 +162,12 @@
     ban: SV + '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>'
   };
   const TABS = [
-    { id: 'open', label: 'Open', icon: IC.wrench, states: ['draft', 'approval', 'sent', 'rejected', 'invoice'] },
+    { id: 'open', label: 'Open', icon: IC.wrench, states: ['draft', 'approval', 'rejected', 'invoice'] },
     { id: 'invoices', label: 'Invoices', icon: IC.doc, states: ['mapping', 'ready', 'accounting'] },
     { id: 'closed', label: 'Closed', icon: IC.archive, states: ['paid', 'canceled'] }
   ];
   const vInit = v => v;
-  let cardFilter = 'all', vendorF = null, propF = null, dateDays = null, page = 1, sortK = 'date', sortDir = -1;
+  let cardFilter = 'all', vendorF = null, respF = null, propF = null, dateDays = null, page = 1, sortK = 'date', sortDir = -1;
   const PER = 10;
   const openRows = new Set();
   const tab = () => { const t = (location.hash || '#open').replace('#', ''); return TABS.some(x => x.id === t) ? t : 'open'; };
@@ -181,6 +182,7 @@
       (currentProp === 'all' || s.prop === currentProp) &&
       (!propF || s.prop === propF) &&
       (!vendorF || s.v === vendorF) &&
+      (!respF || (SPO.resp(s) || {}).kind === respF) &&
       (!min || s.ev.created.slice(0, 10) >= min) &&
       (!q || ('spo-' + s.id + ' ' + (s.series ? s.series + ' ' + ((SCH.get(s.series) || {}).name || '') + ' recurring ' : '') + SPO.VEN[s.v].name + ' ' + propName(s.prop) + ' ' + s.scope + ' ' +
         s.lines.map(l => l.desc + ' ' + l.alloc.map(a => a.unit + ' ' + a.gl + ' ' + SPO.glName(a.gl)).join(' ')).join(' ')).toLowerCase().includes(q)));
@@ -195,7 +197,7 @@
       el.className = 'kpi-grid';
       el.innerHTML = card('all', 'stat-gray', IC.wrench, 'Total Open', rows.length, 'Not yet invoiced') +
         card('you', 'stat-amber', IC.pen, 'Your Move', g('you'), 'Drafts & approvals') +
-        card('vendor', 'stat-sky', IC.send, 'With Vendor', g('vendor'), 'Response or invoice pending') +
+        card('vendor', 'stat-sky', IC.send, 'With Vendor', g('vendor'), 'Waiting on their invoice') +
         card('rejected', 'stat-rose', IC.x, 'Vendor Rejected', g('rejected'), 'Choose another vendor');
     } else if (t === 'invoices') {
       el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(3, 1fr)';
@@ -250,7 +252,7 @@
         '<td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(' + s.id + ')" title="Line items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
         '<td class="mono" style="font-weight:700;white-space:nowrap"><a class="table-link" style="font-family:inherit;font-weight:700" href="spo.html#' + s.id + '">SPO-' + s.id + '</a>' + recMark(s) + '</td>' +
         '<td class="col-hide cell-clip" title="' + propName(s.prop) + '">' + propName(s.prop) + '</td>' +
-        '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + vInit(s.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[s.v].name + '">' + SPO.VEN[s.v].name + '</span></span></td>' +
+        '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + SPO.ini(s.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[s.v].name + '">' + SPO.VEN[s.v].name + '</span></span></td>' +
         '<td class="num" style="font-weight:600">' + money(SPO.total(s)) + '</td>' +
         '<td>' + pill(s) + '</td>' +
         '<td style="white-space:nowrap;color:var(--muted-foreground)">' + fmtD(s.ev.created) + '</td>' +
@@ -269,7 +271,7 @@
     let drafts = {}; try { drafts = JSON.parse(localStorage.getItem('scout-intake-v1')) || {}; } catch (e) { /* noop */ }
     const dl = Object.values(drafts).filter(d => d.num && (currentProp === 'all' || d.prop === currentProp));
     document.getElementById('intake-drafts').innerHTML = t === 'invoices' && dl.length ? '<div class="task-strip" style="margin:16px 0 20px"><span class="ts-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span><div class="ts-body"><div class="ts-title">' + dl.length + ' invoice' + (dl.length === 1 ? '' : 's') + ' in progress</div><div class="ts-desc">' + dl.map(d => d.num + ' · ' + SPO.VEN[d.v].name + ' · ' + d.spoIds.length + ' SPO' + (d.spoIds.length === 1 ? '' : 's')).join(' &nbsp;·&nbsp; ') + '</div></div>' + dl.slice(0, 2).map(d => '<a class="btn' + (dl.length === 1 ? ' btn-primary' : '') + '" style="text-decoration:none;white-space:nowrap" href="spo-invoice.html#resume-' + encodeURIComponent(d.key) + '">Resume ' + d.num + '</a>').join('') + '</div>' : '';
-    document.getElementById('filter-clear').style.display = (vendorF || propF || dateDays) ? '' : 'none';
+    document.getElementById('filter-clear').style.display = (vendorF || propF || dateDays || respF) ? '' : 'none';
     if (currentProp !== 'all' && propF) setPropF(null);
   }
 
@@ -278,6 +280,13 @@
     if (!s.series) return '';
     const x = SCH.get(s.series);
     return '<a class="rec-mark" href="schedule.html#' + s.series + '" data-tip="' + (x ? x.name + ' · ' + SCH.cadenceText(x.cadence, false) : s.series) + '" aria-label="From schedule ' + s.series + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></a>';
+  }
+  const RESP_LBL = { accepted: 'Accepted', rejected: 'Rejected', none: 'No response' };
+  function setRespF(k) {
+    respF = k; closeFMenus();
+    document.getElementById('chip-resp').style.display = k ? '' : 'none';
+    if (k) document.getElementById('chip-resp-value').textContent = RESP_LBL[k];
+    page = 1; renderPage();
   }
   function rowMenu(s) {
     return '<div class="row-menu-wrap"><button class="icon-btn" style="width:32px;height:32px" onclick="toggleMenuRow(event, ' + s.id + ')" title="More actions"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>' +
@@ -316,8 +325,8 @@
     page = 1; renderPage();
   }
   function clearFilters() {
-    vendorF = null; propF = null; dateDays = null; document.getElementById('spo-search').value = '';
-    ['chip-vendor', 'chip-prop', 'chip-date'].forEach(id => document.getElementById(id).style.display = 'none');
+    vendorF = null; propF = null; dateDays = null; respF = null; document.getElementById('spo-search').value = '';
+    ['chip-vendor', 'chip-prop', 'chip-date', 'chip-resp'].forEach(id => document.getElementById(id).style.display = 'none');
     page = 1; renderPage();
   }
   function closeFMenus() { document.getElementById('filter-menu').style.display = 'none'; document.getElementById('date-menu').style.display = 'none'; }
@@ -327,13 +336,16 @@
     const rows = SPO.list();
     if (view === 'root') {
       m.innerHTML = '<div class="dropdown-item" onclick="renderFilterMenu(\'vendor\')">Vendor <span style="color:var(--muted-foreground)">&rsaquo;</span></div>' +
-        (currentProp === 'all' ? '<div class="dropdown-item" onclick="renderFilterMenu(\'prop\')">Property <span style="color:var(--muted-foreground)">&rsaquo;</span></div>' : '');
+        (currentProp === 'all' ? '<div class="dropdown-item" onclick="renderFilterMenu(\'prop\')">Property <span style="color:var(--muted-foreground)">&rsaquo;</span></div>' : '') +
+        '<div class="dropdown-item" onclick="renderFilterMenu(\'resp\')">Vendor response <span style="color:var(--muted-foreground)">&rsaquo;</span></div>';
       return;
     }
     const back = '<div class="dropdown-item" onclick="renderFilterMenu(\'root\')" style="color:var(--muted-foreground)">&lsaquo; Filters</div>';
     if (view === 'vendor') {
       const vs = [...new Set(rows.map(s => s.v))].sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
       m.innerHTML = back + vs.map(v => '<div class="dropdown-item' + (vendorF === v ? ' selected' : '') + '" onclick="setVendor(\'' + v + '\')">' + SPO.VEN[v].name + '</div>').join('');
+    } else if (view === 'resp') {
+      m.innerHTML = back + ['accepted', 'rejected', 'none'].map(k => '<div class="dropdown-item' + (respF === k ? ' selected' : '') + '" onclick="setRespF(\'' + k + '\')">' + RESP_LBL[k] + '</div>').join('');
     } else {
       const ps = [...new Set(rows.map(s => s.prop))].sort((a, b) => propName(a).localeCompare(propName(b)));
       m.innerHTML = back + ps.map(p => '<div class="dropdown-item' + (propF === p ? ' selected' : '') + '" onclick="setPropF(\'' + p + '\')">' + propName(p) + '</div>').join('');

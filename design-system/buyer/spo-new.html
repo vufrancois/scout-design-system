@@ -365,7 +365,8 @@
 
   function viewProperty() {
     const q = (W.vq || '').toLowerCase();
-    const vs = Object.keys(SPO.VEN).filter(k => { const o = SPO.VEN[k]; return !q || (o.name + ' ' + o.trade).toLowerCase().includes(q); }).sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
+    /* Your vendors by default; the approved-vendor directory joins once you search (capped — it holds thousands). */
+    const vs = Object.keys(SPO.VEN).filter(k => { const o = SPO.VEN[k]; return k === W.v || (q ? (o.name + ' ' + o.trade).toLowerCase().includes(q) : !o.dir); }).sort((a, b) => !!SPO.VEN[a].dir - !!SPO.VEN[b].dir || SPO.VEN[a].name.localeCompare(SPO.VEN[b].name)).slice(0, 30);
     return '<div class="card"><div class="det-card-head hd"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.pin + '</span>Property</h2></div>' +
       '<div class="w-field" style="margin-top:10px"><label>This SPO is for</label>' + comboHtml('prop', 'Choose a property…', propOpts(), W.prop) + '</div>' +
       '<div class="w-note">' + IC.info + '<span>Units and GL budgets come from this property.</span></div></div>' +
@@ -555,7 +556,7 @@
   }
   function submitSpo() {
     const appr = SPO.needsApproval(asSpo());
-    const s = persist(appr ? 'approval' : 'sent'), v = SPO.VEN[W.v];
+    const s = persist(appr ? 'approval' : 'invoice'), v = SPO.VEN[W.v];
     if (appr) { s.ev.approvalReq = SPO.now(); SPO.log(s, 'Sent for approval', wTotal() > SPO.APPROVAL_LIMIT ? 'Over ' + money(SPO.APPROVAL_LIMIT) + ' · Supervisor sign-off' : 'Over the GL budget · Supervisor sign-off'); }
     else { s.ev.sent = SPO.now(); SPO.log(s, 'Sent to vendor', 'PO emailed to ' + v.email); }
     SPO.save(s);
@@ -566,8 +567,8 @@
   function viewDone(id) {
     const s = SPO.get(id), v = SPO.VEN[s.v], p = propOf(s.prop), appr = s.state === 'approval';
     const steps = appr
-      ? [['Supervisor review', 'It’s in Order Approvals now. You’ll be notified when it’s decided.'], ['Sent to ' + v.name, 'Once approved, the PO goes to ' + v.email + ' automatically.'], ['Vendor response', 'The vendor accepts or rejects before any work is scheduled.']]
-      : [['Vendor response', v.name + ' accepts or rejects the PO before any work is scheduled.'], ['Invoice', 'Their invoice arrives by email, or you upload it on the SPO.'], ['Map & send to Accounting', 'Match the invoice to these lines, then send the payment packet.']];
+      ? [['Supervisor review', 'It’s in Order Approvals now. You’ll be notified when it’s decided.'], ['Sent to ' + v.name, 'Once approved, the PO goes to ' + v.email + ' automatically.'], ['Invoice', 'Their invoice arrives by email, or you upload it on the SPO.']]
+      : [['Invoice', 'Their invoice arrives by email, or you upload it on the SPO. You don’t need to wait for a reply first — if ' + v.name + ' accepts or rejects the PO, it shows on the SPO.'], ['Map & send to Accounting', 'Match the invoice to these lines, then send the payment packet.']];
     return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px' + (appr ? ';background:var(--amber-soft);color:var(--amber)' : '') + '"><span style="display:inline-flex;width:34px;height:34px">' + (appr ? IC.shield : IC.send) + '</span></div>' +
       '<h1 style="margin-bottom:0">' + (appr ? 'SPO-' + s.id + ' sent for approval' : 'SPO-' + s.id + ' sent to ' + v.name) + '</h1>' +
       '<div class="confirm-sub">' + p.name + ' · ' + money(SPO.total(s)) + ' estimate</div>' +

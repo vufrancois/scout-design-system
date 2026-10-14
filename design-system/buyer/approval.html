@@ -345,7 +345,7 @@
     } else if (R.spo && R.status === 'approved') {
       const sp = SPO.get(R.spo), v = SPO.VEN[sp.v];
       side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Sent to vendor</h2></div>' +
-        '<p style="font-size:13px;color:var(--muted-foreground)">Approving emailed the PO to ' + v.email + '. ' + v.name + ' accepts or rejects it next.</p>' +
+        '<p style="font-size:13px;color:var(--muted-foreground)">Approving emailed the PO to ' + v.email + '. ' + 'Next comes ' + v.name + '’s invoice; if they accept or reject the PO, it shows on the SPO.</p>' +
         '<div class="order-row"><div class="onum">SPO-' + sp.id + '</div><a class="toolbar-btn" style="text-decoration:none" href="spo.html#' + sp.id + '">View SPO <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a></div></div>';
     } else if (R.status === 'approved' && (R.orders || R.order)) {
       const orders = R.orders || [Object.assign([R.order[0], R.order[1]], { v: R.v })];
@@ -410,7 +410,7 @@
   function syncSpo(next, c) {
     const s = SPO.get(R.spo), v = SPO.VEN[s.v];
     if (next === 'approved') {
-      s.state = 'sent'; s.ev.approved = SPO.now(); s.ev.sent = SPO.now(); s.approval = { by: 'Alicia Grant', reason: R.reasonTxt };
+      s.state = 'invoice'; s.ev.approved = SPO.now(); s.ev.sent = SPO.now(); s.approval = { by: 'Alicia Grant', reason: R.reasonTxt };
       SPO.log(s, 'Approved', 'by Alicia Grant (Supervisor)' + (c ? ' \u00B7 \u201C' + c + '\u201D' : ''), true);
       SPO.log(s, 'Sent to vendor', 'PO emailed to ' + v.email);
     } else if (next === 'revision') {

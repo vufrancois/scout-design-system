@@ -1795,3 +1795,22 @@
 .buyer .cx-refuse b { display: block; font-size: 13px; margin-bottom: 2px; }
 .buyer .cx-refuse-acts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
 .dark .buyer .cx-refuse, .buyer.dark .cx-refuse { color: #fbbf24; }
+
+/* ---------- Vendor response as a signal (10/14/2026) ----------
+   A label under the Sent step: Accepted (emerald), Rejected (rose), No response (neutral — silence is normal). */
+.buyer .ls-resp { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: var(--radius-pill); background: var(--muted); color: var(--muted-foreground); white-space: nowrap; }
+.buyer .ls-resp svg { width: 10px; height: 10px; }
+.buyer .ls-resp.accepted { background: var(--emerald-soft); color: #047857; }
+.buyer .ls-resp.rejected { background: var(--rose-soft); color: #be185d; }
+.dark .buyer .ls-resp.accepted, .buyer.dark .ls-resp.accepted { color: #6ee7b7; }
+.dark .buyer .ls-resp.rejected, .buyer.dark .ls-resp.rejected { color: #f9a8d4; }
+.buyer .fact-sub { font-size: 12px; color: var(--muted-foreground); font-weight: 400; margin-top: 2px; }
+/* Record response modal: option rows tinted by the answer they record. */
+.buyer .resp-opt.accepted .opt-ic { background: var(--emerald-soft); color: var(--emerald); }
+.buyer .resp-opt.rejected .opt-ic { background: var(--rose-soft); color: var(--rose); }
+.buyer .resp-opt.none .opt-ic { background: var(--muted); color: var(--muted-foreground); }
+/* Change Vendor: searchable approved-vendor directory */
+.buyer .ven-results { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; margin: 0 -4px; padding: 0 4px; }
+.buyer .ven-results .opt-row { margin-bottom: 8px; }
+.buyer .ven-head { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); margin: 2px 0 8px; }
+.buyer .ven-empty { font-size: 13px; color: var(--muted-foreground); padding: 18px 4px; text-align: center; }

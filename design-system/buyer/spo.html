@@ -134,16 +134,20 @@
     upload: SVG + '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>',
     refresh: SVG + '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>',
     split: SVG + '<path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>',
-    swap: SVG + '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>'
+    swap: SVG + '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>',
+    search: SVG + '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'
   };
 
-  /* Fixed step labels — progress changes styling and captions, never the names (audit SPO-26). */
+  /* Fixed step labels — progress changes styling and captions, never the names (audit SPO-26).
+     The vendor's reply is not a step (10/14/2026): vendors often never click, so a step for it would sit
+     empty forever. It shows as a label under Sent instead — Accepted, Rejected or No response. */
   const STEPS = [
-    ['Draft', 'you', IC.pen], ['Approval', 'approver', IC.shield], ['Sent', 'you', IC.send], ['Vendor Response', 'vendor', IC.hand],
+    ['Draft', 'you', IC.pen], ['Approval', 'approver', IC.shield], ['Sent', 'you', IC.send],
     ['Invoice', 'vendor', IC.doc], ['Mapping', 'you', IC.map], ['Accounting', 'acct', IC.card], ['Paid', 'acct', IC.flag]
   ];
-  const PROG = { draft: [0, 0], approval: [1, 1], sent: [3, 3], rejected: [3, 3], invoice: [4, 4], mapping: [5, 5], ready: [6, 6], accounting: [6, 6], paid: [8, -1] };
-  const STEP_EV = ['created', 'approved', 'sent', 'accepted', 'invoiced', 'mapped', 'accounting', 'paid'];
+  const PROG = { draft: [0, 0], approval: [1, 1], rejected: [3, 3], invoice: [3, 3], mapping: [4, 4], ready: [5, 5], accounting: [5, 5], paid: [7, -1] };
+  const STEP_EV = ['created', 'approved', 'sent', 'invoiced', 'mapped', 'accounting', 'paid'];
+  const respTag = s => { const r = SPO.resp(s); return r ? '<span class="ls-resp ' + r.kind + '" title="' + (r.kind === 'accepted' && r.by === 'buyer' ? 'Recorded by ' + s.ack.by : r.kind === 'none' ? 'The vendor hasn’t accepted or rejected the PO' : r.label) + '">' + (r.kind === 'accepted' ? IC.check : r.kind === 'rejected' ? IC.x : '') + r.short + '</span>' : ''; };
 
   let S, curId, actExpanded = false;
   function pick() {
@@ -164,16 +168,17 @@
     const approvalSkipped = !s.ev.approvalReq;
     return '<div class="ls-stepper">' + STEPS.map(([label, actor, icon], i) => {
       let cls, cap = '', dot = icon, a = actor;
-      if (s.state === 'rejected' && i === 3) { cls = 'halted'; dot = IC.x; cap = '<span class="ls-date">rejected</span>'; }
+      if (s.state === 'rejected' && i === 3) { cls = 'halted'; dot = IC.x; cap = '<span class="ls-date">stopped</span>'; }
       else if (i === 1 && approvalSkipped && i < done) { cls = 'skipped'; dot = IC.check; cap = '<span class="ls-date">' + (s.series ? 'series approved' : 'not required') + '</span>'; }
       else if (i < done) { cls = 'done'; dot = IC.check; const d = s.ev[STEP_EV[i]]; cap = d ? '<span class="ls-date">' + SPO.fmtDate(d) + '</span>' : ''; }
       else if (i === active) {
-        if (s.state === 'ready' && i === 6) a = 'you';
+        if (s.state === 'ready' && i === 5) a = 'you';
         cls = 'active' + (a === 'vendor' ? ' vend' : a === 'acct' ? ' acct' : '');
         cap = '<span class="ls-date">' + (a === 'you' || a === 'approver' ? 'your move' : 'in progress') + '</span>';
       } else cls = 'future';
+      if (i === 2) cap += respTag(s);
       return '<div class="ls-step ' + cls + '"><div class="ls-dot">' + dot + '</div><div class="ls-label">' + label + '</div>' + actorChip(a) + cap + '</div>' +
-        (i < 7 ? '<div class="ls-conn' + (i < done ? ' done' : '') + '"></div>' : '');
+        (i < STEPS.length - 1 ? '<div class="ls-conn' + (i < done ? ' done' : '') + '"></div>' : '');
     }).join('') + '</div>';
   }
 
@@ -194,10 +199,11 @@
     switch (s.state) {
       case 'draft': return st('action', IC.pen, 'Finish your draft', 'Complete the line items and allocation, then submit it to ' + endDot(v.name), btn('Continue editing', "location.href='spo-new.html#" + s.id + "'", 'btn-primary', IC.pen));
       case 'approval': return st('action', IC.shield, 'Supervisor approval', (SPO.total(s) > SPO.APPROVAL_LIMIT ? 'Over ' + money(SPO.APPROVAL_LIMIT) : 'Over the GL budget') + ' — nothing goes to the vendor until a Supervisor approves it.', btn('Review in Approvals', "location.href='approval.html#SPO-" + s.id + "'", 'btn-primary', IC.shield));
-      case 'sent': return st('wait', IC.hand, 'Waiting on Vendor · Response', 'The PO went to ' + v.email + ' — the vendor accepts or rejects it before any work is scheduled.', btn('Resend PO', 'resendPO()', '', IC.send));
-      case 'rejected': return st('danger', IC.x, 'Vendor rejected · choose another vendor', v.name + ': “' + (s.reject ? s.reject.reason : '') + '”', btn('Cancel SPO', 'openCancel()', '') + btn('Change Vendor', 'openChangeVendor()', 'btn-primary', IC.swap));
+      case 'rejected': return st('danger', IC.x, 'Vendor rejected · choose another vendor', s.reject && s.reject.by ? s.reject.by + ' recorded ' + v.name + '’s rejection on ' + SPO.fmtDate(s.ev.rejected) + '.' : v.name + ': “' + (s.reject ? s.reject.reason : '') + '”', (SPO.canEditResp(s) ? btn('Change their answer', 'openRecordResp()', '') : '') + btn('Cancel SPO', 'openCancel()', '') + btn('Change Vendor', 'openChangeVendor()', 'btn-primary', IC.swap));
       case 'invoice': if (s.disputed) return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Corrected invoice', 'You disputed ' + s.disputed.num + ': \u201C' + s.disputed.reason + '\u201D ' + v.name + ' is correcting and resubmitting it.', btn('Upload invoice', 'openUpload()', '', IC.upload));
-        return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Invoice', v.name + ' accepted on ' + SPO.fmtDate(s.ev.accepted) + '. Their invoice will arrive by email — or upload it here if they sent it to you.', btn('Upload invoice', 'openUpload()', '', IC.upload));
+        { const r = SPO.resp(s);
+          if (r.kind === 'accepted') return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Invoice', (r.by === 'buyer' ? s.ack.by + ' recorded ' + v.name + '’s acceptance on ' : v.name + ' accepted on ') + SPO.fmtDate(s.ev.accepted) + '. Their invoice will arrive by email — or upload it here if they sent it to you.', (SPO.canEditResp(s) ? btn('Change their answer', 'openRecordResp()', '') : '') + btn('Upload invoice', 'openUpload()', '', IC.upload));
+          return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Invoice', 'PO sent to ' + v.email + ' on ' + SPO.fmtDate(s.ev.sent) + ' · no response from the vendor yet. You don’t need one to continue — upload their invoice when it arrives.', btn('I spoke to the vendor', 'openRecordResp()', '', IC.check) + btn('Upload invoice', 'openUpload()', '', IC.upload)); }
       case 'mapping': if (inv.extractFailed) return st('action', IC.warn, 'Invoice ' + inv.num + ' needs attention', 'Scout AI couldn\u2019t read its line items \u2014 retry the extraction or enter the lines from the PDF.', btn('Open invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
         return st('action', IC.map, 'Map invoice ' + inv.num + ' to SPO lines', money(SPO.invTotal(s)) + ' invoiced against a ' + money(SPO.total(s)) + ' estimate — confirm each invoice line’s SPO line, GL and unit.', btn('Map invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
       case 'ready': return st('action', IC.card, 'Send to Accounting', 'Invoice ' + inv.num + ' is mapped and validated — send the payment packet to Accounting.', btn('Send to Accounting', "location.hash='#" + s.id + "/accounting'", 'btn-primary', IC.send));
@@ -216,7 +222,7 @@
   }
   /* Vendor names can end in a period ("Co.") — don't double it at the end of a sentence. */
   const endDot = t => /[.!?]$/.test(t) ? t : t + '.';
-  const CANCELABLE = ['draft', 'approval', 'sent', 'rejected', 'invoice'];
+  const CANCELABLE = ['draft', 'approval', 'rejected', 'invoice'];
 
   function renderPage() {
     const sub = pick();
@@ -251,7 +257,7 @@
     if (s.invoice) main += invoiceCard(s);
 
     let side = '';
-    side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + s.v + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
+    side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + SPO.ini(s.v) + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
       '<div style="font-size:13px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="PO recipient">' + v.email + '</div></div></div></div>';
 
     const sx = s.series && window.SCH ? SCH.get(s.series) : null;
@@ -261,7 +267,7 @@
       '<dt>Requested by</dt><dd>' + s.by + '</dd>' +
       '<dt>Created</dt><dd>' + SPO.fmtDate(s.ev.created) + '</dd>' +
       '<dt>Spend period</dt><dd>' + s.period + '</dd>' +
-      '<dt>Approval</dt><dd>' + approvalVal + '</dd></dl></div>';
+      '<dt>Approval</dt><dd>' + approvalVal + '</dd>' + vendorRespRow(s) + '</dl></div>';
 
     const docs = [];
     if (s.ev.sent) docs.push(['Purchase Order SPO-' + s.id, 'PO', '', s.ev.sent]);
@@ -271,7 +277,7 @@
       (docs.length ? docs.map(d => '<div class="doc-row' + (d[2] ? ' ' + d[2] : '') + '">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + d[0] + '</div><div class="doc-date">' + SPO.fmtDate(d[3]) + ' · ' + d[1] + '</div></div><button class="row-action" title="Download" onclick="showToast(\'Download started\', \'' + d[0] + '.pdf\')">' + IC.dl + '</button></div>').join('')
         : '<div style="font-size:13px;color:var(--muted-foreground)">The PO is generated when the SPO is sent to the vendor.</div>') + '</div>';
 
-    const evs = s.log.slice().sort((a, b) => b.at.localeCompare(a.at));
+    const evs = s.log.map((e, i) => [e, i]).sort((a, b) => b[0].at.localeCompare(a[0].at) || b[1] - a[1]).map(x => x[0]); /* same minute → later entry first */
     const shown = actExpanded ? evs : evs.slice(0, 5);
     side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Activity</h2></div><div class="act-tl">' +
       shown.map(e => '<div class="act-ev' + (e.hi ? ' hi' : '') + (e.bad ? ' bad' : '') + '"><span class="adot"></span><div class="abody"><div class="at">' + e.t + '</div>' + (e.sub ? '<div class="asub">' + e.sub + '</div>' : '') + '</div><span class="awhen">' + SPO.fmtDate(e.at) + '</span></div>').join('') +
@@ -282,6 +288,7 @@
 
     if (sub === 'cancel' && CANCELABLE.indexOf(s.state) >= 0) setTimeout(openCancel, 120);
     if (sub === 'vendor' && s.state === 'rejected') setTimeout(openChangeVendor, 120);
+    if ((sub === 'respond' || sub === 'accept') && (SPO.canRespond(s) || SPO.canEditResp(s))) setTimeout(openRecordResp, 120);
     if (sub === 'invoice' && s.state === 'mapping') setTimeout(openInvoiceMap, 150);
     if (sub === 'accounting' && s.state === 'ready') setTimeout(openAccounting, 150);
   }
@@ -335,14 +342,36 @@
   }
 
   let pickVen = null;
+  /* Change Vendor searches the whole approved-vendor directory (thousands in production). An empty search
+     suggests same-trade vendors, ones you've used first; results are capped, so keep typing to narrow.
+     The picked vendor stays picked while you search. */
+  const VEN_CAP = 25;
   function openChangeVendor() {
     const s = S; pickVen = null;
-    const trade = ven(s).trade;
-    const opts = Object.keys(SPO.VEN).filter(k => k !== s.v).sort((a, b) => (SPO.VEN[b].trade === trade) - (SPO.VEN[a].trade === trade) || SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
-    modal('vendor-ov', '<div class="val-modal" style="width:540px"><div class="val-head"><h2>Choose another vendor</h2><p>' + ven(s).name + ' rejected SPO-' + s.id + '. The same scope, lines and allocation go to the vendor you pick.</p></div>' +
-      '<div class="val-body" style="padding:12px 24px;display:flex;flex-direction:column;gap:8px">' +
-      opts.map(k => { const o = SPO.VEN[k]; return '<button class="opt-row" id="vo-' + k + '" onclick="selectVen(\'' + k + '\')"><span class="opt-ic" style="font-size:11px;font-weight:700">' + k + '</span><span class="opt-body"><span class="opt-name">' + o.name + '</span><span class="opt-desc">' + o.trade + ' · ' + o.email + '</span></span>' + (o.trade === trade ? '<span class="pill p-neutral" style="font-size:11px">Same trade</span>' : '') + '<span class="opt-radio">' + IC.check + '</span></button>'; }).join('') + '</div>' +
+    const total = Object.keys(SPO.VEN).length - 1;
+    modal('vendor-ov', '<div class="val-modal" style="width:560px"><div class="val-head"><h2>Choose another vendor</h2><p>' + ven(s).name + ' rejected SPO-' + s.id + '. The same scope, lines and allocation go to the vendor you pick.</p></div>' +
+      '<div class="val-body" style="padding:14px 24px 6px"><div class="search-wrap" style="max-width:none;margin:0 0 10px">' + IC.search.replace('<svg', '<svg class="search-icon"') +
+      '<input class="search-field" id="ven-q" placeholder="Search ' + total.toLocaleString() + ' approved vendors by name, trade or email…" autocomplete="off" oninput="renderVenList()"></div>' +
+      '<div class="ven-results" id="ven-results"></div></div>' +
       '<div class="val-foot"><button class="btn" onclick="closeModal(\'vendor-ov\')">Cancel</button><button class="btn btn-primary" id="ven-go" disabled onclick="confirmVendor()">Send to vendor</button></div></div>');
+    renderVenList();
+    setTimeout(() => document.getElementById('ven-q').focus(), 50);
+  }
+  function renderVenList() {
+    const s = S, trade = ven(s).trade, q = (document.getElementById('ven-q').value || '').trim().toLowerCase();
+    const terms = q.split(/\s+/).filter(Boolean);
+    const keys = Object.keys(SPO.VEN).filter(k => k !== s.v);
+    const hit = k => { const o = SPO.VEN[k], hay = (o.name + ' ' + o.trade + ' ' + o.email).toLowerCase(); return terms.every(w => hay.includes(w)); };
+    const rank = k => { const o = SPO.VEN[k]; return (o.trade === trade ? 0 : 2) + (o.dir ? 1 : 0); };
+    const all = (terms.length ? keys.filter(hit) : keys.filter(k => SPO.VEN[k].trade === trade))
+      .sort((a, b) => rank(a) - rank(b) || SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
+    let list = all.slice(0, VEN_CAP);
+    if (pickVen && list.indexOf(pickVen) < 0) list = [pickVen].concat(list.slice(0, VEN_CAP - 1));
+    const head = terms.length ? (all.length ? all.length.toLocaleString() + ' match' + (all.length === 1 ? '' : 'es') + (all.length > VEN_CAP ? ' · showing ' + VEN_CAP + ', keep typing to narrow' : '') : '')
+      : 'Suggested · ' + trade + (all.length > VEN_CAP ? ' · ' + VEN_CAP + ' of ' + all.length : '');
+    document.getElementById('ven-results').innerHTML = (head ? '<div class="ven-head">' + head + '</div>' : '') +
+      (list.length ? list.map(k => { const o = SPO.VEN[k]; return '<button class="opt-row' + (k === pickVen ? ' selected' : '') + '" id="vo-' + k + '" onclick="selectVen(\'' + k + '\')"><span class="opt-ic" style="font-size:11px;font-weight:700">' + SPO.ini(k) + '</span><span class="opt-body"><span class="opt-name">' + o.name + '</span><span class="opt-desc">' + o.trade + ' · ' + o.email + '</span></span>' + (!o.dir ? '<span class="pill p-neutral" style="font-size:11px">Used before</span>' : '') + '<span class="opt-radio">' + IC.check + '</span></button>'; }).join('')
+        : '<div class="ven-empty">No approved vendor matches “' + q.replace(/</g, '&lt;') + '”. Try a trade, like “plumbing”.</div>');
   }
   function selectVen(k) {
     pickVen = k;
@@ -352,11 +381,46 @@
   function confirmVendor() {
     const s = S; if (!pickVen) return;
     const old = ven(s).name;
-    s.v = pickVen; s.state = 'sent'; s.prevReject = s.reject; delete s.reject; s.ev.sent = SPO.now(); delete s.ev.rejected;
+    s.v = pickVen; s.state = 'invoice'; s.prevReject = s.reject; delete s.reject; s.ev.sent = SPO.now(); delete s.ev.rejected; delete s.ev.accepted; delete s.ack;
     SPO.log(s, 'Vendor changed', old + ' rejected · reassigned to ' + ven(s).name);
     SPO.log(s, 'Sent to vendor', 'PO emailed to ' + ven(s).email);
     SPO.save(s); closeModal('vendor-ov'); renderPage();
-    showToast('Sent to ' + ven(s).name, 'SPO-' + s.id + ' is waiting on their response.');
+    showToast('Sent to ' + ven(s).name, 'SPO-' + s.id + ' is waiting on their invoice.');
+  }
+  /* A response the vendor gave outside Scout (phone, email, in person). Always attributed to who recorded it. */
+  function vendorRespRow(s) {
+    const r = SPO.resp(s); if (!r) return '';
+    const val = r.kind === 'rejected' ? '<span style="color:var(--rose)">Rejected' + (r.at ? ' · ' + SPO.fmtDate(r.at) : '') + '</span>' + (r.by === 'buyer' ? '<div class="fact-sub">Recorded by ' + s.reject.by + '</div>' : '')
+      : r.kind === 'accepted' ? (r.by === 'buyer' ? 'Accepted ' + SPO.fmtDate(r.at) + '<div class="fact-sub">Recorded by ' + s.ack.by + '</div>' : 'Accepted by vendor ' + SPO.fmtDate(r.at))
+      : '<span style="color:var(--muted-foreground)">No response</span>';
+    return '<dt>Vendor response</dt><dd>' + val + '</dd>';
+  }
+  /* Record the vendor's answer when they gave it outside Scout. No response is always an option and is
+     the default (preselected); Save enables only when the pick changes the current answer. */
+  let respPick = null;
+  function openRecordResp() {
+    const s = S, editing = SPO.canEditResp(s); if (!editing && !SPO.canRespond(s)) return;
+    const cur = SPO.resp(s).kind; respPick = cur;
+    const opts = [['accepted', IC.check, 'Accepted', 'They’ll do the work. Their invoice comes next.'], ['rejected', IC.x, 'Rejected', 'They won’t do it. You’ll choose another vendor or cancel.']]
+      .concat([['none', IC.hand, 'No response', editing ? 'Clear what was recorded.' : 'They haven’t answered yet. You can still upload their invoice.']]);
+    modal('resp-ov', '<div class="val-modal" style="width:500px"><div class="val-head"><h2>What did ' + ven(s).name + ' say?</h2><p>' + (editing ? 'Change the answer you recorded for SPO-' + s.id + '.' : 'Record their answer about SPO-' + s.id + ' if they told you outside Scout, by phone, email or in person.') + ' It shows as recorded by you.</p></div>' +
+      '<div class="val-body" style="padding:12px 24px 4px">' + opts.map(([k, ic, name, desc]) => '<button class="opt-row resp-opt ' + k + (k === cur ? ' selected' : '') + '" id="ro-' + k + '" onclick="pickResp(\'' + k + '\')"><span class="opt-ic">' + ic + '</span><span class="opt-body"><span class="opt-name">' + name + '</span><span class="opt-desc">' + desc + '</span></span><span class="opt-radio">' + IC.check + '</span></button>').join('') + '</div>' +
+      '<div class="val-foot"><button class="btn" onclick="closeModal(\'resp-ov\')">Cancel</button><button class="btn btn-primary" id="resp-go" disabled onclick="confirmRecordResp()">Save response</button></div></div>');
+  }
+  function pickResp(k) {
+    respPick = k;
+    document.querySelectorAll('#resp-ov .opt-row').forEach(b => b.classList.toggle('selected', b.id === 'ro-' + k));
+    document.getElementById('resp-go').disabled = k === SPO.resp(S).kind;
+  }
+  function confirmRecordResp() {
+    const s = S, k = respPick, me = 'Alicia Grant';
+    if (!k || k === SPO.resp(s).kind || !(SPO.canRespond(s) || SPO.canEditResp(s))) return;
+    delete s.ack; delete s.reject; delete s.ev.accepted; delete s.ev.rejected; s.state = 'invoice';
+    if (k === 'accepted') { s.ack = { by: me }; s.ev.accepted = SPO.now(); SPO.log(s, 'Acceptance recorded', 'by ' + me, true); }
+    else if (k === 'rejected') { s.reject = { by: me }; s.ev.rejected = SPO.now(); s.state = 'rejected'; SPO.log(s, 'Rejection recorded', 'by ' + me, false, true); }
+    else SPO.log(s, 'Response cleared', 'by ' + me + ' · back to No response');
+    SPO.save(s); closeModal('resp-ov'); renderPage();
+    showToast(k === 'none' ? 'Response cleared' : (k === 'accepted' ? 'Acceptance' : 'Rejection') + ' recorded', ven(s).name + ' · SPO-' + s.id);
   }
   function resendPO() { SPO.log(S, 'PO resent', 'to ' + ven(S).email); SPO.save(S); renderPage(); showToast('PO resent', ven(S).email); }
 

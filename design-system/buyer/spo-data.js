@@ -2,7 +2,7 @@
    One source of truth so the list, detail, Home and Approvals counts always reconcile.
    Seeds + a localStorage overlay (live transitions persist across pages). */
 (function () {
-  const KEY = 'scout-spos-v4';
+  const KEY = 'scout-spos-v5';
   const SKEY = 'scout-schedules-v1';
   const TODAY = '2026-08-24';
   const APPROVAL_LIMIT = 2500;
@@ -20,6 +20,28 @@
     BG: { name: 'Bayou Green Landscaping', email: 'crews@bayougreen.example', trade: 'Landscaping' },
     PX: { name: 'Pelican Pest Control', email: 'routes@pelicanpest.example', trade: 'Pest control' }
   };
+  /* Approved-vendor directory — a deterministic stand-in for the thousands of approved vendors in
+     production. Entries carry dir: true so pickers that list "your" vendors leave them out unless
+     searched; ini gives the avatar its letters (keys like D0412 aren't readable). */
+  (function buildDirectory() {
+    const PLACES = ['Acadian', 'Atchafalaya', 'Audubon', 'Bayou City', 'Bienville', 'Big Easy', 'Blue Bonnet', 'Brazos', 'Calcasieu', 'Capitol', 'Cedar', 'Coastal', 'Crescent City', 'Cypress Bend', 'Delta', 'Evangeline', 'Gulf South', 'Heritage', 'Iberville', 'Kisatchie', 'Lafourche', 'Lone Star', 'Magnolia', 'Metro', 'Mid-South', 'Natchez', 'Oak Alley', 'Ouachita', 'Pelican State', 'Piney Woods', 'Pontchartrain', 'Prairie', 'Red River', 'Riverbend', 'Sabine', 'St. Charles', 'Sugarland', 'Sunbelt', 'Teche', 'Tri-Parish', 'Twin Oaks', 'Vermilion', 'Westbank', 'Willow Creek'];
+    const TRADES = [['HVAC', ['Air & Heat', 'Mechanical', 'Comfort Systems', 'Heating & Cooling']], ['Plumbing', ['Plumbing', 'Drain & Sewer', 'Rooter', 'Pipe Works']],
+      ['Electrical', ['Electric', 'Electrical Contractors', 'Power & Light']], ['Cleaning', ['Cleaning Services', 'Janitorial', 'Maid & Turn']], ['Painting', ['Painting', 'Coatings', 'Paint & Drywall']],
+      ['Carpet cleaning', ['Carpet Care', 'Floor & Carpet', 'Steam Clean']], ['Unit turns', ['Make-Ready', 'Turn Services', 'Property Services']], ['Landscaping', ['Landscaping', 'Lawn & Garden', 'Grounds Care']],
+      ['Pest control', ['Pest Control', 'Exterminating', 'Termite & Pest']], ['Fencing', ['Fence & Gate', 'Fence Co.']], ['Roofing', ['Roofing', 'Roof & Gutter']], ['Appliance repair', ['Appliance Repair', 'Appliance Service']],
+      ['Flooring', ['Flooring', 'Tile & Floor']], ['Pool service', ['Pool Service', 'Pools & Spas']], ['Locksmith', ['Lock & Key', 'Locksmiths']], ['Concrete', ['Concrete', 'Paving & Concrete']]];
+    const SUFFIX = ['', ' LLC', ' Co.', ' Inc.', ' Group'];
+    let n = 0;
+    PLACES.forEach((pl, i) => TRADES.forEach(([trade, names], j) => names.forEach((nm, k) => {
+      if ((i + j + k) % 3 === 2) return;                       // thin the grid so trades don't all share every place
+      const name = pl + ' ' + nm + SUFFIX[(i * 7 + j * 3 + k) % SUFFIX.length];
+      const slug = (pl + nm).toLowerCase().replace(/[^a-z]/g, '').slice(0, 22);
+      const key = 'D' + String(++n).padStart(4, '0');
+      VEN[key] = { name, email: ['dispatch', 'office', 'service', 'jobs'][(i + k) % 4] + '@' + slug + '.example', trade, dir: true,
+        ini: (pl.replace(/[^A-Za-z ]/g, '').split(' ')[0][0] + nm[0]).toUpperCase() };
+    })));
+  })();
+  const ini = k => (VEN[k] && VEN[k].ini) || k;
 
   const GL = [
     ['6020', 'Building Exteriors'], ['6025', 'Building Interiors'], ['6035', 'Carpet Cleaning'],
@@ -53,7 +75,6 @@
   const STATES = {
     draft:      { label: 'Draft',                dot: 'dot-pending',  tab: 'open',     group: 'you',        rank: 0 },
     approval:   { label: 'Pending Approval',     dot: 'dot-pending',  tab: 'open',     group: 'you',        rank: 1 },
-    sent:       { label: 'Awaiting Vendor',      dot: 'dot-revision', tab: 'open',     group: 'vendor',     rank: 2 },
     rejected:   { label: 'Vendor Rejected',      dot: 'dot-rejected', tab: 'open',     group: 'rejected',   rank: 3 },
     invoice:    { label: 'Awaiting Invoice',     dot: 'dot-revision', tab: 'open',     group: 'vendor',     rank: 4 },
     mapping:    { label: 'Invoice to Map',       dot: 'dot-pending',  tab: 'invoices', group: 'you',        rank: 5 },
@@ -79,14 +100,15 @@
       scope: 'Replace condenser fan motors on the four Building 03 rooftop units.',
       lines: [L('Condenser fan motor replacement', 4, 780, [A('6115', 'COMMON', 3120)])],
       ev: { created: '2026-08-22 09:40', approvalReq: '2026-08-22 09:41' } },
-    { id: 863, state: 'sent', prop: 'magnolia', v: 'PC', by: 'Alicia Grant', period: 'Aug 2026',
+    { id: 863, state: 'invoice', prop: 'magnolia', v: 'PC', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Hot-water extraction carpet cleaning in two vacant 2 BR units.',
       lines: [L('Carpet cleaning, 2 BR', 1, 180, [A('6035', '0102', 180)]), L('Carpet cleaning, 2 BR', 1, 180, [A('6035', '0105', 180)])],
       ev: { created: '2026-08-22 14:02', sent: '2026-08-22 14:03' } },
-    { id: 862, state: 'sent', prop: 'cypress', v: 'DE', by: 'Alicia Grant', period: 'Aug 2026',
+    { id: 862, state: 'invoice', prop: 'cypress', v: 'DE', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Diagnose and repair tripping GFCI kitchen circuits in two units.',
       lines: [L('GFCI circuit repair (2 units)', 1, 320, [A('6075', '0108', 160), A('6075', '0111', 160)])],
-      ev: { created: '2026-08-21 10:15', sent: '2026-08-21 10:16' } },
+      ack: { by: 'Alicia Grant' },
+      ev: { created: '2026-08-21 10:15', sent: '2026-08-21 10:16', accepted: '2026-08-21 15:40' } },
     { id: 861, state: 'rejected', prop: 'bayou', v: 'BP', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Hydro-jet and clear the main sewer line between Buildings 01 and 02.',
       lines: [L('Main sewer line hydro-jetting', 1, 650, [A('6100', 'COMMON', 650)])],
@@ -99,7 +121,7 @@
     { id: 859, state: 'invoice', prop: 'heights', v: 'CC', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Deep clean the clubhouse and fitness center ahead of the resident event.',
       lines: [L('Clubhouse deep clean', 1, 320, [A('6045', 'COMMON', 320)]), L('Fitness center deep clean', 1, 160, [A('6045', 'COMMON', 160)])],
-      ev: { created: '2026-08-16 13:20', sent: '2026-08-16 13:21', accepted: '2026-08-17 08:10' } },
+      ev: { created: '2026-08-16 13:20', sent: '2026-08-16 13:21' } },
     { id: 858, state: 'mapping', prop: 'magnolia', v: 'PC', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Hot-water extraction carpet cleaning in a vacant 2 BR.',
       lines: [L('Carpet cleaning, 2 BR', 1, 250, [A('6035', '0106', 250)])],
@@ -121,7 +143,7 @@
           { desc: 'Make-ready refresh — Unit 105', amt: 600, maps: [{ line: 3, amt: 600 }], conf: 'high' },
           { desc: 'Debris haul-off / dump fee', amt: 125, maps: [], conf: 'none' }
         ] },
-      ev: { created: '2026-08-08 09:12', sent: '2026-08-08 09:14', accepted: '2026-08-09 10:02', invoiced: '2026-08-22 11:30' } },
+      ev: { created: '2026-08-08 09:12', sent: '2026-08-08 09:14', invoiced: '2026-08-22 11:30' } },
     { id: 856, state: 'ready', prop: 'lonestar', v: 'AH', by: 'Alicia Grant', period: 'Jul 2026',
       scope: 'Recharge refrigerant and replace the run capacitor on the split system.',
       lines: [L('Refrigerant recharge + capacitor', 1, 385, [A('6115', '0207', 385)])],
@@ -140,7 +162,7 @@
       approval: { by: 'Priya Nair', reason: 'Over $2,500' },
       invoice: { num: 'INV-4410', date: '2026-07-29', file: 'INV-4410.pdf', tax: 0, ship: 0, validated: true,
         lines: [{ desc: 'LED wall-pack lights (6), installed', amt: 2880, maps: [{ line: 0, amt: 2880 }], conf: 'high' }] },
-      ev: { created: '2026-07-20 10:30', approvalReq: '2026-07-20 10:31', approved: '2026-07-21 08:15', sent: '2026-07-21 08:16', accepted: '2026-07-21 13:40', invoiced: '2026-07-29 15:00', mapped: '2026-07-30 10:20', accounting: '2026-07-30 10:25', paid: '2026-08-05 12:00' } },
+      ev: { created: '2026-07-20 10:30', approvalReq: '2026-07-20 10:31', approved: '2026-07-21 08:15', sent: '2026-07-21 08:16', invoiced: '2026-07-29 15:00', mapped: '2026-07-30 10:20', accounting: '2026-07-30 10:25', paid: '2026-08-05 12:00' } },
     { id: 853, state: 'paid', prop: 'magnolia', v: 'CC', by: 'Alicia Grant', period: 'Jul 2026',
       scope: 'Make-ready clean for a 1 BR after move-out.',
       lines: [L('Make-ready cleaning, 1 BR', 1, 150, [A('6045', '0110', 150)])],
@@ -182,7 +204,7 @@
     { id: 842, state: 'invoice', prop: 'magnolia', v: 'CC', by: 'Alicia Grant', period: 'Aug 2026', series: 'SCH-01', run: '2026-08-05',
       scope: 'Weekly common-area cleaning: clubhouse, mail room, laundry rooms and breezeways.',
       lines: [L('Common-area cleaning — weekly visit', 1, 180, [A('6045', 'COMMON', 180)])],
-      ev: { created: '2026-08-05 08:00', sent: '2026-08-05 08:00', accepted: '2026-08-05 09:05' } },
+      ev: { created: '2026-08-05 08:00', sent: '2026-08-05 08:00' } },
     { id: 844, state: 'paid', prop: 'bayou', v: 'PX', by: 'Alicia Grant', period: 'Aug 2026', series: 'SCH-04', run: '2026-08-10',
       scope: 'Bi-weekly pest control: interior perimeter treatment of common areas and service of the exterior bait stations.',
       lines: [L('Pest control service — common areas', 1, 240, [A('6160', 'COMMON', 240)])],
@@ -243,6 +265,27 @@
     return Object.keys(mine).filter(g => b[g] && b[g].spent + b[g].committed + mine[g] > b[g].budget);
   }
 
+  /* Vendor response is a signal, not a step. Three things we can know — and we never infer one:
+     an invoice arriving without a response still reads "No response". A buyer can record an
+     answer they got outside Scout — accepted or rejected — and change it back to No response; a recorded
+     answer always names who recorded it. */
+  const ackText = s => 'by ' + s.ack.by;
+  function resp(s) {
+    const e = s.ev || {};
+    if (!e.sent) return null;
+    if (e.rejected || s.state === 'rejected') return s.reject && s.reject.by
+      ? { kind: 'rejected', at: e.rejected, by: 'buyer', label: 'Rejected · recorded by ' + s.reject.by.split(' ')[0], short: 'Rejected' }
+      : { kind: 'rejected', at: e.rejected, by: 'vendor', label: 'Rejected by vendor', short: 'Rejected' };
+    if (e.accepted) return s.ack
+      ? { kind: 'accepted', at: e.accepted, by: 'buyer', label: 'Accepted · recorded by ' + s.ack.by.split(' ')[0], short: 'Accepted' }
+      : { kind: 'accepted', at: e.accepted, by: 'vendor', label: 'Accepted by vendor', short: 'Accepted' };
+    return { kind: 'none', at: null, label: 'No response', short: 'No response' };
+  }
+  /* The vendor's email link only counts until an invoice arrives — a late reject can't undo billed work. */
+  const canRespond = s => s.state === 'invoice' && !s.ev.accepted && !s.ev.rejected;
+  /* Only an answer the buyer recorded can be changed — never the vendor's own click. */
+  const canEditResp = s => (s.state === 'invoice' && !!s.ack) || (s.state === 'rejected' && !!(s.reject && s.reject.by));
+
   function buildLog(s) {
     const e = s.ev || {}, v = VEN[s.v] || { name: s.v, email: '' };
     const out = [];
@@ -252,9 +295,10 @@
     if (e.approvalReq) push(e.approvalReq, 'Sent for approval', (s.approval && s.approval.reason) || (total(s) > APPROVAL_LIMIT ? 'Over ' + money(APPROVAL_LIMIT) + ' · Supervisor sign-off' : 'Over the GL budget · Supervisor sign-off'));
     if (e.approved) push(e.approved, 'Approved', 'by ' + ((s.approval && s.approval.by) || 'Priya Nair') + ' (Supervisor)', true);
     if (!(s.series && e.sent === e.created)) push(e.sent, 'Sent to vendor', 'PO emailed to ' + v.email);
-    push(e.accepted, 'Vendor accepted', v.name, true);
-    if (e.rejected) push(e.rejected, 'Vendor rejected', '“' + ((s.reject && s.reject.reason) || '') + '”', false, true);
-    if (e.invoiced && s.invoice) push(e.invoiced, 'Invoice received', s.invoice.num + (s.invoice.extractFailed ? ' · Scout AI couldn’t read the line items' : ' · ' + money(invTotal(s))));
+    if (s.ack) push(e.accepted, 'Acceptance recorded', ackText(s), true);
+    else push(e.accepted, 'Vendor accepted', v.name, true);
+    if (e.rejected) { if (s.reject && s.reject.by) push(e.rejected, 'Rejection recorded', 'by ' + s.reject.by, false, true); else push(e.rejected, 'Vendor rejected', '“' + ((s.reject && s.reject.reason) || '') + '”', false, true); }
+    if (e.invoiced && s.invoice) push(e.invoiced, 'Invoice received', s.invoice.num + (s.invoice.extractFailed ? ' · Scout AI couldn’t read the line items' : ' · ' + money(invTotal(s))) + (e.accepted || e.rejected ? '' : ' · the vendor never responded to the PO'));
     push(e.mapped, 'Invoice mapped & validated', 'by Alicia Grant', true);
     push(e.accounting, 'Sent to Accounting', 'Packet: PO, invoice, GL allocation');
     push(e.paid, 'Paid', money(invTotal(s)) + ' released by Accounting', true);
@@ -266,7 +310,8 @@
   const clone = o => JSON.parse(JSON.stringify(o));
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function store(m) { try { localStorage.setItem(KEY, JSON.stringify(m)); } catch (e) { /* storage unavailable — session only */ } }
-  function hydrate(s) { if (!s.log) s.log = buildLog(s); return s; }
+  /* 'sent' (Awaiting Vendor) was retired 10/14/2026: a sent SPO waits on its invoice, not on a reply. */
+  function hydrate(s) { if (s.state === 'sent') s.state = 'invoice'; if (!s.log) s.log = buildLog(s); return s; }
   function list() {
     const ov = load();
     const out = SEEDS.map(s => hydrate(ov[s.id] ? ov[s.id] : clone(s)));
@@ -486,7 +531,7 @@
 
   const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
 
-  window.SPO = { TODAY, APPROVAL_LIMIT, VEN, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
+  window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, resp, canRespond, canEditResp, ackText, list, get, save, nextId, now, log, reset, counts };
 })();

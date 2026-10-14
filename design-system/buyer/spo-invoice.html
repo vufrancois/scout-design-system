@@ -157,7 +157,7 @@
   }
   function dropDraft() { if (!W.key) return; const d = loadD(); delete d[W.key]; saveD(d); }
 
-  const candidates = () => SPO.list().filter(s => s.v === W.v && s.prop === W.prop && (W.showAll ? ['invoice', 'sent', 'mapping'].indexOf(s.state) >= 0 : s.state === 'invoice')).sort((a, b) => (a.run || a.ev.created).localeCompare(b.run || b.ev.created));
+  const candidates = () => SPO.list().filter(s => s.v === W.v && s.prop === W.prop && (W.showAll ? ['invoice', 'mapping'].indexOf(s.state) >= 0 : s.state === 'invoice')).sort((a, b) => (a.run || a.ev.created).localeCompare(b.run || b.ev.created));
   const selected = () => W.spoIds.map(id => SPO.get(id)).filter(Boolean);
   const dup = () => W.v && W.num && SPO.list().some(s => s.v === W.v && s.invoice && s.invoice.num.toLowerCase() === W.num.trim().toLowerCase());
 
@@ -226,7 +226,7 @@
   function setF(k, v) { W[k] = v; if (k === 'v') { W.spoIds = []; W.why = {}; } if (W.inv && (k === 'num' || k === 'date')) W.inv[k] = v; persist(); renderPage(); }
   function toggleSpo(id) { const i = W.spoIds.indexOf(id); if (i >= 0) W.spoIds.splice(i, 1); else W.spoIds.push(id); persist(); renderPage(); }
   function viewVendor() {
-    const vs = Object.keys(SPO.VEN).sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
+    const vs = Object.keys(SPO.VEN).filter(k => !SPO.VEN[k].dir || k === W.v || SPO.list().some(s => s.v === k)).sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
     const cands = W.v ? candidates() : [];
     const left = '<div class="card"><div class="det-card-head hd"><div><h2>Vendor &amp; service orders</h2><div class="sub">Choose the SPOs this invoice covers</div></div></div>' +
       '<div class="rec-grid"><div class="w-field"><label>Property</label><select onchange="setF(\'prop\', this.value)">' + PROPERTIES.filter(p => p.id !== 'all').map(p => '<option value="' + p.id + '"' + (W.prop === p.id ? ' selected' : '') + '>' + p.name + '</option>').join('') + '</select></div>' +

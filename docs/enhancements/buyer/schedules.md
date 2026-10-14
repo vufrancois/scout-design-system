@@ -57,7 +57,7 @@ Some services repeat: weekly common-area cleaning, monthly grounds maintenance, 
   - The submit button reads one of: Start schedule · Submit schedule for approval · Save changes · Save & resubmit for approval.
   - **Make recurring** on any SPO not already in a series opens the wizard pre-filled; that SPO becomes run 1.
   - The confirmation page says what happens next.
-- **Approvals:** schedule requests join Order Approvals as `SCH-<nn>`. The detail shows a "Recurring schedule" pill, a "Schedule · next 12 months" card (per run, runs, 12-month commitment), and "Schedule Active" as the last tracker slot. Deciding moves the series:
+- **Approvals:** schedule requests join Approvals as `SCH-<nn>`. The detail shows a "Recurring schedule" pill, a "Schedule · next 12 months" card (per run, runs, 12-month commitment), and "Schedule Active" as the last tracker slot. Deciding moves the series:
   - Approve → Active (and the approved run count is frozen)
   - Revision → Revision Requested
   - Reject → Ended, "Stopped Early"
@@ -163,7 +163,7 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 **Summary:** A schedule needs approval once, on its 12-month commitment; matching runs then need no further approval.
 **Acceptance criteria:**
 - [ ] Approval is required when the 12-month commitment is over $2,500, or the busiest month exceeds a GL's monthly budget.
-- [ ] The request in Order Approvals is `SCH-<nn>`, with a Recurring schedule pill and a "per run × runs = 12-month commitment" total.
+- [ ] The request in Approvals is `SCH-<nn>`, with a Recurring schedule pill and a "per run × runs = 12-month commitment" total.
 - [ ] Approve → Active, with the approved run count frozen on the request. Revision → Revision Requested (Edit). Reject → Ended (Stopped Early).
 - [ ] An edit that raises the 12-month commitment returns the series to approval; other edits save without it.
 - [ ] Home's Approvals card and the queue total include schedule requests.

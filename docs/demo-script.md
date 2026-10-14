@@ -59,7 +59,7 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 |---|---|---|
 | Draft | `#866` | Continue editing → the wizard opens on Review; **Send to vendor** is emerald (under budget) |
 | Draft (new) | `spo-new.html#new` | **Try an example** → Scout AI drafts lines: unit 1805 flagged (not coerced), an unpriced line left empty; type `600` → $600.00; Review shows the **Budget Meter** at 112% on 6035 → amber **Submit for approval** |
-| Pending Approval | `#864` | Strip → Review in Approvals; `approval.html#SPO-864` shows Service PO lines + Approve → the SPO flips to Awaiting Vendor |
+| Pending Approval | `#864` | Strip → Review in Approvals; `approval.html#SPO-864` shows Service PO lines + Approve → the SPO goes to the vendor and lands on Awaiting Invoice; the **Admin** badge drops 3 → 2 |
 | Sent · no response | `#863` | Nothing waits on the vendor: Awaiting Invoice with **Upload invoice** available now; the Sent step's label reads **No response** (grey, not amber) |
 | I spoke to the vendor | `#863/respond` | "What did Pride Carpet Care say?" → Accepted (label turns emerald), Rejected (SPO moves to Vendor Rejected) or No response. **Change their answer** edits it |
 | Recorded acceptance | `#862` | Seeded buyer-recorded acceptance — compare with `#860`, accepted by the vendor's own click |
@@ -120,6 +120,8 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | A split line | `#cypress/0105` | SPO-857's refresh line split across GLs ($300 of $600) + Order #512 PTAC |
 | Unit search | type `1805`, then `bldg 2 unit 16` | The miss explains the BBUU scheme and range (SPO-48); the phrase finds 0216 |
 | From an SPO | `spo.html#857` | Click a unit in any allocation chip → its history |
+
+**Nav:** Approvals, Budgets and Funding Report live under **Admin → Oversight** (Orders and SPOs list purchases by type). The Admin badge counts pending approvals (3) and matches Home's Approvals card and the bell.
 
 **Home tie-in:** the "SPO Invoices to Map" tile (3) and the Service POs breakdown card. The Approvals card total (22) matches the queue, which now includes SPO-864 and the schedule requests (SCH-06 pending).
 

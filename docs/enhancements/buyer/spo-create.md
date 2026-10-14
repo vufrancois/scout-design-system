@@ -27,7 +27,7 @@
   - "Save draft" is secondary.
 - **Confirmation (`#done-<id>`):** a receipt-style page with the SPO number and what happens next. The SPO is created with a "SPO created" activity entry, plus Sent / Approval requested events as applicable (SPO-19, SPO-20).
 - **Approvals integration:**
-  - SPO requests appear in the Order Approvals queue (`SPO-864`, a Service PO pill, no "#" prefix), and the queue cards reconcile: Total 22 = Pending 3 + Revision 1 + Approved 15 + Rejected 3 (including 6 schedule requests — see [schedules.md](schedules.md)).
+  - SPO requests appear in the Approvals queue (`SPO-864`, a Service PO pill, no "#" prefix), and the queue cards reconcile: Total 22 = Pending 3 + Revision 1 + Approved 15 + Rejected 3 (including 6 schedule requests — see [schedules.md](schedules.md)).
   - The detail page `approval.html#SPO-<id>` shows:
     - a "Service PO lines" card (allocation chips, View SPO link, no inventory refresh);
     - the estimate total;
@@ -93,8 +93,8 @@
 **Audit findings:** SPO-16, SPO-34
 **Files:** `buyer/spo-new.html`, `buyer/spo-data.js` (`budget`, `glOver`, `needsApproval`), `buyer/buyer-components.css` (`.bmeter*`)
 
-### TKT-SPO-09 · SPO requests in Order Approvals
-**Summary:** SPO approval requests join the Order Approvals queue and detail; decisions write back to the SPO.
+### TKT-SPO-09 · SPO requests in Approvals
+**Summary:** SPO approval requests join the Approvals queue and detail; decisions write back to the SPO.
 **Acceptance criteria:**
 - [ ] The queue lists SPO requests with a Service PO marker, and all cards and filters include them.
 - [ ] The detail shows the SPO lines with allocation chips, the estimate total, the reason (over $2,500 / GL over budget), and a View SPO link.

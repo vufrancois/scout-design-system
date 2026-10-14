@@ -492,7 +492,7 @@
     const why = overLimit && over.length ? 'Over ' + money(SPO.APPROVAL_LIMIT) + ' and over the ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' budget.'
       : overLimit ? 'Over ' + money(SPO.APPROVAL_LIMIT) + '.' : over.length ? 'Pushes ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' over its ' + W.period + ' budget.' : '';
     const cta = appr
-      ? '<div class="callout amber" style="margin-top:14px"><b>Supervisor approval required</b>' + why + ' Submitting sends it to Order Approvals — ' + v.name + ' gets nothing until it’s approved.</div>' +
+      ? '<div class="callout amber" style="margin-top:14px"><b>Supervisor approval required</b>' + why + ' Submitting sends it to Approvals — ' + v.name + ' gets nothing until it’s approved.</div>' +
         '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="submitSpo()"><span style="display:inline-flex;width:16px;height:16px">' + IC.shield + '</span>Submit for approval</button>'
       : '<div class="callout emerald" style="margin-top:14px"><b>No approval needed</b>Within budget and under ' + money(SPO.APPROVAL_LIMIT) + '. Submitting emails the PO to ' + v.email + '.</div>' +
         '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px" onclick="submitSpo()"><span style="display:inline-flex;width:16px;height:16px">' + IC.send + '</span>Send to ' + v.name + '</button>';
@@ -531,7 +531,7 @@
   function viewDoneSch(id) {
     const x = SCH.get(id), v = SPO.VEN[x.v], p = propOf(x.prop), appr = x.status === 'approval';
     const steps = appr
-      ? [['Supervisor review', 'The series is in Order Approvals. It’s approved once — not run by run.'], ['Runs start', 'From ' + SPO.fmtDate(SCH.nextRun(x) || x.start) + ', each run ' + (x.mode === 'auto' ? 'creates an SPO and emails ' + v.email : 'drafts an SPO for you to send') + '.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.']]
+      ? [['Supervisor review', 'The series is in Approvals. It’s approved once — not run by run.'], ['Runs start', 'From ' + SPO.fmtDate(SCH.nextRun(x) || x.start) + ', each run ' + (x.mode === 'auto' ? 'creates an SPO and emails ' + v.email : 'drafts an SPO for you to send') + '.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.']]
       : [['First run ' + SPO.fmtDate(SCH.nextRun(x) || x.start), x.mode === 'auto' ? 'An SPO is created and its PO emailed to ' + v.email + '.' : 'An SPO is drafted for you to review and send.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.'], ['Adjust any time', 'Skip a date, pause, or edit future runs from the schedule.']];
     return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px' + (appr ? ';background:var(--amber-soft);color:var(--amber)' : '') + '"><span style="display:inline-flex;width:34px;height:34px">' + (appr ? IC.shield : IC.rep) + '</span></div>' +
       '<h1 style="margin-bottom:0">' + (appr ? x.name + ' sent for approval' : x.name + (W.sched ? ' updated' : ' scheduled')) + '</h1>' +
@@ -567,7 +567,7 @@
   function viewDone(id) {
     const s = SPO.get(id), v = SPO.VEN[s.v], p = propOf(s.prop), appr = s.state === 'approval';
     const steps = appr
-      ? [['Supervisor review', 'It’s in Order Approvals now. You’ll be notified when it’s decided.'], ['Sent to ' + v.name, 'Once approved, the PO goes to ' + v.email + ' automatically.'], ['Invoice', 'Their invoice arrives by email, or you upload it on the SPO.']]
+      ? [['Supervisor review', 'It’s in Approvals now. You’ll be notified when it’s decided.'], ['Sent to ' + v.name, 'Once approved, the PO goes to ' + v.email + ' automatically.'], ['Invoice', 'Their invoice arrives by email, or you upload it on the SPO.']]
       : [['Invoice', 'Their invoice arrives by email, or you upload it on the SPO. You don’t need to wait for a reply first — if ' + v.name + ' accepts or rejects the PO, it shows on the SPO.'], ['Map & send to Accounting', 'Match the invoice to these lines, then send the payment packet.']];
     return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px' + (appr ? ';background:var(--amber-soft);color:var(--amber)' : '') + '"><span style="display:inline-flex;width:34px;height:34px">' + (appr ? IC.shield : IC.send) + '</span></div>' +
       '<h1 style="margin-bottom:0">' + (appr ? 'SPO-' + s.id + ' sent for approval' : 'SPO-' + s.id + ' sent to ' + v.name) + '</h1>' +

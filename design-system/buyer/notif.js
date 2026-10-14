@@ -172,6 +172,17 @@
     if (!s) { s = document.createElement('span'); s.className = 'cart-badge nt-badge'; b.appendChild(s); }
     const c = count(); s.textContent = c ? (c > 99 ? '99+' : c) : '';
     b.setAttribute('aria-label', 'Notifications' + (c ? ', ' + c + ' need action' : ''));
+    syncApprovals();
+  }
+  /* Admin chip + Approvals menu item: pending approval requests in scope — the same items the bell
+     counts as "needs your approval", so the two can't disagree (read or not: it's pending until decided). */
+  function syncApprovals() {
+    const c = scoped(all(), curProp()).filter(n => n.kind === 'approval-req' && n.isAction).length;
+    const chip = document.getElementById('admin-badge');
+    if (chip) { chip.hidden = !c; chip.textContent = c; }
+    const nav = document.getElementById('nav-admin'); if (nav) nav.setAttribute('aria-label', 'Admin' + (c ? ', ' + c + ' approval' + (c === 1 ? '' : 's') + ' pending' : ''));
+    const item = document.querySelector('#menu-approvals .menu-item-title');
+    if (item) { let s = item.querySelector('.nt-count'); if (!s) { s = document.createElement('span'); s.className = 'nt-count'; s.style.marginLeft = '8px'; item.appendChild(s); } s.textContent = c; s.hidden = !c; }
   }
   function panel() {
     let p = document.getElementById('nt-panel');

@@ -134,7 +134,7 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 - [ ] Changing vendor clears any previous response.
 **Supersedes:** TKT-SPO-10 (8-step stepper → 7) and TKT-SPO-11 ("Accept → Awaiting Invoice" gating).
 **Audit findings:** SPO-08, SPO-09, SPO-19, SPO-28, SPO-35 (re-scoped by team decision)
-**Files:** `buyer/spo-data.js` (`resp`, `canRespond`, `ackText`, `sent` → `invoice` migration, seeds), `buyer/spo.html` (`STEPS`, `respTag`, `vendorRespRow`, `openRecordAccept`), `buyer/spos.html` (`respMini`, Vendor response filter), `buyer/spo-new.html`, `buyer/approval.html`, `buyer/home.html`, `buyer/spo-invoice.html`, `buyer/buyer-components.css` (`.ls-resp`, `.fact-sub`, `.chip-opt`, `.resp-mini`)
+**Files:** `buyer/spo-data.js` (`resp`, `canRespond`, `canEditResp`, `ackText`, `sent` → `invoice` migration, seeds), `buyer/spo.html` (`STEPS`, `respTag`, `vendorRespRow`, `openRecordResp`, `confirmRecordResp`), `buyer/spos.html` (Vendor response filter), `buyer/spo-new.html`, `buyer/approval.html`, `buyer/home.html`, `buyer/spo-invoice.html`, `buyer/buyer-components.css` (`.ls-resp`, `.fact-sub`, `.resp-opt`)
 
 ## Addendum · Search the approved-vendor directory in Change Vendor (10/14/2026)
 

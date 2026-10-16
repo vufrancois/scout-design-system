@@ -1937,3 +1937,7 @@
 .buyer .sched-title { font-size: 15px; font-weight: 700; }
 .buyer .sched-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
 .buyer .sched-body { padding: 14px 16px 16px; background: color-mix(in srgb, var(--muted) 45%, transparent); border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+/* A row flag under the status pill for something that needs the buyer (e.g. a vendor's new time). */
+.buyer .row-flag { display: inline-flex; align-items: center; gap: 5px; margin: 4px 0 0 14px; font-size: 12px; font-weight: 600; color: #b45309; white-space: nowrap; }
+.buyer .row-flag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
+.dark .buyer .row-flag, .buyer.dark .row-flag { color: #fcd34d; }

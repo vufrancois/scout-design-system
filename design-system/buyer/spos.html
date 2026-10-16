@@ -193,14 +193,14 @@
   function statCards(t, rows) {
     const el = document.getElementById('stat-cards');
     const card = (key, cls, icon, title, n, desc) => '<div class="stat-card-colored ' + cls + (cardFilter === key ? ' active' : '') + '" onclick="setCard(\'' + key + '\')"><span class="stat-card-title">' + icon + title + '</span><div class="stat-card-count">' + n + '</div><div class="stat-card-desc">' + desc + '</div></div>';
-    const g = k => rows.filter(s => SPO.STATES[s.state].group === k).length;
+    const g = k => rows.filter(s => groupOf(s) === k).length;
     el.style.gridTemplateColumns = '';
     if (t === 'open') {
       el.className = 'kpi-grid';
       el.innerHTML = card('all', 'stat-gray', IC.wrench, 'Total Open', rows.length, 'Not yet invoiced') +
-        card('you', 'stat-amber', IC.pen, 'Your Move', g('you'), 'Drafts, approvals & rebids') +
+        card('you', 'stat-amber', IC.pen, 'Your Move', g('you'), 'Drafts, approvals, rebids & new times') +
         card('vendor', 'stat-sky', IC.send, 'With Vendor', g('vendor'), 'Waiting on their invoice') +
-        card('rejected', 'stat-rose', IC.x, 'Vendor Rejected', g('rejected'), 'Choose another vendor');
+        card('rejected', 'stat-rose', IC.x, 'Vendor Rejected', g('rejected'), 'Rebid with another vendor');
     } else if (t === 'invoices') {
       el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(3, 1fr)';
       el.innerHTML = card('all', 'stat-gray', IC.doc, 'Total Invoices', rows.length, 'Invoice received') +
@@ -214,6 +214,8 @@
     }
   }
 
+  /* Whose move a row is: by state, except a vendor's new time, which is yours. */
+  const groupOf = s => SPO.needsTime(s) ? 'you' : SPO.STATES[s.state].group;
   function pill(s) { const st = SPO.STATES[s.state]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; }
   function allocChips(l, prop) {
     return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
@@ -238,7 +240,7 @@
     const rows = scoped(TABS.find(x => x.id === t).states);
     statCards(t, rows);
 
-    let list = rows.filter(s => cardFilter === 'all' || SPO.STATES[s.state].group === cardFilter);
+    let list = rows.filter(s => cardFilter === 'all' || groupOf(s) === cardFilter);
     const sortVal = s => sortK === 'num' ? s.id : sortK === 'total' ? SPO.total(s) : sortK === 'prop' ? propName(s.prop)
       : sortK === 'vendor' ? SPO.VEN[s.v].name : sortK === 'status' ? SPO.STATES[s.state].rank : s.ev.created;
     list = list.slice().sort((a, b) => { const va = sortVal(a), vb = sortVal(b); const d = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb)); return d * sortDir || b.id - a.id; });
@@ -249,7 +251,7 @@
     const cols = th('num', 'SPO #') + th('prop', 'Property', ' col-hide') + th('vendor', 'Vendor') + th('total', 'Total') + th('status', 'Status') + th('date', 'Created');
     const body = slice.map(s => {
       const isOpen = openRows.has(s.id);
-      const act = ACTION[s.state];
+      const act = SPO.needsTime(s) ? ['Review new time', x => 'spo.html#' + x.id + '/time'] : ACTION[s.state];
       const action = act ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + act[1](s) + '">' + act[0] + '</a>' : rowMenu(s);
       const main = '<tr class="data-row">' +
         '<td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(' + s.id + ')" title="Line items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
@@ -258,7 +260,7 @@
         (s.state === 'rebid' ? '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px;border-style:dashed">?</span><span class="nm" style="color:var(--muted-foreground)">Needs a vendor<span style="display:block;font-size:12px">Rebid of SPO-' + s.rebidOf + '</span></span></span></td>'
           : '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + SPO.ini(s.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[s.v].name + '">' + SPO.VEN[s.v].name + '</span></span></td>') +
         '<td class="num" style="font-weight:600">' + money(SPO.total(s)) + '</td>' +
-        '<td>' + pill(s) + '</td>' +
+        '<td>' + pill(s) + (SPO.needsTime(s) ? '<div class="row-flag">New time proposed</div>' : '') + '</td>' +
         '<td style="white-space:nowrap;color:var(--muted-foreground)">' + fmtD(s.ev.created) + '</td>' +
         '<td>' + action + '</td></tr>';
       const items = isOpen ? '<tr class="items-block"><td colspan="8"><div class="items-label">Scope</div><p class="spo-scope spo-exp-scope">' + s.scope + '</p><div class="items-label">Line Items</div>' +

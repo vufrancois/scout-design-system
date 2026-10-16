@@ -301,6 +301,9 @@
   /* The vendor's email link only counts until an invoice arrives — a late reject can't undo billed work. */
   /* Rebid (10/16/2026): cancel this SPO and start a copy for another vendor. Only once a PO went out and
      before an invoice exists — a draft just changes its vendor; an invoiced SPO is disputed instead. */
+  /* A vendor's counter-proposal makes an Awaiting Invoice SPO the buyer's move (10/16/2026): the list, its
+     Your Move count and Home all treat it as yours until you accept the time or propose another. */
+  const needsTime = s => s.state === 'invoice' && !!s.appt && s.appt.status === 'countered';
   const canRebid = s => s.state === 'rejected' || (s.state === 'invoice' && !s.invoice);
   const canRespond = s => s.state === 'invoice' && !s.ev.accepted && !s.ev.rejected;
   /* Only an answer the buyer recorded can be changed — never the vendor's own click. */
@@ -589,5 +592,5 @@
 
   window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

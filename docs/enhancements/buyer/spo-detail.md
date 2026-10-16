@@ -165,7 +165,7 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 **What shipped**
 - **Wizard Scope step** (moved from Review on 10/16/2026, per Vu, to match production): an optional **Schedule service** switch card under Spend period. On: Start date + Start time (required — Continue waits for them), End date (defaults to the start date) + End time (optional); the property time zone is read-only (no picker — every property has one). Off or empty = the PO says "Vendor to propose a time". Review shows a **Service time** fact row with Edit/Add. If the SPO is then made recurring, runs use the schedule's day and time instead.
 - **SPO page:** a **Service appointment** card under the Next-Task Strip: No time yet (Propose a time) · Proposed (Change proposed time) · **New time proposed** · Confirmed (Propose a new time + add to calendar: .ics for Apple/Outlook, link for Google). After the SPO moves on, the card is read-only ("proposed, never confirmed" when it never was).
-- **Vendor proposes a new time** (decision A: this also counts as accepting the PO — "Accepted · new time proposed"). Made visible four ways: the card's amber edge, **Updated by vendor** badge and struck-through old time; the strip becomes your move (**Accept new time** / **Propose another**); a **Needs action** notification that clears itself once answered; Activity (old → new). Not on list rows; the list has an **Appointment** filter.
+- **Vendor proposes a new time** (decision A: this also counts as accepting the PO — "Accepted · new time proposed"). Made visible four ways: the card's amber edge, **Updated by vendor** badge and struck-through old time; the strip becomes your move (**Accept new time** / **Propose another**); a **Needs action** notification that clears itself once answered; Activity (old → new). On the SPO list the row becomes your move (flag + Review new time; counts in Your Move) — added 10/16/2026 after team feedback.
 - **I spoke to the vendor → Accepted** offers "They also confirmed the proposed time".
 - A rejection clears the appointment; **Change Vendor** re-proposes the same time to the new vendor.
 - **Schedule runs:** "Confirmed by the schedule" at the series' day and time.
@@ -199,8 +199,8 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 - [ ] The Next-Task Strip becomes the buyer's move: Accept new time (→ Confirmed) or Propose another (→ Proposed).
 - [ ] A Needs-action notification ("<vendor> proposed a new time for SPO-###") links to the card and clears itself once answered.
 - [ ] The vendor response reads "Accepted · new time proposed" (a counter-proposal counts as accepting the PO).
-- [ ] Not shown on SPO list rows.
-**Files:** `buyer/spo.html` (`taskStrip`, `acceptNewTime`), `buyer/notif.js` ("Vendor proposed a new time"), `buyer/spo-data.js` (`resp`, `buildLog`)
+- [ ] On the SPO list the row is the buyer's move: an amber "New time proposed" flag under the status, the primary Review new time (→ `#<id>/time`), and it counts in Your Move on the list and Home until answered (team feedback, 10/16/2026 — the original "not on list rows" call left the buyer no way to see it there).
+**Files:** `buyer/spo.html` (`taskStrip`, `acceptNewTime`), `buyer/notif.js` ("Vendor proposed a new time"), `buyer/spo-data.js` (`resp`, `buildLog`, `needsTime`), `buyer/spos.html` (`groupOf`, row flag + primary), `buyer/home.html`, `buyer/buyer-components.css` (`.row-flag`)
 
 ## Addendum · Rebid replaces Change Vendor (10/16/2026)
 

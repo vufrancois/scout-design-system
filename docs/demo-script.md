@@ -62,6 +62,9 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Pending Approval | `#864` | Strip → Review in Approvals; `approval.html#SPO-864` shows Service PO lines + Approve → the SPO goes to the vendor and lands on Awaiting Invoice; the **Admin** badge drops 3 → 2 |
 | Sent · no response | `#863` | Nothing waits on the vendor: Awaiting Invoice with **Upload invoice** available now; the Sent step's label reads **No response** (grey, not amber) |
 | I spoke to the vendor | `#863/respond` | "What did Pride Carpet Care say?" → Accepted (label turns emerald), Rejected (SPO moves to Vendor Rejected) or No response. **Change their answer** edits it |
+| Appointment · proposed | `#863` | **Service appointment** card: Thu 08/27 · 9:00 AM – 12:00 PM, sent with the PO, waiting on the vendor. **I spoke to the vendor** → Accepted with "They also confirmed the proposed time" → Confirmed + add-to-calendar |
+| Appointment · new time from vendor | `#860` | The vendor proposed Mon 08/31 instead of Thu 08/27: the strip is your move (**Accept new time** / **Propose another**), the card shows **Updated by vendor** with the old time struck through, the bell has the action item, and the vendor response reads "Accepted · new time proposed". Accept → Confirmed, the bell drops by one |
+| Appointment · none yet | `#859` | "No time proposed yet" → **Propose a time** (errors only after Send) |
 | Recorded acceptance | `#862` | Seeded buyer-recorded acceptance — compare with `#860`, accepted by the vendor's own click |
 | Invoice with no response | `#857` | The vendor never replied but invoiced anyway: still **No response** (never inferred); Activity says so. List filter **Vendor response → No response** finds 859 and 842 too |
 | Vendor Rejected | `#861` | The one reply that changes state: the Invoice step **halts** in rose; the strip quotes the vendor; **Change Vendor** searches 1,272 approved vendors (type "plumbing" or "acadian rooter"; same-trade, used-before vendors suggested first) and re-sends the PO; activity dots turn rose for the rejection |
@@ -105,9 +108,9 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 
 | Do | What to show |
 |---|---|
-| Open the bell on any page | Badge **10** = Needs action count = page header — one number everywhere; Today / Yesterday / Earlier |
+| Open the bell on any page | Badge **11** = Needs action count = page header — one number everywhere; Today / Yesterday / Earlier |
 | Click "Bayou Plumbing & Drain rejected SPO-861" | Deep-links to Change Vendor; the row marks itself read |
-| Approve `approval.html#SPO-864` | The action item **clears itself** (badge 10 → 9) — read or not; in All it shows **Done** |
+| Approve `approval.html#SPO-864` | The action item **clears itself** (badge 11 → 10) — read or not; in All it shows **Done** |
 | `notifications.html` → All | "12 orders confirmed today" is one expandable row; filters by type; Unread only |
 | Settings → turn Orders off | Order items leave the feed and the bell |
 

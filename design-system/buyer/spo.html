@@ -131,6 +131,7 @@
     ban: SVG + '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>',
     copy: SVG + '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
     dl: SVG + '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
+    cal: SVG + '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>',
     upload: SVG + '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>',
     refresh: SVG + '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>',
     split: SVG + '<path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>',
@@ -201,7 +202,8 @@
       case 'approval': return st('action', IC.shield, 'Supervisor approval', (SPO.total(s) > SPO.APPROVAL_LIMIT ? 'Over ' + money(SPO.APPROVAL_LIMIT) : 'Over the GL budget') + ' — nothing goes to the vendor until a Supervisor approves it.', btn('Review in Approvals', "location.href='approval.html#SPO-" + s.id + "'", 'btn-primary', IC.shield));
       case 'rejected': return st('danger', IC.x, 'Vendor rejected · choose another vendor', s.reject && s.reject.by ? s.reject.by + ' recorded ' + v.name + '’s rejection on ' + SPO.fmtDate(s.ev.rejected) + '.' : v.name + ': “' + (s.reject ? s.reject.reason : '') + '”', (SPO.canEditResp(s) ? btn('Change their answer', 'openRecordResp()', '') : '') + btn('Cancel SPO', 'openCancel()', '') + btn('Change Vendor', 'openChangeVendor()', 'btn-primary', IC.swap));
       case 'invoice': if (s.disputed) return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Corrected invoice', 'You disputed ' + s.disputed.num + ': \u201C' + s.disputed.reason + '\u201D ' + v.name + ' is correcting and resubmitting it.', btn('Upload invoice', 'openUpload()', '', IC.upload));
-        { const r = SPO.resp(s);
+        { const r = SPO.resp(s), ap = SPO.appt(s);
+          if (ap && ap.status === 'countered') return st('action', IC.cal, v.name + ' proposed a new time', 'Was ' + SPO.fmtAppt(ap.prev) + '. Now ' + SPO.fmtAppt(ap) + '. Accept it, or propose another time.', btn('Propose another', "openTime('another')", '', IC.cal) + btn('Accept new time', 'acceptNewTime()', 'btn-primary', IC.check));
           if (r.kind === 'accepted') return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Invoice', (r.by === 'buyer' ? s.ack.by + ' recorded ' + v.name + '’s acceptance on ' : v.name + ' accepted on ') + SPO.fmtDate(s.ev.accepted) + '. Their invoice will arrive by email — or upload it here if they sent it to you.', (SPO.canEditResp(s) ? btn('Change their answer', 'openRecordResp()', '') : '') + btn('Upload invoice', 'openUpload()', '', IC.upload));
           return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Invoice', 'PO sent to ' + v.email + ' on ' + SPO.fmtDate(s.ev.sent) + ' · no response from the vendor yet. You don’t need one to continue — upload their invoice when it arrives.', btn('I spoke to the vendor', 'openRecordResp()', '', IC.check) + btn('Upload invoice', 'openUpload()', '', IC.upload)); }
       case 'mapping': if (inv.extractFailed) return st('action', IC.warn, 'Invoice ' + inv.num + ' needs attention', 'Scout AI couldn\u2019t read its line items \u2014 retry the extraction or enter the lines from the PDF.', btn('Open invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
@@ -243,7 +245,7 @@
         (!s.series ? '<button class="btn" onclick="location.href=\'spo-new.html#recurring-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + REP + '</span>Make recurring</button>' : '') +
         '<button class="btn" onclick="location.href=\'spo-new.html#clone-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + IC.copy + '</span>Clone SPO</button>' +
         (CANCELABLE.indexOf(s.state) >= 0 && s.state !== 'rejected' ? '<button class="btn btn-outline-rose" onclick="openCancel()">Cancel SPO</button>' : '') + '</div></div>';
-      main += taskStrip(s);
+      main += taskStrip(s) + apptCard(s);
     }
 
     main += '<div class="card"><div class="det-card-head hd"><h2>Scope of work</h2></div><p class="spo-scope" style="margin-top:8px">' + s.scope + '</p></div>';
@@ -291,6 +293,7 @@
     if ((sub === 'respond' || sub === 'accept') && (SPO.canRespond(s) || SPO.canEditResp(s))) setTimeout(openRecordResp, 120);
     if (sub === 'invoice' && s.state === 'mapping') setTimeout(openInvoiceMap, 150);
     if (sub === 'accounting' && s.state === 'ready') setTimeout(openAccounting, 150);
+    if (sub === 'time') setTimeout(() => { const c = document.getElementById('appt-card'); if (c) { c.scrollIntoView({ block: 'center', behavior: 'smooth' }); c.classList.add('flash'); setTimeout(() => c.classList.remove('flash'), 1600); } }, 150);
   }
 
   function invoiceTotals(s) {
@@ -384,6 +387,7 @@
     s.v = pickVen; s.state = 'invoice'; s.prevReject = s.reject; delete s.reject; s.ev.sent = SPO.now(); delete s.ev.rejected; delete s.ev.accepted; delete s.ack;
     SPO.log(s, 'Vendor changed', old + ' rejected · reassigned to ' + ven(s).name);
     SPO.log(s, 'Sent to vendor', 'PO emailed to ' + ven(s).email);
+    if (s.appt && s.appt.start) { s.appt = { status: 'proposed', start: s.appt.start, end: s.appt.end, by: 'buyer', at: SPO.now() }; SPO.log(s, 'Service time proposed', SPO.fmtAppt(s.appt) + ' · to ' + ven(s).name); }
     SPO.save(s); closeModal('vendor-ov'); renderPage();
     showToast('Sent to ' + ven(s).name, 'SPO-' + s.id + ' is waiting on their invoice.');
   }
@@ -405,22 +409,107 @@
       .concat([['none', IC.hand, 'No response', editing ? 'Clear what was recorded.' : 'They haven’t answered yet. You can still upload their invoice.']]);
     modal('resp-ov', '<div class="val-modal" style="width:500px"><div class="val-head"><h2>What did ' + ven(s).name + ' say?</h2><p>' + (editing ? 'Change the answer you recorded for SPO-' + s.id + '.' : 'Record their answer about SPO-' + s.id + ' if they told you outside Scout, by phone, email or in person.') + ' It shows as recorded by you.</p></div>' +
       '<div class="val-body" style="padding:12px 24px 4px">' + opts.map(([k, ic, name, desc]) => '<button class="opt-row resp-opt ' + k + (k === cur ? ' selected' : '') + '" id="ro-' + k + '" onclick="pickResp(\'' + k + '\')"><span class="opt-ic">' + ic + '</span><span class="opt-body"><span class="opt-name">' + name + '</span><span class="opt-desc">' + desc + '</span></span><span class="opt-radio">' + IC.check + '</span></button>').join('') + '</div>' +
+      (s.appt && s.appt.status === 'proposed' ? '<label class="check-row" id="resp-time" style="margin:4px 24px 12px;' + (cur === 'accepted' ? '' : 'display:none') + '"><input type="checkbox" id="resp-time-cb" checked><span>They also confirmed the proposed time<span class="hint">' + SPO.fmtAppt(s.appt) + '</span></span></label>' : '') +
       '<div class="val-foot"><button class="btn" onclick="closeModal(\'resp-ov\')">Cancel</button><button class="btn btn-primary" id="resp-go" disabled onclick="confirmRecordResp()">Save response</button></div></div>');
   }
   function pickResp(k) {
     respPick = k;
     document.querySelectorAll('#resp-ov .opt-row').forEach(b => b.classList.toggle('selected', b.id === 'ro-' + k));
     document.getElementById('resp-go').disabled = k === SPO.resp(S).kind;
+    const tr = document.getElementById('resp-time'); if (tr) tr.style.display = k === 'accepted' ? '' : 'none';
   }
   function confirmRecordResp() {
     const s = S, k = respPick, me = 'Alicia Grant';
     if (!k || k === SPO.resp(s).kind || !(SPO.canRespond(s) || SPO.canEditResp(s))) return;
     delete s.ack; delete s.reject; delete s.ev.accepted; delete s.ev.rejected; s.state = 'invoice';
-    if (k === 'accepted') { s.ack = { by: me }; s.ev.accepted = SPO.now(); SPO.log(s, 'Acceptance recorded', 'by ' + me, true); }
+    if (k === 'accepted') { s.ack = { by: me }; s.ev.accepted = SPO.now(); SPO.log(s, 'Acceptance recorded', 'by ' + me, true);
+      const cb = document.getElementById('resp-time-cb');
+      if (cb && cb.checked && s.appt && s.appt.status === 'proposed') { s.appt.status = 'confirmed'; s.appt.confirmedAt = SPO.now(); SPO.log(s, 'Service time confirmed', SPO.fmtAppt(s.appt) + ' · recorded by ' + me, true); } }
     else if (k === 'rejected') { s.reject = { by: me }; s.ev.rejected = SPO.now(); s.state = 'rejected'; SPO.log(s, 'Rejection recorded', 'by ' + me, false, true); }
     else SPO.log(s, 'Response cleared', 'by ' + me + ' · back to No response');
     SPO.save(s); closeModal('resp-ov'); renderPage();
     showToast(k === 'none' ? 'Response cleared' : (k === 'accepted' ? 'Acceptance' : 'Rejection') + ' recorded', ven(s).name + ' · SPO-' + s.id);
+  }
+  /* ===================== Service appointment ===================== */
+  function apptCard(s) {
+    const a = SPO.appt(s); if (!a) return '';
+    const live = s.state === 'invoice', v = ven(s), st = SPO.APPT[a.status];
+    if (!live && a.status === 'none') return '';
+    const pill = '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + (a.by === 'series' ? 'Confirmed by the schedule' : st.label) + '</span></span>';
+    let body = '', acts = '';
+    if (a.status === 'none') {
+      body = '<div class="appt-when muted">No time proposed yet</div><div class="appt-sub">' + v.name + ' can propose one when they reply, or you can propose one now.</div>';
+      if (live) acts = btn2('Propose a time', "openTime('new')", 'btn-primary');
+    } else if (a.status === 'countered') {
+      body = '<div class="appt-was">' + SPO.fmtAppt(a.prev) + '</div><div class="appt-when">' + SPO.fmtAppt(a) + '</div>' +
+        '<div class="appt-sub"><span class="appt-upd">Updated by vendor</span>' + v.name + ' proposed this on ' + SPO.fmtDate(a.at) + ' · ' + SPO.TZ + '</div>';
+      /* Accept / Propose another live in the next-task strip above — the card shows what changed. */
+    } else {
+      body = '<div class="appt-when">' + SPO.fmtAppt(a) + '</div><div class="appt-sub">' + SPO.TZ + ' · ' +
+        (a.by === 'series' ? 'the schedule’s day and time' : a.status === 'confirmed' ? (s.ack && a.confirmedAt ? 'confirmed with ' + v.name + ', recorded by ' + s.ack.by : 'confirmed by ' + v.name) : live ? 'sent with the PO · waiting on ' + v.name : 'proposed, never confirmed by ' + v.name) + '</div>';
+      if (live && a.by !== 'series') acts = btn2(a.status === 'confirmed' ? 'Propose a new time' : 'Change proposed time', "openTime('change')", '');
+    }
+    const cal = a.status === 'confirmed' && a.start >= SPO.TODAY ? '<div class="appt-cal"><span class="lbl">Add to calendar</span>' +
+      '<button class="btn btn-sm" onclick="addToCal(\'ics\')">Apple / iCal</button><button class="btn btn-sm" onclick="addToCal(\'ics\')">Outlook</button><a class="btn btn-sm" style="text-decoration:none" target="_blank" rel="noopener" href="' + gcalUrl(s, a) + '">Google Calendar</a></div>' : '';
+    return '<div class="card appt-card' + (a.status === 'countered' ? ' countered' : '') + '" id="appt-card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.cal + '</span>Service appointment</h2>' + pill + '</div>' +
+      '<div class="appt-body"><div style="min-width:0">' + body + '</div>' + (acts ? '<div class="appt-acts">' + acts + '</div>' : '') + '</div>' + cal + '</div>';
+  }
+  const btn2 = (label, onclick, kind) => '<button class="btn' + (kind ? ' ' + kind : '') + '" style="white-space:nowrap" onclick="' + onclick + '">' + label + '</button>';
+  const icsStamp = v => v.replace(/[-:]/g, '') + '00';
+  function gcalUrl(s, a) {
+    const end = a.end || a.start;
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('SPO-' + s.id + ' · ' + ven(s).name) + '&dates=' + icsStamp(a.start) + '/' + icsStamp(end) + '&ctz=America/Chicago&details=' + encodeURIComponent(s.scope) + '&location=' + encodeURIComponent(propOf(s).name);
+  }
+  function addToCal() {
+    const s = S, a = SPO.appt(s), end = a.end || a.start;
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Scout//Service PO//EN', 'BEGIN:VEVENT', 'UID:spo-' + s.id + '@scout.example', 'DTSTAMP:' + icsStamp(SPO.now().replace(' ', 'T')),
+      'DTSTART;TZID=America/Chicago:' + icsStamp(a.start), 'DTEND;TZID=America/Chicago:' + icsStamp(end), 'SUMMARY:SPO-' + s.id + ' · ' + ven(s).name, 'LOCATION:' + propOf(s).name, 'DESCRIPTION:' + s.scope.replace(/[,;]/g, ' '), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), link = document.createElement('a');
+    link.href = url; link.download = 'SPO-' + s.id + '.ics'; document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Calendar file downloaded', 'SPO-' + s.id + '.ics opens in Apple Calendar or Outlook.');
+  }
+  /* Propose a time: date, start, optional end (no duration). Errors appear only after Send. */
+  let timeMode = 'new';
+  function openTime(mode) {
+    const s = S, a = SPO.appt(s) || {}; timeMode = mode;
+    const src = mode === 'another' ? {} : (a.start ? a : {});
+    const d = src.start ? src.start.slice(0, 10) : '', tm = src.start ? src.start.slice(11) : '', ed = src.end ? src.end.slice(0, 10) : '', et = src.end ? src.end.slice(11) : '';
+    const multi = !!(ed && ed !== d);
+    const title = mode === 'another' ? 'Propose another time' : mode === 'change' ? (a.status === 'confirmed' ? 'Propose a new time' : 'Change the proposed time') : 'Propose a service time';
+    modal('time-ov', '<div class="val-modal" style="width:520px"><div class="val-head"><h2>' + title + '</h2><p>' + ven(s).name + ' gets it by email and confirms it, or proposes another time. Times are in the property’s time zone: ' + SPO.TZ + '.</p></div>' +
+      '<div class="val-body" style="padding:16px 24px 6px"><div class="time-grid">' +
+      '<div class="w-field"><label for="tm-d">Date</label><input type="date" class="text-in" id="tm-d" value="' + d + '" min="' + SPO.TODAY + '"></div>' +
+      '<div class="w-field"><label for="tm-s">Start time</label><input type="time" class="text-in" id="tm-s" value="' + tm + '" step="900"></div>' +
+      '<div class="w-field" id="tm-ed-f" style="' + (multi ? '' : 'display:none') + '"><label for="tm-ed">End date</label><input type="date" class="text-in" id="tm-ed" value="' + (multi ? ed : '') + '" min="' + SPO.TODAY + '"></div>' +
+      '<div class="w-field"><label for="tm-e">End time <span class="opt">· optional</span></label><input type="time" class="text-in" id="tm-e" value="' + et + '" step="900"></div></div>' +
+      '<label class="check-row" style="margin-top:4px"><input type="checkbox" id="tm-multi"' + (multi ? ' checked' : '') + ' onchange="document.getElementById(\'tm-ed-f\').style.display = this.checked ? \'\' : \'none\'"><span>Ends on a different day</span></label>' +
+      '<div class="time-err" id="tm-err" hidden></div></div>' +
+      '<div class="val-foot"><button class="btn" onclick="closeModal(\'time-ov\')">Cancel</button><button class="btn btn-primary" onclick="sendTime()">Send to ' + ven(s).name + '</button></div></div>');
+  }
+  function sendTime() {
+    const s = S, g = id => (document.getElementById(id).value || '').trim();
+    const d = g('tm-d'), tm = g('tm-s'), multi = document.getElementById('tm-multi').checked, ed = multi ? g('tm-ed') : d, et = g('tm-e');
+    const errs = [];
+    if (!d) errs.push('Choose a date.'); else if (d < SPO.TODAY) errs.push('Choose today or a later date.');
+    if (!tm) errs.push('Choose a start time.');
+    if (multi && !ed) errs.push('Choose an end date, or untick “Ends on a different day”.');
+    if (multi && !et) errs.push('Choose an end time for work that spans days.');
+    if (d && tm && et && (ed + 'T' + et) <= (d + 'T' + tm)) errs.push('The end must be after the start.');
+    const box = document.getElementById('tm-err');
+    if (errs.length) { box.hidden = false; box.innerHTML = errs.join('<br>'); return; }
+    const prev = s.appt && s.appt.start ? { start: s.appt.start, end: s.appt.end } : null;
+    s.appt = { status: 'proposed', start: d + 'T' + tm, end: et ? ed + 'T' + et : undefined, by: 'buyer', at: SPO.now() };
+    if (!s.appt.end) delete s.appt.end;
+    SPO.log(s, prev ? 'New time proposed' : 'Service time proposed', (prev ? SPO.fmtAppt(prev) + ' → ' : '') + SPO.fmtAppt(s.appt) + ' · by Alicia Grant');
+    SPO.save(s); closeModal('time-ov'); renderPage();
+    showToast('Time sent to ' + ven(s).name, SPO.fmtAppt(s.appt));
+  }
+  function acceptNewTime() {
+    const s = S; if (!s.appt || s.appt.status !== 'countered') return;
+    s.appt.status = 'confirmed'; s.appt.confirmedAt = SPO.now();
+    SPO.log(s, 'New time accepted', SPO.fmtAppt(s.appt) + ' · by Alicia Grant', true);
+    SPO.save(s); renderPage();
+    showToast('Appointment confirmed', SPO.fmtAppt(s.appt));
   }
   function resendPO() { SPO.log(S, 'PO resent', 'to ' + ven(S).email); SPO.save(S); renderPage(); showToast('PO resent', ven(S).email); }
 

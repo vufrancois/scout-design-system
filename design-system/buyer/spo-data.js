@@ -2,7 +2,7 @@
    One source of truth so the list, detail, Home and Approvals counts always reconcile.
    Seeds + a localStorage overlay (live transitions persist across pages). */
 (function () {
-  const KEY = 'scout-spos-v5';
+  const KEY = 'scout-spos-v6';
   const SKEY = 'scout-schedules-v1';
   const TODAY = '2026-08-24';
   const APPROVAL_LIMIT = 2500;
@@ -103,11 +103,13 @@
     { id: 863, state: 'invoice', prop: 'magnolia', v: 'PC', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Hot-water extraction carpet cleaning in two vacant 2 BR units.',
       lines: [L('Carpet cleaning, 2 BR', 1, 180, [A('6035', '0102', 180)]), L('Carpet cleaning, 2 BR', 1, 180, [A('6035', '0105', 180)])],
+      appt: { status: 'proposed', start: '2026-08-27T09:00', end: '2026-08-27T12:00', by: 'buyer', at: '2026-08-22 14:03' },
       ev: { created: '2026-08-22 14:02', sent: '2026-08-22 14:03' } },
     { id: 862, state: 'invoice', prop: 'cypress', v: 'DE', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Diagnose and repair tripping GFCI kitchen circuits in two units.',
       lines: [L('GFCI circuit repair (2 units)', 1, 320, [A('6075', '0108', 160), A('6075', '0111', 160)])],
       ack: { by: 'Alicia Grant' },
+      appt: { status: 'confirmed', start: '2026-08-26T13:00', end: '2026-08-26T15:00', by: 'buyer', at: '2026-08-21 10:16', confirmedAt: '2026-08-21 15:40' },
       ev: { created: '2026-08-21 10:15', sent: '2026-08-21 10:16', accepted: '2026-08-21 15:40' } },
     { id: 861, state: 'rejected', prop: 'bayou', v: 'BP', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Hydro-jet and clear the main sewer line between Buildings 01 and 02.',
@@ -117,7 +119,8 @@
     { id: 860, state: 'invoice', prop: 'magnolia', v: 'GP', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Interior repaint of a vacant 3 BR: walls, ceilings and trim.',
       lines: [L('Interior repaint, 3 BR', 1, 1100, [A('6140', '0303', 1100)])],
-      ev: { created: '2026-08-17 09:00', sent: '2026-08-17 09:01', accepted: '2026-08-18 07:45' } },
+      appt: { status: 'countered', start: '2026-08-31T10:00', end: '2026-08-31T15:00', prev: { start: '2026-08-27T08:00', end: '2026-08-27T16:00' }, by: 'vendor', at: '2026-08-23 10:20' },
+      ev: { created: '2026-08-17 09:00', sent: '2026-08-17 09:01', accepted: '2026-08-23 10:20' } },
     { id: 859, state: 'invoice', prop: 'heights', v: 'CC', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Deep clean the clubhouse and fitness center ahead of the resident event.',
       lines: [L('Clubhouse deep clean', 1, 320, [A('6045', 'COMMON', 320)]), L('Fitness center deep clean', 1, 160, [A('6045', 'COMMON', 160)])],
@@ -143,6 +146,7 @@
           { desc: 'Make-ready refresh — Unit 105', amt: 600, maps: [{ line: 3, amt: 600 }], conf: 'high' },
           { desc: 'Debris haul-off / dump fee', amt: 125, maps: [], conf: 'none' }
         ] },
+      appt: { status: 'proposed', start: '2026-08-12T08:00', end: '2026-08-12T17:00', by: 'buyer', at: '2026-08-08 09:14' },
       ev: { created: '2026-08-08 09:12', sent: '2026-08-08 09:14', invoiced: '2026-08-22 11:30' } },
     { id: 856, state: 'ready', prop: 'lonestar', v: 'AH', by: 'Alicia Grant', period: 'Jul 2026',
       scope: 'Recharge refrigerant and replace the run capacitor on the split system.',
@@ -278,13 +282,46 @@
       : { kind: 'rejected', at: e.rejected, by: 'vendor', label: 'Rejected by vendor', short: 'Rejected' };
     if (e.accepted) return s.ack
       ? { kind: 'accepted', at: e.accepted, by: 'buyer', label: 'Accepted · recorded by ' + s.ack.by.split(' ')[0], short: 'Accepted' }
-      : { kind: 'accepted', at: e.accepted, by: 'vendor', label: 'Accepted by vendor', short: 'Accepted' };
+      : s.appt && s.appt.status === 'countered' && s.appt.by === 'vendor'
+        ? { kind: 'accepted', at: e.accepted, by: 'vendor', label: 'Accepted · new time proposed', short: 'Accepted' }
+        : { kind: 'accepted', at: e.accepted, by: 'vendor', label: 'Accepted by vendor', short: 'Accepted' };
     return { kind: 'none', at: null, label: 'No response', short: 'No response' };
   }
   /* The vendor's email link only counts until an invoice arrives — a late reject can't undo billed work. */
   const canRespond = s => s.state === 'invoice' && !s.ev.accepted && !s.ev.rejected;
   /* Only an answer the buyer recorded can be changed — never the vendor's own click. */
   const canEditResp = s => (s.state === 'invoice' && !!s.ack) || (s.state === 'rejected' && !!(s.reject && s.reject.by));
+
+  /* Service appointment — a proposed time travels with the PO (10/16/2026). The vendor confirms it by
+     accepting the PO, or proposes another time (which also counts as accepting: they engaged and want the
+     work, just at a different time). Either side can propose again; a rejection clears it. Runs of a
+     schedule are confirmed by the series itself (its day and time). No duration — start, optional end. */
+  const TZ = 'Central Time (CT)';
+  const APPT = {
+    none:      { label: 'No time yet',        dot: 'dot-muted' },
+    proposed:  { label: 'Proposed',           dot: 'dot-revision' },
+    countered: { label: 'New time proposed',  dot: 'dot-pending' },
+    confirmed: { label: 'Confirmed',          dot: 'dot-approved' }
+  };
+  function appt(s) {
+    /* Nothing to show until the PO goes out; the wizard holds a draft's planned time. */
+    if (['draft', 'approval', 'rejected', 'canceled'].indexOf(s.state) >= 0) return null;
+    if (s.series && s.run) { const x = window.SCH && SCH.get(s.series); return { status: 'confirmed', start: s.run + 'T' + ((x && x.cadence.time) || '08:00'), by: 'series' }; }
+    if (s.appt) return s.appt;
+    return s.ev && s.ev.sent ? { status: 'none' } : null;
+  }
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  function t12(hm) { let [h, m] = hm.split(':').map(Number); const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return h + ':' + String(m).padStart(2, '0') + ' ' + ap; }
+  function dLong(d) { const dt = new Date(d + 'T12:00:00Z'); return WD[dt.getUTCDay()] + ', ' + MON[dt.getUTCMonth()] + ' ' + dt.getUTCDate() + ', ' + dt.getUTCFullYear(); }
+  /* "Thu, Aug 27, 2026 · 9:00 AM – 12:00 PM" · multi-day: "Thu, Aug 27, 2026 · 9:00 AM – Fri, Aug 28, 2026 · 5:00 PM" */
+  function fmtAppt(a) {
+    if (!a || !a.start) return '';
+    const [d, tm] = a.start.split('T');
+    if (!a.end) return dLong(d) + ' · ' + t12(tm);
+    const [d2, tm2] = a.end.split('T');
+    return d2 === d ? dLong(d) + ' · ' + t12(tm) + ' – ' + t12(tm2) : dLong(d) + ' · ' + t12(tm) + ' – ' + dLong(d2) + ' · ' + t12(tm2);
+  }
 
   function buildLog(s) {
     const e = s.ev || {}, v = VEN[s.v] || { name: s.v, email: '' };
@@ -295,8 +332,12 @@
     if (e.approvalReq) push(e.approvalReq, 'Sent for approval', (s.approval && s.approval.reason) || (total(s) > APPROVAL_LIMIT ? 'Over ' + money(APPROVAL_LIMIT) + ' · Supervisor sign-off' : 'Over the GL budget · Supervisor sign-off'));
     if (e.approved) push(e.approved, 'Approved', 'by ' + ((s.approval && s.approval.by) || 'Priya Nair') + ' (Supervisor)', true);
     if (!(s.series && e.sent === e.created)) push(e.sent, 'Sent to vendor', 'PO emailed to ' + v.email);
+    const ap = s.appt;
+    if (ap && ap.start && e.sent) push(e.sent, 'Service time proposed', fmtAppt(ap.prev || ap));
+    if (ap && ap.status === 'countered') push(ap.at, 'Vendor proposed a new time', fmtAppt(ap.prev) + ' → ' + fmtAppt(ap));
+    if (ap && ap.status === 'confirmed' && ap.confirmedAt) push(ap.confirmedAt, 'Service time confirmed', fmtAppt(ap), true);
     if (s.ack) push(e.accepted, 'Acceptance recorded', ackText(s), true);
-    else push(e.accepted, 'Vendor accepted', v.name, true);
+    else push(e.accepted, 'Vendor accepted', v.name + (s.appt && s.appt.status === 'countered' && s.appt.by === 'vendor' && s.appt.at === e.accepted ? ' · by proposing a new time' : ''), true);
     if (e.rejected) { if (s.reject && s.reject.by) push(e.rejected, 'Rejection recorded', 'by ' + s.reject.by, false, true); else push(e.rejected, 'Vendor rejected', '“' + ((s.reject && s.reject.reason) || '') + '”', false, true); }
     if (e.invoiced && s.invoice) push(e.invoiced, 'Invoice received', s.invoice.num + (s.invoice.extractFailed ? ' · Scout AI couldn’t read the line items' : ' · ' + money(invTotal(s))) + (e.accepted || e.rejected ? '' : ' · the vendor never responded to the PO'));
     push(e.mapped, 'Invoice mapped & validated', 'by Alicia Grant', true);
@@ -533,5 +574,5 @@
 
   window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, resp, canRespond, canEditResp, ackText, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, resp, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

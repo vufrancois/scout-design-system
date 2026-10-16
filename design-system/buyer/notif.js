@@ -50,6 +50,8 @@
         const by = (e.sub || '').indexOf('by ' + ME) >= 0;
         switch (e.t) {
           case 'Vendor rejected': out.push(Object.assign(base, { type: 'spo', kind: 'rejected', title: v.name + ' rejected ' + id, sub: e.sub ? 'Reason: ' + e.sub : 'Choose another vendor', link: 'spo.html#' + s.id + '/vendor', action: true, open: () => s.state === 'rejected', bad: true })); break;
+          /* A vendor's counter-proposal is your move until you accept it or propose another time. */
+          case 'Vendor proposed a new time': out.push(Object.assign(base, { type: 'spo', kind: 'newtime', title: v.name + ' proposed a new time for ' + id, sub: e.sub ? e.sub.split(' → ').pop() : '', link: 'spo.html#' + s.id + '/time', action: true, open: () => !!(s.appt && s.appt.status === 'countered') })); break;
           case 'Vendor accepted': out.push(Object.assign(base, { type: 'spo', kind: 'accepted', title: v.name + ' accepted ' + id, sub: 'Their invoice comes next', link: 'spo.html#' + s.id })); break;
           case 'Invoice received': if (by) break;
             out.push(Object.assign(base, { type: 'invoice', kind: 'invoice', title: s.invoice && s.invoice.extractFailed ? 'Scout AI couldn’t read the invoice for ' + id : 'Invoice to map for ' + id, sub: (e.sub || '') + ' · ' + v.name, link: 'spo.html#' + s.id + '/invoice', action: true, open: () => s.state === 'mapping', bad: !!(s.invoice && s.invoice.extractFailed) })); break;

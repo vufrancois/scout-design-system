@@ -158,3 +158,47 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 - [ ] Production: search runs server-side against the approved-vendor list for the property's company.
 **Files:** `buyer/spo.html` (`openChangeVendor`, `renderVenList`, `selectVen`), `buyer/spo-data.js` (directory, `ini`), `buyer/spo-new.html`, `buyer/spo-invoice.html`, `buyer/spos.html`, `buyer/buyer-components.css` (`.ven-results`, `.ven-head`, `.ven-empty`)
 
+## Addendum · Service appointment (10/16/2026)
+
+**Why:** the team wants a proposed time to go with the PO when it's sent, and the vendor may come back with another time, so the buyer needs to see that an update was made. References: production's "Propose a service appointment" dialog and "Service appointment · Confirmed" card. Kept: the card, Proposed/Confirmed, "Propose a new time", add-to-calendar, the property time zone. Changed: **no duration** (the team asked; it also duplicated the end time), no error text before the buyer tries to send, and no "status… unchanged" disclaimer (SPO-28).
+
+**What shipped**
+- **Wizard Review:** an optional **Service time** card (Date, Start, optional End, "Ends on a different day"). Empty = the PO says "Vendor to propose a time". Not shown for schedules (their runs take the series' day and time).
+- **SPO page:** a **Service appointment** card under the Next-Task Strip: No time yet (Propose a time) · Proposed (Change proposed time) · **New time proposed** · Confirmed (Propose a new time + add to calendar: .ics for Apple/Outlook, link for Google). After the SPO moves on, the card is read-only ("proposed, never confirmed" when it never was).
+- **Vendor proposes a new time** (decision A: this also counts as accepting the PO — "Accepted · new time proposed"). Made visible four ways: the card's amber edge, **Updated by vendor** badge and struck-through old time; the strip becomes your move (**Accept new time** / **Propose another**); a **Needs action** notification that clears itself once answered; Activity (old → new). Not on list rows; the list has an **Appointment** filter.
+- **I spoke to the vendor → Accepted** offers "They also confirmed the proposed time".
+- A rejection clears the appointment; **Change Vendor** re-proposes the same time to the new vendor.
+- **Schedule runs:** "Confirmed by the schedule" at the series' day and time.
+- **Follow-up (decision B):** show appointments on the Schedules Run Calendar.
+- **Seeds (store `scout-spos-v6`):** 863 proposed · 862 confirmed (recorded) · 860 new time from vendor · 859 no time yet · 857 proposed, never confirmed. The bell starts at **11**.
+
+### TKT-SPO-50 · Propose a service time with the PO
+**Summary:** The buyer can send a proposed time with the PO; no duration.
+**Acceptance criteria:**
+- [ ] The wizard's Review step has an optional Service time card: Date, Start time, optional End time, "Ends on a different day" (reveals End date); property time zone shown.
+- [ ] Left empty, the PO reads "Vendor to propose a time"; a date without a start time warns but doesn't block.
+- [ ] Sending (or approval) logs "Service time proposed" with the full time.
+- [ ] Schedules don't show the card; their runs use the series' day and time.
+**Files:** `buyer/spo-new.html` (`timeCard`, `setAppt`, `apptFromW`, `persist`), `buyer/spo-data.js` (`appt`, `fmtAppt`, `TZ`)
+
+### TKT-SPO-51 · Service appointment card and rescheduling
+**Summary:** One card shows the appointment's state; either side can propose a new time.
+**Acceptance criteria:**
+- [ ] States: No time yet · Proposed · New time proposed · Confirmed, each with a status pill and the full time in the property's time zone.
+- [ ] Propose a time / Change proposed time / Propose a new time open one dialog (Date, Start, optional End, multi-day); errors appear only after Send, one line per problem.
+- [ ] Confirmed shows add to calendar: .ics for Apple and Outlook, a Google Calendar link.
+- [ ] "I spoke to the vendor" → Accepted can confirm the proposed time; a rejection clears the appointment; Change Vendor re-proposes it.
+- [ ] Every change is logged in Activity with old → new.
+- [ ] The SPO list can filter by Appointment.
+**Files:** `buyer/spo.html` (`apptCard`, `openTime`, `sendTime`, `addToCal`, `gcalUrl`), `buyer/spos.html` (`setApptF`), `buyer/buyer-components.css` (`.appt-*`, `.time-grid`, `.check-row`)
+
+### TKT-SPO-52 · Show when the vendor proposes a new time
+**Summary:** A vendor's counter-proposal is visible and becomes the buyer's move.
+**Acceptance criteria:**
+- [ ] The card turns amber with "Updated by vendor", the date, and the old time struck through next to the new one.
+- [ ] The Next-Task Strip becomes the buyer's move: Accept new time (→ Confirmed) or Propose another (→ Proposed).
+- [ ] A Needs-action notification ("<vendor> proposed a new time for SPO-###") links to the card and clears itself once answered.
+- [ ] The vendor response reads "Accepted · new time proposed" (a counter-proposal counts as accepting the PO).
+- [ ] Not shown on SPO list rows.
+**Files:** `buyer/spo.html` (`taskStrip`, `acceptNewTime`), `buyer/notif.js` ("Vendor proposed a new time"), `buyer/spo-data.js` (`resp`, `buildLog`)
+

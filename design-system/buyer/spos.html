@@ -68,6 +68,7 @@
       </div>
       <button class="toolbar-btn toolbar-btn-ghost" id="filter-clear" style="display:none" onclick="clearFilters()">Clear all</button>
     </div>
+    <label class="grp-toggle" id="grp-toggle" style="display:none"><span>Group by invoice</span><button type="button" class="switch" id="grp-switch" role="switch" aria-checked="true" onclick="toggleGroupInv()"></button></label>
     <div class="search-wrap">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input class="search-field" id="spo-search" placeholder="Search SPO, vendor, scope, or unit…" oninput="page = 1; renderPage()">
@@ -170,6 +171,13 @@
   const vInit = v => v;
   let cardFilter = 'all', vendorF = null, respF = null, apptF = null, propF = null, dateDays = null, page = 1, sortK = 'date', sortDir = -1;
   const PER = 10;
+  /* Invoices and Closed tabs group SPOs that share one vendor invoice (TKT-SPO-58). On by default; the choice is remembered per viewer. */
+  let groupInv = true;
+  try { groupInv = localStorage.getItem('scout-spo-group-inv') !== 'off'; } catch (e) { /* noop */ }
+  /* Invoice groups start open; a chevron on the heading folds its SPOs away (kept while you page, sort and filter). */
+  const foldedInv = new Set();
+  function toggleInv(k) { k = decodeURIComponent(k); foldedInv.has(k) ? foldedInv.delete(k) : foldedInv.add(k); renderPage(); }
+  function toggleGroupInv() { groupInv = !groupInv; try { localStorage.setItem('scout-spo-group-inv', groupInv ? 'on' : 'off'); } catch (e) { /* noop */ } page = 1; renderPage(); }
   const openRows = new Set();
   const tab = () => { const t = (location.hash || '#open').replace('#', ''); return TABS.some(x => x.id === t) ? t : 'open'; };
   window.addEventListener('hashchange', () => { cardFilter = 'all'; page = 1; openRows.clear(); renderPage(); window.scrollTo(0, 0); });
@@ -243,35 +251,77 @@
     let list = rows.filter(s => cardFilter === 'all' || groupOf(s) === cardFilter);
     const sortVal = s => sortK === 'num' ? s.id : sortK === 'total' ? SPO.total(s) : sortK === 'prop' ? propName(s.prop)
       : sortK === 'vendor' ? SPO.VEN[s.v].name : sortK === 'status' ? SPO.STATES[s.state].rank : s.ev.created;
-    list = list.slice().sort((a, b) => { const va = sortVal(a), vb = sortVal(b); const d = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb)); return d * sortDir || b.id - a.id; });
-    const pages = Math.max(1, Math.ceil(list.length / PER));
+    const cmp = (va, vb) => typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
+    list = list.slice().sort((a, b) => cmp(sortVal(a), sortVal(b)) * sortDir || b.id - a.id);
+
+    /* Units: one per SPO, or one per invoice on the Invoices and Closed tabs. Every invoiced SPO sits under its invoice,
+       one-SPO invoices included, so the grouping reads the same on every row; SPOs with no invoice (canceled) stay plain.
+       A group pages and sorts as one unit; its SPOs stay in SPO order inside it. Filters still apply per SPO, and the
+       header says how many are hidden. */
+    const grouped = (t === 'invoices' || t === 'closed') && groupInv;
+    let units = list.map(s => ({ s }));
+    if (grouped) {
+      const by = {}; units = [];
+      list.forEach(s => {
+        if (!s.invoice) { units.push({ s }); return; }
+        const sh = s.invoice.shared, k = s.v + '|' + s.invoice.num;
+        if (!by[k]) units.push(by[k] = { key: k, inv: s.invoice, v: s.v, prop: s.prop, members: [], n: sh ? sh.spos.length : 1, total: sh ? sh.total : SPO.invTotal(s) });
+        by[k].members.push(s);
+      });
+      const uVal = u => !u.members ? sortVal(u.s) : sortK === 'total' ? u.total : sortK === 'num' ? Math.max.apply(null, u.members.map(m => m.id))
+        : sortK === 'date' ? u.members.map(m => m.ev.created).sort().pop() : sortVal(u.members[0]);
+      const uId = u => u.s ? u.s.id : u.members[0].id;
+      units.forEach(u => { if (u.members) u.members.sort((a, b) => a.id - b.id); });
+      units.sort((a, b) => cmp(uVal(a), uVal(b)) * sortDir || uId(b) - uId(a));
+    }
+    const pages = Math.max(1, Math.ceil(units.length / PER));
     if (page > pages) page = pages;
-    const slice = list.slice((page - 1) * PER, page * PER);
+    const slice = units.slice((page - 1) * PER, page * PER);
 
     const cols = th('num', 'SPO #') + th('prop', 'Property', ' col-hide') + th('vendor', 'Vendor') + th('total', 'Total') + th('status', 'Status') + th('date', 'Created');
-    const body = slice.map(s => {
+    const spoRow = (s, inGroup) => {
       const isOpen = openRows.has(s.id);
       const act = SPO.needsTime(s) ? ['Review new time', x => 'spo.html#' + x.id + '/time'] : ACTION[s.state];
       const action = act ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + act[1](s) + '">' + act[0] + '</a>' : rowMenu(s);
-      const main = '<tr class="data-row">' +
+      const main = '<tr class="data-row' + (inGroup ? ' inv-member' + (inGroup === 'last' ? ' last' : '') : '') + '">' +
         '<td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(' + s.id + ')" title="Line items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
-        '<td class="mono" style="font-weight:700;white-space:nowrap"><a class="table-link" style="font-family:inherit;font-weight:700" href="spo.html#' + s.id + '">SPO-' + s.id + '</a>' + recMark(s) + '</td>' +
+        '<td class="mono" style="font-weight:700;white-space:nowrap">' + (inGroup ? '<span class="inv-tree" aria-hidden="true"></span>' : '') + '<a class="table-link" style="font-family:inherit;font-weight:700" href="spo.html#' + s.id + '">SPO-' + s.id + '</a>' + recMark(s) + '</td>' +
         '<td class="col-hide cell-clip" title="' + propName(s.prop) + '">' + propName(s.prop) + '</td>' +
         (s.state === 'rebid' ? '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px;border-style:dashed">?</span><span class="nm" style="color:var(--muted-foreground)">Needs a vendor<span style="display:block;font-size:12px">Rebid of SPO-' + s.rebidOf + '</span></span></span></td>'
           : '<td><span class="cell-entity"><span class="v-avatar vt" style="width:28px;height:28px;border-radius:7px;font-size:10px;--vh:' + SPO.vh(s.v) + '">' + SPO.ini(s.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[s.v].name + '">' + SPO.VEN[s.v].name + '</span></span></td>') +
-        '<td class="num" style="font-weight:600">' + money(SPO.total(s)) + '</td>' +
+        (inGroup ? '<td class="num" style="font-weight:600">' + money(SPO.invTotal(s)) + '<span class="cell-sub">' + (s.invoice.shared ? 'Share · ' + s.invoice.shared.idx + ' of ' + s.invoice.shared.spos.length : 'Full invoice') + '</span></td>'
+          : '<td class="num" style="font-weight:600">' + money(SPO.total(s)) + '</td>') +
         '<td>' + pill(s) + (SPO.needsTime(s) ? '<div class="row-flag">New time proposed</div>' : '') + '</td>' +
         '<td style="white-space:nowrap;color:var(--muted-foreground)">' + fmtD(s.ev.created) + '</td>' +
         '<td>' + action + '</td></tr>';
       const items = isOpen ? '<tr class="items-block"><td colspan="8"><div class="items-label">Scope</div><p class="spo-scope spo-exp-scope">' + s.scope + '</p><div class="items-label">Line Items</div>' +
         s.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(l.qty * l.price) + '</span>' + allocChips(l, s.prop) + '</div>').join('') + '</td></tr>' : '';
       return main + items;
-    }).join('');
+    };
+    /* The invoice is the group heading, even for one SPO — no SPO is made to look like the parent of the others. */
+    const invRow = u => {
+      const n = u.n, hid = n - u.members.length, open = !foldedInv.has(u.key);
+      const states = Array.from(new Set(u.members.map(m => m.state)));
+      return '<tr class="inv-group' + (open ? '' : ' folded') + '">' +
+        '<td><button class="expander inv-caret' + (open ? ' open' : '') + '" onclick="toggleInv(\'' + encodeURIComponent(u.key) + '\')" aria-expanded="' + open + '" title="' + (open ? 'Hide' : 'Show') + ' SPOs on this invoice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></td>' +
+        '<td style="white-space:nowrap"><span class="mono" style="font-weight:700">' + u.inv.num + '</span><span class="cell-sub">' + (n > 1 ? 'Shared invoice · ' + n + ' SPOs' : 'Invoice · 1 SPO') + (hid ? ' · ' + hid + ' hidden by filters' : '') + '</span></td>' +
+        '<td class="col-hide cell-clip" title="' + propName(u.prop) + '">' + propName(u.prop) + '</td>' +
+        '<td><span class="cell-entity"><span class="v-avatar vt" style="width:28px;height:28px;border-radius:7px;font-size:10px;--vh:' + SPO.vh(u.v) + '">' + SPO.ini(u.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[u.v].name + '">' + SPO.VEN[u.v].name + '</span></span></td>' +
+        '<td class="num" style="font-weight:700">' + money(u.total) + '<span class="cell-sub">Invoice total</span></td>' +
+        '<td>' + (states.length === 1 ? pill(u.members[0]) : '<span class="status-dot-item"><span class="status-dot dot-muted"></span><span class="status-dot-label">Mixed</span></span>') + '</td>' +
+        '<td style="white-space:nowrap;color:var(--muted-foreground)">Invoiced ' + fmtD(u.inv.date) + '</td>' +
+        '<td><button class="btn btn-sm" style="white-space:nowrap" onclick="showToast(\'' + u.inv.num + ' (PDF)\', \'Demo action · the full invoice' + (n > 1 ? ', all ' + n + ' SPOs' : '') + '\')">Invoice PDF</button></td></tr>';
+    };
+    const body = slice.map(u => !u.members ? spoRow(u.s)
+      : invRow(u) + (foldedInv.has(u.key) ? '' : u.members.map((m, i) => spoRow(m, i === u.members.length - 1 ? 'last' : 'mid')).join(''))).join('');
+    const nSpo = units.reduce((a, u) => a + (u.members ? u.members.length : 1), 0), nInv = units.filter(u => u.members).length;
+    document.getElementById('grp-toggle').style.display = t === 'open' ? 'none' : '';
+    document.getElementById('grp-switch').setAttribute('aria-checked', String(groupInv));
 
     document.getElementById('tbl-zone').innerHTML = '<div class="tbl-wrap" style="margin-top:4px"><div style="overflow-x:auto"><table class="tbl">' +
       '<thead><tr><th style="width:36px"></th>' + cols + '<th style="width:1%"></th></tr></thead>' +
       '<tbody>' + (body || '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted-foreground)">No Service POs match the current filters.</td></tr>') + '</tbody></table></div>' +
-      (list.length > PER ? '<div class="pager"><span>Showing ' + ((page - 1) * PER + 1) + '–' + Math.min(page * PER, list.length) + ' of ' + list.length + ' SPOs</span><span class="pg-btns"><button class="btn btn-sm"' + (page <= 1 ? ' disabled' : '') + ' onclick="page--; renderPage()">Previous</button><button class="btn btn-sm"' + (page >= pages ? ' disabled' : '') + ' onclick="page++; renderPage()">Next</button></span></div>' : '') + '</div>';
+      (units.length > PER ? '<div class="pager"><span>Showing ' + ((page - 1) * PER + 1) + '–' + Math.min(page * PER, units.length) + ' of ' + units.length + (grouped && nInv ? ' rows · ' + nSpo + ' SPOs, ' + nInv + ' invoice' + (nInv === 1 ? '' : 's') : ' SPOs') + '</span><span class="pg-btns"><button class="btn btn-sm"' + (page <= 1 ? ' disabled' : '') + ' onclick="page--; renderPage()">Previous</button><button class="btn btn-sm"' + (page >= pages ? ' disabled' : '') + ' onclick="page++; renderPage()">Next</button></span></div>' : '') + '</div>';
 
     /* In-progress invoice intakes (one autosaved draft per vendor + invoice number) */
     let drafts = {}; try { drafts = JSON.parse(localStorage.getItem('scout-intake-v1')) || {}; } catch (e) { /* noop */ }

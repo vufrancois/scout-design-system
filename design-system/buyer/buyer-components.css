@@ -1928,3 +1928,12 @@
 .buyer .check-row input { margin-top: 3px; accent-color: var(--primary); }
 .buyer .check-row .hint { display: block; font-size: 12.5px; color: var(--muted-foreground); }
 .buyer .time-err { margin-top: 12px; font-size: 13px; color: var(--rose); line-height: 1.5; }
+/* Schedule service (wizard Scope step): a switch card nested in the scope card; fields appear when on. */
+.buyer .sched-card { margin-top: 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card); }
+.buyer .sched-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.buyer .sched-card.on .sched-head { border-bottom: 1px solid var(--border); }
+.buyer .sched-ic { width: 20px; height: 20px; color: var(--muted-foreground); display: inline-flex; flex-shrink: 0; }
+.buyer .sched-ic svg { width: 20px; height: 20px; }
+.buyer .sched-title { font-size: 15px; font-weight: 700; }
+.buyer .sched-sub { font-size: 13px; color: var(--muted-foreground); margin-top: 2px; }
+.buyer .sched-body { padding: 14px 16px 16px; background: color-mix(in srgb, var(--muted) 45%, transparent); border-radius: 0 0 var(--radius-lg) var(--radius-lg); }

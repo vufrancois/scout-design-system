@@ -86,7 +86,7 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Pending series approval | `#SCH-06` | `approval.html#SCH-06`: the request is the **12-month commitment** (12 × $420 = $5,040); Approve → series Active, runs need no further approval |
 | Paused | `#SCH-03` | Pause reason in the strip, **Resume schedule**; upcoming runs listed but marked as not running |
 | Ended | `#SCH-05` | Completed its 6 runs (Ended tab → Completed card) |
-| Make recurring (live) | `spo.html#866` → Make recurring | Wizard opens on Review with **Recurring** on: pick Weekly · Wednesday → preview shows 52 runs / $11,700 → Submit schedule for approval; SPO-866 becomes run 1 and links to the new series |
+| Make recurring (live) | `spo.html#866` → Make recurring | Wizard opens on **Scope** with **Repeat this SPO** on: pick Weekly · Wednesday → preview shows 52 runs / $11,700 → Submit schedule for approval; SPO-866 becomes run 1 and links to the new series |
 | Calendar view | `schedules.html` (opens on **Calendar**; also from Service POs → **Schedules**) | Month of runs across every schedule: Aug shows past runs as SPO chips (SPO-842/845/847/848/844) with status dots; **Next** → September: draft, auto-send, SCH-06 **pending** (amber, 09/15), SCH-04's 09/21 **skipped**. Click Wed 09/02 → **Skip this date** → it strikes through; toggle kinds and the trade filter |
 | Mini calendar | `schedule.html#SCH-04` | Rail **Run calendar**: click 09/07 → Skip → the Upcoming runs list updates too |
 | Edit (live) | `spo-new.html#edit-SCH-01` | Same price → "Covered by the series approval · Save changes"; raise the price → "Changes need re-approval" |

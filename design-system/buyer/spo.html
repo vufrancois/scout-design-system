@@ -474,26 +474,24 @@
     const s = S, a = SPO.appt(s) || {}; timeMode = mode;
     const src = mode === 'another' ? {} : (a.start ? a : {});
     const d = src.start ? src.start.slice(0, 10) : '', tm = src.start ? src.start.slice(11) : '', ed = src.end ? src.end.slice(0, 10) : '', et = src.end ? src.end.slice(11) : '';
-    const multi = !!(ed && ed !== d);
     const title = mode === 'another' ? 'Propose another time' : mode === 'change' ? (a.status === 'confirmed' ? 'Propose a new time' : 'Change the proposed time') : 'Propose a service time';
     modal('time-ov', '<div class="val-modal" style="width:520px"><div class="val-head"><h2>' + title + '</h2><p>' + ven(s).name + ' gets it by email and confirms it, or proposes another time. Times are in the property’s time zone: ' + SPO.TZ + '.</p></div>' +
       '<div class="val-body" style="padding:16px 24px 6px"><div class="time-grid">' +
-      '<div class="w-field"><label for="tm-d">Date</label><input type="date" class="text-in" id="tm-d" value="' + d + '" min="' + SPO.TODAY + '"></div>' +
+      '<div class="w-field"><label for="tm-d">Start date</label><input type="date" class="text-in" id="tm-d" value="' + d + '" min="' + SPO.TODAY + '" onchange="const e = document.getElementById(\'tm-ed\'); if (!e.value || e.value < this.value) e.value = this.value"></div>' +
       '<div class="w-field"><label for="tm-s">Start time</label><input type="time" class="text-in" id="tm-s" value="' + tm + '" step="900"></div>' +
-      '<div class="w-field" id="tm-ed-f" style="' + (multi ? '' : 'display:none') + '"><label for="tm-ed">End date</label><input type="date" class="text-in" id="tm-ed" value="' + (multi ? ed : '') + '" min="' + SPO.TODAY + '"></div>' +
+      '<div class="w-field"><label for="tm-ed">End date</label><input type="date" class="text-in" id="tm-ed" value="' + (ed || d) + '" min="' + SPO.TODAY + '"></div>' +
       '<div class="w-field"><label for="tm-e">End time <span class="opt">· optional</span></label><input type="time" class="text-in" id="tm-e" value="' + et + '" step="900"></div></div>' +
-      '<label class="check-row" style="margin-top:4px"><input type="checkbox" id="tm-multi"' + (multi ? ' checked' : '') + ' onchange="document.getElementById(\'tm-ed-f\').style.display = this.checked ? \'\' : \'none\'"><span>Ends on a different day</span></label>' +
       '<div class="time-err" id="tm-err" hidden></div></div>' +
       '<div class="val-foot"><button class="btn" onclick="closeModal(\'time-ov\')">Cancel</button><button class="btn btn-primary" onclick="sendTime()">Send to ' + ven(s).name + '</button></div></div>');
   }
   function sendTime() {
     const s = S, g = id => (document.getElementById(id).value || '').trim();
-    const d = g('tm-d'), tm = g('tm-s'), multi = document.getElementById('tm-multi').checked, ed = multi ? g('tm-ed') : d, et = g('tm-e');
+    const d = g('tm-d'), tm = g('tm-s'), ed = g('tm-ed') || d, et = g('tm-e'), multi = ed !== d;
     const errs = [];
     if (!d) errs.push('Choose a date.'); else if (d < SPO.TODAY) errs.push('Choose today or a later date.');
     if (!tm) errs.push('Choose a start time.');
-    if (multi && !ed) errs.push('Choose an end date, or untick “Ends on a different day”.');
-    if (multi && !et) errs.push('Choose an end time for work that spans days.');
+    if (d && ed < d) errs.push('The end date can’t be before the start date.');
+    if (multi && !et) errs.push('Add an end time for work that runs past the start date.');
     if (d && tm && et && (ed + 'T' + et) <= (d + 'T' + tm)) errs.push('The end must be after the start.');
     const box = document.getElementById('tm-err');
     if (errs.length) { box.hidden = false; box.innerHTML = errs.join('<br>'); return; }

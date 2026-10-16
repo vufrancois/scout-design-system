@@ -163,7 +163,7 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 **Why:** the team wants a proposed time to go with the PO when it's sent, and the vendor may come back with another time, so the buyer needs to see that an update was made. References: production's "Propose a service appointment" dialog and "Service appointment · Confirmed" card. Kept: the card, Proposed/Confirmed, "Propose a new time", add-to-calendar, the property time zone. Changed: **no duration** (the team asked; it also duplicated the end time), no error text before the buyer tries to send, and no "status… unchanged" disclaimer (SPO-28).
 
 **What shipped**
-- **Wizard Review:** an optional **Service time** card (Date, Start, optional End, "Ends on a different day"). Empty = the PO says "Vendor to propose a time". Not shown for schedules (their runs take the series' day and time).
+- **Wizard Scope step** (moved from Review on 10/16/2026, per Vu, to match production): an optional **Schedule service** switch card under Spend period. On: Start date + Start time (required — Continue waits for them), End date (defaults to the start date) + End time (optional); the property time zone is read-only (no picker — every property has one). Off or empty = the PO says "Vendor to propose a time". Review shows a **Service time** fact row with Edit/Add. If the SPO is then made recurring, runs use the schedule's day and time instead.
 - **SPO page:** a **Service appointment** card under the Next-Task Strip: No time yet (Propose a time) · Proposed (Change proposed time) · **New time proposed** · Confirmed (Propose a new time + add to calendar: .ics for Apple/Outlook, link for Google). After the SPO moves on, the card is read-only ("proposed, never confirmed" when it never was).
 - **Vendor proposes a new time** (decision A: this also counts as accepting the PO — "Accepted · new time proposed"). Made visible four ways: the card's amber edge, **Updated by vendor** badge and struck-through old time; the strip becomes your move (**Accept new time** / **Propose another**); a **Needs action** notification that clears itself once answered; Activity (old → new). Not on list rows; the list has an **Appointment** filter.
 - **I spoke to the vendor → Accepted** offers "They also confirmed the proposed time".
@@ -175,17 +175,17 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 ### TKT-SPO-50 · Propose a service time with the PO
 **Summary:** The buyer can send a proposed time with the PO; no duration.
 **Acceptance criteria:**
-- [ ] The wizard's Review step has an optional Service time card: Date, Start time, optional End time, "Ends on a different day" (reveals End date); property time zone shown.
-- [ ] Left empty, the PO reads "Vendor to propose a time"; a date without a start time warns but doesn't block.
+- [ ] The wizard's Scope step has a Schedule service switch card. On: Start date and Start time (required to continue), End date (defaults to the start date), End time (optional); the property's time zone read-only. No duration.
+- [ ] Off (or never turned on), the PO reads "Vendor to propose a time"; Review shows the time, or "Vendor to propose a time", with a link back to Scope.
 - [ ] Sending (or approval) logs "Service time proposed" with the full time.
 - [ ] Schedules don't show the card; their runs use the series' day and time.
-**Files:** `buyer/spo-new.html` (`timeCard`, `setAppt`, `apptFromW`, `persist`), `buyer/spo-data.js` (`appt`, `fmtAppt`, `TZ`)
+**Files:** `buyer/spo-new.html` (`schedCard`, `toggleSched`, `setAppt`, `apptFromW`, `stepOk`, `persist`), `buyer/spo-data.js` (`appt`, `fmtAppt`, `TZ`)
 
 ### TKT-SPO-51 · Service appointment card and rescheduling
 **Summary:** One card shows the appointment's state; either side can propose a new time.
 **Acceptance criteria:**
 - [ ] States: No time yet · Proposed · New time proposed · Confirmed, each with a status pill and the full time in the property's time zone.
-- [ ] Propose a time / Change proposed time / Propose a new time open one dialog (Date, Start, optional End, multi-day); errors appear only after Send, one line per problem.
+- [ ] Propose a time / Change proposed time / Propose a new time open one dialog with the same fields as the wizard (Start date, Start time, End date defaulting to the start date, optional End time); errors appear only after Send, one line per problem.
 - [ ] Confirmed shows add to calendar: .ics for Apple and Outlook, a Google Calendar link.
 - [ ] "I spoke to the vendor" → Accepted can confirm the proposed time; a rejection clears the appointment; Change Vendor re-proposes it.
 - [ ] Every change is logged in Activity with old → new.

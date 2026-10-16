@@ -47,7 +47,7 @@ Some services repeat: weekly common-area cleaning, monthly grounds maintenance, 
   - The activity log reads "Created and sent by schedule" or "Drafted by schedule".
   - On the SPO list, a **recurring marker** (repeat icon, with a tooltip naming the series and linking to it) sits beside the SPO number. Search also matches the series name.
 - **Create and edit** use the same wizard.
-  - The Review step has a **Repeat** card with a One-time / Recurring segment. Recurring adds:
+  - The **Scope** step has a **Repeat this SPO** switch card under Schedule service (moved from Review on 10/16/2026, per Vu, to match production; Review now shows a read-only *Repeats* summary with Edit, and Make recurring / Edit schedule open on Scope). When it's on, Schedule service steps aside: each run uses the schedule's day and time. On, it adds:
     - schedule name, frequency, day, start, time;
     - end (never / date / after N runs);
     - "Each run" option rows (Draft only / Auto-send);
@@ -149,9 +149,10 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 **Files:** `buyer/spo.html`, `buyer/spos.html`, `buyer/spo-data.js` (`buildLog`)
 
 ### TKT-SPO-23 · Create, edit and "Make recurring" in the wizard
-**Summary:** The SPO wizard creates and edits schedules: a Repeat card on Review with cadence, end, mode and a live preview.
+**Summary:** The SPO wizard creates and edits schedules: a Repeat this SPO switch card on the Scope step with cadence, end, mode and a live preview; Review shows a read-only summary.
 **Acceptance criteria:**
-- [ ] One-time / Recurring toggle. Recurring needs a name and shows a preview of the next 3 dates and the 12-month runs and cost.
+- [ ] A Repeat this SPO switch on the Scope step (no switch when editing a schedule). On, it needs a name and shows a preview of the next 3 dates and the 12-month runs (and cost, once lines are priced); Schedule service steps aside.
+- [ ] Review shows a read-only Repeats summary with Edit back to Scope; Make recurring and Edit schedule open on Scope.
 - [ ] The budget check measures the busiest month of the series.
 - [ ] Make recurring (any SPO not in a series) pre-fills the wizard, and that SPO becomes run 1.
 - [ ] Editing applies to future runs only; created SPOs are unchanged.

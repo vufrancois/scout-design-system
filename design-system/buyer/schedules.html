@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schedules — Scout Buyer</title>
+<title>Recurring SPOs — Scout Buyer</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
@@ -27,7 +27,7 @@
   <div class="hero-inner" style="flex-direction:column;gap:0">
     <div class="hero-title-block">
       <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></div>
-      <div><h1>Schedules</h1><p>Recurring service POs — each run creates an ordinary SPO you track in Service POs</p></div>
+      <div><h1>Recurring SPOs</h1><p>Services that repeat on a cadence — each run creates an ordinary SPO you track in Service POs</p></div>
     </div>
   </div>
 </section>
@@ -37,14 +37,14 @@
   <div class="tab-row">
     <div class="tab-bar" id="tab-bar"></div>
     <span style="display:flex;gap:10px;align-items:center"><a class="btn" href="calendar.html" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Service calendar</a>
-    <a class="btn btn-primary" href="spo-new.html#recurring" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Schedule</a></span>
+    <a class="btn btn-primary" href="spo-new.html#recurring" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Recurring SPO</a></span>
   </div>
   <div class="toolbar" style="margin-top:16px">
     <div class="toolbar-group"><span style="font-size:13px;color:var(--muted-foreground)" id="sch-note"></span></div>
     <div class="toolbar-group">
       <div class="search-wrap">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input class="search-field" id="sch-search" placeholder="Search schedule, vendor, property…" oninput="renderPage()">
+        <input class="search-field" id="sch-search" placeholder="Search recurring SPO, vendor, property…" oninput="renderPage()">
       </div>
     </div>
   </div>
@@ -186,12 +186,12 @@
     const rows = scoped(T.states);
     statCards(t, rows);
     const act = scoped(['active']);
-    document.getElementById('sch-note').innerHTML = t === 'running' ? act.length + ' active · <b style="color:var(--foreground)">' + money(act.reduce((a, x) => a + SCH.annual(x), 0)) + '</b> committed over the next 12 months' : 'Ended schedules keep their history and the SPOs they generated';
+    document.getElementById('sch-note').innerHTML = t === 'running' ? act.length + ' active · <b style="color:var(--foreground)">' + money(act.reduce((a, x) => a + SCH.annual(x), 0)) + '</b> committed over the next 12 months' : 'Ended recurring SPOs keep their history and the SPOs they generated';
     let list = cardFilter === 'all' ? rows : rows.filter(x => groupOf(x) === cardFilter);
     const val = x => sortK === 'name' ? x.name : sortK === 'vendor' ? SPO.VEN[x.v].name : sortK === 'run' ? SCH.perRun(x) : sortK === 'status' ? SCH.STATES[x.status].rank : nextOf(x);
     list = list.slice().sort((a, b) => { const va = val(a), vb = val(b); const d = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb)); return d * sortDir; });
 
-    const cols = th('name', 'Schedule') + th('vendor', 'Vendor') + '<th>Cadence</th>' + th('next', t === 'ended' ? 'Ended' : 'Next run') + th('run', 'Per run') + th('status', 'Status');
+    const cols = th('name', 'Recurring SPO') + th('vendor', 'Vendor') + '<th>Cadence</th>' + th('next', t === 'ended' ? 'Ended' : 'Next run') + th('run', 'Per run') + th('status', 'Status');
     const body = list.map(x => {
       const v = SPO.VEN[x.v], isOpen = openRows.has(x.id), a = ACTION[x.status];
       const nx = x.status === 'ended' ? fmtD(x.ev.ended) : x.status === 'paused' ? '<span style="color:var(--muted-foreground)">Paused</span>' : SCH.nextRun(x) ? fmtD(SCH.nextRun(x)) : '—';
@@ -206,7 +206,7 @@
       return main + (isOpen ? expRow(x) : '');
     }).join('');
     document.getElementById('tbl-zone').innerHTML = '<div class="tbl-wrap" style="margin-top:4px"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th style="width:36px"></th>' + cols + '<th style="width:1%"></th></tr></thead><tbody>' +
-      (body || '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted-foreground)">' + (t === 'running' ? 'No running schedules here. Make any SPO recurring from its page, or start a New Schedule.' : 'No ended schedules for this property.') + '</td></tr>') + '</tbody></table></div></div>';
+      (body || '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted-foreground)">' + (t === 'running' ? 'No running recurring SPOs here. Make any SPO recurring from its page, or start a New Recurring SPO.' : 'No ended recurring SPOs for this property.') + '</td></tr>') + '</tbody></table></div></div>';
   }
 
   function expRow(x) {
@@ -223,8 +223,8 @@
 
   function rowMenu(x) {
     return '<div class="row-menu-wrap"><button class="icon-btn" style="width:32px;height:32px" onclick="toggleMenuRow(event, \'' + x.id + '\')" title="More actions"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>' +
-      '<div class="row-menu" id="rm-' + x.id + '" style="display:none"><button onclick="location.href=\'schedule.html#' + x.id + '\'">' + IC.eye + 'View schedule</button>' +
-      (x.status !== 'ended' ? '<button onclick="location.href=\'spo-new.html#edit-' + x.id + '\'">' + IC.edit + 'Edit schedule</button>' : '') + '</div></div>';
+      '<div class="row-menu" id="rm-' + x.id + '" style="display:none"><button onclick="location.href=\'schedule.html#' + x.id + '\'">' + IC.eye + 'View recurring SPO</button>' +
+      (x.status !== 'ended' ? '<button onclick="location.href=\'spo-new.html#edit-' + x.id + '\'">' + IC.edit + 'Edit recurring SPO</button>' : '') + '</div></div>';
   }
   function toggleMenuRow(e, id) {
     e.stopPropagation();

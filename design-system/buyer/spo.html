@@ -222,7 +222,7 @@
   function seriesLink(s) {
     if (!s.series || !window.SCH) return '';
     const x = SCH.get(s.series); if (!x) return '';
-    return '<div class="series-link">' + REP + '<span>Run ' + SPO.fmtDate(s.run) + ' of <b>' + x.name + '</b> · ' + SCH.cadenceText(x.cadence, false) + ' · ' + SCH.STATES[x.status].label + '</span><a class="text-link" href="schedule.html#' + x.id + '">View schedule</a></div>';
+    return '<div class="series-link">' + REP + '<span>Run ' + SPO.fmtDate(s.run) + ' of <b>' + x.name + '</b> · ' + SCH.cadenceText(x.cadence, false) + ' · ' + SCH.STATES[x.status].label + '</span><a class="text-link" href="schedule.html#' + x.id + '">View recurring SPO</a></div>';
   }
   /* Vendor names can end in a period ("Co.") — don't double it at the end of a sentence. */
   const endDot = t => /[.!?]$/.test(t) ? t : t + '.';
@@ -511,7 +511,7 @@
     const a = SPO.appt(s); if (!a) return '';
     const live = s.state === 'invoice', v = ven(s), st = SPO.APPT[a.status];
     if (!live && a.status === 'none') return '';
-    const pill = '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + (a.by === 'series' ? 'Confirmed by the schedule' : st.label) + '</span></span>';
+    const pill = '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + (a.by === 'series' ? 'Confirmed by the recurring SPO' : st.label) + '</span></span>';
     let body = '', acts = '';
     if (a.status === 'none') {
       body = '<div class="appt-when muted">No time proposed yet</div><div class="appt-sub">' + v.name + ' can propose one when they reply, or you can propose one now.</div>';
@@ -522,7 +522,7 @@
       /* Accept / Propose another live in the next-task strip above — the card shows what changed. */
     } else {
       body = '<div class="appt-when">' + SPO.fmtAppt(a) + '</div><div class="appt-sub">' + SPO.TZ + ' · ' +
-        (a.by === 'series' ? 'the schedule’s day and time' : a.status === 'confirmed' ? (s.ack && a.confirmedAt ? 'confirmed with ' + v.name + ', recorded by ' + s.ack.by : 'confirmed by ' + v.name) : live ? 'sent with the PO · waiting on ' + v.name : 'proposed, never confirmed by ' + v.name) + '</div>';
+        (a.by === 'series' ? 'the recurring SPO’s day and time' : a.status === 'confirmed' ? (s.ack && a.confirmedAt ? 'confirmed with ' + v.name + ', recorded by ' + s.ack.by : 'confirmed by ' + v.name) : live ? 'sent with the PO · waiting on ' + v.name : 'proposed, never confirmed by ' + v.name) + '</div>';
       if (live && a.by !== 'series') acts = btn2(a.status === 'confirmed' ? 'Propose a new time' : 'Change proposed time', "openTime('change')", '');
     }
     const cal = a.status === 'confirmed' && a.start >= SPO.TODAY ? '<div class="appt-cal"><span class="lbl">Add to calendar</span>' +

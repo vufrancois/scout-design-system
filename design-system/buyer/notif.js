@@ -13,7 +13,7 @@
     spo: { label: 'Service POs', tile: 'tile-sky' },
     invoice: { label: 'Invoices', tile: 'tile-amber' },
     approval: { label: 'Approvals', tile: 'tile-violet' },
-    schedule: { label: 'Schedules', tile: 'tile-emerald' },
+    schedule: { label: 'Recurring SPOs', tile: 'tile-emerald' },
     order: { label: 'Orders', tile: 'tile-muted' }
   };
   const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
@@ -57,8 +57,8 @@
             out.push(Object.assign(base, { type: 'invoice', kind: 'invoice', title: s.invoice && s.invoice.extractFailed ? 'Scout AI couldn’t read the invoice for ' + id : 'Invoice to map for ' + id, sub: (e.sub || '') + ' · ' + v.name, link: 'spo.html#' + s.id + '/invoice', action: true, open: () => s.state === 'mapping', bad: !!(s.invoice && s.invoice.extractFailed) })); break;
           case 'Sent for approval': out.push(Object.assign(base, { type: 'approval', kind: 'approval-req', title: id + ' needs your approval', sub: (e.sub || '') + ' · ' + fmtMoney(SPO.total(s)), link: 'approval.html#' + id, action: true, open: () => s.state === 'approval' })); break;
           case 'Approved': if (by) break; out.push(Object.assign(base, { type: 'approval', kind: 'approved', title: id + ' approved', sub: e.sub || '', link: 'spo.html#' + s.id })); break;
-          case 'Drafted by schedule': out.push(Object.assign(base, { type: 'schedule', kind: 'run-draft', title: 'Schedule drafted ' + id + ' — review and send', sub: (e.sub || '') + ' · ' + v.name, link: 'spo-new.html#' + s.id, action: true, open: () => s.state === 'draft' })); break;
-          case 'Created and sent by schedule': out.push(Object.assign(base, { type: 'schedule', kind: 'run-sent', title: 'Schedule sent ' + id + ' to ' + v.name, sub: e.sub || '', link: 'spo.html#' + s.id })); break;
+          case 'Drafted by recurring SPO': out.push(Object.assign(base, { type: 'schedule', kind: 'run-draft', title: 'Recurring SPO drafted ' + id + ' — review and send', sub: (e.sub || '') + ' · ' + v.name, link: 'spo-new.html#' + s.id, action: true, open: () => s.state === 'draft' })); break;
+          case 'Created and sent by recurring SPO': out.push(Object.assign(base, { type: 'schedule', kind: 'run-sent', title: 'Recurring SPO sent ' + id + ' to ' + v.name, sub: e.sub || '', link: 'spo.html#' + s.id })); break;
           case 'Paid': out.push(Object.assign(base, { type: 'invoice', kind: 'paid', title: id + ' paid', sub: e.sub || '', link: 'spo.html#' + s.id })); break;
           case 'Canceled': if (by) break; out.push(Object.assign(base, { type: 'spo', kind: 'canceled', title: id + ' canceled', sub: e.sub || '', link: 'spo.html#' + s.id, bad: true })); break;
           case 'Rejected in approval': out.push(Object.assign(base, { type: 'approval', kind: 'rejected', title: id + ' was rejected in approval', sub: e.sub || '', link: 'spo.html#' + s.id, bad: true })); break;

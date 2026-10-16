@@ -6,7 +6,7 @@
      shape, so it reads in grey-scale too.
    The legend doubles as the filter (click to hide/show, with counts for the month). A popover acts on the
    status — the same actions the SPO and schedule pages already have. Used by calendar.html (everything),
-   the Schedules page (runs only) and a schedule's rail (mini, one series). Needs spo-data.js. */
+   the Schedules page (runs only) and a recurring SPO's rail (mini, one series). Needs spo-data.js. */
 (function () {
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const DOWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -157,10 +157,10 @@
     const x = r.x, canSkip = r.date > TODAY() && x.status === 'active';
     return '<div class="cp-run"><div class="cp-name">' + vt + '<a class="table-link" href="schedule.html#' + x.id + '">' + x.name + '</a></div>' +
       '<div class="cp-meta">' + (propName(x.prop) ? propName(x.prop) + ' · ' : '') + v.name + ' · ' + t12(x.cadence.time) + ' · ' + SPO.money(r.spo ? SPO.total(r.spo) : SCH.perRun(x)) + '</div>' +
-      '<div class="cp-status">' + statusLine(r.status) + (r.status === 'approved' ? ' <span class="cp-src">schedule run' + (r.spo ? ' · SPO-' + r.spo.id + ' ' + SPO.STATES[r.spo.state].label : '') + '</span>' : r.skipped ? ' <span class="cp-src">skipped</span>' : r.status === 'pending' ? ' <span class="cp-src">series approval</span>' : '') + '</div><div class="cp-actions">' +
+      '<div class="cp-status">' + statusLine(r.status) + (r.status === 'approved' ? ' <span class="cp-src">recurring SPO run' + (r.spo ? ' · SPO-' + r.spo.id + ' ' + SPO.STATES[r.spo.state].label : '') + '</span>' : r.skipped ? ' <span class="cp-src">skipped</span>' : r.status === 'pending' ? ' <span class="cp-src">series approval</span>' : '') + '</div><div class="cp-actions">' +
       (canSkip ? (r.skipped ? '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\', true)">Undo skip</button>' : '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\')">Skip this date</button>') : '') +
       (r.spo ? btnA('Open SPO-' + r.spo.id, 'spo.html#' + r.spo.id, true) : '') +
-      (key === 'sch-cal-mini' ? '' : btnA('Open schedule', 'schedule.html#' + x.id, false)) + '</div></div>';
+      (key === 'sch-cal-mini' ? '' : btnA('Open recurring SPO', 'schedule.html#' + x.id, false)) + '</div></div>';
   }
   /* Same action, same log line as the schedule page's Skip / Undo skip. */
   function skip(key, id, d, undo) {
@@ -169,7 +169,7 @@
     else { x.skipped = (x.skipped || []).concat(d); SCH.log(x, 'Run skipped', SPO.fmtDate(d) + ' · no SPO that date'); }
     SCH.save(x); closePop();
     const s = mounts[key]; if (s && s.onChange) s.onChange(); else if (s) draw(key);
-    if (typeof showToast === 'function') showToast(undo ? 'Skip undone' : 'Run skipped', undo ? SPO.fmtDate(d) + ' is back on the schedule.' : SPO.fmtDate(d) + ' won’t create an SPO.');
+    if (typeof showToast === 'function') showToast(undo ? 'Skip undone' : 'Run skipped', undo ? SPO.fmtDate(d) + ' is back on the recurring SPO.' : SPO.fmtDate(d) + ' won’t create an SPO.');
   }
   /* Add an approved appointment to Apple / Outlook (.ics). */
   function ics(key, d, idx) {

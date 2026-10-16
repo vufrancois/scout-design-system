@@ -80,16 +80,16 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Paid | `#854` | All 8 steps dated; approved by Priya Nair |
 | Canceled | `#852` | No stepper; SPO Status card names who canceled and quotes the reason; Clone SPO only |
 
-### Schedules (recurring SPOs) — `buyer/schedules.html` · `buyer/schedule.html#SCH-<nn>`
+### Recurring SPOs — `buyer/schedules.html` · `buyer/schedule.html#SCH-<nn>`
 
-| State | Schedule | What to show |
+| State | Recurring SPO | What to show |
 |---|---|---|
 | Active · auto-send | `#SCH-01` | Weekly cleaning: next run 08/26, **Skip** a date and undo it, switch Auto-send ⇄ Draft only; its SPOs (SPO-847 awaiting invoice, SPO-845 paid) show the repeat icon on the SPO list |
 | Active · draft only | `#SCH-04` | Every other Monday; 09/21 already **skipped** (struck through, Undo); today's run drafted **SPO-848** (Continue on the SPO list) |
 | Pending series approval | `#SCH-06` | `approval.html#SCH-06`: the request is the **12-month commitment** (12 × $420 = $5,040); Approve → series Active, runs need no further approval |
-| Paused | `#SCH-03` | Pause reason in the strip, **Resume schedule**; upcoming runs listed but marked as not running |
+| Paused | `#SCH-03` | Pause reason in the strip, **Resume recurring SPO**; upcoming runs listed but marked as not running |
 | Ended | `#SCH-05` | Completed its 6 runs (Ended tab → Completed card) |
-| Make recurring (live) | `spo.html#866` → Make recurring | Wizard opens on **Scope** with **Repeat this SPO** on: pick Weekly · Wednesday → preview shows 52 runs / $11,700 → Submit schedule for approval; SPO-866 becomes run 1 and links to the new series |
+| Make recurring (live) | `spo.html#866` → Make recurring | Wizard opens on **Scope** with **Repeat this SPO** on: pick Weekly · Wednesday → preview shows 52 runs / $11,700 → Submit recurring SPO for approval; SPO-866 becomes run 1 and links to the new series |
 | Service calendar | `calendar.html` (SPOs → **Service calendar**) | August: tiles tinted by vendor, dots by date/time status — 863 **Pending** (amber ring), 862/858 **Approved**, 860 **New time proposed** (sky diamond), 861 **Denied** (rose); September: 867 **Needs rebid**. Click a legend key to hide/show; click a tile for its action (Review new time, Rebid, Choose vendor, Add to calendar) |
 | Mini calendar | `schedule.html#SCH-04` | Rail **Run calendar**: click 09/07 → Skip → the Upcoming runs list updates too |
 | Edit (live) | `spo-new.html#edit-SCH-01` | Same price → "Covered by the series approval · Save changes"; raise the price → "Changes need re-approval" |
@@ -131,7 +131,7 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 
 **Nav:** Approvals, Budgets and Funding Report live under **Admin → Oversight** (Orders and SPOs list purchases by type). The Admin badge counts pending approvals (3) and matches Home's Approvals card and the bell.
 
-**Home tie-in:** the "SPO Invoices to Map" tile (3) and the Service POs breakdown card. The Approvals card total (22) matches the queue, which now includes SPO-864 and the schedule requests (SCH-06 pending).
+**Home tie-in:** the "SPO Invoices to Map" tile (3) and the Service POs breakdown card. The Approvals card total (22) matches the queue, which now includes SPO-864 and the recurring SPO requests (SCH-06 pending).
 
 ## The claims loop in one arc (cross-app)
 

@@ -1,14 +1,14 @@
-# Service POs — Schedules (recurring series)
+# Service POs — Recurring SPOs
 
 **Status:** ✅ built and cascaded (10/07/2026)
-**Pages:** `design-system/buyer/schedules.html` (list, `#running` · `#ended`) · `design-system/buyer/schedule.html#SCH-<nn>` (detail, `/pause` · `/end`) · `spo-new.html#recurring` · `#recurring-<spoId>` · `#edit-SCH-<nn>` · `approval.html#SCH-<nn>` · Schedules entry in the SPOs menu on every buyer page
+**Pages:** `design-system/buyer/schedules.html` (list, `#running` · `#ended`) · `design-system/buyer/schedule.html#SCH-<nn>` (detail, `/pause` · `/end`) · `spo-new.html#recurring` · `#recurring-<spoId>` · `#edit-SCH-<nn>` · `approval.html#SCH-<nn>` · Recurring SPOs entry in the SPOs menu on every buyer page
 **Reference:** live "Scheduled" tab and the SPO-717 series card from the SPO audit (findings SPO-49, SPO-50; screenshot F31).
 
 ## What the feature is
-Some services repeat: weekly common-area cleaning, monthly grounds maintenance, quarterly HVAC filters. A **schedule** is a template SPO plus a cadence. Each run creates an ordinary SPO, which then goes through the normal lifecycle.
+Some services repeat: weekly common-area cleaning, monthly grounds maintenance, quarterly HVAC filters. A **recurring SPO** is a template SPO plus a cadence. Each run creates an ordinary SPO, which then goes through the normal lifecycle.
 
 ## The model (the audit's core fix)
-- **A schedule is its own record, not a lifecycle state.** The live product shows "Scheduled" as a tab next to the lifecycle tabs, so a scheduled SPO is counted twice (SPO-49). It also puts the series controls on one SPO's tracker (SPO-50). Here:
+- **A recurring SPO is its own record, not a lifecycle state.** The live product shows "Scheduled" as a tab next to the lifecycle tabs, so a scheduled SPO is counted twice (SPO-49). It also puts the series controls on one SPO's tracker (SPO-50). Here:
   - the series lives in `window.SCH` (`spo-data.js`, overlay `scout-schedules-v1`);
   - each generated SPO carries `series` + `run` and its own lifecycle state;
   - SPO list counts never include a series.
@@ -23,49 +23,49 @@ Some services repeat: weekly common-area cleaning, monthly grounds maintenance, 
 - **Cadence engine** (UTC dates): `schedule()` lists every date and honors skipped dates and the end rule. `upcoming()`, `nextRun()`, `yearRuns()`, `runsInPeriod()`, `annual()` and `cadenceText()` ("Every week on Wednesday · 8:00 AM") build on it. A monthly day is capped at 28, so every month has it.
 
 ## What shipped
-- **Schedules list:** Running / Ended Filter Tabs with metric cards that sum to the tab count:
+- **Recurring SPOs list:** Running / Ended Filter Tabs with metric cards that sum to the tab count:
   - Running: Total = Active + Your Move + Paused
   - Ended: Total = Completed + Stopped Early
 
-  The toolbar line shows the 12-month commitment of active series. The table columns are Schedule (name, plus id · property), Vendor, Cadence (short form, plus mode · time), Next run, Per run and Status. There is one primary per row, only on your move (Review, Edit). Expanding a row shows the next 3 runs (skipped ones struck through) and the latest SPOs created.
-- **Schedule detail:**
-  - **Schedule card:** status pill; the plain-English cadence with mode; four stats (Next run · Per run · Next 12 months with run count · Ends); and **Manage this schedule** (Edit · Switch to Draft only / Auto-send · Pause · End schedule).
+  The toolbar line shows the 12-month commitment of active series. The table columns are Recurring SPO (name, plus id · property), Vendor, Cadence (short form, plus mode · time), Next run, Per run and Status. There is one primary per row, only on your move (Review, Edit). Expanding a row shows the next 3 runs (skipped ones struck through) and the latest SPOs created.
+- **Recurring SPO detail:**
+  - **Recurring SPO card:** status pill; the plain-English cadence with mode; four stats (Next run · Per run · Next 12 months with run count · Ends); and **Manage this recurring SPO** (Edit · Switch to Draft only / Auto-send · Pause · End recurring SPO).
   - **Next-Task Strip** in every state:
     - Series approval → Review in Approvals
-    - Revise the schedule → Edit
+    - Revise the recurring SPO → Edit
     - Next run · date → Skip this run
-    - Paused (quoted reason) → Resume schedule
-    - Schedule ended
+    - Paused (quoted reason) → Resume recurring SPO
+    - Recurring SPO ended
   - **Upcoming runs:** the next 6 dates, the next one highlighted, each with **Skip** / **Undo skip**.
-  - **SPOs from this schedule:** each with its date tile and lifecycle pill, plus a note for earlier SPOs.
+  - **SPOs from this series:** each with its date tile and lifecycle pill, plus a note for earlier SPOs.
   - **Every run orders:** scope and lines with allocation chips, and the Per run total.
   - **Rail:** vendor; facts (Property · Created by · Starts · Ends · Sending · Series approval), with the "Approved once for the series" note; Activity.
   - Pause takes an optional reason; End requires one. Both are modals, and every action is logged.
 - **Generated SPOs say where they came from, and nothing more** (SPO-50):
-  - The SPO detail shows a **series link** under the tracker: "Run 08/19/2026 of Common-area cleaning · Every week on Wednesday · Active → View schedule".
+  - The SPO detail shows a **series link** under the tracker: "Run 08/19/2026 of Common-area cleaning · Every week on Wednesday · Active → View recurring SPO".
   - Its Approval step reads "series approved", and the Approval fact reads "Series · <approver>".
-  - The activity log reads "Created and sent by schedule" or "Drafted by schedule".
+  - The activity log reads "Created and sent by recurring SPO" or "Drafted by recurring SPO".
   - On the SPO list, a **recurring marker** (repeat icon, with a tooltip naming the series and linking to it) sits beside the SPO number. Search also matches the series name.
 - **Create and edit** use the same wizard.
-  - The **Scope** step has a **Repeat this SPO** switch card under Schedule service (moved from Review on 10/16/2026, per Vu, to match production; Review now shows a read-only *Repeats* summary with Edit, and Make recurring / Edit schedule open on Scope). When it's on, Schedule service steps aside: each run uses the schedule's day and time. On, it adds:
-    - schedule name, frequency, day, start, time;
+  - The **Scope** step has a **Repeat this SPO** switch card under Schedule service (moved from Review on 10/16/2026, per Vu, to match production; Review now shows a read-only *Repeats* summary with Edit, and Make recurring / Edit recurring SPO open on Scope). When it's on, Schedule service steps aside: each run uses the recurring SPO's day and time. On, it adds:
+    - recurring SPO name, frequency, day, start, time;
     - end (never / date / after N runs);
     - "Each run" option rows (Draft only / Auto-send);
     - a live preview ("Next runs … · 52 runs ($11,700.00) in the next 12 months · No end date").
-  - The budget check measures the series' **busiest month** ("this schedule 4 × $180").
-  - The rail becomes a Schedule summary with the 12-month total.
-  - The submit button reads one of: Start schedule · Submit schedule for approval · Save changes · Save & resubmit for approval.
+  - The budget check measures the series' **busiest month** ("this recurring SPO 4 × $180").
+  - The rail becomes a Recurring SPO summary with the 12-month total.
+  - The submit button reads one of: Start recurring SPO · Submit recurring SPO for approval · Save changes · Save & resubmit for approval.
   - **Make recurring** on any SPO not already in a series opens the wizard pre-filled; that SPO becomes run 1.
   - The confirmation page says what happens next.
-- **Approvals:** schedule requests join Approvals as `SCH-<nn>`. The detail shows a "Recurring schedule" pill, a "Schedule · next 12 months" card (per run, runs, 12-month commitment), and "Schedule Active" as the last tracker slot. Deciding moves the series:
+- **Approvals:** recurring SPO requests join Approvals as `SCH-<nn>`. The detail shows a "Recurring SPO" pill, a "Recurring SPO · next 12 months" card (per run, runs, 12-month commitment), and "Recurring SPO Active" as the last tracker slot. Deciding moves the series:
   - Approve → Active (and the approved run count is frozen)
   - Revision → Revision Requested
   - Reject → Ended, "Stopped Early"
-- **Home:** the Approvals card counts schedule requests, and its meta names them ("· 1 Service PO · 1 schedule").
-- **Nav:** the SPOs menu gets **Schedules** ("Recurring service POs") on every buyer page. The SPO list header gets a Schedules button (changed to **Calendar** → the Service calendar on 10/16/2026; Schedules stays in the SPOs menu).
+- **Home:** the Approvals card counts recurring SPO requests, and its meta names them ("· 1 Service PO · 1 recurring SPO").
+- **Nav:** the SPOs menu gets **Recurring SPOs** ("Services that repeat on a cadence") on every buyer page. The SPO list header gets a Recurring SPOs button (changed to **Calendar** → the Service calendar on 10/16/2026; Recurring SPOs stays in the SPOs menu).
 - **Seeds:**
 
-  | Schedule | What it is | Status | Notes |
+  | Recurring SPO | What it is | Status | Notes |
   |---|---|---|---|
   | SCH-01 | Weekly cleaning, auto-send | Active | |
   | SCH-02 | Monthly grounds, draft only | Active | Ends after 12 runs |
@@ -85,7 +85,7 @@ Some services repeat: weekly common-area cleaning, monthly grounds maintenance, 
 - Notifications for upcoming and created runs.
 - Calendar view of upcoming runs.
 - Last-day-of-month cadence (days stop at 28).
-- Bulk "skip a holiday across all schedules".
+- Bulk "skip a holiday across all recurring SPOs".
 
 ## Pitfalls
 - **Freeze what was approved.** A series' 12-month projection shrinks as time passes, and goes to zero once it has ended. Approval rows must show the approved run count (`approvedRuns`), not today's projection, or past approvals rewrite their own amounts.
@@ -100,34 +100,34 @@ Some services repeat: weekly common-area cleaning, monthly grounds maintenance, 
 - **Recurrence controls** (`.rec-grid`, `.rec-preview`), reusing `.mode-seg` and `.opt-row`
 - `.status-dot.dot-muted`
 
-Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedules (recurring SPOs)** rule, plus a Schedule Lifecycle Matrix. `docs/design.md` regenerated.
+Gallery **Buyer App · Service POs → Recurring SPOs** and the design-doc **Recurring SPOs** rule, plus a Recurring SPO Lifecycle Matrix. `docs/design.md` regenerated.
 
 ---
 
 ## Tickets
 
-### TKT-SPO-19 · Schedule data model & cadence engine
+### TKT-SPO-19 · Recurring SPO data model & cadence engine
 **Summary:** Store recurring series separately from SPOs; generate run dates from a cadence with skips and end rules.
 **Acceptance criteria:**
-- [ ] A schedule stores template lines with allocations, cadence (weekly / every 2 weeks on a weekday; monthly / quarterly on day 1–28; time), start, end (never · date · N runs), mode, status, skipped dates and an activity log.
+- [ ] A recurring SPO stores template lines with allocations, cadence (weekly / every 2 weeks on a weekday; monthly / quarterly on day 1–28; time), start, end (never · date · N runs), mode, status, skipped dates and an activity log.
 - [ ] Run dates honor the start date, the end rule and skipped dates; a skipped date doesn't count toward "after N runs".
 - [ ] Each generated SPO stores its series id and run date, and keeps its own lifecycle state.
 - [ ] Series never count in the SPO list's tabs or cards.
 **Audit findings:** SPO-49, SPO-50
 **Files:** `buyer/spo-data.js` (`window.SCH`)
 
-### TKT-SPO-20 · Schedules list
-**Summary:** A Schedules page with Running / Ended tabs, reconciling cards, and an expandable table of upcoming runs and created SPOs.
+### TKT-SPO-20 · Recurring SPOs list
+**Summary:** A Recurring SPOs page with Running / Ended tabs, reconciling cards, and an expandable table of upcoming runs and created SPOs.
 **Acceptance criteria:**
 - [ ] Running cards: Total = Active + Your Move + Paused. Ended cards: Total = Completed + Stopped Early. All follow the property scope and search.
-- [ ] Columns: schedule (name, id · property), vendor, cadence (+ mode · time), next run (or end date), per run, status. Every column except cadence sorts.
+- [ ] Columns: recurring SPO (name, id · property), vendor, cadence (+ mode · time), next run (or end date), per run, status. Every column except cadence sorts.
 - [ ] Only your-move rows have a primary (Review → approval, Edit → wizard); others get a menu (View, Edit).
 - [ ] Expanding a row shows the next 3 runs (skipped struck through) and the latest SPOs with their pills.
-- [ ] Schedules is reachable from the SPOs menu on every page and from the Service POs header.
+- [ ] Recurring SPOs is reachable from the SPOs menu on every page and from the Service POs header.
 **Audit findings:** SPO-49
 **Files:** `buyer/schedules.html`, all buyer pages (menu)
 
-### TKT-SPO-21 · Schedule detail & series controls
+### TKT-SPO-21 · Recurring SPO detail & series controls
 **Summary:** One page per series with the cadence, upcoming runs, created SPOs, template, and the series' own controls.
 **Acceptance criteria:**
 - [ ] The cadence reads in plain English ("Every 2 weeks on Monday · 9:00 AM"), with next run, per run, 12-month cost and end rule.
@@ -139,20 +139,20 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 **Files:** `buyer/schedule.html`, `buyer/buyer-components.css` (`.series-*`, `.run-row`)
 
 ### TKT-SPO-22 · Generated SPOs link to their series
-**Summary:** An SPO created by a schedule shows where it came from; the series controls never appear on the SPO.
+**Summary:** An SPO created by a recurring SPO shows where it came from; the series controls never appear on the SPO.
 **Acceptance criteria:**
-- [ ] The SPO detail shows the series link (run date, series name, cadence, series status, View schedule).
+- [ ] The SPO detail shows the series link (run date, series name, cadence, series status, View recurring SPO).
 - [ ] The Approval step reads "series approved" and the Approval fact names the series approver.
-- [ ] Activity starts with "Created and sent by schedule" or "Drafted by schedule".
+- [ ] Activity starts with "Created and sent by recurring SPO" or "Drafted by recurring SPO".
 - [ ] The SPO list shows the recurring marker with a tooltip naming the series, and search matches the series name.
 **Audit findings:** SPO-49, SPO-50
 **Files:** `buyer/spo.html`, `buyer/spos.html`, `buyer/spo-data.js` (`buildLog`)
 
 ### TKT-SPO-23 · Create, edit and "Make recurring" in the wizard
-**Summary:** The SPO wizard creates and edits schedules: a Repeat this SPO switch card on the Scope step with cadence, end, mode and a live preview; Review shows a read-only summary.
+**Summary:** The SPO wizard creates and edits recurring SPOs: a Repeat this SPO switch card on the Scope step with cadence, end, mode and a live preview; Review shows a read-only summary.
 **Acceptance criteria:**
-- [ ] A Repeat this SPO switch on the Scope step (no switch when editing a schedule). On, it needs a name and shows a preview of the next 3 dates and the 12-month runs (and cost, once lines are priced); Schedule service steps aside.
-- [ ] Review shows a read-only Repeats summary with Edit back to Scope; Make recurring and Edit schedule open on Scope.
+- [ ] A Repeat this SPO switch on the Scope step (no switch when editing a recurring SPO). On, it needs a name and shows a preview of the next 3 dates and the 12-month runs (and cost, once lines are priced); Schedule service steps aside.
+- [ ] Review shows a read-only Repeats summary with Edit back to Scope; Make recurring and Edit recurring SPO open on Scope.
 - [ ] The budget check measures the busiest month of the series.
 - [ ] Make recurring (any SPO not in a series) pre-fills the wizard, and that SPO becomes run 1.
 - [ ] Editing applies to future runs only; created SPOs are unchanged.
@@ -161,13 +161,13 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 **Files:** `buyer/spo-new.html`, `buyer/spo.html` (Make recurring)
 
 ### TKT-SPO-24 · Approve the series once
-**Summary:** A schedule needs approval once, on its 12-month commitment; matching runs then need no further approval.
+**Summary:** A recurring SPO needs approval once, on its 12-month commitment; matching runs then need no further approval.
 **Acceptance criteria:**
 - [ ] Approval is required when the 12-month commitment is over $2,500, or the busiest month exceeds a GL's monthly budget.
-- [ ] The request in Approvals is `SCH-<nn>`, with a Recurring schedule pill and a "per run × runs = 12-month commitment" total.
+- [ ] The request in Approvals is `SCH-<nn>`, with a Recurring SPO pill and a "per run × runs = 12-month commitment" total.
 - [ ] Approve → Active, with the approved run count frozen on the request. Revision → Revision Requested (Edit). Reject → Ended (Stopped Early).
 - [ ] An edit that raises the 12-month commitment returns the series to approval; other edits save without it.
-- [ ] Home's Approvals card and the queue total include schedule requests.
+- [ ] Home's Approvals card and the queue total include recurring SPO requests.
 **Audit findings:** SPO-16, SPO-34
 **Files:** `buyer/approvals.html`, `buyer/approval.html`, `buyer/spo-new.html`, `buyer/home.html`, `buyer/spo-data.js` (`needsApproval`, `reason`)
 
@@ -186,26 +186,26 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 **Why:** the team asked for a calendar on Schedules. The list answers "which series exist"; a calendar answers what property managers actually ask: *what service is happening this week, and where?* It also shows clashes (two vendors at one property on one day) and makes holiday skips easy to find.
 
 **What shipped**
-- **List | Calendar toggle** on the Schedules page (`.seg.on-card`). **Calendar is the default** (Vu, 10/16/2026): every arrival lands on it, including the SPO list's Schedules button; List lasts for the visit (survives a reload), and `#list` opens it directly. The summary cards stay over the hero; clicking one jumps back to the filtered list. The Running/Ended tabs hide in Calendar.
-- **Month grid** (`buyer/sch-cal.js`, `window.CAL`): every run of every schedule in scope. Chips by kind: solid = auto-send, outlined = draft only, dashed + struck = skipped, faded = paused, amber = pending series approval. A **past run** becomes its **SPO chip** ("SPO-847" + status dot); runs from before the demo window read "Earlier run". Three chips per day, then "+N more". Today is a filled circle; Today / ‹ › navigate months.
+- **List | Calendar toggle** on the Recurring SPOs page (`.seg.on-card`). **Calendar is the default** (Vu, 10/16/2026): every arrival lands on it, including the SPO list's Recurring SPOs button; List lasts for the visit (survives a reload), and `#list` opens it directly. The summary cards stay over the hero; clicking one jumps back to the filtered list. The Running/Ended tabs hide in Calendar.
+- **Month grid** (`buyer/sch-cal.js`, `window.CAL`): every run of every recurring SPO in scope. Chips by kind: solid = auto-send, outlined = draft only, dashed + struck = skipped, faded = paused, amber = pending series approval. A **past run** becomes its **SPO chip** ("SPO-847" + status dot); runs from before the demo window read "Earlier run". Three chips per day, then "+N more". Today is a filled circle; Today / ‹ › navigate months.
 - **Filters:** property (when "All properties"), trade, and a toggle per run kind. The search box applies too.
-- **Popover** on a chip: schedule, property, vendor, time and amount, and only existing actions: **Skip this date / Undo skip** (future runs of active series; same log lines as the schedule page), **Open SPO**, **Open schedule**.
-- **Mini calendar** in a schedule's rail ("Run calendar"): one series, dates tinted by kind, same popover; opens on the month of the next run. Placed in the rail rather than above Upcoming runs: a small month fits the rail, and would float in the wide main column.
+- **Popover** on a chip: recurring SPO, property, vendor, time and amount, and only existing actions: **Skip this date / Undo skip** (future runs of active series; same log lines as the recurring SPO page), **Open SPO**, **Open recurring SPO**.
+- **Mini calendar** in a recurring SPO's rail ("Run calendar"): one series, dates tinted by kind, same popover; opens on the month of the next run. Placed in the rail rather than above Upcoming runs: a small month fits the rail, and would float in the wide main column.
 - **Not in v1:** drag to reschedule (moving one run needs cadence and re-approval rules — Skip covers most cases), one-time SPOs (no service date yet, only a spend period), week/day views.
 
-### TKT-SPO-48 · Calendar view on Schedules
-**Summary:** A month calendar of every run, as a second view of the Schedules page.
+### TKT-SPO-48 · Calendar view on Recurring SPOs
+**Summary:** A month calendar of every run, as a second view of the Recurring SPOs page.
 **Acceptance criteria:**
 - [ ] The page opens on Calendar; a List | Calendar toggle switches views for the rest of the visit, and `#list` opens the list directly; the summary cards stay and jump back to the filtered list.
 - [ ] The grid shows every run in scope by kind: auto-send, draft only, skipped, paused, pending approval; past runs show their SPO number and status.
 - [ ] Three runs per day, then "+N more" (opens the day's runs).
 - [ ] Filters: property (when "All properties"), trade, run kind; search applies.
-- [ ] Clicking a run opens a popover with schedule, property, vendor, time, amount and status, and only: Skip this date / Undo skip (future runs of active series), Open SPO, Open schedule.
-- [ ] Skipping from the calendar logs on the series exactly like the schedule page and updates every view.
+- [ ] Clicking a run opens a popover with recurring SPO, property, vendor, time, amount and status, and only: Skip this date / Undo skip (future runs of active series), Open SPO, Open schedule.
+- [ ] Skipping from the calendar logs on the series exactly like the recurring SPO page and updates every view.
 **Files:** `buyer/sch-cal.js` (`runs`, `mount`, `pick`, `skip`), `buyer/schedules.html` (`setView`, `renderCal`), `buyer/buyer-components.css` (`.cal*`, `.seg.on-card`, `.cal-toggle`)
 
-### TKT-SPO-49 · Run calendar on a schedule's page
-**Summary:** The schedule's rail shows its own runs on a mini month calendar.
+### TKT-SPO-49 · Run calendar on a recurring SPO's page
+**Summary:** The recurring SPO's rail shows its own runs on a mini month calendar.
 **Acceptance criteria:**
 - [ ] The mini calendar shows only this series, opening on the month of the next run (or the end date for an ended series).
 - [ ] Run dates are tinted by kind; a legend lists only the kinds in view.
@@ -217,42 +217,46 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 **Why:** team feedback on production's calendar: the colour key didn't match the dots. "Coloring of the tile should be by vendor to clearly show difference. Then the coloring of the dot should match the legend (key) which clearly states the status of the date/time (pending/approved/proposed new time/denied/needs rebid)." Decisions (Vu): **A** — Denied means the vendor rejected the SPO (a vendor can't decline only the time; they propose a new one); **B** — the calendar gets its own SPOs menu item. This also delivers the parked follow-up: one-time SPO appointments on the calendar.
 
 **What shipped**
-- **Service calendar page** (`buyer/calendar.html`, SPOs → Service calendar): schedule runs + one-time SPO appointments, filtered by property (when "All properties") and vendor; links to Schedules and Service POs.
-- **Tile = vendor:** a stable tint per vendor (`SPO.vh`), shared with vendor avatars on the SPO list, SPO page, Schedules and the vendor picker. Tiles show the SPO number (↻ for a run with no SPO yet), the vendor and the time.
+- **Service calendar page** (`buyer/calendar.html`, SPOs → Service calendar): recurring SPO runs + one-time SPO appointments, filtered by property (when "All properties") and vendor; links to Recurring SPOs and Service POs.
+- **Tile = vendor:** a stable tint per vendor (`SPO.vh`), shared with vendor avatars on the SPO list, SPO page, Recurring SPOs and the vendor picker. Tiles show the SPO number (↻ for a run with no SPO yet), the vendor and the time.
 - **Dot = date/time status**, matching an always-visible legend; colour *and* shape:
 
   | Dot | Status | From |
   |---|---|---|
-  | amber ring | Pending | Appointment proposed (waiting on the vendor); a schedule waiting on series approval |
-  | emerald | Approved | Appointment confirmed; any run of an approved schedule |
+  | amber ring | Pending | Appointment proposed (waiting on the vendor); a recurring SPO waiting on series approval |
+  | emerald | Approved | Appointment confirmed; any run of an approved recurring SPO |
   | sky diamond | New time proposed | The vendor countered (your move) |
   | rose with a bar | Denied | The vendor rejected the SPO (re-propose via Rebid) |
   | rose ring | Needs rebid | A parked rebid carrying a time |
   | grey dash | Not running | A skipped or paused run (struck through) |
 
-- **Legend = filter** with counts for the month. Runs-only views (Schedules, mini) show only Pending / Approved / Not running.
+- **Legend = filter** with counts for the month. Runs-only views (Recurring SPOs, mini) show only Pending / Approved / Not running.
 - **Popover by status:** Pending → Change proposed time (`spo.html#<id>/propose`) · New time proposed → Review new time · Denied → Rebid · Needs rebid → Choose vendor · Approved → Add to calendar (.ics) · plus Open SPO; runs keep Skip / Undo skip.
 - **Seeds (store `scout-spos-v8`):** August shows every status — 863 pending (08/27), 862 approved (08/26), 858 approved (08/20), 860 new time (08/31), 861 denied (08/28), 857 pending and past (08/12); September has 867 needs rebid (09/03) and SCH-06 pending series approval (09/15).
 
 ### TKT-SPO-56 · Service calendar page
-**Summary:** One calendar for every visit — schedule runs and one-time SPO appointments — with its own SPOs menu item.
+**Summary:** One calendar for every visit — recurring SPO runs and one-time SPO appointments — with its own SPOs menu item.
 **Acceptance criteria:**
-- [ ] SPOs menu → Service calendar opens a month grid of schedule runs and SPO appointments (sent SPOs with a time; rejected and rebid SPOs keep theirs), filterable by property and vendor.
-- [ ] A tile's popover shows the SPO or schedule, property, vendor, time (and the old time for a counter), amount and status, with the status's action and Open SPO.
-- [ ] The Schedules page's Calendar view and the schedule mini calendar use the same component, runs only.
+- [ ] SPOs menu → Service calendar opens a month grid of recurring SPO runs and SPO appointments (sent SPOs with a time; rejected and rebid SPOs keep theirs), filterable by property and vendor.
+- [ ] A tile's popover shows the SPO or recurring SPO, property, vendor, time (and the old time for a counter), amount and status, with the status's action and Open SPO.
+- [ ] The Recurring SPOs page's Calendar view and the recurring SPO mini calendar use the same component, runs only.
 **Files:** `buyer/calendar.html`, `buyer/sch-cal.js` (`items`, `mount`, `pick`, `ics`), `buyer/appbar.js` (menu, page map), `buyer/spo.html` (`#<id>/propose`)
 
 ### TKT-SPO-57 · Vendor tint and status dot legend
 **Summary:** Tiles are coloured by vendor; the dot is only the date/time status, matching the legend.
 **Acceptance criteria:**
-- [ ] Each vendor has one stable tint used by its calendar tiles and its avatars (SPO list, SPO page, Schedules, vendor picker).
+- [ ] Each vendor has one stable tint used by its calendar tiles and its avatars (SPO list, SPO page, Recurring SPOs, vendor picker).
 - [ ] The dot shows exactly one of Pending, Approved, New time proposed, Denied, Needs rebid, Not running, each distinct in colour and shape; the legend shows the same marks with counts and toggles them.
 - [ ] Denied = the vendor rejected the SPO; Needs rebid = a parked rebid with a time.
 **Files:** `buyer/sch-cal.js` (`STATUS`, `chip`), `buyer/spo-data.js` (`vh`), `buyer/buyer-components.css` (`.vt`, `.sdot`, `.cal-key`, `.cal-legend-bar`), `buyer/spos.html`, `buyer/spo.html`, `buyer/schedules.html`, `buyer/schedule.html`
 
-## Addendum · Calendar view removed from Schedules (10/16/2026)
+## Addendum · Calendar view removed from Recurring SPOs (10/16/2026)
 
-Vu removed the Schedules page's List | Calendar toggle: the **Service calendar** (SPOs → Service calendar) covers runs and SPO appointments in one place, so a second, runs-only calendar was redundant. The Schedules page is list-only again, with a **Service calendar** button beside New Schedule; old `#list` links still land on the list. A schedule's own page keeps its mini run calendar.
+Vu removed the Recurring SPOs page's List | Calendar toggle: the **Service calendar** (SPOs → Service calendar) covers runs and SPO appointments in one place, so a second, runs-only calendar was redundant. The Recurring SPOs page is list-only again, with a **Service calendar** button beside New Recurring SPO; old `#list` links still land on the list. A recurring SPO's own page keeps its mini run calendar.
 
-- **TKT-SPO-48 (Calendar view on Schedules)** is superseded by **TKT-SPO-56 (Service calendar page)** — don't build both.
-- The SPO list header's **Schedules** button is now **Calendar** (calendar icon) and opens the Service calendar; Schedules stays in the SPOs menu and on the calendar's toolbar.
+- **TKT-SPO-48 (Calendar view on Recurring SPOs)** is superseded by **TKT-SPO-56 (Service calendar page)** — don't build both.
+- The SPO list header's **Recurring SPOs** button is now **Calendar** (calendar icon) and opens the Service calendar; Recurring SPOs stays in the SPOs menu and on the calendar's toolbar.
+
+## Addendum · Renamed "Recurring SPOs" (10/16/2026)
+
+Vu renamed **Schedules** to **Recurring SPOs** everywhere in the app and the docs ("more fitting and less confusing alongside other names"): the SPOs menu, page titles, buttons ("New Recurring SPO", "Edit recurring SPO", "Back to Recurring SPOs"), the Approvals request label, notifications (the type filter reads "Recurring SPOs"), Activity lines ("Created and sent by recurring SPO") and the ticket titles. **Unchanged:** the `SCH-<nn>` ids, file names (`schedules.html`, `schedule.html`), code names (`window.SCH`), and **Schedule service** — the appointment switch, a different meaning. Store keys bumped (`scout-spos-v9`, `scout-schedules-v2`) so stored Activity uses the new wording.

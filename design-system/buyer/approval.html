@@ -241,22 +241,22 @@
       { l: 'Requested', s: 'done', i: IC.check, dt: d[0] || R.date },
       { l: 'Under Review', s: 'done', i: IC.check, dt: d[1] || R.date },
       { l: 'Approved', s: 'done', i: IC.check, dt: d[2] || R.date },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Schedule Active' : 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
+      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
     else if (st === 'rejected') steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Under Review', s: 'done', i: IC.check, dt: R.date },
       { l: 'Rejected', s: 'rejected', i: IC.cross, dt: R.date },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Schedule Active' : 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
     else if (st === 'revision') steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Buyer revision', s: 'active sky', i: IC.refresh },
       { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Schedule Active' : 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
     else steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Under Review', s: 'active', i: IC.eye, dt: 'your move' },
       { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Schedule Active' : 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
     return '<div class="ap-stepper">' + steps.map((sp, i) => {
       const conn = i < steps.length - 1
         ? '<div class="ap-conn' + (steps[i + 1].s === 'rejected' || sp.s === 'rejected' && false ? ' rose' : (sp.s === 'done' && steps[i + 1].s.startsWith('done')) ? ' done' : sp.s === 'done' && steps[i + 1].s !== 'future' ? ' done' : '') + '"></div>' : '';
@@ -275,14 +275,14 @@
   }
 
   function renderPage() {
-    document.getElementById('hero-sub').textContent = (R.spo ? 'Service PO ' : R.sch ? 'Schedule ' : '#') + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
+    document.getElementById('hero-sub').textContent = (R.spo ? 'Service PO ' : R.sch ? 'Recurring SPO ' : '#') + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
     const st = R.status;
     let main = '';
 
     main += '<div class="card"><div class="det-card-head"><h2>Approval Progress</h2>' + statusPill(st) + '</div>' + stepper(st) + '</div>';
 
     if (st === 'pending') {
-      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span style="display:flex;gap:8px">' + (R.spo ? '<span class="pill p-neutral">Service PO</span>' : R.sch ? '<span class="pill p-neutral">Recurring schedule</span>' : '') + '<span class="pill p-neutral">' + R.level + ' approval</span></span></div>' +
+      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span style="display:flex;gap:8px">' + (R.spo ? '<span class="pill p-neutral">Service PO</span>' : R.sch ? '<span class="pill p-neutral">Recurring SPO</span>' : '') + '<span class="pill p-neutral">' + R.level + ' approval</span></span></div>' +
         '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px">Comment to the buyer <span class="req-chip">Required for revision or rejection</span></div>' +
         '<textarea class="dec-comment" id="dec-comment" placeholder="Explain what should change, or why this is being rejected…" oninput="decGate()"></textarea>' +
         '<div class="decision-actions">' +
@@ -293,8 +293,8 @@
         '</div></div>';
     }
 
-    main += '<div class="card"><div class="det-card-head"><div><h2>' + (R.spo ? 'Service PO lines' : R.sch ? 'Schedule · next 12 months' : 'Order details') + '</h2>' + (R.spo ? '<div class="sub">GL code and unit for every dollar</div>' : R.sch ? '<div class="sub">Approving covers every run that matches these lines</div>' : '<div class="sub" id="inv-checked">Checked just now</div>') + '</div>' +
-      (R.sch ? '<a class="btn" style="height:36px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center" href="schedule.html#' + R.sch + '">View schedule</a>' : R.spo ? '<a class="btn" style="height:36px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center" href="spo.html#' + R.spo + '">View SPO</a>' : '<button class="btn" style="height:36px;font-size:13px;display:inline-flex;align-items:center;gap:8px" onclick="refreshInv()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Refresh inventory</button>') + '</div>' +
+    main += '<div class="card"><div class="det-card-head"><div><h2>' + (R.spo ? 'Service PO lines' : R.sch ? 'Recurring SPO · next 12 months' : 'Order details') + '</h2>' + (R.spo ? '<div class="sub">GL code and unit for every dollar</div>' : R.sch ? '<div class="sub">Approving covers every run that matches these lines</div>' : '<div class="sub" id="inv-checked">Checked just now</div>') + '</div>' +
+      (R.sch ? '<a class="btn" style="height:36px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center" href="schedule.html#' + R.sch + '">View recurring SPO</a>' : R.spo ? '<a class="btn" style="height:36px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center" href="spo.html#' + R.spo + '">View SPO</a>' : '<button class="btn" style="height:36px;font-size:13px;display:inline-flex;align-items:center;gap:8px" onclick="refreshInv()"><svg style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Refresh inventory</button>') + '</div>' +
       (R.legacy ? '<div class="callout violet" style="margin:10px 0"><b>' + IC.warn + 'Legacy approval · Recreate cart required</b>This approval was created before live inventory classification was added. Request a revision so the buyer can clear all items from the cart, add the same items again, and resubmit it for approval.</div>' : '') +
       (R.unavailable ? '<div class="callout rose" style="margin:10px 0"><b>A product in this request is no longer available</b>The vendor no longer lists the product(s) marked below, so this request can no longer be approved. Please reject it and ask the buyer to place a new order with available items.</div>' : '') +
       (() => { const vv = vends();
@@ -339,9 +339,9 @@
 
     if (R.sch && R.status === 'approved') {
       const sx = SCH.get(R.sch);
-      side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Schedule active</h2></div>' +
+      side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Recurring SPO active</h2></div>' +
         '<p style="font-size:13px;color:var(--muted-foreground)">Approved once for the series. ' + (SCH.nextRun(sx) ? 'Next run ' + SPO.fmtDate(SCH.nextRun(sx)) + ' · ' : '') + (sx.mode === 'auto' ? 'POs are emailed automatically.' : 'Each run is drafted for the buyer to send.') + '</p>' +
-        '<div class="order-row"><div class="onum">' + sx.id + '</div><a class="toolbar-btn" style="text-decoration:none" href="schedule.html#' + sx.id + '">View schedule</a></div></div>';
+        '<div class="order-row"><div class="onum">' + sx.id + '</div><a class="toolbar-btn" style="text-decoration:none" href="schedule.html#' + sx.id + '">View recurring SPO</a></div></div>';
     } else if (R.spo && R.status === 'approved') {
       const sp = SPO.get(R.spo), v = SPO.VEN[sp.v];
       side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Sent to vendor</h2></div>' +

@@ -345,7 +345,7 @@
   function railSummary(showCta) {
     const p = W.prop ? propOf(W.prop) : null, v = W.v ? SPO.VEN[W.v] : null, t = wTotal();
     const appr = W.lines.length && W.prop ? (isRec() ? SCH.needsApproval(asSch()) : SPO.needsApproval(asSpo())) : false;
-    if (isRec()) return '<div class="card"><div class="det-card-head"><h2>Schedule</h2></div>' +
+    if (isRec()) return '<div class="card"><div class="det-card-head"><h2>Recurring SPO</h2></div>' +
       '<div class="sum-row"><span class="muted">Property</span><span style="text-align:right">' + (p ? p.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
       '<div class="sum-row"><span class="muted">Vendor</span><span style="text-align:right">' + (v ? v.name : '<span class="hint">Not chosen</span>') + '</span></div>' +
       '<div class="sum-row"><span class="muted">Repeats</span><span style="text-align:right">' + SCH.cadenceShort(asSch().cadence) + '</span></div>' +
@@ -449,17 +449,17 @@
       const w = v => (v / scale * 100).toFixed(2) + '%';
       return '<div class="bmeter' + (over ? ' over' : '') + '"><div class="bmeter-head"><span class="gl"><code>' + g + '</code>' + SPO.glName(g) + '</span><span class="pct">' + Math.round(after / b.budget * 100) + '% of budget</span></div>' +
         '<div class="bmeter-bar"><span class="sp" style="width:' + w(b.spent) + '"></span><span class="cm" style="width:' + w(b.committed) + '"></span><span class="me" style="width:' + w(mine[g]) + '"></span>' + (over ? '<span class="cap" style="left:' + w(b.budget) + '"></span>' : '') + '</div>' +
-        '<div class="bmeter-sub">' + money(after) + ' of ' + money(b.budget) + (over ? ' · <b style="color:var(--rose)">over by ' + money(r2(after - b.budget)) + '</b>' : ' · ' + money(r2(b.budget - after)) + ' left') + ' · ' + (pk ? 'this schedule ' + pk.n + ' × ' + money(r2(mine[g] / Math.max(1, pk.n))) : 'this SPO ' + money(mine[g])) + '</div></div>';
+        '<div class="bmeter-sub">' + money(after) + ' of ' + money(b.budget) + (over ? ' · <b style="color:var(--rose)">over by ' + money(r2(after - b.budget)) + '</b>' : ' · ' + money(r2(b.budget - after)) + ' left') + ' · ' + (pk ? 'this recurring SPO ' + pk.n + ' × ' + money(r2(mine[g] / Math.max(1, pk.n))) : 'this SPO ' + money(mine[g])) + '</div></div>';
     }).join('') +
-    '<div class="bmeter-legend"><span><i style="background:color-mix(in srgb, var(--primary) 45%, var(--muted))"></i>Spent</span><span><i style="background:color-mix(in srgb, var(--sky) 55%, var(--muted))"></i>Committed on open SPOs</span><span><i style="background:var(--amber)"></i>' + (isRec() ? 'This schedule (busiest month)' : 'This SPO') + '</span></div>';
+    '<div class="bmeter-legend"><span><i style="background:color-mix(in srgb, var(--primary) 45%, var(--muted))"></i>Spent</span><span><i style="background:color-mix(in srgb, var(--sky) 55%, var(--muted))"></i>Committed on open SPOs</span><span><i style="background:var(--amber)"></i>' + (isRec() ? 'This recurring SPO (busiest month)' : 'This SPO') + '</span></div>';
   }
 
   /* Repeat this SPO (Scope step, beside Schedule service — 10/16/2026, as in production): a switch card.
      On, it holds the cadence; each run creates an ordinary SPO. Editing a schedule keeps it on, no switch. */
   function repeatCard() {
     const r = W.rec || { on: false }, on = isRec(), ed = !!W.sched;
-    const head = '<div class="sched-head"><span class="sched-ic">' + IC.rep + '</span><div style="flex:1;min-width:0"><div class="sched-title">' + (ed ? 'Schedule · ' + W.sched : 'Repeat this SPO') + '</div><div class="sched-sub">' +
-      (ed ? 'Changes apply to future runs — SPOs already created keep their own history.' : on ? 'Each run creates an ordinary SPO from these lines.' : 'Need this every week, month or quarter? Make it a schedule.') + '</div></div>' +
+    const head = '<div class="sched-head"><span class="sched-ic">' + IC.rep + '</span><div style="flex:1;min-width:0"><div class="sched-title">' + (ed ? 'Recurring SPO · ' + W.sched : 'Repeat this SPO') + '</div><div class="sched-sub">' +
+      (ed ? 'Changes apply to future runs — SPOs already created keep their own history.' : on ? 'Each run creates an ordinary SPO from these lines.' : 'Need this every week, month or quarter? Make it a recurring SPO.') + '</div></div>' +
       (ed ? '' : '<button type="button" class="switch" role="switch" aria-checked="' + on + '" aria-label="Repeat this SPO" onclick="toggleRec(' + !on + ')"></button>') + '</div>';
     if (!on) return '<div class="sched-card">' + head + '</div>';
     const x = asSch(), weekly = r.freq === 'weekly' || r.freq === 'biweekly';
@@ -470,7 +470,7 @@
     const endVal = r.endType === 'date' ? '<div class="w-field"><label>End date</label><input type="date" value="' + r.endDate + '" onchange="setRec(\'endDate\', this.value)"></div>'
       : r.endType === 'count' ? '<div class="w-field"><label>Number of runs</label><input type="number" min="1" max="120" value="' + r.endCount + '" onchange="setRec(\'endCount\', Math.max(1, +this.value || 1))"></div>' : '<div></div>';
     const up = W.prop && W.v ? SCH.upcoming(x, 3) : [], yr = W.prop ? SCH.yearRuns(x) : 0;
-    return '<div class="sched-card on">' + head + '<div class="sched-body"><div class="rec-grid" style="margin-top:0"><div class="w-field" style="grid-column:1 / -1"><label>Schedule name</label><input class="text-in" value="' + (r.name || '').replace(/"/g, '&quot;') + '" placeholder="e.g. Common-area cleaning" onchange="setRec(\'name\', this.value)"></div>' +
+    return '<div class="sched-card on">' + head + '<div class="sched-body"><div class="rec-grid" style="margin-top:0"><div class="w-field" style="grid-column:1 / -1"><label>Recurring SPO name</label><input class="text-in" value="' + (r.name || '').replace(/"/g, '&quot;') + '" placeholder="e.g. Common-area cleaning" onchange="setRec(\'name\', this.value)"></div>' +
       '<div class="w-field"><label>Repeats</label><select onchange="setRec(\'freq\', this.value)">' + Object.keys(SCH.FREQ).map(k => opt(k, SCH.FREQ[k].label, r.freq)).join('') + '</select></div>' + dayField +
       '<div class="w-field"><label>Starts</label><input type="date" value="' + r.start + '"' + (ed ? ' disabled' : '') + ' onchange="setRec(\'start\', this.value)"></div>' +
       '<div class="w-field"><label>Time</label><input type="time" value="' + r.time + '" onchange="setRec(\'time\', this.value)"></div>' +
@@ -488,7 +488,7 @@
   function recSummary() {
     if (!isRec()) return '';
     const x = asSch(), r = W.rec, up = SCH.upcoming(x, 3), yr = SCH.yearRuns(x);
-    return '<div class="card"><div class="det-card-head hd"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.rep + '</span>' + (W.sched ? 'Schedule · ' + W.sched : 'Repeats') + '</h2><a class="text-link" href="#scope" style="font-size:13px">Edit</a></div>' +
+    return '<div class="card"><div class="det-card-head hd"><h2 style="display:inline-flex;align-items:center;gap:10px"><span class="icon-tile sm tile-sky">' + IC.rep + '</span>' + (W.sched ? 'Recurring SPO · ' + W.sched : 'Repeats') + '</h2><a class="text-link" href="#scope" style="font-size:13px">Edit</a></div>' +
       '<dl class="fact-rows wide" style="margin-top:10px"><dt>Name</dt><dd>' + (r.name || '—') + '</dd><dt>Each run</dt><dd>' + (r.mode === 'auto' ? 'Auto-send' : 'Draft only') + '</dd><dt>Starts</dt><dd>' + SPO.fmtDate(r.start) + '</dd><dt>Ends</dt><dd>' + SCH.endText(x).replace('Ends ', '') + '</dd></dl>' + recPreview(x, up, yr) + '</div>';
   }
   function toggleRec(on) { if (on && !W.rec) W.rec = defaultRec(W.lines[0] && W.lines[0].desc); if (W.rec) W.rec.on = on; saveW(); renderPage(); }
@@ -499,7 +499,7 @@
   const schedOn = () => !!(W.appt && W.appt.on);
   const schedIncomplete = () => schedOn() && !isRec() && !(W.appt.d && W.appt.s);
   function schedCard() {
-    if (isRec()) return '<div class="sched-card"><div class="sched-head"><span class="sched-ic">' + IC.cal + '</span><div style="flex:1;min-width:0"><div class="sched-title">Schedule service</div><div class="sched-sub">This SPO repeats, so each run uses the schedule’s day and time below.</div></div></div></div>';
+    if (isRec()) return '<div class="sched-card"><div class="sched-head"><span class="sched-ic">' + IC.cal + '</span><div style="flex:1;min-width:0"><div class="sched-title">Schedule service</div><div class="sched-sub">This SPO repeats, so each run uses the recurring SPO’s day and time below.</div></div></div></div>';
     const a = W.appt || {}, on = schedOn();
     const f = (id, label, type, val, req) => '<div class="w-field"><label for="' + id + '">' + label + (req ? '' : ' <span class="opt">· optional</span>') + '</label><input type="' + type + '" class="text-in" id="' + id + '" value="' + (val || '') + '"' + (type === 'date' ? ' min="' + SPO.TODAY + '"' : ' step="900"') + ' onchange="setAppt()"></div>';
     return '<div class="sched-card' + (on ? ' on' : '') + '"><div class="sched-head"><span class="sched-ic">' + IC.cal + '</span><div style="flex:1;min-width:0"><div class="sched-title">Schedule service</div><div class="sched-sub">Optional. Propose when the vendor should do the work.</div></div>' +
@@ -527,7 +527,7 @@
     const allocChips = l => '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + W.prop + '/' + a.unit + '" target=\"_blank\" rel=\"noopener\" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
     const edit = h => '<a class="text-link" href="#' + h + '" style="font-size:13px">Edit</a>';
     const main = '<div class="card"><div class="det-card-head hd"><h2>Property &amp; vendor</h2>' + edit('property') + '</div><dl class="fact-rows wide" style="margin-top:10px">' +
-      '<dt>Property</dt><dd>' + p.name + '</dd><dt>Vendor</dt><dd>' + v.name + '</dd><dt>PO goes to</dt><dd>' + v.email + '</dd><dt>Requested by</dt><dd>Alicia Grant</dd><dt>Spend period</dt><dd>' + W.period + '</dd><dt>Service time</dt><dd>' + (isRec() ? 'Each run, the schedule’s day and time' : apptFromW() ? SPO.fmtAppt(apptFromW()) + ' <a class="text-link" href="#scope" style="font-size:13px">Edit</a>' : 'Vendor to propose a time <a class="text-link" href="#scope" style="font-size:13px">Add</a>') + '</dd></dl></div>' +
+      '<dt>Property</dt><dd>' + p.name + '</dd><dt>Vendor</dt><dd>' + v.name + '</dd><dt>PO goes to</dt><dd>' + v.email + '</dd><dt>Requested by</dt><dd>Alicia Grant</dd><dt>Spend period</dt><dd>' + W.period + '</dd><dt>Service time</dt><dd>' + (isRec() ? 'Each run, the recurring SPO’s day and time' : apptFromW() ? SPO.fmtAppt(apptFromW()) + ' <a class="text-link" href="#scope" style="font-size:13px">Edit</a>' : 'Vendor to propose a time <a class="text-link" href="#scope" style="font-size:13px">Add</a>') + '</dd></dl></div>' +
       '<div class="card"><div class="det-card-head hd"><h2>Scope of work</h2>' + edit('scope') + '</div><p class="spo-scope" style="margin-top:8px">' + W.scope + '</p></div>' +
       '<div class="card"><div class="det-card-head hd"><h2>Line items</h2>' + edit('costs') + '</div>' +
       W.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(lineTotal(l)) + '</span>' + allocChips(l) + '</div>').join('') +
@@ -553,11 +553,11 @@
     const x = asSch(), appr = SCH.needsApproval(x), ed = W.sched ? SCH.get(W.sched) : null;
     const named = (W.rec.name || '').trim().length > 0;
     const reapprove = ed && appr && (SCH.annual(x) > SCH.annual(ed) + 0.005 || ed.status === 'revision');
-    const block = named ? '' : '<ul class="w-blockers"><li>Name the schedule</li></ul>';
+    const block = named ? '' : '<ul class="w-blockers"><li>Name the recurring SPO</li></ul>';
     const go = (label, ico) => '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px"' + (named ? '' : ' disabled') + ' onclick="submitSchedule()"><span style="display:inline-flex;width:16px;height:16px">' + ico + '</span>' + label + '</button>';
     if (ed && !reapprove) return '<div class="callout emerald" style="margin-top:14px"><b>No new approval needed</b>' + (appr ? 'The series stays within what was approved.' : 'Within budget and under ' + money(SPO.APPROVAL_LIMIT) + ' a year.') + ' Changes apply from the next run.</div>' + go('Save changes', IC.save) + block;
-    if (appr) return '<div class="callout amber" style="margin-top:14px"><b>' + (ed ? 'Changes need re-approval' : 'Series approval required') + '</b>' + SCH.reason(x) + '. A Supervisor approves the series once — its runs then go out without further approval. Nothing runs until then.</div>' + go(ed ? 'Save & resubmit for approval' : 'Submit schedule for approval', IC.shield) + block;
-    return '<div class="callout emerald" style="margin-top:14px"><b>No approval needed</b>Under ' + money(SPO.APPROVAL_LIMIT) + ' over 12 months and within budget. The first run is ' + SPO.fmtDate(SCH.nextRun(x) || x.start) + '.</div>' + go('Start schedule', IC.rep) + block;
+    if (appr) return '<div class="callout amber" style="margin-top:14px"><b>' + (ed ? 'Changes need re-approval' : 'Series approval required') + '</b>' + SCH.reason(x) + '. A Supervisor approves the series once — its runs then go out without further approval. Nothing runs until then.</div>' + go(ed ? 'Save & resubmit for approval' : 'Submit recurring SPO for approval', IC.shield) + block;
+    return '<div class="callout emerald" style="margin-top:14px"><b>No approval needed</b>Under ' + money(SPO.APPROVAL_LIMIT) + ' over 12 months and within budget. The first run is ' + SPO.fmtDate(SCH.nextRun(x) || x.start) + '.</div>' + go('Start recurring SPO', IC.rep) + block;
   }
   function submitSchedule() {
     const x0 = asSch(), r = W.rec, ed = W.sched ? SCH.get(W.sched) : null;
@@ -565,8 +565,8 @@
     const appr = SCH.needsApproval(x0), reapprove = ed ? appr && (SCH.annual(x0) > SCH.annual(ed) + 0.005 || ed.status === 'revision') : appr;
     const x = ed || { id: SCH.nextId(), by: 'Alicia Grant', skipped: [], prior: 0, ev: { created: SPO.now() } };
     Object.assign(x, { name: r.name.trim(), prop: W.prop, v: W.v, scope: W.scope.trim(), lines: x0.lines, cadence: x0.cadence, start: x0.start, end: x0.end, mode: r.mode });
-    if (!ed) x.log = [{ at: x.ev.created, t: 'Schedule created', sub: 'by Alicia Grant' + (W.fromSpo ? ' · from SPO-' + W.fromSpo : ''), hi: false }];
-    else SCH.log(x, 'Schedule edited', 'by Alicia Grant · ' + SCH.cadenceText(x.cadence) + ' · ' + money(SCH.perRun(x)) + ' per run · from the next run');
+    if (!ed) x.log = [{ at: x.ev.created, t: 'Recurring SPO created', sub: 'by Alicia Grant' + (W.fromSpo ? ' · from SPO-' + W.fromSpo : ''), hi: false }];
+    else SCH.log(x, 'Recurring SPO edited', 'by Alicia Grant · ' + SCH.cadenceText(x.cadence) + ' · ' + money(SCH.perRun(x)) + ' per run · from the next run');
     if (reapprove) { x.status = 'approval'; x.ev.approvalReq = SPO.now(); delete x.ev.approved; delete x.revision; SCH.log(x, 'Sent for approval', 'Series approval · ' + SCH.reason(x)); }
     else if (!ed) { x.status = 'active'; SCH.log(x, 'Started', 'No approval needed · first run ' + SPO.fmtDate(SCH.nextRun(x) || x.start), true); }
     SCH.save(x);
@@ -578,13 +578,13 @@
     const x = SCH.get(id), v = SPO.VEN[x.v], p = propOf(x.prop), appr = x.status === 'approval';
     const steps = appr
       ? [['Supervisor review', 'The series is in Approvals. It’s approved once — not run by run.'], ['Runs start', 'From ' + SPO.fmtDate(SCH.nextRun(x) || x.start) + ', each run ' + (x.mode === 'auto' ? 'creates an SPO and emails ' + v.email : 'drafts an SPO for you to send') + '.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.']]
-      : [['First run ' + SPO.fmtDate(SCH.nextRun(x) || x.start), x.mode === 'auto' ? 'An SPO is created and its PO emailed to ' + v.email + '.' : 'An SPO is drafted for you to review and send.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.'], ['Adjust any time', 'Skip a date, pause, or edit future runs from the schedule.']];
+      : [['First run ' + SPO.fmtDate(SCH.nextRun(x) || x.start), x.mode === 'auto' ? 'An SPO is created and its PO emailed to ' + v.email + '.' : 'An SPO is drafted for you to review and send.'], ['Track each SPO', 'Every run is an ordinary SPO in Service POs, marked as recurring.'], ['Adjust any time', 'Skip a date, pause, or edit future runs from the recurring SPO.']];
     return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px' + (appr ? ';background:var(--amber-soft);color:var(--amber)' : '') + '"><span style="display:inline-flex;width:34px;height:34px">' + (appr ? IC.shield : IC.rep) + '</span></div>' +
       '<h1 style="margin-bottom:0">' + (appr ? x.name + ' sent for approval' : x.name + (W.sched ? ' updated' : ' scheduled')) + '</h1>' +
       '<div class="confirm-sub">' + x.id + ' · ' + p.name + ' · ' + SCH.cadenceText(x.cadence) + ' · ' + money(SCH.perRun(x)) + ' per run</div>' +
       '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">What happens next?</h2></div>' + steps.map((st, i) => '<div class="next-step"><span class="nn">' + (i + 1) + '</span><div><b>' + st[0] + '</b><span>' + st[1] + '</span></div></div>').join('') + '</div>' +
-      '<div class="confirm-actions"><a class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" href="schedule.html#' + x.id + '"><span style="display:inline-flex;width:16px;height:16px">' + IC.rep + '</span>View schedule</a>' +
-      '<a class="btn" href="schedules.html">Back to Schedules</a></div></div>';
+      '<div class="confirm-actions"><a class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" href="schedule.html#' + x.id + '"><span style="display:inline-flex;width:16px;height:16px">' + IC.rep + '</span>View recurring SPO</a>' +
+      '<a class="btn" href="schedules.html">Back to Recurring SPOs</a></div></div>';
   }
 
   function persist(state) {
@@ -627,7 +627,7 @@
   function renderPage() {
     const cur = route(); if (!cur) return;
     const main = document.getElementById('w-main'), side = document.getElementById('w-side'), grid = document.getElementById('w-grid');
-    document.getElementById('w-title').textContent = W.sched ? 'Edit ' + W.sched : isRec() ? 'New Schedule' : W.id ? 'Draft SPO-' + W.id : 'New Service PO';
+    document.getElementById('w-title').textContent = W.sched ? 'Edit ' + W.sched : isRec() ? 'New Recurring SPO' : W.id ? 'Draft SPO-' + W.id : 'New Service PO';
     document.getElementById('w-sub').textContent = W.prop && W.v ? propOf(W.prop).name + ' · ' + SPO.VEN[W.v].name : 'Request a service from an approved vendor';
     if (cur === 'done') {
       document.getElementById('chk-steps').style.display = 'none';

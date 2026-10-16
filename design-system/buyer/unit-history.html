@@ -248,7 +248,7 @@
 
     // upcoming: schedules that charge this unit
     const sch = SCH.list().filter(x => x.prop === P && ['active', 'paused', 'approval'].indexOf(x.status) >= 0 && x.lines.some(l => l.alloc.some(al => al.unit === U)));
-    if (sch.length) h += '<div class="card"><div class="det-card-head hd"><div><h2>Upcoming on this ' + (u ? 'unit' : 'area') + '</h2><div class="sub">Recurring schedules that charge it</div></div></div>' +
+    if (sch.length) h += '<div class="card"><div class="det-card-head hd"><div><h2>Upcoming on this ' + (u ? 'unit' : 'area') + '</h2><div class="sub">Recurring SPOs that charge it</div></div></div>' +
       sch.map(x => { const nx = SCH.nextRun(x), amt = r2(x.lines.reduce((s, l) => s + l.alloc.filter(al => al.unit === U).reduce((t, al) => t + al.amt, 0), 0));
         return '<div class="run-row' + (x.status === 'active' ? ' next' : '') + '">' + (nx && x.status === 'active' ? '<span class="rd"><b>' + nx.slice(8) + '</b><span>' + MON[+nx.slice(5, 7) - 1] + '</span></span>' : '<span class="rd" style="display:inline-flex;align-items:center;justify-content:center;height:38px;color:var(--muted-foreground)"><span style="display:inline-flex;width:16px;height:16px">' + IC.rep + '</span></span>') +
           '<div class="rb"><div><a class="table-link" href="schedule.html#' + x.id + '">' + x.name + '</a> · ' + money(amt) + ' per run</div><div class="m">' + SCH.cadenceText(x.cadence) + ' · ' + (x.status === 'active' ? 'next run ' + fmtD(nx) : SCH.STATES[x.status].label) + '</div></div>' +
@@ -264,7 +264,7 @@
       (rows.length ? '<div class="tbl-wrap" style="margin-top:14px;box-shadow:none"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>What · GL</th><th style="text-align:right">Unit’s share</th><th>Status</th></tr></thead><tbody>' +
         rows.slice((page - 1) * PER, page * PER).map(e => '<tr class="data-row' + (e.counted ? '' : ' not-counted') + '"><td style="white-space:nowrap">' + fmtD(e.date) + '</td>' +
           '<td><span class="type-chip' + (e.type === 'spo' ? ' spo' : '') + '">' + (e.type === 'spo' ? IC.wrench + 'Service PO' : IC.box + 'Order') + '</span></td>' +
-          '<td style="white-space:nowrap"><a class="table-link" href="' + e.href + '">' + e.ref + '</a>' + (e.series ? '<a class="rec-mark" href="schedule.html#' + e.series + '" data-tip="From schedule ' + e.series + '">' + IC.rep + '</a>' : '') + '</td>' +
+          '<td style="white-space:nowrap"><a class="table-link" href="' + e.href + '">' + e.ref + '</a>' + (e.series ? '<a class="rec-mark" href="schedule.html#' + e.series + '" data-tip="From recurring SPO ' + e.series + '">' + IC.rep + '</a>' : '') + '</td>' +
           '<td style="white-space:normal;min-width:200px">' + e.what + '<span class="share-of"><b style="font-family:\'JetBrains Mono\',ui-monospace,monospace;font-weight:600;color:var(--foreground)">' + e.gl + '</b> ' + SPO.glName(e.gl) + (e.qty ? ' · ' + e.qty + ' × ' + money(e.amt / e.qty) + ' · SKU ' + e.sku : '') + '</span></td>' +
           '<td class="num" style="font-weight:600;text-align:right">' + money(e.amt) + (e.of ? '<span class="share-of">of ' + money(e.of) + '</span>' : '') + (e.counted ? '' : '<span class="share-of">not counted</span>') + '</td>' +
           '<td><span class="status-dot-item"><span class="status-dot ' + (e.dot === 'neutral' ? '' : e.dot) + '"' + (e.dot === 'neutral' ? ' style="background:var(--muted-foreground)"' : '') + '></span><span class="status-dot-label">' + e.status + '</span></span></td></tr>').join('') +

@@ -163,13 +163,13 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 **Why:** the team wants a proposed time to go with the PO when it's sent, and the vendor may come back with another time, so the buyer needs to see that an update was made. References: production's "Propose a service appointment" dialog and "Service appointment · Confirmed" card. Kept: the card, Proposed/Confirmed, "Propose a new time", add-to-calendar, the property time zone. Changed: **no duration** (the team asked; it also duplicated the end time), no error text before the buyer tries to send, and no "status… unchanged" disclaimer (SPO-28).
 
 **What shipped**
-- **Wizard Scope step** (moved from Review on 10/16/2026, per Vu, to match production): an optional **Schedule service** switch card under Spend period. On: Start date + Start time (required — Continue waits for them), End date (defaults to the start date) + End time (optional); the property time zone is read-only (no picker — every property has one). Off or empty = the PO says "Vendor to propose a time". Review shows a **Service time** fact row with Edit/Add. If the SPO is then made recurring, runs use the schedule's day and time instead.
+- **Wizard Scope step** (moved from Review on 10/16/2026, per Vu, to match production): an optional **Schedule service** switch card under Spend period. On: Start date + Start time (required — Continue waits for them), End date (defaults to the start date) + End time (optional); the property time zone is read-only (no picker — every property has one). Off or empty = the PO says "Vendor to propose a time". Review shows a **Service time** fact row with Edit/Add. If the SPO is then made recurring, runs use the recurring SPO's day and time instead.
 - **SPO page:** a **Service appointment** card under the Next-Task Strip: No time yet (Propose a time) · Proposed (Change proposed time) · **New time proposed** · Confirmed (Propose a new time + add to calendar: .ics for Apple/Outlook, link for Google). After the SPO moves on, the card is read-only ("proposed, never confirmed" when it never was).
 - **Vendor proposes a new time** (decision A: this also counts as accepting the PO — "Accepted · new time proposed"). Made visible four ways: the card's amber edge, **Updated by vendor** badge and struck-through old time; the strip becomes your move (**Accept new time** / **Propose another**); a **Needs action** notification that clears itself once answered; Activity (old → new). On the SPO list the row becomes your move (flag + Review new time; counts in Your Move) — added 10/16/2026 after team feedback.
 - **I spoke to the vendor → Accepted** offers "They also confirmed the proposed time".
 - A rejection clears the appointment; **Change Vendor** re-proposes the same time to the new vendor.
-- **Schedule runs:** "Confirmed by the schedule" at the series' day and time.
-- **Follow-up (decision B):** show appointments on the Schedules Run Calendar.
+- **Recurring SPO runs:** "Confirmed by the recurring SPO" at the series' day and time.
+- **Follow-up (decision B):** show appointments on the Recurring SPOs Run Calendar.
 - **Seeds (store `scout-spos-v6`):** 863 proposed · 862 confirmed (recorded) · 860 new time from vendor · 859 no time yet · 857 proposed, never confirmed. The bell starts at **11**.
 
 ### TKT-SPO-50 · Propose a service time with the PO
@@ -178,7 +178,7 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 - [ ] The wizard's Scope step has a Schedule service switch card. On: Start date and Start time (required to continue), End date (defaults to the start date), End time (optional); the property's time zone read-only. No duration.
 - [ ] Off (or never turned on), the PO reads "Vendor to propose a time"; Review shows the time, or "Vendor to propose a time", with a link back to Scope.
 - [ ] Sending (or approval) logs "Service time proposed" with the full time.
-- [ ] Schedules don't show the card; their runs use the series' day and time.
+- [ ] Recurring SPOs don't show the card; their runs use the series' day and time.
 **Files:** `buyer/spo-new.html` (`schedCard`, `toggleSched`, `setAppt`, `apptFromW`, `stepOk`, `persist`), `buyer/spo-data.js` (`appt`, `fmtAppt`, `TZ`)
 
 ### TKT-SPO-51 · Service appointment card and rescheduling

@@ -21,7 +21,7 @@ Every service PO line and product order line charged to one apartment (or the co
 - **Unit view:**
   - **Header:** code · building · unit · floor plan · property, plus the **Stat Strip**: Spend in range, Service POs, Orders, Last activity.
   - **Spend by GL:** a horizontal bar chart.
-  - **Upcoming:** schedules (active, paused or pending) that charge the unit, with cost per run and next run. For example, Common area shows the weekly cleaning.
+  - **Upcoming:** recurring SPOs (active, paused or pending) that charge the unit, with cost per run and next run. For example, Common area shows the weekly cleaning.
   - **Activity:** Filter Tabs (All · Service POs · Orders, with counts) over a table of Date · Type chip · Reference (with the recurring marker for schedule-created SPOs) · What · GL (GL under the description; orders add qty × price · SKU) · Unit's share ("of $600" when the line is split) · Status. It pages at 10 rows.
 - **What counts as spend:** SPO allocations once the SPO is sent onward, plus order lines that aren't canceled. Drafts, pending approvals, vendor-rejected and canceled SPOs are listed muted and marked "not counted".
 - **Data:** `SPO.ORDER_LINES` adds 12 product order lines with GL + unit. They reuse real demo orders and items (#653, #515, #641, #373, #408, #657, #512), so a unit links to orders that exist.
@@ -53,7 +53,7 @@ Every service PO line and product order line charged to one apartment (or the co
 - **Unit Picker** (`.uh-picker`, `.unit-row` with `.common` / `.active`, `.us`, `.uh-count`)
 - **No-match note** (`.uh-nomatch`)
 - **Range Bar** (`.uh-range` over `.mode-seg`)
-- **Stat Strip** (`.stat-strip`, generalized from the Schedule card's `.series-stats`)
+- **Stat Strip** (`.stat-strip`, generalized from the Recurring SPO card's `.series-stats`)
 - **Activity type chip** (`.type-chip`, `.spo`)
 - `.share-of`, `.not-counted`, `.uh-hbars`, and the unit link inside allocation chips (`a.unit-link`)
 
@@ -69,7 +69,7 @@ Gallery **Buyer App · Unit History** and the design-doc **Unit History** rule. 
 - [ ] Under "All properties" the page asks for a property first. The Context Switcher re-scopes it, and the hash `#<property>/<unit>` deep-links.
 - [ ] The picker lists Common area first, then every unit with building, floor plan and spend in range. It filters by building and floor plan.
 - [ ] With no unit selected, the property's units are ranked by spend in range.
-- [ ] The unit view shows the header, Stat Strip, Spend by GL, Upcoming schedules, and the Activity table with All / Service POs / Orders tabs and a pager.
+- [ ] The unit view shows the header, Stat Strip, Spend by GL, Upcoming recurring SPOs, and the Activity table with All / Service POs / Orders tabs and a pager.
 - [ ] The Unit History entry in the SPOs menu opens it on every buyer page.
 **Audit findings:** SPO-48
 **Files:** `buyer/unit-history.html`, `buyer/buyer-components.css` (`.uh-*`, `.unit-row`, `.type-chip`, `.stat-strip`), all buyer pages (menu link)
@@ -93,12 +93,12 @@ Gallery **Buyer App · Unit History** and the design-doc **Unit History** rule. 
 **Audit findings:** SPO-24
 **Files:** `buyer/unit-history.html` (`ledger`, `rangeDates`), `buyer/spo-data.js` (`ORDER_LINES`)
 
-### TKT-SPO-29 · Link units from SPOs, schedules and the wizard
+### TKT-SPO-29 · Link units from SPOs, recurring SPOs and the wizard
 **Summary:** Every place a unit appears links to its history.
 **Acceptance criteria:**
-- [ ] The unit inside every allocation chip links to `unit-history.html#<property>/<unit>`: the Service POs list's expanded rows, SPO detail (line items and invoice-match targets), schedule detail, and the wizard's Review step (new tab, so the draft is kept).
+- [ ] The unit inside every allocation chip links to `unit-history.html#<property>/<unit>`: the Service POs list's expanded rows, SPO detail (line items and invoice-match targets), recurring SPO detail, and the wizard's Review step (new tab, so the draft is kept).
 - [ ] The wizard's "unit isn't at this property" warning offers "Browse units" (opens in a new tab; the draft is kept).
-- [ ] Schedules that charge a unit appear in that unit's Upcoming card with their next run.
+- [ ] Recurring SPOs that charge a unit appear in that unit's Upcoming card with their next run.
 **Audit findings:** SPO-48
 **Files:** `buyer/spos.html`, `buyer/spo.html`, `buyer/schedule.html`, `buyer/spo-new.html`, `buyer/unit-history.html`
 

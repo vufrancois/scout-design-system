@@ -5,19 +5,19 @@
 **Reference:** the live notifications feed and bell from the SPO audit: SPO-56 (SPO events barely notify), SPO-57 (bell 10 / menu 20 / page 217), SPO-58 (wall-to-wall "Order #### confirmed", no grouping, filters or read management). Screenshot F33.
 
 ## What shipped
-- **One event stream.** Notifications are derived from the SPO and schedule activity logs, the same data behind every Activity card, plus seeded order and product-approval events. There's no separate notification store to drift. Every SPO or schedule save re-counts the bell immediately.
+- **One event stream.** Notifications are derived from the SPO and recurring SPO activity logs, the same data behind every Activity card, plus seeded order and product-approval events. There's no separate notification store to drift. Every SPO or recurring SPO save re-counts the bell immediately.
 - **Others' actions notify; your own don't.**
 
   | Notifies (FYI or Needs action) | Doesn't notify |
   |---|---|
   | Vendor accepted / rejected | Your own saves |
   | Invoice received / Scout AI couldn't read it | Sends you made |
-  | Approval requested (SPO, schedule series, product request) | Cancels you made |
+  | Approval requested (SPO, recurring SPO series, product request) | Cancels you made |
   | Approved or rejected by someone else | Validations you made |
   | Sent back for revision | |
   | Paid by Accounting | |
-  | Schedule run drafted / sent | |
-  | Schedule ended by someone else | |
+  | Recurring SPO run drafted / sent | |
+  | Recurring SPO ended by someone else | |
   | Order delivered / confirmed | |
   | Invoice to validate | |
 
@@ -30,17 +30,17 @@
   - Esc or an outside click closes it.
 - **Notifications page:**
   - Metric cards: Needs Action · Unread · All.
-  - Filters: type (Service POs · Invoices · Approvals · Schedules · Orders) and Unread only.
+  - Filters: type (Service POs · Invoices · Approvals · Recurring SPOs · Orders) and Unread only.
   - Mark all read, and per-row Mark read / unread, with Needs action / Done, type and property tags.
   - **Settings:** an in-app on/off per type. Off hides that type from the feed and the bell. Email digest shows as "coming soon".
 - **Grouping** (SPO-58): three or more of the same repetitive kind on one day collapse into one expandable row, for example "12 orders confirmed today".
-- **Demo data:** derived from the SPO and schedule seeds, plus 15 "order confirmed" events, an order to validate, an order invoice to validate, and product request K4PT2N waiting on approval.
+- **Demo data:** derived from the SPO and recurring SPO seeds, plus 15 "order confirmed" events, an order to validate, an order invoice to validate, and product request K4PT2N waiting on approval.
   - The feed opens with **10 action items**. Anything older than a week starts out read.
   - `#reset-spos` clears read state.
 
 ## Deviations
 - Live shows three different counts. Here it's one number, scoped to the current property, so the shopping pages (always scoped to one property) show that property's count.
-- Live notifies about your own orders ("A new order was placed in your organization"). The seeded order confirmations keep that wording to show grouping, but SPO and schedule notifications skip your own actions.
+- Live notifies about your own orders ("A new order was placed in your organization"). The seeded order confirmations keep that wording to show grouping, but SPO and recurring SPO notifications skip your own actions.
 
 ## Held
 - Email / SMS delivery and digest scheduling.
@@ -66,7 +66,7 @@ Gallery **Buyer App · Notifications**; design-doc **Notifications** rules. `doc
 ## Tickets
 
 ### TKT-SPO-37 · Notification feed from the event stream
-**Summary:** Build notifications from the SPO, schedule, order and approval event logs; others' actions notify, your own don't.
+**Summary:** Build notifications from the SPO, recurring SPO, order and approval event logs; others' actions notify, your own don't.
 **Acceptance criteria:**
 - [ ] Each lifecycle event in the notifies list creates a notification with type, title, one-line detail, time, property and deep link.
 - [ ] The buyer's own actions create none.

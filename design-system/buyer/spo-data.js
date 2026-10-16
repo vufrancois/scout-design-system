@@ -2,8 +2,8 @@
    One source of truth so the list, detail, Home and Approvals counts always reconcile.
    Seeds + a localStorage overlay (live transitions persist across pages). */
 (function () {
-  const KEY = 'scout-spos-v8';
-  const SKEY = 'scout-schedules-v1';
+  const KEY = 'scout-spos-v9';
+  const SKEY = 'scout-schedules-v2';
   const TODAY = '2026-08-24';
   const APPROVAL_LIMIT = 2500;
 
@@ -352,7 +352,7 @@
     const e = s.ev || {}, v = VEN[s.v] || { name: s.v, email: '' };
     const out = [];
     const push = (at, t, sub, hi, bad) => { if (at) out.push({ at, t, sub, hi: !!hi, bad: !!bad }); };
-    if (s.series) push(e.created, s.ev.sent === e.created ? 'Created and sent by schedule' : 'Drafted by schedule', s.series + ' · run ' + fmtDate(s.run));
+    if (s.series) push(e.created, s.ev.sent === e.created ? 'Created and sent by recurring SPO' : 'Drafted by recurring SPO', s.series + ' · run ' + fmtDate(s.run));
     else if (s.rebidOf) push(e.created, 'Rebid of SPO-' + s.rebidOf, 'by ' + s.by + ' · same scope and lines');
     else push(e.created, s.state === 'draft' ? 'Draft saved' : 'SPO created', 'by ' + s.by);
     if (e.approvalReq) push(e.approvalReq, 'Sent for approval', (s.approval && s.approval.reason) || (total(s) > APPROVAL_LIMIT ? 'Over ' + money(APPROVAL_LIMIT) + ' · Supervisor sign-off' : 'Over the GL budget · Supervisor sign-off'));
@@ -406,7 +406,7 @@
   }
 
 
-  /* ================= Recurring schedules ("Schedules") =================
+  /* ================= Recurring schedules ("Recurring SPOs") =================
      A schedule is its own record — a template SPO plus a cadence. It is NOT a lifecycle state:
      each run generates an ordinary SPO (s.series = schedule id) that carries its own lifecycle,
      so the SPO list counts never double-count a series (audit SPO-49/50).
@@ -551,7 +551,7 @@
   function buildSchLog(sch) {
     const e = sch.ev || {}, out = [];
     const push = (at, t, sub, hi, bad) => { if (at) out.push({ at, t, sub, hi: !!hi, bad: !!bad }); };
-    push(e.created, 'Schedule created', 'by ' + sch.by);
+    push(e.created, 'Recurring SPO created', 'by ' + sch.by);
     push(e.approvalReq, 'Sent for approval', 'Series approval · ' + (seriesReason(sch) || 'Supervisor sign-off'));
     if (e.approved) push(e.approved, 'Series approved', 'by ' + ((sch.approval && sch.approval.by) || 'Priya Nair') + ' (Supervisor) · runs need no further approval', true);
     if (e.paused && sch.pause) push(e.paused, 'Paused', 'by ' + sch.pause.by + ' · “' + sch.pause.reason + '”');

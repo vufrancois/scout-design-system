@@ -1,6 +1,6 @@
 # Buyer App — Approvals
 
-> Named **Order Approvals** until 10/14/2026. It now covers orders, Service POs and schedules, lives under **Admin → Oversight**, and Admin carries the pending count (see [app-bar.md](app-bar.md), TKT-APP-03).
+> Named **Order Approvals** until 10/14/2026. It now covers orders, Service POs and recurring SPOs, lives under **Admin → Oversight**, and Admin carries the pending count (see [app-bar.md](app-bar.md), TKT-APP-03).
 
 **Status:** ✅ built and cascaded
 **Pages:** `design-system/buyer/approvals.html` (table) · `design-system/buyer/approval.html#<request>` (detail)

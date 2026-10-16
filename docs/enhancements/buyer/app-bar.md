@@ -15,7 +15,7 @@
   | Marketplace · products · product · compare · wishlists | Marketplace |
   | Orders · order detail | **Orders** |
   | Approvals · approval | **Admin** (moved 10/14/2026, see the addendum) |
-  | All SPO pages · schedules · schedule · unit history · invoice intake | SPOs |
+  | All SPO pages · recurring SPOs · recurring SPO · unit history · invoice intake | SPOs |
   | Wishlists | Heart icon |
   | Cart · checkout | Cart icon |
   | Notifications | Bell |
@@ -64,16 +64,16 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 
 ## Addendum · Menus reshuffled by job (10/14/2026)
 
-**Why:** the Orders menu held tools that cover SPOs and schedules too (Approvals, Budgets, Funding Report), so it overlapped the SPOs menu. Vu chose to keep Home and Marketplace as they are, keep the name "Admin", and reshuffle the rest.
+**Why:** the Orders menu held tools that cover SPOs and recurring SPOs too (Approvals, Budgets, Funding Report), so it overlapped the SPOs menu. Vu chose to keep Home and Marketplace as they are, keep the name "Admin", and reshuffle the rest.
 
 | Menu | Items |
 |---|---|
 | **Orders** | Order Tracking · Reviews · Quotes · Purchase History |
-| **SPOs** | Service POs · Schedules · Service calendar (added 10/16/2026) · Unit History |
+| **SPOs** | Service POs · Recurring SPOs · Service calendar (added 10/16/2026) · Unit History |
 | **Admin** | **Oversight:** Approvals · Budgets · Funding Report — **Setup:** Vendor Select · Shopping Lists · Organization |
 
 - Orders and SPOs now list purchases by type; Admin holds what spans both, in two labelled columns.
-- "Order Approvals" is now **Approvals** ("Orders, Service POs & schedules") in the menu, on the page title and header, and in the wizard's copy.
+- "Order Approvals" is now **Approvals** ("Orders, Service POs & recurring SPOs") in the menu, on the page title and header, and in the wizard's copy.
 - **Count badge on Admin** and on the Approvals menu item: pending approval requests in the current property scope. It reads the same items the bell counts as "needs your approval", so Admin, the bell and Home's Approvals card agree (3 → 2 after approving SPO-864).
 - The Approvals pages now highlight **Admin**.
 - The Admin panel opens leftward from its chip so it stays on screen.
@@ -81,7 +81,7 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 ### TKT-APP-03 · Reshuffle the menus by job
 **Summary:** Orders and SPOs list purchases by type; Admin gathers the tools that span both, with a pending-approvals count.
 **Acceptance criteria:**
-- [ ] Orders: Order Tracking, Reviews, Quotes, Purchase History. SPOs: Service POs, Schedules, Unit History.
+- [ ] Orders: Order Tracking, Reviews, Quotes, Purchase History. SPOs: Service POs, Recurring SPOs, Unit History.
 - [ ] Admin shows two labelled columns: Oversight (Approvals, Budgets, Funding Report) and Setup (Vendor Select, Shopping Lists, Organization).
 - [ ] The Approvals item is named "Approvals" and describes orders, Service POs and schedules.
 - [ ] The Admin chip and the Approvals item show the number of pending approval requests in scope; it hides at 0 and matches Home's Approvals card and the bell's approval items.

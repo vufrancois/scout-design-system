@@ -332,8 +332,8 @@
     $('ac-rog-meta').textContent = m.rog ? 'Confirm receipt of goods · oldest 3d' : 'All deliveries validated';
     $('bd-open-m3').textContent = m.rog ? m.rog + ' awaiting your validation' : 'validated · awaiting payment';
     $('ac-inv-meta').textContent = m.inv[0] ? 'Check invoices against delivery · oldest 6d' : 'Nothing waiting on you — all invoices validated';
-    const extra = [m.spo.sprApr ? m.spo.sprApr + ' Service PO' + (m.spo.sprApr > 1 ? 's' : '') : '', m.spo.schApr ? m.spo.schApr + ' schedule' + (m.spo.schApr > 1 ? 's' : '') : ''].filter(Boolean).join(' · ');
-    $('ac-apr-meta').textContent = m.apr[0] ? (m.apr[0] === 1 ? (m.spo.sprApr ? 'Service PO' : m.spo.schApr ? 'Schedule' : 'Order request') + ' awaiting your approval · 1d' : m.apr[0] + ' requests awaiting your approval' + (extra ? ' · ' + extra : '') + ' · oldest 1d') : 'No requests waiting for approval';
+    const extra = [m.spo.sprApr ? m.spo.sprApr + ' Service PO' + (m.spo.sprApr > 1 ? 's' : '') : '', m.spo.schApr ? m.spo.schApr + ' recurring SPO' + (m.spo.schApr > 1 ? 's' : '') : ''].filter(Boolean).join(' · ');
+    $('ac-apr-meta').textContent = m.apr[0] ? (m.apr[0] === 1 ? (m.spo.sprApr ? 'Service PO' : m.spo.schApr ? 'Recurring SPO' : 'Order request') + ' awaiting your approval · 1d' : m.apr[0] + ' requests awaiting your approval' + (extra ? ' · ' + extra : '') + ' · oldest 1d') : 'No requests waiting for approval';
     $('ac-spo').textContent = m.spo.map;
     $('ac-spo-meta').textContent = m.spo.map ? 'Match vendor invoices to SPO lines' + (m.spo.ready ? ' · ' + m.spo.ready + ' ready for Accounting' : '') : (m.spo.ready ? m.spo.ready + ' ready to send to Accounting' : 'No SPO invoices waiting on you');
     const spoActive = m.spo.you + m.spo.vendor + m.spo.rejected + m.spo.acct;

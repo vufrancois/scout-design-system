@@ -312,7 +312,7 @@
     SCH.list().filter(x => x.ev.approvalReq && (currentProp === 'all' || x.prop === currentProp)).forEach(x => { apr[x.status === 'approval' ? 0 : x.status === 'revision' ? 1 : x.rejected ? 3 : 2]++; });
     const schApr = SCH.list().filter(x => x.status === 'approval' && (currentProp === 'all' || x.prop === currentProp)).length;
     const sc2 = st => spos.filter(s => st.indexOf(s.state) >= 0).length;
-    const spo = { map: sc2(['mapping']), ready: sc2(['ready']), you: sc2(['draft', 'approval', 'mapping', 'ready']), vendor: sc2(['invoice']), rejected: sc2(['rejected']), acct: sc2(['accounting']), paid: sc2(['paid']), sprApr: sc2(['approval']), schApr };
+    const spo = { map: sc2(['mapping']), ready: sc2(['ready']), you: sc2(['draft', 'approval', 'rebid', 'mapping', 'ready']), vendor: sc2(['invoice']), rejected: sc2(['rejected']), acct: sc2(['accounting']), paid: sc2(['paid']), sprApr: sc2(['approval']), schApr };
     const rog = Math.min(sc(BASE.rog, w), open[3]);
     return {
       w, open, partial, canceled: sc(BASE.canceled, w), inv, apr, rog, spo,

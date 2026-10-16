@@ -202,3 +202,40 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 - [ ] Not shown on SPO list rows.
 **Files:** `buyer/spo.html` (`taskStrip`, `acceptNewTime`), `buyer/notif.js` ("Vendor proposed a new time"), `buyer/spo-data.js` (`resp`, `buildLog`)
 
+## Addendum · Rebid replaces Change Vendor (10/16/2026)
+
+**Why:** team feedback. Cancel should offer *Cancel outright* or *Cancel and rebid* (a parked "orphan" SPO waiting for a new vendor), and a **Rebid** button should cancel and clone for a new vendor in one go. Decisions (Vu): **A** — Rebid replaces Change Vendor everywhere, so every vendor change leaves a clean record with a new SPO number; **B** — an approval carries over when the amount doesn't go up.
+
+**What shipped**
+- **One action, two timings.** Rebid cancels the SPO and creates a new one (same scope, lines, allocation, proposed time), linked both ways: the original's status card reads "Rebid as SPO-###", the new one shows "Rebid of SPO-###"; Activity on both.
+  - **Cancel → Cancel and rebid** (option rows in the Cancel dialog; both options need a reason) parks the copy in the new **Rebid** state.
+  - **Rebid** button (Manage row; the primary on Vendor Rejected, replacing Change Vendor) takes a reason (pre-filled from a vendor's rejection) and a vendor from the approved-vendor search, then **Send to <vendor>**; **Save for later** parks it instead.
+- **Rebid state:** "Rebid · needs a vendor" (amber, Open tab, your move). Strip: *Rebid · choose a vendor and send* → **Choose vendor**. The vendor card reads "Needs a vendor · was <old vendor>". List: "Needs a vendor · Rebid of SPO-###", primary **Choose vendor**. Not committed spend (budgets, Unit History) until sent. Can be canceled outright.
+- **Offered only** after the PO went out and before an invoice exists: Awaiting Invoice and Vendor Rejected (`SPO.canRebid`). Drafts change vendor in the wizard; invoiced SPOs are disputed.
+- **Approval:** when the original was approved and the rebid costs the same or less, sending skips approval: "Approval carried over · Approved on SPO-### by …", and the tracker's Approval step reads "from SPO-###". Otherwise it goes to Approvals first.
+- **Not carried:** the vendor response, invoices and Activity stay with each SPO. A proposed time is re-proposed to the new vendor if it's still in the future.
+- **Seeds (store `scout-spos-v7`):** SPO-851 canceled for rebid → SPO-867 parked. SPO-861 (vendor rejected) shows the Rebid primary.
+
+### TKT-SPO-53 · Cancel with a rebid option
+**Summary:** Cancel offers Cancel SPO or Cancel and rebid; the latter parks a linked copy that waits for a vendor.
+**Acceptance criteria:**
+- [ ] On SPOs that can be rebid, the Cancel dialog shows two options (Cancel SPO / Cancel and rebid); elsewhere it's a plain cancel. A reason is required either way; the confirm button names the choice.
+- [ ] Cancel and rebid cancels the original (vendor notified), creates a new SPO in Rebid with the same scope, lines, allocation and proposed time, links both ways, and opens the new SPO.
+**Files:** `buyer/spo.html` (`openCancel`, `pickCancelMode`, `confirmCancel`, `doRebid`), `buyer/spo-data.js` (`canRebid`, seeds, `buildLog`)
+
+### TKT-SPO-54 · Rebid button (replaces Change Vendor)
+**Summary:** One button cancels the SPO and sends a copy to a new vendor.
+**Acceptance criteria:**
+- [ ] Rebid shows in Manage this SPO for Awaiting Invoice (no invoice yet) and is the primary on Vendor Rejected; Change Vendor no longer exists. `#<id>/rebid` (and the old `#<id>/vendor`) open it.
+- [ ] The dialog needs a reason (pre-filled from a vendor's rejection) and a vendor from the approved-vendor search; Send cancels the original and sends the new SPO; Save for later parks it.
+- [ ] The approval carries over when the original was approved and the amount doesn't go up, shown on the Approval step and in Activity; otherwise the rebid goes to Approvals.
+**Files:** `buyer/spo.html` (`openRebid`, `confirmRebid`, `sendRebid`, `venPicker`, `renderVenList`), `buyer/spos.html` (row primary)
+
+### TKT-SPO-55 · Rebid state
+**Summary:** A parked rebid is its own state until a vendor is chosen.
+**Acceptance criteria:**
+- [ ] "Rebid · needs a vendor": amber, Open tab, counted in Your Move on the list and Home; the list shows "Needs a vendor · Rebid of SPO-###" with Choose vendor.
+- [ ] The page shows the link to the original, a vendor card "Needs a vendor · was …", and a strip whose Choose vendor opens the vendor search and sends.
+- [ ] Not counted as committed spend (budget meters, Unit History) until sent; can be canceled outright.
+**Files:** `buyer/spo-data.js` (`STATES.rebid`), `buyer/spo.html` (`openRebidSend`, `rebidLink`), `buyer/spos.html`, `buyer/home.html`, `buyer/unit-history.html`
+

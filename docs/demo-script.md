@@ -67,10 +67,13 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Appointment · none yet | `#859` | "No time proposed yet" → **Propose a time** (errors only after Send) |
 | Recorded acceptance | `#862` | Seeded buyer-recorded acceptance — compare with `#860`, accepted by the vendor's own click |
 | Invoice with no response | `#857` | The vendor never replied but invoiced anyway: still **No response** (never inferred); Activity says so. List filter **Vendor response → No response** finds 859 and 842 too |
-| Vendor Rejected | `#861` | The one reply that changes state: the Invoice step **halts** in rose; the strip quotes the vendor; **Change Vendor** searches 1,272 approved vendors (type "plumbing" or "acadian rooter"; same-trade, used-before vendors suggested first) and re-sends the PO; activity dots turn rose for the rejection |
+| Vendor Rejected | `#861` | The one reply that changes state: the Invoice step **halts** in rose; the strip quotes the vendor; **Rebid** (it replaced Change Vendor) cancels it and sends a new SPO: the reason is pre-filled from the rejection, and the vendor picker searches 1,272 approved vendors (type "plumbing" or "acadian rooter"; same-trade, used-before vendors suggested first) and re-sends the PO; activity dots turn rose for the rejection |
 | Awaiting Invoice | `#860` | Upload invoice → File Drop → mapping opens; **Dispute** with a note → "Corrected invoice" strip |
 | Invoice to Map (clean) | `#858` | `#858/invoice`: one line, pre-matched; confirm → Validate mapping |
 | Invoice to Map (messy) | `#857` | `#857/invoice` on the **Line Connector** (drag dot to dot, or click one on each side; dashed = Scout AI suggestion → Accept / Auto Map; PDF is a toggle): the $800 combined line covers 2 SPO lines (+$30 over); the $125 dump fee goes through the resolver → extra on 6045/0105; tax is invoice-level; Validate shows a +$155 variance; close and reopen → progress kept (autosave) |
+| Rebid · parked | `#867` | **Rebid · needs a vendor**: a copy of canceled SPO-851 (link both ways). **Choose vendor** → search → Send. On the list it reads "Needs a vendor · Rebid of SPO-851" with **Choose vendor** |
+| Cancel and rebid (live) | `#863` → **Cancel SPO** | Two options: Cancel SPO / **Cancel and rebid** + a reason → you land on the new parked SPO; the original reads "Rebid as SPO-###" |
+| Rebid now (live) | `#863` → **Rebid** | Reason + vendor search → Send: the original is canceled, the new SPO goes straight out (Save for later parks it). Approve `approval.html#SPO-864` first and rebid it: the approval **carries over** ("from SPO-864") |
 | Extraction failed | `#849` | "Invoice needs attention" → Retry extraction or Enter lines from the PDF |
 | Ready for Accounting | `#856` | Send to Accounting → packet: PO · Invoice · **GL allocation** (sums to the cent) → With Accounting |
 | With Accounting | `#855` | Violet **ACCOUNTING** actor; no buyer button |
@@ -109,7 +112,7 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | Do | What to show |
 |---|---|
 | Open the bell on any page | Badge **11** = Needs action count = page header — one number everywhere; Today / Yesterday / Earlier |
-| Click "Bayou Plumbing & Drain rejected SPO-861" | Deep-links to Change Vendor; the row marks itself read |
+| Click "Bayou Plumbing & Drain rejected SPO-861" | Deep-links to Rebid; the row marks itself read |
 | Approve `approval.html#SPO-864` | The action item **clears itself** (badge 11 → 10) — read or not; in All it shows **Done** |
 | `notifications.html` → All | "12 orders confirmed today" is one expandable row; filters by type; Unread only |
 | Settings → turn Orders off | Order items leave the feed and the bell |

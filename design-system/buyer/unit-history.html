@@ -137,7 +137,7 @@
   }
 
   /* ---------- the unit ledger: SPO allocations + product order lines ---------- */
-  const NOT_COUNTED = ['draft', 'approval', 'rejected', 'canceled'];
+  const NOT_COUNTED = ['draft', 'approval', 'rebid', 'rejected', 'canceled'];
   function ledger(prop) {
     const out = [];
     SPO.list().filter(s => s.prop === prop).forEach(s => s.lines.forEach(l => l.alloc.forEach(a => {

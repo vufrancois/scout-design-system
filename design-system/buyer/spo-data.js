@@ -2,7 +2,7 @@
    One source of truth so the list, detail, Home and Approvals counts always reconcile.
    Seeds + a localStorage overlay (live transitions persist across pages). */
 (function () {
-  const KEY = 'scout-spos-v6';
+  const KEY = 'scout-spos-v7';
   const SKEY = 'scout-schedules-v1';
   const TODAY = '2026-08-24';
   const APPROVAL_LIMIT = 2500;
@@ -75,6 +75,8 @@
   const STATES = {
     draft:      { label: 'Draft',                dot: 'dot-pending',  tab: 'open',     group: 'you',        rank: 0 },
     approval:   { label: 'Pending Approval',     dot: 'dot-pending',  tab: 'open',     group: 'you',        rank: 1 },
+    /* Rebid (10/16/2026): the original was canceled and this copy waits for the buyer to pick a vendor. */
+    rebid:      { label: 'Rebid · needs a vendor', dot: 'dot-pending', tab: 'open',    group: 'you',        rank: 1.5 },
     rejected:   { label: 'Vendor Rejected',      dot: 'dot-rejected', tab: 'open',     group: 'rejected',   rank: 3 },
     invoice:    { label: 'Awaiting Invoice',     dot: 'dot-revision', tab: 'open',     group: 'vendor',     rank: 4 },
     mapping:    { label: 'Invoice to Map',       dot: 'dot-pending',  tab: 'invoices', group: 'you',        rank: 5 },
@@ -178,6 +180,15 @@
       lines: [L('Carpet cleaning, 1 BR', 1, 140, [A('6035', '0112', 140)])],
       cancel: { by: 'Alicia Grant', reason: 'Resident renewed the lease — the unit is no longer turning over.' },
       ev: { created: '2026-08-06 11:00', sent: '2026-08-06 11:01', accepted: '2026-08-07 09:30', canceled: '2026-08-14 16:05' } },
+    { id: 851, state: 'canceled', prop: 'cypress', v: 'GP', by: 'Alicia Grant', period: 'Aug 2026', rebidAs: 867,
+      scope: 'Repaint the leasing office and clubhouse interior walls before the resident open house.',
+      lines: [L('Interior repaint — leasing office', 1, 720, [A('6140', 'COMMON', 720)]), L('Interior repaint — clubhouse', 1, 980, [A('6140', 'COMMON', 980)])],
+      cancel: { by: 'Alicia Grant', reason: 'Gulf Coast Painting can’t start until October — the open house is September 12.', rebid: true },
+      ev: { created: '2026-08-12 10:00', sent: '2026-08-12 10:01', accepted: '2026-08-13 09:15', canceled: '2026-08-21 11:40' } },
+    { id: 867, state: 'rebid', prop: 'cypress', v: 'GP', by: 'Alicia Grant', period: 'Aug 2026', rebidOf: 851,
+      scope: 'Repaint the leasing office and clubhouse interior walls before the resident open house.',
+      lines: [L('Interior repaint — leasing office', 1, 720, [A('6140', 'COMMON', 720)]), L('Interior repaint — clubhouse', 1, 980, [A('6140', 'COMMON', 980)])],
+      ev: { created: '2026-08-21 11:40' } },
     { id: 849, state: 'mapping', prop: 'bayou', v: 'GP', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Patch and repaint stairwell walls in Building 02.',
       lines: [L('Stairwell patch and repaint', 1, 940, [A('6140', 'COMMON', 940)])],
@@ -256,7 +267,7 @@
   const needsApproval = (s, bud) => total(s) > APPROVAL_LIMIT || glOver(s, bud).length > 0;
 
   function budget(prop, period, excludeId) {
-    const all = list().filter(s => s.prop === prop && s.period === period && s.id !== excludeId && ['draft', 'rejected', 'canceled'].indexOf(s.state) < 0);
+    const all = list().filter(s => s.prop === prop && s.period === period && s.id !== excludeId && ['draft', 'rebid', 'rejected', 'canceled'].indexOf(s.state) < 0);
     const out = {};
     GL.forEach(([g]) => { out[g] = { budget: GL_BUDGET[g], spent: GL_SPENT[g], committed: 0 }; });
     all.forEach(s => s.lines.forEach(l => l.alloc.forEach(a => { if (out[a.gl]) out[a.gl].committed = r2(out[a.gl].committed + a.amt); })));
@@ -288,6 +299,9 @@
     return { kind: 'none', at: null, label: 'No response', short: 'No response' };
   }
   /* The vendor's email link only counts until an invoice arrives — a late reject can't undo billed work. */
+  /* Rebid (10/16/2026): cancel this SPO and start a copy for another vendor. Only once a PO went out and
+     before an invoice exists — a draft just changes its vendor; an invoiced SPO is disputed instead. */
+  const canRebid = s => s.state === 'rejected' || (s.state === 'invoice' && !s.invoice);
   const canRespond = s => s.state === 'invoice' && !s.ev.accepted && !s.ev.rejected;
   /* Only an answer the buyer recorded can be changed — never the vendor's own click. */
   const canEditResp = s => (s.state === 'invoice' && !!s.ack) || (s.state === 'rejected' && !!(s.reject && s.reject.by));
@@ -305,7 +319,7 @@
   };
   function appt(s) {
     /* Nothing to show until the PO goes out; the wizard holds a draft's planned time. */
-    if (['draft', 'approval', 'rejected', 'canceled'].indexOf(s.state) >= 0) return null;
+    if (['draft', 'approval', 'rebid', 'rejected', 'canceled'].indexOf(s.state) >= 0) return null;
     if (s.series && s.run) { const x = window.SCH && SCH.get(s.series); return { status: 'confirmed', start: s.run + 'T' + ((x && x.cadence.time) || '08:00'), by: 'series' }; }
     if (s.appt) return s.appt;
     return s.ev && s.ev.sent ? { status: 'none' } : null;
@@ -328,6 +342,7 @@
     const out = [];
     const push = (at, t, sub, hi, bad) => { if (at) out.push({ at, t, sub, hi: !!hi, bad: !!bad }); };
     if (s.series) push(e.created, s.ev.sent === e.created ? 'Created and sent by schedule' : 'Drafted by schedule', s.series + ' · run ' + fmtDate(s.run));
+    else if (s.rebidOf) push(e.created, 'Rebid of SPO-' + s.rebidOf, 'by ' + s.by + ' · same scope and lines');
     else push(e.created, s.state === 'draft' ? 'Draft saved' : 'SPO created', 'by ' + s.by);
     if (e.approvalReq) push(e.approvalReq, 'Sent for approval', (s.approval && s.approval.reason) || (total(s) > APPROVAL_LIMIT ? 'Over ' + money(APPROVAL_LIMIT) + ' · Supervisor sign-off' : 'Over the GL budget · Supervisor sign-off'));
     if (e.approved) push(e.approved, 'Approved', 'by ' + ((s.approval && s.approval.by) || 'Priya Nair') + ' (Supervisor)', true);
@@ -343,7 +358,7 @@
     push(e.mapped, 'Invoice mapped & validated', 'by Alicia Grant', true);
     push(e.accounting, 'Sent to Accounting', 'Packet: PO, invoice, GL allocation');
     push(e.paid, 'Paid', money(invTotal(s)) + ' released by Accounting', true);
-    if (e.canceled && s.cancel) push(e.canceled, 'Canceled', 'by ' + s.cancel.by + ' · “' + s.cancel.reason + '”', false, true);
+    if (e.canceled && s.cancel) push(e.canceled, s.rebidAs ? 'Canceled for rebid' : 'Canceled', 'by ' + s.cancel.by + ' · “' + s.cancel.reason + '”' + (s.rebidAs ? ' · rebid as SPO-' + s.rebidAs : ''), false, true);
     return out;
   }
 
@@ -574,5 +589,5 @@
 
   window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, resp, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

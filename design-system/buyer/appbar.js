@@ -11,7 +11,7 @@
     marketplace: 'marketplace', products: 'marketplace', product: 'marketplace', compare: 'marketplace', wishlists: 'marketplace',
     orders: 'orders', 'order-detail': 'orders',
     approvals: 'admin', approval: 'admin',
-    spos: 'spos', spo: 'spos', 'spo-new': 'spos', 'spo-invoice': 'spos', schedules: 'spos', schedule: 'spos', 'unit-history': 'spos'
+    spos: 'spos', spo: 'spos', 'spo-new': 'spos', 'spo-invoice': 'spos', schedules: 'spos', schedule: 'spos', calendar: 'spos', 'unit-history': 'spos'
   };
   const ICON = { wishlists: 'wishlists', cart: 'cart', checkout: 'cart', notifications: 'notifications' };
   /* Shopping pages are always scoped to one property, so the switcher reads "Shopping for". */
@@ -44,6 +44,7 @@
         <div class="menu-panel" id="menu-spos">
           <a class="menu-item" href="spos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span><span class="menu-item-title">Service POs</span><span class="menu-item-desc" style="display:block">Service orders, invoices &amp; payments</span></span></a>
           <a class="menu-item" href="schedules.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg><span><span class="menu-item-title">Schedules</span><span class="menu-item-desc" style="display:block">Recurring service POs</span></span></a>
+          <a class="menu-item" href="calendar.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span><span class="menu-item-title">Service calendar</span><span class="menu-item-desc" style="display:block">Every visit and appointment by date</span></span></a>
           <a class="menu-item" href="unit-history.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg><span><span class="menu-item-title">Unit History</span><span class="menu-item-desc" style="display:block">Service and order history by unit</span></span></a>
         </div>
       </div>

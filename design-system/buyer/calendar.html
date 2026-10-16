@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service calendar — Scout Buyer</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buyer.css">
+<script src="cart.js"></script>
+<script src="spo-data.js"></script>
+<script src="sch-cal.js"></script>
+</head>
+<body class="buyer">
+
+<!-- ===== App Bar ===== -->
+<div class="app-bar-wrap">
+  <nav class="app-bar" id="app-bar"></nav>
+  <script src="appbar.js"></script>
+</div>
+
+
+
+
+
+
+<section class="hero page-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner" style="flex-direction:column;gap:0">
+    <div class="hero-title-block">
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></div>
+      <div><h1>Service calendar</h1><p>Every scheduled visit and SPO appointment — tile color is the vendor, the dot is the date/time status</p></div>
+    </div>
+  </div>
+</section>
+
+<main class="page">
+  <div class="card cal-toolbar">
+    <div class="cal-filters" id="cal-filters" style="margin:0"></div>
+    <span style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="schedules.html" style="text-decoration:none">Schedules</a><a class="btn btn-primary" href="spos.html" style="text-decoration:none">View SPOs</a></span>
+  </div>
+  <div id="svc-cal"></div>
+</main>
+
+<script>
+  /* ---------- Theme ---------- */
+  function applyTheme() {
+    const dark = localStorage.getItem('scout-theme') === 'dark';
+    document.body.classList.toggle('dark', dark);
+    const b = document.getElementById('theme-btn');
+    b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+    b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+  }
+  function toggleTheme() { localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark'); applyTheme(); }
+  applyTheme();
+
+  /* ---------- Menus ---------- */
+  function closeMenus() {
+    document.querySelectorAll('.menu-panel').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-chip').forEach(c => c.classList.remove('open'));
+  }
+  function toggleMenu(id) {
+    const panel = document.getElementById('menu-' + id), chip = document.getElementById('nav-' + id);
+    const wasOpen = panel.classList.contains('open');
+    closeMenus(); document.getElementById('ctx-switch').classList.remove('open');
+    if (!wasOpen) { panel.classList.add('open'); chip.classList.add('open'); }
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-anchor')) closeMenus();
+    if (!e.target.closest('.ctx-switch')) document.getElementById('ctx-switch').classList.remove('open');
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); document.getElementById('ctx-switch').classList.remove('open'); } });
+
+  /* ---------- Context switcher ---------- */
+  const PROPERTIES = [
+    { id: 'all', name: 'All properties', desc: 'Combined dashboard for every accessible property', units: null },
+    { id: 'magnolia', name: 'Magnolia Place Apartments', addr: '4201 Veterans Memorial Blvd', city: 'Metairie, LA 70006', units: 51 },
+    { id: 'bayou', name: 'Bayou Crossing Apartments', addr: '3850 Airline Dr', city: 'Baton Rouge, LA 70805', units: 120 },
+    { id: 'lonestar', name: 'Lone Star Flats', addr: '7200 Westheimer Rd', city: 'Houston, TX 77057', units: 78 },
+    { id: 'central', name: 'Central Park View', addr: '1501 Canal St', city: 'New Orleans, LA 70112', units: 96 },
+    { id: 'cypress', name: 'Cypress Lake Apartments', addr: '9100 Cypress Lake Dr', city: 'Lafayette, LA 70508', units: 64 },
+    { id: 'beauchene', name: 'Beau Chene Villas', addr: '225 Beau Chene Blvd', city: 'Mandeville, LA 70471', units: 40 },
+    { id: 'sherwood', name: 'Sherwood Acres', addr: '1250 Sherwood Forest Blvd', city: 'Baton Rouge, LA 70815', units: 88 },
+    { id: 'cyprus', name: 'Cyprus Glenn', addr: '4800 Cyprus Glenn Way', city: 'Shreveport, LA 71105', units: 32 },
+    { id: 'heights', name: 'Magnolia Heights Apartments', addr: '6301 Magnolia Heights Rd', city: 'Houston, TX 77004', units: 110 }
+  ];
+  let currentProp = 'all';
+  const bIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
+  const pinIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  function renderCtxList() {
+    document.getElementById('ctx-list').innerHTML = PROPERTIES.map(p => {
+      const active = p.id === currentProp;
+      const body = p.id === 'all'
+        ? '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.desc + '</span>'
+        : '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.addr + '</span><span class="opt-city">' + pinIcon + p.city + '</span>';
+      const units = p.units ? '<span class="units-badge"><b>' + p.units + '</b><span>units</span></span>' : '';
+      return '<button class="ctx-option' + (active ? ' active' : '') + '" onclick="selectProp(\'' + p.id + '\')"><span class="opt-tile">' + bIcon + '</span><span class="opt-body">' + body + '</span>' + units + '</button>';
+    }).join('');
+  }
+  function selectProp(id) {
+    currentProp = id;
+    const p = PROPERTIES.find(x => x.id === id);
+    document.getElementById('echo-name').textContent = p.name;
+    document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
+    renderCtxList();
+    document.getElementById('ctx-switch').classList.remove('open');
+    renderPage();
+  }
+  function toggleCtx() {
+    const el = document.getElementById('ctx-switch');
+    const wasOpen = el.classList.contains('open');
+    closeMenus();
+    if (!wasOpen) el.classList.add('open');
+  }
+  renderCtxList();
+
+  /* ---------- Service calendar (10/16/2026): schedule runs + one-time SPO appointments ---------- */
+  const propName = id => (PROPERTIES.find(x => x.id === id) || {}).name || id;
+  let calProp = '', calVendor = '';
+  const inScope = p => currentProp === 'all' ? (!calProp || p === calProp) : p === currentProp;
+  const schList = () => SCH.list().filter(x => inScope(x.prop) && (!calVendor || x.v === calVendor));
+  const spoList = () => SPO.list().filter(s => inScope(s.prop) && (!calVendor || s.v === calVendor));
+  function renderPage() {
+    const scope = SCH.list().map(x => [x.prop, x.v]).concat(SPO.list().filter(s => s.appt && s.appt.start && !s.series).map(s => [s.prop, s.v])).filter(([p]) => currentProp === 'all' || p === currentProp);
+    const props = [...new Set(scope.map(r => r[0]))].sort((a, b) => propName(a).localeCompare(propName(b)));
+    const vens = [...new Set(scope.filter(r => !calProp || r[0] === calProp).map(r => r[1]))].sort((a, b) => SPO.VEN[a].name.localeCompare(SPO.VEN[b].name));
+    if (calProp && props.indexOf(calProp) < 0) calProp = '';
+    if (calVendor && vens.indexOf(calVendor) < 0) calVendor = '';
+    document.getElementById('cal-filters').innerHTML =
+      (currentProp === 'all' ? '<select aria-label="Property" onchange="calProp = this.value; renderPage()"><option value="">All properties</option>' + props.map(p => '<option value="' + p + '"' + (calProp === p ? ' selected' : '') + '>' + propName(p) + '</option>').join('') + '</select>' : '') +
+      '<select aria-label="Vendor" onchange="calVendor = this.value; renderPage()"><option value="">All vendors</option>' + vens.map(k => '<option value="' + k + '"' + (calVendor === k ? ' selected' : '') + '>' + SPO.VEN[k].name + '</option>').join('') + '</select>';
+    CAL.mount(document.getElementById('svc-cal'), { list: schList, spos: spoList, onChange: renderPage });
+  }
+  let toastTimer;
+  function showToast(title, desc) { let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(t); } t.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; t.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = 0, 3000); }
+  renderPage();
+</script>
+</body>
+</html>

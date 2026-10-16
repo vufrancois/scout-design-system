@@ -263,7 +263,7 @@
 
     let side = '';
     if (s.state === 'rebid') side += '<div class="card"><div class="ven-card"><span class="ven-logo" style="border-style:dashed;background:none">?</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · to choose</div><div class="ven-name" style="margin-bottom:2px">Needs a vendor</div><div style="font-size:13px;color:var(--muted-foreground)">Was ' + v.name + ' on SPO-' + s.rebidOf + '</div></div></div></div>';
-    else side += '<div class="card"><div class="ven-card"><span class="ven-logo">' + SPO.ini(s.v) + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
+    else side += '<div class="card"><div class="ven-card"><span class="ven-logo vt" style="--vh:' + SPO.vh(s.v) + '">' + SPO.ini(s.v) + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
       '<div style="font-size:13px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="PO recipient">' + v.email + '</div></div></div></div>';
 
     const sx = s.series && window.SCH ? SCH.get(s.series) : null;
@@ -295,6 +295,7 @@
     if (sub === 'cancel' && CANCELABLE.indexOf(s.state) >= 0) setTimeout(openCancel, 120);
     if ((sub === 'vendor' || sub === 'rebid') && SPO.canRebid(s)) setTimeout(openRebid, 120);
     if (sub === 'send' && s.state === 'rebid') setTimeout(openRebidSend, 120);
+    if (sub === 'propose' && s.state === 'invoice') setTimeout(() => openTime('change'), 120);
     if ((sub === 'respond' || sub === 'accept') && (SPO.canRespond(s) || SPO.canEditResp(s))) setTimeout(openRecordResp, 120);
     if (sub === 'invoice' && s.state === 'mapping') setTimeout(openInvoiceMap, 150);
     if (sub === 'accounting' && s.state === 'ready') setTimeout(openAccounting, 150);
@@ -458,7 +459,7 @@
     const head = terms.length ? (all.length ? all.length.toLocaleString() + ' match' + (all.length === 1 ? '' : 'es') + (all.length > VEN_CAP ? ' · showing ' + VEN_CAP + ', keep typing to narrow' : '') : '')
       : 'Suggested · ' + trade + (all.length > VEN_CAP ? ' · ' + VEN_CAP + ' of ' + all.length : '');
     document.getElementById('ven-results').innerHTML = (head ? '<div class="ven-head">' + head + '</div>' : '') +
-      (list.length ? list.map(k => { const o = SPO.VEN[k]; return '<button class="opt-row' + (k === pickVen ? ' selected' : '') + '" id="vo-' + k + '" onclick="selectVen(\'' + k + '\')"><span class="opt-ic" style="font-size:11px;font-weight:700">' + SPO.ini(k) + '</span><span class="opt-body"><span class="opt-name">' + o.name + '</span><span class="opt-desc">' + o.trade + ' · ' + o.email + '</span></span>' + (!o.dir ? '<span class="pill p-neutral" style="font-size:11px">Used before</span>' : '') + '<span class="opt-radio">' + IC.check + '</span></button>'; }).join('')
+      (list.length ? list.map(k => { const o = SPO.VEN[k]; return '<button class="opt-row' + (k === pickVen ? ' selected' : '') + '" id="vo-' + k + '" onclick="selectVen(\'' + k + '\')"><span class="opt-ic vt" style="font-size:11px;font-weight:700;--vh:' + SPO.vh(k) + '">' + SPO.ini(k) + '</span><span class="opt-body"><span class="opt-name">' + o.name + '</span><span class="opt-desc">' + o.trade + ' · ' + o.email + '</span></span>' + (!o.dir ? '<span class="pill p-neutral" style="font-size:11px">Used before</span>' : '') + '<span class="opt-radio">' + IC.check + '</span></button>'; }).join('')
         : '<div class="ven-empty">No approved vendor matches “' + q.replace(/</g, '&lt;') + '”. Try a trade, like “plumbing”.</div>');
   }
   function selectVen(k) {

@@ -1,8 +1,12 @@
-/* Run Calendar — one month grid of schedule runs, shared by the Schedules page (every series) and a
-   schedule's own page (mini, one series). It is a second view of the same data, never a new place to
-   manage it: a run's popover offers only what the schedule page already does (Skip / Undo skip, open
-   the schedule, open the run's SPO). Past runs link to the SPO they created, so the grid doubles as a
-   record of what happened. Needs spo-data.js (window.SPO, window.SCH). */
+/* Service Calendar — one month grid of every scheduled visit: schedule runs and one-time SPO appointments.
+   Two encodings, never mixed (team feedback, 10/16/2026):
+   - the TILE is tinted by vendor (the same tint as the vendor's avatar everywhere), so vendors read apart;
+   - the DOT is the date/time status, and only that, matching the legend: Pending · Approved · New time
+     proposed · Denied · Needs rebid (+ Not running for skipped/paused runs). Each has its own colour AND
+     shape, so it reads in grey-scale too.
+   The legend doubles as the filter (click to hide/show, with counts for the month). A popover acts on the
+   status — the same actions the SPO and schedule pages already have. Used by calendar.html (everything),
+   the Schedules page (runs only) and a schedule's rail (mini, one series). Needs spo-data.js. */
 (function () {
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const DOWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -10,49 +14,57 @@
   const ymd = (y, m, d) => y + '-' + pad(m + 1) + '-' + pad(d);
   const TODAY = () => SPO.TODAY;
 
-  /* What a run is, in the order a buyer cares: done (with its SPO), coming (auto / draft), or not happening. */
-  const KIND = {
-    spo:     { label: 'SPO created' },
-    done:    { label: 'Earlier run' },
-    auto:    { label: 'Auto-send' },
-    draft:   { label: 'Draft only' },
-    skipped: { label: 'Skipped' },
-    paused:  { label: 'Paused' },
-    pending: { label: 'Pending approval' }
+  const STATUS = {
+    pending: { label: 'Pending',           desc: 'Proposed time · waiting on the vendor' },
+    approved:{ label: 'Approved',          desc: 'The vendor accepted the time' },
+    newtime: { label: 'New time proposed', desc: 'The vendor proposed another time · your move' },
+    denied:  { label: 'Denied',            desc: 'The vendor rejected the SPO · rebid to re-propose' },
+    rebid:   { label: 'Needs rebid',       desc: 'Parked rebid · choose a vendor to send the time' },
+    off:     { label: 'Not running',       desc: 'Skipped or paused' }
   };
+  const ORDER = ['pending', 'approved', 'newtime', 'denied', 'rebid', 'off'];
+  const KIND = STATUS; // back-compat name
 
-  function runs(list, from, to) {
+  /* Every visit in [from, to]: schedule runs (from opts.list) and SPO appointments (from opts.spos). */
+  function items(s, from, to) {
     const out = [];
-    list.forEach(x => {
+    (s.list ? s.list() : []).forEach(x => {
       const byRun = {};
-      SCH.instances(x.id).forEach(s => { byRun[s.run] = s; });
+      SCH.instances(x.id).forEach(sp => { byRun[sp.run] = sp; });
       const pausedOn = x.status === 'paused' && x.ev.paused ? x.ev.paused.slice(0, 10) : null;
       SCH.schedule(x, to).forEach(r => {
         if (r.date < from || r.date > to) return;
         const past = r.date <= TODAY();
-        let kind;
-        if (r.skipped) kind = 'skipped';
-        else if (past) {
-          if (x.status === 'approval' || x.status === 'revision') return;
-          if (byRun[r.date]) kind = 'spo';
-          else if (pausedOn && r.date > pausedOn) kind = 'paused';
-          else kind = 'done';
-        } else {
-          if (x.status === 'ended') return;
-          kind = x.status === 'approval' || x.status === 'revision' ? 'pending' : x.status === 'paused' ? 'paused' : x.mode === 'auto' ? 'auto' : 'draft';
-        }
-        out.push({ date: r.date, x, kind, spo: byRun[r.date] || null });
+        let st;
+        if (r.skipped) st = 'off';
+        else if (past) { if (x.status === 'approval' || x.status === 'revision') return; st = pausedOn && r.date > pausedOn ? 'off' : 'approved'; }
+        else { if (x.status === 'ended') return; st = x.status === 'approval' || x.status === 'revision' ? 'pending' : x.status === 'paused' ? 'off' : 'approved'; }
+        out.push({ kind: 'run', date: r.date, time: x.cadence.time, status: st, skipped: r.skipped, x, spo: byRun[r.date] || null, v: x.v, prop: x.prop });
       });
     });
-    return out.sort((a, b) => a.date.localeCompare(b.date) || a.x.name.localeCompare(b.x.name));
+    (s.spos ? s.spos() : []).forEach(sp => {
+      const a = sp.appt; if (sp.series || !a || !a.start) return;
+      const d = a.start.slice(0, 10); if (d < from || d > to) return;
+      let st;
+      if (sp.state === 'rejected') st = 'denied';
+      else if (sp.state === 'rebid') st = 'rebid';
+      else if (['draft', 'approval', 'canceled'].indexOf(sp.state) >= 0) return;
+      else st = a.status === 'confirmed' ? 'approved' : a.status === 'countered' ? 'newtime' : a.status === 'proposed' ? 'pending' : null;
+      if (!st) return;
+      out.push({ kind: 'spo', date: d, time: a.start.slice(11), status: st, spo: sp, appt: a, v: sp.v, prop: sp.prop });
+    });
+    return out.sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''));
   }
+  const runs = (list, from, to) => items({ list: () => list }, from, to); // back-compat
 
   /* ---------- mount: a month grid with its own navigation ---------- */
   const mounts = {};
   function mount(el, opts) {
     const key = el.id;
     const start = opts.start || TODAY();
-    mounts[key] = Object.assign({ el, y: +start.slice(0, 4), m: +start.slice(5, 7) - 1 }, mounts[key] && mounts[key].keep ? { y: mounts[key].y, m: mounts[key].m } : {}, opts, { keep: true });
+    const prev = mounts[key] && mounts[key].keep ? { y: mounts[key].y, m: mounts[key].m, hide: mounts[key].hide } : {};
+    mounts[key] = Object.assign({ el, y: +start.slice(0, 4), m: +start.slice(5, 7) - 1, hide: new Set() }, prev, opts, { keep: true });
+    if (prev.hide) mounts[key].hide = prev.hide;
     draw(key);
   }
   function nav(key, step) {
@@ -61,76 +73,94 @@
     else { s.m += step; if (s.m < 0) { s.m = 11; s.y--; } if (s.m > 11) { s.m = 0; s.y++; } }
     closePop(); draw(key);
   }
+  function toggle(key, st) { const s = mounts[key]; if (s.hide.has(st)) s.hide.delete(st); else s.hide.add(st); closePop(); draw(key); }
+  const t12 = hm => SCH.fmtTime(hm || '08:00');
+  const tShort = hm => t12(hm).replace(':00', '').replace(' ', '').toLowerCase();
+  const vShort = k => SPO.VEN[k].name.replace(/\s+(LLC|Inc\.?|Co\.?|Group|Services|Company)$/i, '');
   function draw(key) {
     const s = mounts[key], first = new Date(Date.UTC(s.y, s.m, 1)), lead = first.getUTCDay();
     const days = new Date(Date.UTC(s.y, s.m + 1, 0)).getUTCDate(), weeks = Math.ceil((lead + days) / 7);
     const gridFrom = SCH.addDays(ymd(s.y, s.m, 1), -lead), gridTo = SCH.addDays(gridFrom, weeks * 7 - 1);
-    const all = runs(s.list(), gridFrom, gridTo).filter(r => !s.hide || !s.hide.has(r.kind));
+    const mk = ymd(s.y, s.m, 1).slice(0, 7);
+    const every = items(s, gridFrom, gridTo);
+    const counts = {}; every.forEach(r => { if (r.date.slice(0, 7) === mk) counts[r.status] = (counts[r.status] || 0) + 1; });
+    const all = every.filter(r => !s.hide.has(r.status));
     s.byDay = {}; all.forEach(r => { (s.byDay[r.date] = s.byDay[r.date] || []).push(r); });
-    const inMonth = all.filter(r => r.date.slice(0, 7) === ymd(s.y, s.m, 1).slice(0, 7) && r.kind !== 'skipped');
+    const shown = all.filter(r => r.date.slice(0, 7) === mk && r.status !== 'off').length;
     const cap = s.mini ? 0 : 3;
     let cells = '';
     for (let i = 0; i < weeks * 7; i++) {
-      const d = SCH.addDays(gridFrom, i), out = d.slice(0, 7) !== ymd(s.y, s.m, 1).slice(0, 7), list = s.byDay[d] || [];
+      const d = SCH.addDays(gridFrom, i), out = d.slice(0, 7) !== mk, list = s.byDay[d] || [];
       const cls = 'cal-day' + (out ? ' out' : '') + (d === TODAY() ? ' today' : '') + (list.length ? ' has' : '');
       if (s.mini) {
-        cells += '<button type="button" class="' + cls + (list.length ? ' k-' + list[0].kind : '') + '"' + (list.length ? ' onclick="CAL.pick(\'' + key + '\', \'' + d + '\', this)"' : ' tabindex="-1"') + ' aria-label="' + d + (list.length ? ', ' + KIND[list[0].kind].label : '') + '"><span class="n">' + +d.slice(8) + '</span></button>';
+        cells += '<button type="button" class="' + cls + (list.length ? ' st-' + list[0].status : '') + '"' + (list.length ? ' onclick="CAL.pick(\'' + key + '\', \'' + d + '\', this)"' : ' tabindex="-1"') + ' aria-label="' + d + (list.length ? ', ' + STATUS[list[0].status].label : '') + '"><span class="n">' + +d.slice(8) + '</span></button>';
       } else {
         cells += '<div class="' + cls + '"><div class="n">' + +d.slice(8) + '</div>' +
           list.slice(0, cap).map((r, j) => chip(key, r, d, j)).join('') +
           (list.length > cap ? '<button type="button" class="cal-more" onclick="CAL.pick(\'' + key + '\', \'' + d + '\', this)">+' + (list.length - cap) + ' more</button>' : '') + '</div>';
       }
     }
+    const present = ORDER.filter(k => counts[k] || s.hide.has(k));
+    /* Runs-only views (Schedules) can't be denied or need a rebid, so their legend leaves those out. */
+    const pool = s.spos ? ORDER : ['pending', 'approved', 'off'];
+    const legendKeys = s.mini ? present : pool.filter(k => k !== 'off' || counts.off || s.hide.has('off'));
     s.el.innerHTML = '<div class="cal' + (s.mini ? ' mini' : '') + '">' +
-      '<div class="cal-head"><div class="cal-title">' + MONTHS[s.m] + ' ' + s.y + (s.mini ? '' : '<span class="cal-sub">' + inMonth.length + ' run' + (inMonth.length === 1 ? '' : 's') + '</span>') + '</div>' +
+      (s.mini ? '' : '<div class="cal-legend-bar"><div class="cal-legend" role="group" aria-label="Date and time status">' +
+        legendKeys.map(k => '<button type="button" class="cal-key' + (s.hide.has(k) ? ' off' : '') + '" aria-pressed="' + !s.hide.has(k) + '" onclick="CAL.toggle(\'' + key + '\', \'' + k + '\')" title="' + STATUS[k].desc + '"><i class="sdot s-' + k + '"></i>' + STATUS[k].label + '<span class="ct">' + (counts[k] || 0) + '</span></button>').join('') +
+        '</div><span class="cal-note">Tile color = vendor · ' + SPO.TZ + '</span></div>') +
+      '<div class="cal-head"><div class="cal-title">' + MONTHS[s.m] + ' ' + s.y + (s.mini ? '' : '<span class="cal-sub">' + shown + ' visit' + (shown === 1 ? '' : 's') + '</span>') + '</div>' +
       '<div class="cal-nav">' + (s.mini ? '' : '<button type="button" class="btn btn-sm" onclick="CAL.nav(\'' + key + '\', 0)">Today</button>') +
       '<button type="button" class="cal-arrow" aria-label="Previous month" onclick="CAL.nav(\'' + key + '\', -1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>' +
       '<button type="button" class="cal-arrow" aria-label="Next month" onclick="CAL.nav(\'' + key + '\', 1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div></div>' +
       '<div class="cal-grid">' + DOWS.map(w => '<div class="cal-dow">' + (s.mini ? w[0] : w) + '</div>').join('') + cells + '</div>' +
-      (s.mini ? legend(['spo', 'auto', 'draft', 'skipped', 'paused', 'pending'].filter(k => all.some(r => r.kind === k))) : '') + '</div>';
+      (s.mini && legendKeys.length ? '<div class="cal-legend mini">' + legendKeys.map(k => '<span class="cal-key static"><i class="sdot s-' + k + '"></i>' + STATUS[k].label + '</span>').join('') + '</div>' : '') + '</div>';
   }
   function chip(key, r, d, j) {
-    const lbl = r.kind === 'spo' ? 'SPO-' + r.spo.id : r.x.name;
-    const dot = r.kind === 'spo' ? '<span class="status-dot ' + SPO.STATES[r.spo.state].dot + '"></span>' : '';
-    return '<button type="button" class="cal-chip k-' + r.kind + '" title="' + r.x.name + ' · ' + SPO.VEN[r.x.v].name + ' · ' + KIND[r.kind].label + '" onclick="CAL.pick(\'' + key + '\', \'' + d + '\', this, ' + j + ')">' + dot + '<span class="t">' + lbl + '</span></button>';
-  }
-  function legend(kinds) {
-    return '<div class="cal-legend">' + kinds.map(k => '<span class="cal-key k-' + k + '"><i></i>' + KIND[k].label + '</span>').join('') + '</div>';
+    const num = r.kind === 'spo' ? String(r.spo.id) : r.spo ? String(r.spo.id) : '↻';
+    const what = r.kind === 'spo' ? 'SPO-' + r.spo.id : r.x.name + (r.spo ? ' · SPO-' + r.spo.id : '');
+    return '<button type="button" class="cal-chip vt' + (r.status === 'off' ? ' is-off' : '') + '" style="--vh:' + SPO.vh(r.v) + '" title="' + what + ' · ' + SPO.VEN[r.v].name + ' · ' + t12(r.time) + ' · ' + STATUS[r.status].label + '" onclick="CAL.pick(\'' + key + '\', \'' + d + '\', this, ' + j + ')">' +
+      '<i class="sdot s-' + r.status + '" aria-hidden="true"></i><span class="num">' + num + '</span><span class="t">' + vShort(r.v) + '</span><span class="tm">' + tShort(r.time) + '</span></button>';
   }
 
   /* ---------- popover ---------- */
-  let popKey = null;
   function pop() { let p = document.getElementById('cal-pop'); if (!p) { p = document.createElement('div'); p.id = 'cal-pop'; p.className = 'cal-pop'; p.setAttribute('role', 'dialog'); document.body.appendChild(p); } return p; }
-  function closePop() { const p = document.getElementById('cal-pop'); if (p) p.classList.remove('open'); popKey = null; }
+  function closePop() { const p = document.getElementById('cal-pop'); if (p) p.classList.remove('open'); }
   function pick(key, d, anchor, only) {
     const s = mounts[key], list = (s.byDay[d] || []).filter((r, i) => only === undefined || i === only);
     if (!list.length) return;
-    popKey = key;
     const p = pop(), long = new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' });
-    p.innerHTML = '<div class="cp-head"><b>' + long + ', ' + SPO.fmtDate(d) + '</b><button type="button" class="cp-x" aria-label="Close" onclick="CAL.close()">&times;</button></div>' + list.map(r => item(key, r)).join('');
+    p.innerHTML = '<div class="cp-head"><b>' + long + ', ' + SPO.fmtDate(d) + '</b><button type="button" class="cp-x" aria-label="Close" onclick="CAL.close()">&times;</button></div>' + list.map((r, i) => item(key, r, d, list.length === 1 ? only : i)).join('');
     p.classList.add('open');
-    const a = anchor.getBoundingClientRect(), w = Math.min(340, window.innerWidth - 24);
+    const a = anchor.getBoundingClientRect(), w = Math.min(360, window.innerWidth - 24);
     p.style.width = w + 'px';
     p.style.left = Math.max(12, Math.min(a.left, window.innerWidth - w - 12)) + 'px';
     const below = a.bottom + 8, h = p.offsetHeight;
     p.style.top = (below + h > window.innerHeight - 12 ? Math.max(12, a.top - h - 8) : below) + 'px';
   }
-  function item(key, r) {
-    const x = r.x, v = SPO.VEN[x.v], prop = (typeof PROPERTIES !== 'undefined' ? PROPERTIES : []).find(p => p.id === x.prop);
-    const status = r.kind === 'spo' ? '<span class="status-dot-item"><span class="status-dot ' + SPO.STATES[r.spo.state].dot + '"></span><span class="status-dot-label">SPO-' + r.spo.id + ' · ' + SPO.STATES[r.spo.state].label + '</span></span>'
-      : r.kind === 'done' ? 'Earlier run · its SPO is from before this demo window'
-      : r.kind === 'auto' ? 'Auto-send · the SPO is created and the PO emailed on the day'
-      : r.kind === 'draft' ? 'Draft only · an SPO is drafted for you to send'
-      : r.kind === 'skipped' ? 'Skipped · no SPO this date'
-      : r.kind === 'paused' ? 'Paused · won’t run until the schedule is resumed'
-      : 'Waiting on series approval';
-    const future = r.date > TODAY(), canSkip = future && x.status === 'active';
-    return '<div class="cp-run k-' + r.kind + '"><div class="cp-name"><a class="table-link" href="schedule.html#' + x.id + '">' + x.name + '</a></div>' +
-      '<div class="cp-meta">' + (prop ? prop.name + ' · ' : '') + v.name + ' · ' + SCH.fmtTime(x.cadence.time) + ' · ' + SPO.money(r.spo ? SPO.total(r.spo) : SCH.perRun(x)) + '</div>' +
-      '<div class="cp-status">' + status + '</div><div class="cp-actions">' +
-      (canSkip ? (r.kind === 'skipped' ? '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\', true)">Undo skip</button>' : '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\')">Skip this date</button>') : '') +
-      (r.spo ? '<a class="btn btn-sm btn-primary" style="text-decoration:none" href="spo.html#' + r.spo.id + '">Open SPO-' + r.spo.id + '</a>' : '') +
-      (key === 'sch-cal-mini' ? '' : '<a class="btn btn-sm" style="text-decoration:none" href="schedule.html#' + x.id + '">Open schedule</a>') + '</div></div>';
+  const propName = id => ((typeof PROPERTIES !== 'undefined' ? PROPERTIES : []).find(p => p.id === id) || {}).name || '';
+  const statusLine = st => '<span class="cp-st"><i class="sdot s-' + st + '"></i><span><b>' + STATUS[st].label + '</b> · ' + STATUS[st].desc + '</span></span>';
+  const btnA = (label, href, primary) => '<a class="btn btn-sm' + (primary ? ' btn-primary' : '') + '" style="text-decoration:none" href="' + href + '">' + label + '</a>';
+  function item(key, r, d, idx) {
+    const v = SPO.VEN[r.v], vt = '<span class="cp-vt vt" style="--vh:' + SPO.vh(r.v) + '">' + SPO.ini(r.v) + '</span>';
+    if (r.kind === 'spo') {
+      const sp = r.spo, a = r.appt, id = sp.id;
+      const act = r.status === 'pending' ? btnA('Change proposed time', 'spo.html#' + id + '/propose')
+        : r.status === 'newtime' ? btnA('Review new time', 'spo.html#' + id + '/time', true)
+        : r.status === 'denied' ? btnA('Rebid', 'spo.html#' + id + '/rebid', true)
+        : r.status === 'rebid' ? btnA('Choose vendor', 'spo.html#' + id + '/send', true)
+        : r.status === 'approved' && r.date >= TODAY() ? '<button type="button" class="btn btn-sm" onclick="CAL.ics(\'' + key + '\', \'' + d + '\', ' + idx + ')">Add to calendar</button>' : '';
+      return '<div class="cp-run"><div class="cp-name">' + vt + '<a class="table-link" href="spo.html#' + id + '">SPO-' + id + '</a></div>' +
+        '<div class="cp-meta">' + (propName(r.prop) ? propName(r.prop) + ' · ' : '') + (r.status === 'rebid' ? 'Needs a vendor (was ' + v.name + ')' : v.name) + ' · ' + SPO.money(SPO.total(sp)) + '</div>' +
+        '<div class="cp-when">' + SPO.fmtAppt(a) + (a.prev && r.status === 'newtime' ? '<span class="was">was ' + SPO.fmtAppt(a.prev) + '</span>' : '') + '</div>' +
+        '<div class="cp-status">' + statusLine(r.status) + '</div><div class="cp-actions">' + act + btnA('Open SPO', 'spo.html#' + id, false) + '</div></div>';
+    }
+    const x = r.x, canSkip = r.date > TODAY() && x.status === 'active';
+    return '<div class="cp-run"><div class="cp-name">' + vt + '<a class="table-link" href="schedule.html#' + x.id + '">' + x.name + '</a></div>' +
+      '<div class="cp-meta">' + (propName(x.prop) ? propName(x.prop) + ' · ' : '') + v.name + ' · ' + t12(x.cadence.time) + ' · ' + SPO.money(r.spo ? SPO.total(r.spo) : SCH.perRun(x)) + '</div>' +
+      '<div class="cp-status">' + statusLine(r.status) + (r.status === 'approved' ? ' <span class="cp-src">schedule run' + (r.spo ? ' · SPO-' + r.spo.id + ' ' + SPO.STATES[r.spo.state].label : '') + '</span>' : r.skipped ? ' <span class="cp-src">skipped</span>' : r.status === 'pending' ? ' <span class="cp-src">series approval</span>' : '') + '</div><div class="cp-actions">' +
+      (canSkip ? (r.skipped ? '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\', true)">Undo skip</button>' : '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\')">Skip this date</button>') : '') +
+      (r.spo ? btnA('Open SPO-' + r.spo.id, 'spo.html#' + r.spo.id, true) : '') +
+      (key === 'sch-cal-mini' ? '' : btnA('Open schedule', 'schedule.html#' + x.id, false)) + '</div></div>';
   }
   /* Same action, same log line as the schedule page's Skip / Undo skip. */
   function skip(key, id, d, undo) {
@@ -141,10 +171,20 @@
     const s = mounts[key]; if (s && s.onChange) s.onChange(); else if (s) draw(key);
     if (typeof showToast === 'function') showToast(undo ? 'Skip undone' : 'Run skipped', undo ? SPO.fmtDate(d) + ' is back on the schedule.' : SPO.fmtDate(d) + ' won’t create an SPO.');
   }
+  /* Add an approved appointment to Apple / Outlook (.ics). */
+  function ics(key, d, idx) {
+    const r = (mounts[key].byDay[d] || [])[idx]; if (!r || !r.appt) return;
+    const st = v => v.replace(/[-:]/g, '') + '00', a = r.appt, sp = r.spo;
+    const body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Scout//Service PO//EN', 'BEGIN:VEVENT', 'UID:spo-' + sp.id + '@scout.example', 'DTSTAMP:' + st(SPO.now().replace(' ', 'T')),
+      'DTSTART;TZID=America/Chicago:' + st(a.start), 'DTEND;TZID=America/Chicago:' + st(a.end || a.start), 'SUMMARY:SPO-' + sp.id + ' · ' + SPO.VEN[sp.v].name, 'LOCATION:' + propName(sp.prop), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    const url = URL.createObjectURL(new Blob([body], { type: 'text/calendar' })), link = document.createElement('a');
+    link.href = url; link.download = 'SPO-' + sp.id + '.ics'; document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (typeof showToast === 'function') showToast('Calendar file downloaded', 'SPO-' + sp.id + '.ics');
+  }
   document.addEventListener('click', e => { const p = document.getElementById('cal-pop'); if (p && p.classList.contains('open') && e.target.isConnected && !p.contains(e.target) && !e.target.closest('.cal-chip, .cal-more, .cal.mini .cal-day')) closePop(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
   window.addEventListener('resize', closePop);
   window.addEventListener('scroll', closePop, { passive: true });
 
-  window.CAL = { KIND, runs, mount, nav, draw, pick, close: closePop, skip };
+  window.CAL = { STATUS, KIND, ORDER, items, runs, mount, nav, draw, toggle, pick, close: closePop, skip, ics };
 })();

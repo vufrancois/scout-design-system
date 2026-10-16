@@ -62,7 +62,7 @@ Some services repeat: weekly common-area cleaning, monthly grounds maintenance, 
   - Revision → Revision Requested
   - Reject → Ended, "Stopped Early"
 - **Home:** the Approvals card counts schedule requests, and its meta names them ("· 1 Service PO · 1 schedule").
-- **Nav:** the SPOs menu gets **Schedules** ("Recurring service POs") on every buyer page. The SPO list header gets a Schedules button.
+- **Nav:** the SPOs menu gets **Schedules** ("Recurring service POs") on every buyer page. The SPO list header gets a Schedules button (changed to **Calendar** → the Service calendar on 10/16/2026; Schedules stays in the SPOs menu).
 - **Seeds:**
 
   | Schedule | What it is | Status | Notes |
@@ -212,3 +212,47 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 - [ ] Clicking a date opens the same popover; skipping updates the Upcoming runs list.
 **Files:** `buyer/schedule.html`, `buyer/sch-cal.js` (`mini`)
 
+## Addendum · Service calendar (10/16/2026)
+
+**Why:** team feedback on production's calendar: the colour key didn't match the dots. "Coloring of the tile should be by vendor to clearly show difference. Then the coloring of the dot should match the legend (key) which clearly states the status of the date/time (pending/approved/proposed new time/denied/needs rebid)." Decisions (Vu): **A** — Denied means the vendor rejected the SPO (a vendor can't decline only the time; they propose a new one); **B** — the calendar gets its own SPOs menu item. This also delivers the parked follow-up: one-time SPO appointments on the calendar.
+
+**What shipped**
+- **Service calendar page** (`buyer/calendar.html`, SPOs → Service calendar): schedule runs + one-time SPO appointments, filtered by property (when "All properties") and vendor; links to Schedules and Service POs.
+- **Tile = vendor:** a stable tint per vendor (`SPO.vh`), shared with vendor avatars on the SPO list, SPO page, Schedules and the vendor picker. Tiles show the SPO number (↻ for a run with no SPO yet), the vendor and the time.
+- **Dot = date/time status**, matching an always-visible legend; colour *and* shape:
+
+  | Dot | Status | From |
+  |---|---|---|
+  | amber ring | Pending | Appointment proposed (waiting on the vendor); a schedule waiting on series approval |
+  | emerald | Approved | Appointment confirmed; any run of an approved schedule |
+  | sky diamond | New time proposed | The vendor countered (your move) |
+  | rose with a bar | Denied | The vendor rejected the SPO (re-propose via Rebid) |
+  | rose ring | Needs rebid | A parked rebid carrying a time |
+  | grey dash | Not running | A skipped or paused run (struck through) |
+
+- **Legend = filter** with counts for the month. Runs-only views (Schedules, mini) show only Pending / Approved / Not running.
+- **Popover by status:** Pending → Change proposed time (`spo.html#<id>/propose`) · New time proposed → Review new time · Denied → Rebid · Needs rebid → Choose vendor · Approved → Add to calendar (.ics) · plus Open SPO; runs keep Skip / Undo skip.
+- **Seeds (store `scout-spos-v8`):** August shows every status — 863 pending (08/27), 862 approved (08/26), 858 approved (08/20), 860 new time (08/31), 861 denied (08/28), 857 pending and past (08/12); September has 867 needs rebid (09/03) and SCH-06 pending series approval (09/15).
+
+### TKT-SPO-56 · Service calendar page
+**Summary:** One calendar for every visit — schedule runs and one-time SPO appointments — with its own SPOs menu item.
+**Acceptance criteria:**
+- [ ] SPOs menu → Service calendar opens a month grid of schedule runs and SPO appointments (sent SPOs with a time; rejected and rebid SPOs keep theirs), filterable by property and vendor.
+- [ ] A tile's popover shows the SPO or schedule, property, vendor, time (and the old time for a counter), amount and status, with the status's action and Open SPO.
+- [ ] The Schedules page's Calendar view and the schedule mini calendar use the same component, runs only.
+**Files:** `buyer/calendar.html`, `buyer/sch-cal.js` (`items`, `mount`, `pick`, `ics`), `buyer/appbar.js` (menu, page map), `buyer/spo.html` (`#<id>/propose`)
+
+### TKT-SPO-57 · Vendor tint and status dot legend
+**Summary:** Tiles are coloured by vendor; the dot is only the date/time status, matching the legend.
+**Acceptance criteria:**
+- [ ] Each vendor has one stable tint used by its calendar tiles and its avatars (SPO list, SPO page, Schedules, vendor picker).
+- [ ] The dot shows exactly one of Pending, Approved, New time proposed, Denied, Needs rebid, Not running, each distinct in colour and shape; the legend shows the same marks with counts and toggles them.
+- [ ] Denied = the vendor rejected the SPO; Needs rebid = a parked rebid with a time.
+**Files:** `buyer/sch-cal.js` (`STATUS`, `chip`), `buyer/spo-data.js` (`vh`), `buyer/buyer-components.css` (`.vt`, `.sdot`, `.cal-key`, `.cal-legend-bar`), `buyer/spos.html`, `buyer/spo.html`, `buyer/schedules.html`, `buyer/schedule.html`
+
+## Addendum · Calendar view removed from Schedules (10/16/2026)
+
+Vu removed the Schedules page's List | Calendar toggle: the **Service calendar** (SPOs → Service calendar) covers runs and SPO appointments in one place, so a second, runs-only calendar was redundant. The Schedules page is list-only again, with a **Service calendar** button beside New Schedule; old `#list` links still land on the list. A schedule's own page keeps its mini run calendar.
+
+- **TKT-SPO-48 (Calendar view on Schedules)** is superseded by **TKT-SPO-56 (Service calendar page)** — don't build both.
+- The SPO list header's **Schedules** button is now **Calendar** (calendar icon) and opens the Service calendar; Schedules stays in the SPOs menu and on the calendar's toolbar.

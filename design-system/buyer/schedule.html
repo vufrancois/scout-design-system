@@ -206,7 +206,7 @@
       x.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(l.qty * l.price) + '</span>' + allocChips(l) + '</div>').join('') +
       '<div class="det-totals"><div class="tot-row grand"><span>Per run</span><span>' + money(SCH.perRun(x)) + '</span></div></div></div>';
 
-    let side = '<div class="card"><div class="ven-card"><span class="ven-logo">' + x.v + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
+    let side = '<div class="card"><div class="ven-card"><span class="ven-logo vt" style="--vh:' + SPO.vh(x.v) + '">' + x.v + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
       '<div style="font-size:13px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="PO recipient">' + v.email + '</div></div></div></div>';
     /* Run calendar: this series only — click a date for Skip / Undo skip or the run's SPO. */
     side += '<div class="card"><div class="det-card-head" style="margin-bottom:10px"><h2 style="font-size:16px">Run calendar</h2></div><div id="sch-cal-mini"></div></div>';

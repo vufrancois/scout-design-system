@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
 <script src="spo-data.js"></script>
-<script src="sch-cal.js"></script>
 </head>
 <body class="buyer">
 
@@ -37,10 +36,11 @@
   <div class="kpi-grid" id="stat-cards"></div>
   <div class="tab-row">
     <div class="tab-bar" id="tab-bar"></div>
-    <a class="btn btn-primary" href="spo-new.html#recurring" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Schedule</a>
+    <span style="display:flex;gap:10px;align-items:center"><a class="btn" href="calendar.html" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Service calendar</a>
+    <a class="btn btn-primary" href="spo-new.html#recurring" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none"><svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New Schedule</a></span>
   </div>
   <div class="toolbar" style="margin-top:16px">
-    <div class="toolbar-group"><div class="seg on-card" role="group" aria-label="View"><button type="button" id="v-list" onclick="setView('list')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>List</button><button type="button" id="v-cal" onclick="setView('cal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Calendar</button></div><span style="font-size:13px;color:var(--muted-foreground)" id="sch-note"></span></div>
+    <div class="toolbar-group"><span style="font-size:13px;color:var(--muted-foreground)" id="sch-note"></span></div>
     <div class="toolbar-group">
       <div class="search-wrap">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -49,7 +49,6 @@
     </div>
   </div>
   <div id="tbl-zone"></div>
-  <div id="cal-zone" hidden><div class="cal-filters" id="cal-filters"></div><div id="sch-cal"></div></div>
 </main>
 
 <script>
@@ -143,6 +142,8 @@
   ];
   let cardFilter = 'all', page = 1, sortK = 'next', sortDir = 1;
   const openRows = new Set();
+  /* The calendar lives on its own page now (SPOs → Service calendar, 10/16/2026); old #list links land here. */
+  if (location.hash === '#list') history.replaceState(null, '', location.pathname + '#running');
   const tab = () => { const t = (location.hash || '#running').replace('#', ''); return TABS.some(x => x.id === t) ? t : 'running'; };
   window.addEventListener('hashchange', () => { cardFilter = 'all'; openRows.clear(); renderPage(); window.scrollTo(0, 0); });
   const propName = id => (PROPERTIES.find(x => x.id === id) || {}).name || id;
@@ -166,7 +167,7 @@
         card('completed', 'stat-emerald', IC.check, 'Completed', g('completed'), 'Ran to its end rule') +
         card('stopped', 'stat-rose', IC.ban, 'Stopped Early', g('stopped'), 'Ended by a person');
   }
-  function setCard(k) { if (view === 'cal') { view = 'list'; try { sessionStorage.setItem('scout-sch-view', 'list'); } catch (e) { /* noop */ } if (tab() !== 'running') location.hash = '#running'; cardFilter = k; renderPage(); return; } cardFilter = cardFilter === k && k !== 'all' ? 'all' : k; renderPage(); }
+  function setCard(k) { cardFilter = cardFilter === k && k !== 'all' ? 'all' : k; renderPage(); }
 
   const pill = x => { const st = SCH.STATES[x.status]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; };
   const ACTION = {
@@ -179,47 +180,7 @@
   const th = (k, label) => '<th class="sortable' + (sortK === k ? ' sorted' : '') + '" onclick="setSort(\'' + k + '\')">' + label + sortIc(k) + '</th>';
   const nextOf = x => x.status === 'ended' ? (x.ev.ended || '').slice(0, 10) : SCH.nextRun(x) || '9999';
 
-  /* ---------- Calendar view: the same schedules as a month of runs (remembered per viewer) ---------- */
-  /* Calendar is the default view (10/16/2026): every arrival — the nav, the SPO list's Schedules button —
-     lands on it. Switching to List lasts for this visit only; #list in the URL opens the list directly. */
-  let view = 'cal';
-  try { if (sessionStorage.getItem('scout-sch-view') === 'list') view = 'list'; } catch (e) { /* default calendar */ }
-  try { if (performance.getEntriesByType('navigation')[0].type === 'navigate' && !document.referrer.includes('/schedules')) view = 'cal'; } catch (e) { /* noop */ }
-  if (location.hash === '#list') { view = 'list'; history.replaceState(null, '', location.pathname + '#running'); }
-  const calHide = new Set(); let calProp = '', calTrade = '';
-  function setView(v) { view = v; try { sessionStorage.setItem('scout-sch-view', v); } catch (e) { /* noop */ } renderPage(); }
-  function calList() {
-    const q = (document.getElementById('sch-search').value || '').trim().toLowerCase();
-    return SCH.list().filter(x => (currentProp === 'all' ? (!calProp || x.prop === calProp) : x.prop === currentProp) &&
-      (!calTrade || SPO.VEN[x.v].trade === calTrade) &&
-      (!q || (x.id + ' ' + x.name + ' ' + SPO.VEN[x.v].name + ' ' + propName(x.prop) + ' ' + x.scope).toLowerCase().includes(q)));
-  }
-  function toggleKind(k) { if (calHide.has(k)) calHide.delete(k); else calHide.add(k); renderPage(); }
-  function renderCal() {
-    const scope = SCH.list().filter(x => currentProp === 'all' || x.prop === currentProp);
-    const props = [...new Set(scope.map(x => x.prop))].sort((a, b) => propName(a).localeCompare(propName(b)));
-    const trades = [...new Set(scope.map(x => SPO.VEN[x.v].trade))].sort();
-    if (calProp && props.indexOf(calProp) < 0) calProp = '';
-    document.getElementById('cal-filters').innerHTML =
-      (currentProp === 'all' ? '<select aria-label="Property" onchange="calProp = this.value; renderPage()"><option value="">All properties</option>' + props.map(p => '<option value="' + p + '"' + (calProp === p ? ' selected' : '') + '>' + propName(p) + '</option>').join('') + '</select>' : '') +
-      '<select aria-label="Trade" onchange="calTrade = this.value; renderPage()"><option value="">All trades</option>' + trades.map(tr => '<option' + (calTrade === tr ? ' selected' : '') + '>' + tr + '</option>').join('') + '</select><span class="sep"></span>' +
-      ['spo', 'auto', 'draft', 'skipped', 'paused', 'pending'].map(k => '<button type="button" class="cal-toggle k-' + k + (calHide.has(k) ? ' off' : '') + '" aria-pressed="' + !calHide.has(k) + '" onclick="toggleKind(\'' + k + '\')"><i></i>' + CAL.KIND[k].label + '</button>').join('');
-    CAL.mount(document.getElementById('sch-cal'), { list: calList, hide: calHide, onChange: renderPage });
-  }
-
   function renderPage() {
-    const cal = view === 'cal';
-    document.getElementById('v-list').classList.toggle('active', !cal); document.getElementById('v-cal').classList.toggle('active', cal);
-    document.getElementById('v-list').setAttribute('aria-pressed', !cal); document.getElementById('v-cal').setAttribute('aria-pressed', cal);
-    ['tab-bar', 'tbl-zone'].forEach(id => document.getElementById(id).style.display = cal ? 'none' : '');
-    document.getElementById('cal-zone').hidden = !cal;
-    if (cal) {
-      /* The summary cards stay (they sit over the hero); picking one jumps to the filtered list. */
-      statCards('running', scoped(TABS[0].states));
-      const act = SCH.list().filter(x => x.status === 'active' && (currentProp === 'all' || x.prop === currentProp));
-      document.getElementById('sch-note').innerHTML = act.length + ' active · past runs link to their SPO';
-      renderCal(); return;
-    }
     const t = tab(), T = TABS.find(x => x.id === t);
     document.getElementById('tab-bar').innerHTML = TABS.map(tb => '<button class="tab-item' + (tb.id === t ? ' active' : '') + '" onclick="location.hash=\'#' + tb.id + '\'">' + tb.icon.replace('stat-card-icon', '') + tb.label + '<span class="tab-count">' + scoped(tb.states).length + '</span></button>').join('');
     const rows = scoped(T.states);
@@ -237,7 +198,7 @@
       const action = a ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + a(x)[1] + '">' + a(x)[0] + '</a>' : rowMenu(x);
       const main = '<tr class="data-row"><td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(\'' + x.id + '\')" title="Runs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
         '<td><a class="table-link" style="font-weight:700" href="schedule.html#' + x.id + '">' + x.name + '</a><div style="font-size:12px;color:var(--muted-foreground);margin-top:2px;max-width:220px;overflow:hidden;text-overflow:ellipsis" title="' + propName(x.prop) + '">' + x.id + ' · ' + propName(x.prop) + '</div></td>' +
-        '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px">' + x.v + '</span><span class="nm" title="' + v.name + '">' + v.name + '</span></span></td>' +
+        '<td><span class="cell-entity"><span class="v-avatar vt" style="width:28px;height:28px;border-radius:7px;font-size:10px;--vh:' + SPO.vh(x.v) + '">' + x.v + '</span><span class="nm" title="' + v.name + '">' + v.name + '</span></span></td>' +
         '<td style="white-space:nowrap">' + SCH.cadenceShort(x.cadence) + '<div style="font-size:12px;color:var(--muted-foreground);margin-top:2px">' + (x.mode === 'auto' ? 'Auto-send' : 'Draft only') + ' · ' + SCH.fmtTime(x.cadence.time) + '</div></td>' +
         '<td style="white-space:nowrap">' + nx + '</td>' +
         '<td class="num" style="font-weight:600">' + money(SCH.perRun(x)) + '</td>' +

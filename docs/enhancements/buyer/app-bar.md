@@ -69,7 +69,7 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 | Menu | Items |
 |---|---|
 | **Orders** | Order Tracking · Reviews · Quotes · Purchase History |
-| **SPOs** | Service POs · Schedules · Unit History (unchanged) |
+| **SPOs** | Service POs · Schedules · Service calendar (added 10/16/2026) · Unit History |
 | **Admin** | **Oversight:** Approvals · Budgets · Funding Report — **Setup:** Vendor Select · Shopping Lists · Organization |
 
 - Orders and SPOs now list purchases by type; Admin holds what spans both, in two labelled columns.

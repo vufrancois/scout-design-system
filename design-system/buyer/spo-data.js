@@ -2,7 +2,7 @@
    One source of truth so the list, detail, Home and Approvals counts always reconcile.
    Seeds + a localStorage overlay (live transitions persist across pages). */
 (function () {
-  const KEY = 'scout-spos-v7';
+  const KEY = 'scout-spos-v8';
   const SKEY = 'scout-schedules-v1';
   const TODAY = '2026-08-24';
   const APPROVAL_LIMIT = 2500;
@@ -42,6 +42,11 @@
     })));
   })();
   const ini = k => (VEN[k] && VEN[k].ini) || k;
+  /* Vendor tint (10/16/2026): a stable hue per vendor, shared by avatars and Service Calendar tiles so a
+     vendor reads the same everywhere. Hues keep clear of the status colors' meaning by staying pastel. */
+  const HUES = [212, 160, 28, 268, 330, 188, 48, 128, 8, 245, 300, 95];
+  const SEEDED_HUE = { AH: 8, BP: 212, CR: 188, CC: 160, DE: 48, GP: 330, LF: 95, PC: 268, MR: 28, BG: 128, PX: 245 };
+  const vh = k => { if (SEEDED_HUE[k] != null) return SEEDED_HUE[k]; let h = 0; for (const c of String(k)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return HUES[h % HUES.length]; };
 
   const GL = [
     ['6020', 'Building Exteriors'], ['6025', 'Building Interiors'], ['6035', 'Carpet Cleaning'],
@@ -117,6 +122,7 @@
       scope: 'Hydro-jet and clear the main sewer line between Buildings 01 and 02.',
       lines: [L('Main sewer line hydro-jetting', 1, 650, [A('6100', 'COMMON', 650)])],
       reject: { reason: 'Fully booked through September — we can’t schedule this within your requested window.' },
+      appt: { status: 'proposed', start: '2026-08-28T08:00', end: '2026-08-28T12:00', by: 'buyer', at: '2026-08-18 08:31' },
       ev: { created: '2026-08-18 08:30', sent: '2026-08-18 08:31', rejected: '2026-08-20 13:12' } },
     { id: 860, state: 'invoice', prop: 'magnolia', v: 'GP', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Interior repaint of a vacant 3 BR: walls, ceilings and trim.',
@@ -132,6 +138,7 @@
       lines: [L('Carpet cleaning, 2 BR', 1, 250, [A('6035', '0106', 250)])],
       invoice: { num: 'INV-30418', date: '2026-08-21', file: 'INV-30418.pdf', size: 2662, tax: 0, ship: 0,
         lines: [{ desc: 'Carpet cleaning, 2 BR — Unit 106', amt: 250, maps: [{ line: 0, amt: 250 }], conf: 'high' }] },
+      appt: { status: 'confirmed', start: '2026-08-20T10:00', end: '2026-08-20T12:00', by: 'buyer', at: '2026-08-14 10:01', confirmedAt: '2026-08-14 15:30' },
       ev: { created: '2026-08-14 10:00', sent: '2026-08-14 10:01', accepted: '2026-08-14 15:30', invoiced: '2026-08-21 16:40' } },
     { id: 857, state: 'mapping', prop: 'cypress', v: 'MR', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Make-ready for four vacant units: interior paint in 0102 and 0103, carpet cleaning in 0104, and a combined paint-and-carpet refresh in 0105.',
@@ -188,6 +195,7 @@
     { id: 867, state: 'rebid', prop: 'cypress', v: 'GP', by: 'Alicia Grant', period: 'Aug 2026', rebidOf: 851,
       scope: 'Repaint the leasing office and clubhouse interior walls before the resident open house.',
       lines: [L('Interior repaint — leasing office', 1, 720, [A('6140', 'COMMON', 720)]), L('Interior repaint — clubhouse', 1, 980, [A('6140', 'COMMON', 980)])],
+      appt: { status: 'proposed', start: '2026-09-03T09:00', end: '2026-09-03T15:00', by: 'buyer' },
       ev: { created: '2026-08-21 11:40' } },
     { id: 849, state: 'mapping', prop: 'bayou', v: 'GP', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Patch and repaint stairwell walls in Building 02.',
@@ -590,7 +598,7 @@
 
   const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
 
-  window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
+  window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, vh, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
     budget, glOver, needsApproval, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

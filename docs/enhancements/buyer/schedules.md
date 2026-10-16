@@ -185,7 +185,7 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 **Why:** the team asked for a calendar on Schedules. The list answers "which series exist"; a calendar answers what property managers actually ask: *what service is happening this week, and where?* It also shows clashes (two vendors at one property on one day) and makes holiday skips easy to find.
 
 **What shipped**
-- **List | Calendar toggle** on the Schedules page (`.seg.on-card`, remembered per viewer). The summary cards stay over the hero; clicking one jumps back to the filtered list. The Running/Ended tabs hide in Calendar.
+- **List | Calendar toggle** on the Schedules page (`.seg.on-card`). **Calendar is the default** (Vu, 10/16/2026): every arrival lands on it, including the SPO list's Schedules button; List lasts for the visit (survives a reload), and `#list` opens it directly. The summary cards stay over the hero; clicking one jumps back to the filtered list. The Running/Ended tabs hide in Calendar.
 - **Month grid** (`buyer/sch-cal.js`, `window.CAL`): every run of every schedule in scope. Chips by kind: solid = auto-send, outlined = draft only, dashed + struck = skipped, faded = paused, amber = pending series approval. A **past run** becomes its **SPO chip** ("SPO-847" + status dot); runs from before the demo window read "Earlier run". Three chips per day, then "+N more". Today is a filled circle; Today / ‹ › navigate months.
 - **Filters:** property (when "All properties"), trade, and a toggle per run kind. The search box applies too.
 - **Popover** on a chip: schedule, property, vendor, time and amount, and only existing actions: **Skip this date / Undo skip** (future runs of active series; same log lines as the schedule page), **Open SPO**, **Open schedule**.
@@ -195,7 +195,7 @@ Gallery **Buyer App · Service POs → Schedules** and the design-doc **Schedule
 ### TKT-SPO-48 · Calendar view on Schedules
 **Summary:** A month calendar of every run, as a second view of the Schedules page.
 **Acceptance criteria:**
-- [ ] A List | Calendar toggle switches views and is remembered per viewer; the summary cards stay and jump back to the filtered list.
+- [ ] The page opens on Calendar; a List | Calendar toggle switches views for the rest of the visit, and `#list` opens the list directly; the summary cards stay and jump back to the filtered list.
 - [ ] The grid shows every run in scope by kind: auto-send, draft only, skipped, paused, pending approval; past runs show their SPO number and status.
 - [ ] Three runs per day, then "+N more" (opens the day's runs).
 - [ ] Filters: property (when "All properties"), trade, run kind; search applies.

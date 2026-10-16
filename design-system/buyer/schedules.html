@@ -166,7 +166,7 @@
         card('completed', 'stat-emerald', IC.check, 'Completed', g('completed'), 'Ran to its end rule') +
         card('stopped', 'stat-rose', IC.ban, 'Stopped Early', g('stopped'), 'Ended by a person');
   }
-  function setCard(k) { if (view === 'cal') { view = 'list'; try { localStorage.setItem('scout-sch-view', 'list'); } catch (e) { /* noop */ } if (tab() !== 'running') location.hash = '#running'; cardFilter = k; renderPage(); return; } cardFilter = cardFilter === k && k !== 'all' ? 'all' : k; renderPage(); }
+  function setCard(k) { if (view === 'cal') { view = 'list'; try { sessionStorage.setItem('scout-sch-view', 'list'); } catch (e) { /* noop */ } if (tab() !== 'running') location.hash = '#running'; cardFilter = k; renderPage(); return; } cardFilter = cardFilter === k && k !== 'all' ? 'all' : k; renderPage(); }
 
   const pill = x => { const st = SCH.STATES[x.status]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; };
   const ACTION = {
@@ -180,10 +180,14 @@
   const nextOf = x => x.status === 'ended' ? (x.ev.ended || '').slice(0, 10) : SCH.nextRun(x) || '9999';
 
   /* ---------- Calendar view: the same schedules as a month of runs (remembered per viewer) ---------- */
-  let view = 'list';
-  try { view = localStorage.getItem('scout-sch-view') === 'cal' ? 'cal' : 'list'; } catch (e) { /* default list */ }
+  /* Calendar is the default view (10/16/2026): every arrival — the nav, the SPO list's Schedules button —
+     lands on it. Switching to List lasts for this visit only; #list in the URL opens the list directly. */
+  let view = 'cal';
+  try { if (sessionStorage.getItem('scout-sch-view') === 'list') view = 'list'; } catch (e) { /* default calendar */ }
+  try { if (performance.getEntriesByType('navigation')[0].type === 'navigate' && !document.referrer.includes('/schedules')) view = 'cal'; } catch (e) { /* noop */ }
+  if (location.hash === '#list') { view = 'list'; history.replaceState(null, '', location.pathname + '#running'); }
   const calHide = new Set(); let calProp = '', calTrade = '';
-  function setView(v) { view = v; try { localStorage.setItem('scout-sch-view', v); } catch (e) { /* noop */ } renderPage(); }
+  function setView(v) { view = v; try { sessionStorage.setItem('scout-sch-view', v); } catch (e) { /* noop */ } renderPage(); }
   function calList() {
     const q = (document.getElementById('sch-search').value || '').trim().toLowerCase();
     return SCH.list().filter(x => (currentProp === 'all' ? (!calProp || x.prop === calProp) : x.prop === currentProp) &&

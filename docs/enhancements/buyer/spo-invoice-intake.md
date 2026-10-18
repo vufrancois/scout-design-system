@@ -147,7 +147,7 @@ Gallery: **Line Connector** replaces the SPO Line Match card, and there's a new 
 - **Connections run both ways:** one invoice line can map to several SPO lines, and several invoice lines to one SPO line.
 - **The money is always split evenly.** Each connection is labelled as a fraction ("1/4 · $25.00"), and each SPO line shows "n connected" plus a combined variance.
 - Units stay on each SPO line.
-- The team had described a "same GL code" rule, but the screenshot shows a paint line (6140) and a carpet line (6040) both connected to one invoice line, so it isn't enforced as described.
+- The team had described a "same GL code" rule, but the screenshot shows a paint line (6140) and a carpet line (6040) both connected to one invoice line, so it isn't enforced as described. **Confirmed 10/18/2026: production does enforce the same-GL rule** (see TKT-SPO-45).
 
 **What this means:**
 - **The structure is solved in production.** That covers audit SPO-43's "connections are 1:1 only".
@@ -204,7 +204,7 @@ The prototype now matches:
   An SPO line that itself books to two GL codes (SPO-857's paint-and-carpet line) can only be connected on its own.
 - **The unit warning stays.** With an even split, connecting the wrong line is the real risk.
 - **Audit SPO-43** is effectively closed: production's same-GL even split plus the itemization policy cover it.
-- **Earlier screenshot:** production allowed "Paint, unit 105" to connect to both paint (6140) and carpet (6040) lines. Either that predates the rule or it's a production bug; flagged to the team.
+- **Earlier screenshot:** production allowed "Paint, unit 105" to connect to both paint (6140) and carpet (6040) lines. Either that predates the rule or it's a production bug; flagged to the team. **Answered 10/18/2026: production enforces the rule**, so TKT-SPO-45 matches existing behaviour.
 - **Demo** (`spo.html#857/invoice`):
   - **Refusal:** connect "Carpet steam clean — Unit 104" (6035) to Line 1 (6140).
   - **Unit warning:** remove Invoice line 3's connection, then connect "Make-ready refresh — Unit 105" to Line 1 (unit 0102).
@@ -237,7 +237,7 @@ The prototype now matches:
 - **Multi-SPO intake:** the review step notes lines not on the invoice; they wait for the next invoice (close them from the SPO page).
 - **Seeds:** SPO-833 (Open, page 2): INV-MR-0812 paid for the paint lines, carpet lines waiting. SPO-834 (Invoices): INV-AH-0809 with Accounting, INV-AH-0821 to map.
 
-**Not built:** closing lines from the multi-SPO intake; Paid assumes Accounting pays an SPO's invoices in order.
+**Not built:** closing lines from the multi-SPO intake. **Confirmed 10/18/2026:** Accounting pays an SPO's invoices in order, so Paid when the last invoice is paid is the right rule.
 
 ### TKT-SPO-59 · Partial invoicing: one SPO billed across several invoices
 **Summary:** An SPO's lines can be billed on different invoices. Each invoice moves through Accounting on its own; the SPO waits in Open for the rest and shows how much is invoiced.

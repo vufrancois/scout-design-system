@@ -83,6 +83,7 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 **Acceptance criteria:**
 - [ ] Orders: Order Tracking, Reviews, Quotes, Purchase History. SPOs: Service POs, Recurring SPOs, Unit History.
 - [ ] Admin shows two labelled columns: Oversight (Approvals, Budgets, Funding Report) and Setup (Vendor Select, Shopping Lists, Organization).
+  - **Decided 10/18/2026:** Vendor Select is for managing approved vendors, so it stays in Admin → Setup.
 - [ ] The Approvals item is named "Approvals" and describes orders, Service POs and schedules.
 - [ ] The Admin chip and the Approvals item show the number of pending approval requests in scope; it hides at 0 and matches Home's Approvals card and the bell's approval items.
 - [ ] The approvals list and approval request pages highlight Admin.

@@ -1988,3 +1988,21 @@
 .buyer .cx-lock svg { width: 12px; height: 12px; }
 .buyer .cx-rest { margin-top: 18px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md, 10px); background: var(--card); max-width: 760px; }
 .buyer .cx-rest .lm-opt { margin-top: 6px; }
+
+/* ===== Invoice mapping one level up (10/18/2026, TKT-SPO-60): the SPO page's Invoice card lists each invoice line
+   and the SPO + line it was mapped to; a shared invoice includes the other SPOs' lines, labelled and linked. ===== */
+.buyer .inv-map { margin: 8px 0 4px; border: 1px solid var(--border); border-radius: var(--radius-md, 10px); overflow: hidden; }
+.buyer .inv-map .im-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; background: var(--surface-soft, #f8f9fa); border-bottom: 1px solid var(--border); }
+.dark .buyer .inv-map .im-head, .buyer.dark .inv-map .im-head { background: var(--muted); }
+.buyer .inv-map .im-ic { width: 14px; height: 14px; color: var(--muted-foreground); }
+.buyer .inv-map .im-row { display: grid; grid-template-columns: minmax(0, 1.1fr) 96px minmax(0, 1.6fr); gap: 14px; padding: 10px 14px; font-size: 13px; border-top: 1px solid var(--border); align-items: start; }
+.buyer .inv-map .im-row:first-child, .buyer .inv-map .im-head + .im-row { border-top: none; }
+.buyer .inv-map .im-row.hd { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); padding-top: 8px; padding-bottom: 8px; }
+.buyer .inv-map .im-amt { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.buyer .inv-map .im-row.hd .im-amt { font-weight: 700; }
+.buyer .inv-map .im-row.other { background: var(--surface-soft, #f8f9fa); }
+.dark .buyer .inv-map .im-row.other, .buyer.dark .inv-map .im-row.other { background: var(--muted); }
+.buyer .inv-map .im-row.gone .im-desc, .buyer .inv-map .im-row.gone .im-amt { color: var(--muted-foreground); text-decoration: line-through; }
+.buyer .inv-map .im-muted { color: var(--muted-foreground); }
+.buyer .inv-map .im-other { margin-left: 6px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--muted); color: var(--muted-foreground); font-size: 11px; font-weight: 600; }
+@media (max-width: 640px) { .buyer .inv-map .im-row { grid-template-columns: 1fr auto; } .buyer .inv-map .im-to { grid-column: 1 / -1; } .buyer .inv-map .im-row.hd span:last-child { display: none; } }

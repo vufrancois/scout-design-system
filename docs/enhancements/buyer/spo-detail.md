@@ -239,3 +239,25 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 - [ ] Not counted as committed spend (budget meters, Unit History) until sent; can be canceled outright.
 **Files:** `buyer/spo-data.js` (`STATES.rebid`), `buyer/spo.html` (`openRebidSend`, `rebidLink`), `buyer/spos.html`, `buyer/home.html`, `buyer/unit-history.html`
 
+
+
+## Addendum · Invoice mapping on the Invoice card (10/18/2026)
+
+**Why:** team feedback: "carry the SPO mapping a level up for quick visibility. In addition to drilling down to View Mapping, show the SPO # and line item from that SPO here." On a shared invoice the SPO page also never said which other SPOs the invoice covered.
+
+**What shipped**
+- Under each validated invoice on the SPO page's Invoice card, a table: **Invoice line · Amount · Mapped to** ("SPO-836 · Line 1 · Breezeway fixture replacement"). View mapping stays for the full board.
+- **Shared invoice:** a "Shared invoice · n SPOs · $total" line; this SPO's lines first, then the other SPOs' lines, shaded, tagged "other SPO" and linked; a Sales tax row shows the split per SPO. The invoice summary reads "this SPO's share $414.20".
+- Split lines list each part ("1/2 · $400.00"); one-time extras show their GL and unit; removed lines are struck through with the reason; a partly invoiced SPO gets a table under each invoice. An invoice still to map shows no table (Map invoice).
+- Phone width: Mapped to drops under the line and amount.
+
+### TKT-SPO-60 · Show invoice-to-SPO mapping on the Invoice card
+**Summary:** The SPO page shows, for each validated invoice, every invoice line and the SPO and SPO line it was mapped to, without opening View mapping.
+**Acceptance criteria:**
+- [ ] Under each validated invoice, a table lists each invoice line, its amount, and what it was mapped to: SPO number, line number and SPO line description.
+- [ ] A line split across SPO lines lists each part with its fraction and amount; a one-time extra shows its GL and unit; a removed line is struck through with its reason.
+- [ ] On a shared invoice, the table shows every SPO's lines: this SPO's first, the others labelled "other SPO" and linked to their page, plus the invoice total, the number of SPOs, and the tax split per SPO.
+- [ ] A partly invoiced SPO (TKT-SPO-59) shows a table under each of its invoices.
+- [ ] An invoice not yet validated shows no table.
+**Backend / data:** the validated mapping per invoice line (SPO id, SPO line, amount; extra GL/unit; removed reason), readable across the SPOs on a shared invoice.
+**Files:** `buyer/spo.html` (`invMap`, `invoiceCard`), `buyer/buyer-components.css` (`.inv-map`, `.im-row`, `.im-other`)

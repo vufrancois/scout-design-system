@@ -250,6 +250,7 @@ The prototype now matches:
 - [ ] The SPO reaches Paid only when every line is billed or closed and every invoice is paid.
 - [ ] The SPO list shows "n of m invoiced" under the SPO number; expanded line items and the SPO page tag each line with its invoice or state; the SPO page lists every invoice with its lines, amount and status.
 - [ ] In Group by invoice (TKT-SPO-58), the SPO sits under each of its invoices, showing that invoice's lines, amount and status.
+- [ ] Each invoice sits on the tab of its own status (With Accounting → Invoices, Paid → Closed), wherever its SPO is now; the SPO row under an earlier invoice reads "Now in Open · next invoice" (or its current tab) and has no action. Tab counts stay in SPOs.
 - [ ] Rebid and Cancel aren't offered once any line is billed.
 - [ ] Unit History lists a closed line as "Closed unbilled", not counted toward the unit's spend; in Group by invoice an SPO with closed lines reads "Lines 1 of 2 · 1 closed", never "Full invoice" (QA 10/18/2026).
 **Backend / data:** per-line billing (invoice id, or closed with by/at/reason); invoices as their own records linked to SPO lines, each with a status; budget commitment excludes closed lines.

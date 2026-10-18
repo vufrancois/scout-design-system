@@ -143,7 +143,9 @@
     SPO.list().filter(s => s.prop === prop).forEach(s => s.lines.forEach(l => l.alloc.forEach(a => {
       const lt = r2(l.qty * l.price);
       out.push({ unit: a.unit, date: s.ev.created.slice(0, 10), type: 'spo', ref: 'SPO-' + s.id, href: 'spo.html#' + s.id, what: l.desc, gl: a.gl, amt: a.amt,
-        of: (l.alloc.length > 1 || a.amt !== lt) ? lt : null, status: SPO.STATES[s.state].label, dot: SPO.STATES[s.state].dot, counted: NOT_COUNTED.indexOf(s.state) < 0, series: s.series || null });
+        of: (l.alloc.length > 1 || a.amt !== lt) ? lt : null, series: s.series || null,
+        /* A line closed unbilled (TKT-SPO-59) was never charged: listed, not counted. */
+        status: l.closed ? 'Closed unbilled' : SPO.STATES[s.state].label, dot: l.closed ? 'dot-muted' : SPO.STATES[s.state].dot, counted: !l.closed && NOT_COUNTED.indexOf(s.state) < 0 });
     })));
     SPO.ORDER_LINES.filter(o => o.prop === prop).forEach(o => out.push({ unit: o.unit, date: o.date, type: 'order', ref: 'Order #' + o.order, href: 'order-detail.html#' + o.order,
       what: o.item, sku: o.sku, qty: o.qty, gl: o.gl, amt: r2(o.qty * o.price), of: null, status: o.status, dot: o.dot, counted: o.status !== 'Canceled' }));
@@ -242,7 +244,7 @@
     // spend by GL
     const byGl = {}; counted.forEach(e => { byGl[e.gl] = r2((byGl[e.gl] || 0) + e.amt); });
     const gls = Object.keys(byGl).sort((x, y) => byGl[y] - byGl[x]), max = Math.max.apply(null, gls.map(g => byGl[g]).concat([1]));
-    if (gls.length) h += '<div class="card"><div class="det-card-head hd"><div><h2>Spend by GL</h2><div class="sub">Counted spend in range · drafts, pending approvals and canceled SPOs excluded</div></div></div><div class="hbars uh-hbars" style="margin-top:12px">' +
+    if (gls.length) h += '<div class="card"><div class="det-card-head hd"><div><h2>Spend by GL</h2><div class="sub">Counted spend in range · drafts, pending approvals, canceled SPOs and lines closed unbilled excluded</div></div></div><div class="hbars uh-hbars" style="margin-top:12px">' +
       gls.map((g, i) => '<div class="hbar" title="' + g + ' ' + SPO.glName(g) + ': ' + money(byGl[g]) + '"><span class="hbar-label"><span class="hbar-dot cat-' + (i % 4 + 1) + '"></span>' + g + ' ' + SPO.glName(g) + '</span><span class="hbar-track"><span class="hbar-fill cat-' + (i % 4 + 1) + '" style="width:' + (byGl[g] / max * 100).toFixed(1) + '%"></span></span><span class="hbar-value">' + money(byGl[g]) + '</span></div>').join('') +
       '</div><div class="hbar-total"><span>' + gls.length + ' GL code' + (gls.length === 1 ? '' : 's') + '</span><b>' + money(spend) + '</b></div></div>';
 

@@ -288,12 +288,19 @@
       return { s, idx, lines, tax: tax[s.id] || 0, ship: ship[s.id] || 0, o: ps[s.id] };
     });
   }
+  /* Lines of this SPO the invoice doesn't cover stay open for the vendor's next invoice (TKT-SPO-59); close them from
+     the SPO page if they'll never be billed. */
+  function restNote(x) {
+    const on = new Set(); x.lines.forEach(l => (l.maps || []).forEach(m => on.add(m.line)));
+    const rest = SPO.progress(x.s).openLines.filter(k => !on.has(k)); if (!rest.length) return '';
+    return '<div class="w-note" style="margin:10px 0 0"><span><b>' + rest.length + ' line' + (rest.length === 1 ? ' isn’t' : 's aren’t') + ' on this invoice</b> · ' + rest.map(k => x.s.lines[k].desc).join(' · ') + '. SPO-' + x.s.id + ' waits for the next invoice after this one goes to Accounting — or close ' + (rest.length === 1 ? 'it' : 'them') + ' unbilled from the SPO.</span></div>';
+  }
   function viewReview() {
     const sl = slices(), removed = W.inv.lines.filter(l => l.res === 'remove'), total = r2(W.inv.lines.filter(l => l.res !== 'remove').reduce((a, l) => a + l.amt, 0) + (W.inv.tax || 0) + (W.inv.ship || 0));
     const vchip = d => Math.abs(d) < 0.005 ? '<span class="lm-var on">On estimate</span>' : '<span class="lm-var ' + (d > 0 ? 'over' : 'under') + '">' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + (d > 0 ? ' over' : ' under') + '</span>';
     const cards = sl.map(x => '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><a class="table-link" href="spo.html#' + x.s.id + '" target="_blank" rel="noopener">SPO-' + x.s.id + '</a>' + (x.s.run ? '<span class="cx-k">Run ' + fmtD(x.s.run) + '</span>' : '') + '</h2><div class="sub">' + x.s.lines.map(l => l.desc).join(' · ') + ' · estimate ' + money(x.o.est) + '</div></div>' + vchip(x.o.variance) + '</div>' +
       x.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty"></span><span class="sl-total">' + money(l.amt) + '</span><div class="cx-k" style="grid-column:1 / -1">' + l.how + '</div></div>').join('') +
-      '<div class="det-totals">' + (x.tax ? '<div class="tot-row"><span>Sales tax share</span><span>' + money(x.tax) + '</span></div>' : '') + '<div class="tot-row grand"><span>SPO-' + x.s.id + ' share of ' + W.num + '</span><span>' + money(r2(x.lines.reduce((a, l) => a + l.amt, 0) + x.tax + x.ship)) + '</span></div></div></div>').join('');
+      restNote(x) + '<div class="det-totals">' + (x.tax ? '<div class="tot-row"><span>Sales tax share</span><span>' + money(x.tax) + '</span></div>' : '') + '<div class="tot-row grand"><span>SPO-' + x.s.id + ' share of ' + W.num + '</span><span>' + money(r2(x.lines.reduce((a, l) => a + l.amt, 0) + x.tax + x.ship)) + '</span></div></div></div>').join('');
     const rm = removed.length ? '<div class="card"><div class="det-card-head hd"><h2>Removed — not payable</h2></div>' + removed.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty"></span><span class="sl-total" style="text-decoration:line-through;color:var(--muted-foreground)">' + money(l.amt) + '</span><div class="cx-k" style="grid-column:1 / -1">“' + l.resReason + '” · the vendor sees this reason</div></div>').join('') + '</div>' : '';
     const side = '<div class="card"><div class="det-card-head"><h2>' + W.num + '</h2></div>' +
       '<div class="sum-row"><span class="muted">Vendor</span><span>' + SPO.VEN[W.v].name + '</span></div><div class="sum-row"><span class="muted">Property</span><span style="text-align:right">' + propOf(W.prop).name + '</span></div>' +
@@ -317,7 +324,7 @@
       s.invoice = { num: W.num, date: W.date, file: W.file || W.num + '.pdf', size: W.inv.size, tax: x.tax, ship: x.ship, validated: true, lines,
         shared: sl.length > 1 ? { total, spos: sl.map(y => y.s.id), idx: i + 1 } : null };
       s.state = 'ready'; s.ev.invoiced = s.ev.invoiced || SPO.now(); s.ev.mapped = SPO.now(); delete s.mapDraft;
-      const d = r2(SPO.invSubtotal(s) - SPO.total(s));
+      const d = r2(SPO.invSubtotal(s) - SPO.invCovers(s.invoice).reduce((a, k) => a + s.lines[k].qty * s.lines[k].price, 0) - s.invoice.lines.filter(l => l.extra).reduce((a, l) => a + l.amt, 0));
       SPO.log(s, 'Invoice received', W.num + (sl.length > 1 ? ' · shared invoice, ' + (i + 1) + ' of ' + sl.length + ' SPOs' : '') + ' · uploaded by Alicia Grant');
       SPO.log(s, 'Invoice mapped & validated', money(SPO.invTotal(s)) + ' share' + (Math.abs(d) >= 0.005 ? ' · ' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + ' variance accepted' : ' · on estimate'), true);
       SPO.save(s);
@@ -339,7 +346,7 @@
   }
   function sendAll() {
     let r = null; try { r = JSON.parse(sessionStorage.getItem('scout-intake-done')); } catch (e) { return; }
-    r.spos.forEach(id => { const s = SPO.get(id); if (s.state !== 'ready') return; s.state = 'accounting'; s.ev.accounting = SPO.now(); SPO.log(s, 'Sent to Accounting', 'Packet: PO, invoice ' + s.invoice.num + ' (shared), GL allocation · ' + money(SPO.invTotal(s))); SPO.save(s); });
+    r.spos.forEach(id => { const s = SPO.get(id); if (s.state !== 'ready') return; s.state = 'accounting'; s.ev.accounting = SPO.now(); SPO.log(s, 'Sent to Accounting', 'Packet: PO, invoice ' + s.invoice.num + ' (shared), GL allocation · ' + money(SPO.invTotal(s))); SPO.afterSend(s); SPO.save(s); });
     renderPage(); showToast('Sent to Accounting', r.spos.length + ' SPOs · ' + money(r.total));
   }
 

@@ -53,7 +53,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 
 ## Buyer App — Service POs `buyer/spo.html#<id>`
 
-SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 · Closed 6), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
+SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 · Closed 12), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
 
 | State | SPO | What to show |
 |---|---|---|
@@ -79,6 +79,10 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 12 · Invoices 5 �
 | With Accounting | `#855` | Violet **ACCOUNTING** actor; no buyer button |
 | Paid | `#854` | All 8 steps dated; approved by Priya Nair |
 | Canceled | `#852` | No stepper; SPO Status card names who canceled and quotes the reason; Clone SPO only |
+| Group by invoice | `spos.html#closed` · `#invoices` | Every invoiced SPO sits under its **invoice heading** (number, "Shared invoice · 3 SPOs" or "Invoice · 1 SPO", invoice total, date). INV-CC-2607 → SPO-839/840/841 each with "Share · 1 of 3"; INV-DE-0815 on Invoices is **Ready for Accounting** (send one → the heading reads **Mixed**). Fold a group with its chevron; search "0113" → "1 hidden by filters"; the **Group by invoice** switch turns it off. Canceled SPOs stay plain rows |
+| Partly invoiced · waiting | `#833` | Open tab, page 2: "2 of 4 invoiced" under the SPO number. Paint lines billed on INV-MR-0812 (paid), carpet lines **Not invoiced yet**; the tracker reads "2 of 4 lines"; **Invoices** card; **Close unbilled lines** → pick a line + reason → its budget is released |
+| Partly invoiced · next invoice | `#834` → `#834/invoice` | The second invoice INV-AH-0821: lines 1–2 are **locked** ("Billed on INV-AH-0809"), only the thermostat line can be connected. On the Invoices tab SPO-834 sits under **both** invoices (Lines 1, 2 of 3 · With Accounting / Lines 3 of 3 · Invoice to Map) |
+| Partial invoicing (live) | `#863` → Upload invoice | Remove one invoice line on the board → "1 SPO line isn't on this invoice": **Expect another invoice** → Validate → Send to Accounting → the SPO is back in **Awaiting Invoice**, "Partly invoiced"; then Close unbilled lines → With Accounting |
 
 ### Recurring SPOs — `buyer/schedules.html` · `buyer/schedule.html#SCH-<nn>`
 

@@ -39,6 +39,13 @@
   }
   const unitOf = m => { const s = spo(m.spo); if (!s || !s.lines[m.line]) return ''; const u = [...new Set(s.lines[m.line].alloc.map(a => a.unit === 'COMMON' ? 'Common area' : 'Unit ' + a.unit))]; return u.join(' + '); };
   const est = (s, k) => r2(s.lines[k].qty * s.lines[k].price);
+  /* Partial invoicing (TKT-SPO-59): a line billed on another invoice, or closed unbilled, is locked on this board. */
+  function lockOf(s, k) {
+    const x = SPO.lineState(s, k);
+    if (x.kind === 'closed') return 'Closed unbilled';
+    if (x.kind === 'billed' && x.num !== C.inv.num) return 'Billed on ' + x.num;
+    return '';
+  }
   const live = () => C.inv.lines.filter(l => l.res !== 'remove');
 
   /* ---------- state ---------- */
@@ -72,7 +79,13 @@
   /* what each SPO is billed: connected lines + extras/added lines booked to it */
   function perSpo() {
     const out = {};
-    C.spos.forEach(s => { out[s.id] = { est: SPO.total(s), lines: 0, extra: 0, added: 0 }; });
+    /* Estimate = the SPO lines this invoice covers; open lines it doesn't cover are "rest" (another invoice, or closed). */
+    const on = new Set(); C.inv.lines.forEach(l => { if (!l.res) l.maps.forEach(m => on.add(m.spo + ':' + m.line)); });
+    C.spos.forEach(s => {
+      let e = 0, rest = 0, restN = 0;
+      s.lines.forEach((sl, k) => { if (lockOf(s, k)) return; if (on.has(s.id + ':' + k)) e += est(s, k); else { rest += est(s, k); restN++; } });
+      out[s.id] = { est: r2(e), rest: r2(rest), restN, lines: 0, extra: 0, added: 0 };
+    });
     C.inv.lines.forEach(l => {
       if (l.res === 'extra' && out[l.resSpo]) out[l.resSpo].extra = r2(out[l.resSpo].extra + l.amt);
       else if (l.res === 'add' && out[l.resSpo]) out[l.resSpo].added = r2(out[l.resSpo].added + l.amt);
@@ -109,6 +122,7 @@
   }
   function connect(i, spoId, line) {
     const l = C.inv.lines[i]; if (C.ro || !l) return;
+    if (spo(spoId) && lockOf(spo(spoId), +line)) return;
     if (l.maps.some(m => m.spo === +spoId && m.line === +line)) { l.maps.forEach(m => { if (m.spo === +spoId && m.line === +line) m.sug = false; }); changed(); return; }
     const clash = glConflict(l, spoId, line);
     if (clash) { C.refuse = Object.assign({ i }, clash); changed(); return; }
@@ -141,7 +155,7 @@
       if (l.res || l.maps.length) return;
       let best = null, score = 0;
       C.spos.forEach(s => s.lines.forEach((sl, k) => {
-        if (taken.has(s.id + ':' + k)) return;
+        if (taken.has(s.id + ':' + k) || lockOf(s, k)) return;
         const w = words(sl.desc), hit = words(l.desc).filter(x => w.indexOf(x) >= 0).length + (Math.abs(est(s, k) - l.amt) < 0.005 ? 3 : 0);
         if (hit > score) { score = hit; best = [s.id, k]; }
       }));
@@ -187,7 +201,9 @@
     const connected = new Set(); C.inv.lines.forEach(l => { if (!l.res) l.maps.forEach(m => connected.add(m.spo + ':' + m.line)); });
     const left = C.spos.map(s => '<div class="cx-group">' + (multi || s.series ? '<div class="cx-group-h"><a class="table-link" href="spo.html#' + s.id + '" target="_blank" rel="noopener">SPO-' + s.id + '</a><span class="m">' + (s.run ? 'Run ' + SPO.fmtDate(s.run) + ' · ' : '') + 'estimate ' + money(SPO.total(s)) + '</span>' + varChip(ps[s.id].variance) + '</div>' : '') +
       s.lines.map((sl, k) => {
-        const key = s.id + ':' + k, on = connected.has(key), d = r2((per[key] || 0) - est(s, k));
+        const key = s.id + ':' + k, on = connected.has(key), d = r2((per[key] || 0) - est(s, k)), lock = lockOf(s, k);
+        if (lock) return '<div class="cx-card cx-l locked" data-key="' + key + '"><div class="cx-row"><span class="cx-ref">SPO-' + s.id + ' · Line ' + (k + 1) + '</span><span class="cx-lock">' + I.check + lock + '</span></div>' +
+          '<div class="cx-row"><span class="cx-desc">' + sl.desc + '</span><span class="cx-amt muted">' + money(est(s, k)) + '</span></div></div>';
         return '<div class="cx-card cx-l' + (on ? ' on' : '') + (sel && sel.side === 'l' && sel.key === key ? ' sel' : '') + '" data-key="' + key + '">' +
           '<div class="cx-row"><span class="cx-ref">SPO-' + s.id + ' · Line ' + (k + 1) + '</span><span class="cx-k">SPO estimate</span></div>' +
           '<div class="cx-row"><span class="cx-desc">' + sl.desc + '</span><span class="cx-amt muted">' + money(est(s, k)) + '</span></div>' + chips(s, k) +
@@ -195,7 +211,7 @@
           (C.ro ? '' : '<button class="cx-dot' + (on ? ' on' : '') + '" data-side="l" data-key="' + key + '" aria-label="Connect SPO-' + s.id + ' line ' + (k + 1) + '"></button>') + '</div>';
       }).join('') + '</div>').join('');
 
-    const opts = '<option value="">Connect to…</option>' + C.spos.map(s => '<optgroup label="SPO-' + s.id + '">' + s.lines.map((sl, k) => '<option value="' + s.id + ':' + k + '">Line ' + (k + 1) + ' · ' + sl.desc + ' · ' + money(est(s, k)) + '</option>').join('') + '</optgroup>').join('') + '<option value="none">Not on ' + (multi ? 'any SPO' : 'the SPO') + '…</option>';
+    const opts = '<option value="">Connect to…</option>' + C.spos.map(s => '<optgroup label="SPO-' + s.id + '">' + s.lines.map((sl, k) => lockOf(s, k) ? '' : '<option value="' + s.id + ':' + k + '">Line ' + (k + 1) + ' · ' + sl.desc + ' · ' + money(est(s, k)) + '</option>').join('') + '</optgroup>').join('') + '<option value="none">Not on ' + (multi ? 'any SPO' : 'the SPO') + '…</option>';
     const right = C.inv.lines.map((l, i) => {
       const st = status(l), key = 'r:' + i;
       const stateChip = { ok: '<span class="cx-state ok">' + I.check + (l.res === 'remove' ? 'Removed — not payable' : l.res === 'extra' ? 'One-time extra' : l.res === 'add' ? 'Added to SPO-' + l.resSpo : 'Mapped' + (l.maps.length > 1 ? ' · ' + l.maps.length + ' SPO lines' : '')) + '</span>',
@@ -249,7 +265,8 @@
     const vtxt = d => Math.abs(d) < 0.005 ? '$0.00' : (d > 0 ? '+' : '−') + money(Math.abs(d));
     let h = '<div class="ivt-table"><div class="ivt-row hd amt"><span></span><span class="ivt-amt-l">' + (multi ? 'SPO' : 'Amount') + '</span><span class="ivt-c">Estimate</span><span class="ivt-c ivt-ai">Invoice<em>Extracted by Scout AI</em></span><span class="ivt-c">Variance</span></div>';
     C.spos.forEach(s => { const o = ps[s.id];
-      h += row(multi ? 'SPO-' + s.id : 'Lines', (o.added ? 'Estimate ' + money(o.est) + ' + ' + money(o.added) + ' added' : 'Against the SPO estimate — never a $0 baseline') + (o.extra ? ' · ' + money(o.extra) + ' one-time extra' : ''), money(o.base), money(o.billed), vtxt(o.variance)); });
+      h += row(multi ? 'SPO-' + s.id : 'Lines', (o.added ? 'Estimate ' + money(o.est) + ' + ' + money(o.added) + ' added' : 'Against the estimate of the lines it covers — never a $0 baseline') + (o.extra ? ' · ' + money(o.extra) + ' one-time extra' : ''), money(o.base), money(o.billed), vtxt(o.variance));
+      if (o.restN && !C.ro) h += row((multi ? 'SPO-' + s.id + ' · n' : 'N') + 'ot on this invoice', o.restN + ' SPO line' + (o.restN === 1 ? '' : 's') + ' · another invoice, or close ' + (o.restN === 1 ? 'it' : 'them') + ' unbilled when you validate', money(o.rest), '—', '—'); });
     const removed = r2(C.inv.lines.filter(l => l.res === 'remove').reduce((a, l) => a + (l.amt || 0), 0));
     if (removed) h += row('Removed — not payable', '', '—', '−' + money(removed), '—');
     h += row('Sales tax', multi ? 'Invoice-level · split across SPOs by billed amount' : 'Invoice-level · not compared to line estimates', '—', money(C.inv.tax || 0), '—');

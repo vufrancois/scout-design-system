@@ -166,7 +166,7 @@
 
   function stepper(s) {
     const [done, active] = PROG[s.state];
-    const approvalSkipped = !s.ev.approvalReq;
+    const approvalSkipped = !s.ev.approvalReq, pp = SPO.progress(s);
     return '<div class="ls-stepper">' + STEPS.map(([label, actor, icon], i) => {
       let cls, cap = '', dot = icon, a = actor;
       if (s.state === 'rejected' && i === 3) { cls = 'halted'; dot = IC.x; cap = '<span class="ls-date">stopped</span>'; }
@@ -179,6 +179,7 @@
         cap = '<span class="ls-date">' + (a === 'you' || a === 'approver' ? 'your move' : 'in progress') + '</span>';
       } else cls = 'future';
       if (i === 2) cap += respTag(s);
+      if (i === 3 && pp.partial) cap += '<span class="ls-date">' + pp.billed + ' of ' + pp.n + ' lines</span>';
       return '<div class="ls-step ' + cls + '"><div class="ls-dot">' + dot + '</div><div class="ls-label">' + label + '</div>' + actorChip(a) + cap + '</div>' +
         (i < STEPS.length - 1 ? '<div class="ls-conn' + (i < done ? ' done' : '') + '"></div>' : '');
     }).join('') + '</div>';
@@ -203,16 +204,19 @@
       case 'approval': return st('action', IC.shield, 'Supervisor approval', (SPO.total(s) > SPO.APPROVAL_LIMIT ? 'Over ' + money(SPO.APPROVAL_LIMIT) : 'Over the GL budget') + ' — nothing goes to the vendor until a Supervisor approves it.', btn('Review in Approvals', "location.href='approval.html#SPO-" + s.id + "'", 'btn-primary', IC.shield));
       case 'rebid': { const o = SPO.get(s.rebidOf); return st('action', IC.swap, 'Rebid · choose a vendor and send', 'Same scope, lines and allocation as SPO-' + s.rebidOf + (o && o.cancel ? ', canceled because “' + o.cancel.reason + '”' : '') + '. ' + (o && o.ev.approved ? 'Its approval carries over unless the amount goes up.' : 'Pick a vendor to send it.'), btn('Choose vendor', 'openRebidSend()', 'btn-primary', IC.send)); }
       case 'rejected': return st('danger', IC.x, 'Vendor rejected · rebid with another vendor', s.reject && s.reject.by ? s.reject.by + ' recorded ' + v.name + '’s rejection on ' + SPO.fmtDate(s.ev.rejected) + '.' : v.name + ': “' + (s.reject ? s.reject.reason : '') + '”', (SPO.canEditResp(s) ? btn('Change their answer', 'openRecordResp()', '') : '') + btn('Cancel SPO', 'openCancel()', '') + btn('Rebid', 'openRebid()', 'btn-primary', IC.swap));
-      case 'invoice': if (s.disputed) return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Corrected invoice', 'You disputed ' + s.disputed.num + ': \u201C' + s.disputed.reason + '\u201D ' + v.name + ' is correcting and resubmitting it.', btn('Upload invoice', 'openUpload()', '', IC.upload));
+      case 'invoice': if (SPO.progress(s).partial && !s.disputed) { const p = SPO.progress(s), last = s.billed[s.billed.length - 1];
+          return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Next invoice', p.billed + ' of ' + p.n + ' lines invoiced on ' + s.billed.map(b => b.num).join(', ') + ' (' + (last.status === 'paid' ? 'paid ' + SPO.fmtDate(last.at.paid) : 'with Accounting') + '). Still to be invoiced: ' + p.openLines.map(i => s.lines[i].desc).join(' · ') + '.', btn('Close unbilled lines', 'openCloseLines()', '') + btn('Upload invoice', 'openUpload()', '', IC.upload)); }
+        if (s.disputed) return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Corrected invoice', 'You disputed ' + s.disputed.num + ': \u201C' + s.disputed.reason + '\u201D ' + v.name + ' is correcting and resubmitting it.', btn('Upload invoice', 'openUpload()', '', IC.upload));
         { const r = SPO.resp(s), ap = SPO.appt(s);
           if (ap && ap.status === 'countered') return st('action', IC.cal, v.name + ' proposed a new time', 'Was ' + SPO.fmtAppt(ap.prev) + '. Now ' + SPO.fmtAppt(ap) + '. Accept it, or propose another time.', btn('Propose another', "openTime('another')", '', IC.cal) + btn('Accept new time', 'acceptNewTime()', 'btn-primary', IC.check));
           if (r.kind === 'accepted') return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Invoice', (r.by === 'buyer' ? s.ack.by + ' recorded ' + v.name + '’s acceptance on ' : v.name + ' accepted on ') + SPO.fmtDate(s.ev.accepted) + '. Their invoice will arrive by email — or upload it here if they sent it to you.', (SPO.canEditResp(s) ? btn('Change their answer', 'openRecordResp()', '') : '') + btn('Upload invoice', 'openUpload()', '', IC.upload));
           return st('wait', IC.doc, 'Waiting on Vendor \u00B7 Invoice', 'PO sent to ' + v.email + ' on ' + SPO.fmtDate(s.ev.sent) + ' · no response from the vendor yet. You don’t need one to continue — upload their invoice when it arrives.', btn('I spoke to the vendor', 'openRecordResp()', '', IC.check) + btn('Upload invoice', 'openUpload()', '', IC.upload)); }
       case 'mapping': if (inv.extractFailed) return st('action', IC.warn, 'Invoice ' + inv.num + ' needs attention', 'Scout AI couldn\u2019t read its line items \u2014 retry the extraction or enter the lines from the PDF.', btn('Open invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
+        if ((s.billed || []).length) return st('action', IC.map, 'Map invoice ' + inv.num + ' · the next invoice', money(SPO.invTotal(s)) + ' invoiced · ' + SPO.progress(s).billed + ' of ' + s.lines.length + ' lines are already billed on ' + s.billed.map(b => b.num).join(', ') + ' — map this one to the lines still open.', btn('Map invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
         return st('action', IC.map, 'Map invoice ' + inv.num + ' to SPO lines', money(SPO.invTotal(s)) + ' invoiced against a ' + money(SPO.total(s)) + ' estimate — confirm each invoice line’s SPO line, GL and unit.', btn('Map invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
-      case 'ready': return st('action', IC.card, 'Send to Accounting', 'Invoice ' + inv.num + ' is mapped and validated — send the payment packet to Accounting.', btn('Send to Accounting', "location.hash='#" + s.id + "/accounting'", 'btn-primary', IC.send));
-      case 'accounting': return st('acct', IC.card, 'Waiting on Accounting · Payment', 'Sent on ' + SPO.fmtDate(s.ev.accounting) + ' with the PO, invoice and GL allocation. Accounting releases ' + money(SPO.invTotal(s)) + ' to ' + endDot(v.name));
-      case 'paid': return st('done', IC.flag, 'Paid', money(SPO.invTotal(s)) + ' released to ' + v.name + ' on ' + SPO.fmtDate(s.ev.paid) + '. Documents stay available for your records.');
+      case 'ready': return st('action', IC.card, 'Send to Accounting', 'Invoice ' + inv.num + ' is mapped and validated — send the payment packet to Accounting.' + (SPO.progress(s).open ? ' ' + SPO.progress(s).open + ' of ' + s.lines.length + ' lines aren’t invoiced yet, so SPO-' + s.id + ' then waits for the next invoice.' : ''), btn('Send to Accounting', "location.hash='#" + s.id + "/accounting'", 'btn-primary', IC.send));
+      case 'accounting': return st('acct', IC.card, 'Waiting on Accounting · Payment', 'Sent on ' + SPO.fmtDate(s.ev.accounting) + ' with the PO, invoice' + (SPO.invoicesOf(s).length > 1 ? 's' : '') + ' and GL allocation. Accounting releases ' + money(SPO.billedTotal(s)) + ' to ' + endDot(v.name));
+      case 'paid': return st('done', IC.flag, 'Paid', money(SPO.billedTotal(s)) + ' released to ' + v.name + ' on ' + SPO.fmtDate(s.ev.paid) + '. Documents stay available for your records.');
     }
     return '';
   }
@@ -247,7 +251,7 @@
         (!s.series && s.state !== 'rebid' ? '<button class="btn" onclick="location.href=\'spo-new.html#recurring-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + REP + '</span>Make recurring</button>' : '') +
         '<button class="btn" onclick="location.href=\'spo-new.html#clone-' + s.id + '\'" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + IC.copy + '</span>Clone SPO</button>' +
         (SPO.canRebid(s) && s.state !== 'rejected' ? '<button class="btn" onclick="openRebid()" style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;width:15px;height:15px">' + IC.swap + '</span>Rebid</button>' : '') +
-        (CANCELABLE.indexOf(s.state) >= 0 && s.state !== 'rejected' ? '<button class="btn btn-outline-rose" onclick="openCancel()">Cancel SPO</button>' : '') + '</div></div>';
+        (CANCELABLE.indexOf(s.state) >= 0 && s.state !== 'rejected' && !(s.billed || []).length ? '<button class="btn btn-outline-rose" onclick="openCancel()">Cancel SPO</button>' : '') + '</div></div>';
       main += taskStrip(s) + apptCard(s);
     }
 
@@ -255,11 +259,12 @@
 
     const est = SPO.total(s);
     main += '<div class="card"><div class="det-card-head hd"><div><h2>Line items</h2><div class="sub">GL code and unit for every dollar</div></div></div>' +
-      s.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(r2(l.qty * l.price)) + '</span>' + allocChips(l) + '</div>').join('') +
+      s.lines.map((l, k) => '<div class="spo-line' + (l.closed ? ' closed' : '') + '"><span class="sl-desc">' + l.desc + lineTag(s, k) + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(r2(l.qty * l.price)) + '</span>' + allocChips(l) + '</div>').join('') +
       '<div class="det-totals"><div class="tot-row grand"><span>SPO estimate</span><span>' + money(est) + '</span></div>' +
-      (s.invoice && (s.invoice.validated || ['ready', 'accounting', 'paid'].indexOf(s.state) >= 0) ? invoiceTotals(s) : '') + '</div></div>';
+      (SPO.progress(s).closedAmt ? '<div class="tot-row"><span>Closed unbilled · released from the budget</span><span>−' + money(SPO.progress(s).closedAmt) + '</span></div>' : '') +
+      (SPO.invoicesOf(s).some(r => r.validated) ? invoiceTotals(s) : '') + '</div></div>';
 
-    if (s.invoice) main += invoiceCard(s);
+    if (SPO.invoicesOf(s).length) main += invoiceCard(s);
 
     let side = '';
     if (s.state === 'rebid') side += '<div class="card"><div class="ven-card"><span class="ven-logo" style="border-style:dashed;background:none">?</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · to choose</div><div class="ven-name" style="margin-bottom:2px">Needs a vendor</div><div style="font-size:13px;color:var(--muted-foreground)">Was ' + v.name + ' on SPO-' + s.rebidOf + '</div></div></div></div>';
@@ -277,6 +282,7 @@
 
     const docs = [];
     if (s.ev.sent) docs.push(['Purchase Order SPO-' + s.id, 'PO', '', s.ev.sent]);
+    (s.billed || []).forEach(b => docs.push(['Invoice ' + b.num, 'Invoice', 'emerald', b.at.invoiced]));
     if (s.invoice && s.ev.invoiced) docs.push(['Invoice ' + s.invoice.num, 'Invoice', 'emerald', s.ev.invoiced]);
     if (s.ev.accounting) docs.push(['Payment packet', 'Sent to Accounting', 'violet', s.ev.accounting]);
     side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Documents</h2></div>' +
@@ -292,7 +298,8 @@
     document.getElementById('det-main').innerHTML = main;
     document.getElementById('det-side').innerHTML = side;
 
-    if (sub === 'cancel' && CANCELABLE.indexOf(s.state) >= 0) setTimeout(openCancel, 120);
+    if (sub === 'cancel' && CANCELABLE.indexOf(s.state) >= 0 && !(s.billed || []).length) setTimeout(openCancel, 120);
+    if (sub === 'close-lines' && s.state === 'invoice' && SPO.progress(s).partial) setTimeout(openCloseLines, 120);
     if ((sub === 'vendor' || sub === 'rebid') && SPO.canRebid(s)) setTimeout(openRebid, 120);
     if (sub === 'send' && s.state === 'rebid') setTimeout(openRebidSend, 120);
     if (sub === 'propose' && s.state === 'invoice') setTimeout(() => openTime('change'), 120);
@@ -302,20 +309,69 @@
     if (sub === 'time') setTimeout(() => { const c = document.getElementById('appt-card'); if (c) { c.scrollIntoView({ block: 'center', behavior: 'smooth' }); c.classList.add('flash'); setTimeout(() => c.classList.remove('flash'), 1600); } }, 150);
   }
 
+  /* Validated invoices against the estimate of the lines each one covers — with several invoices, summed. */
   function invoiceTotals(s) {
-    const inv = s.invoice, sub = SPO.invSubtotal(s), vr = r2(sub - SPO.total(s));
-    return '<div class="tot-row"><span>Invoice ' + inv.num + ' · subtotal</span><span>' + money(sub) + '</span></div>' +
+    const recs = SPO.invoicesOf(s).filter(r => r.validated), many = recs.length > 1;
+    let sub = 0, cov = 0, tax = 0;
+    recs.forEach(r => { sub += SPO.invSubtotal({ invoice: r }); cov += SPO.invCovers(r).reduce((a, k) => a + s.lines[k].qty * s.lines[k].price, 0); tax += r.tax || 0; });
+    sub = r2(sub); tax = r2(tax); const vr = r2(sub - cov);
+    return '<div class="tot-row"><span>' + (many ? 'Invoiced on ' + recs.map(r => r.num).join(', ') : 'Invoice ' + recs[0].num) + ' · subtotal</span><span>' + money(sub) + '</span></div>' +
       (vr ? '<div class="tot-row"><span>Variance accepted at mapping</span><span style="color:#b45309">' + (vr > 0 ? '+' : '−') + money(Math.abs(vr)) + '</span></div>' : '') +
-      (inv.tax ? '<div class="tot-row"><span>Sales tax</span><span>' + money(inv.tax) + '</span></div>' : '') +
-      '<div class="tot-row grand"><span>Invoice total</span><span>' + money(SPO.invTotal(s)) + '</span></div>';
+      (tax ? '<div class="tot-row"><span>Sales tax</span><span>' + money(tax) + '</span></div>' : '') +
+      '<div class="tot-row grand"><span>' + (many ? 'Invoiced total' : 'Invoice total') + '</span><span>' + money(SPO.billedTotal({ billed: recs.filter(r => r !== s.invoice), invoice: recs.indexOf(s.invoice) >= 0 ? s.invoice : null })) + '</span></div>';
   }
 
+  /* Line tag: which invoice billed it, still open, or closed unbilled (partial invoicing, TKT-SPO-59). Shown once an
+     invoice exists, so a fully billed one-invoice SPO reads the same as before plus its invoice number. */
+  function lineTag(s, k) {
+    if (!SPO.invoicesOf(s).length && !s.lines[k].closed) return '';
+    const x = SPO.lineState(s, k);
+    if (x.kind === 'billed') return '<span class="ln-tag billed">' + IC.check + x.num + '</span>';
+    if (x.kind === 'mapping') return '<span class="ln-tag mapping">On ' + x.num + ' · to map</span>';
+    if (x.kind === 'closed') return '<span class="ln-tag closed" title="“' + x.reason.replace(/"/g, '&quot;') + '” · ' + x.by + '">Closed unbilled</span>';
+    return '<span class="ln-tag open">Not invoiced yet</span>';
+  }
+  /* One row per invoice: earlier ones (s.billed) with their own status, then the one in hand. */
   function invoiceCard(s) {
-    const inv = s.invoice, mapped = s.state !== 'mapping';
-    return '<div class="card"><div class="det-card-head hd"><h2>Invoice</h2>' +
-      '<span class="status-dot-item"><span class="status-dot ' + (mapped ? 'dot-approved' : 'dot-pending') + '"></span><span class="status-dot-label">' + (mapped ? 'Mapped & validated' : 'Needs mapping') + '</span></span></div>' +
-      '<div class="doc-row emerald" style="margin-top:10px">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + inv.num + ' · ' + inv.file + '</div><div class="doc-date">Received ' + SPO.fmtDate(s.ev.invoiced) + ' · PDF, ' + SPO.fileSize(SPO.invSize(inv)) + ' · ' + inv.lines.length + ' line' + (inv.lines.length === 1 ? '' : 's') + ' · ' + money(SPO.invTotal(s)) + '</div></div>' +
-      (mapped ? '<button class="btn btn-sm" onclick="openInvoiceMap(true)">View mapping</button>' : '<button class="btn btn-primary btn-sm" onclick="location.hash=\'#' + s.id + '/invoice\'">Map invoice</button>') + '</div></div>';
+    const recs = SPO.invoicesOf(s), p = SPO.progress(s), many = recs.length > 1 || p.partial || p.closed > 0;
+    const stOf = r => r !== s.invoice ? r.status : s.state;
+    const chip = k => { const st = { mapping: ['dot-pending', 'Needs mapping'], ready: ['dot-pending', 'Validated · ready to send'], accounting: ['dot-violet', 'With Accounting'], paid: ['dot-approved', 'Paid'] }[k] || ['dot-approved', 'Mapped & validated'];
+      return '<span class="status-dot-item"><span class="status-dot ' + st[0] + '"></span><span class="status-dot-label">' + st[1] + '</span></span>'; };
+    const row = r => { const k = stOf(r), cov = SPO.invCovers(r), cur = r === s.invoice;
+      return '<div class="doc-row emerald" style="margin-top:10px">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + r.num + ' · ' + r.file + '</div><div class="doc-date">Received ' + SPO.fmtDate(cur ? s.ev.invoiced : r.at.invoiced) + ' · ' + (many ? 'Line' + (cov.length === 1 ? ' ' : 's ') + cov.map(i => i + 1).join(', ') + ' · ' : 'PDF, ' + SPO.fileSize(SPO.invSize(r)) + ' · ' + r.lines.length + ' line' + (r.lines.length === 1 ? '' : 's') + ' · ') + money(SPO.invTotal({ invoice: r })) + '</div></div>' +
+        (many ? chip(k) : '') + (k === 'mapping' ? '<button class="btn btn-primary btn-sm" onclick="location.hash=\'#' + s.id + '/invoice\'">Map invoice</button>' : '<button class="btn btn-sm" onclick="openInvoiceMap(true, \'' + r.num + '\')">View mapping</button>') + '</div>'; };
+    return '<div class="card"><div class="det-card-head hd"><div><h2>' + (many ? 'Invoices' : 'Invoice') + '</h2>' + (many ? '<div class="sub">' + p.billed + ' of ' + p.n + ' lines invoiced' + (p.closed ? ' · ' + p.closed + ' closed unbilled' : '') + (p.open ? ' · ' + p.open + ' still open' : '') + '</div>' : '') + '</div>' +
+      (many ? (s.state === 'invoice' && p.open ? '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:7px" onclick="openUpload()"><span style="display:inline-flex;width:14px;height:14px">' + IC.upload + '</span>Add invoice</button>' : '') : chip(stOf(s.invoice))) + '</div>' +
+      recs.map(row).join('') + '</div>';
+  }
+
+  /* Close unbilled lines (TKT-SPO-59): the vendor won't bill them. Releases their budget; with nothing left open
+     the SPO follows its invoices to With Accounting or Paid. */
+  let closeSel = [];
+  function openCloseLines() {
+    const s = S, p = SPO.progress(s); closeSel = p.openLines.slice();
+    modal('close-ov', '<div class="val-modal" style="width:520px"><div class="val-head"><h2>Close unbilled lines on SPO-' + s.id + '?</h2><p>For work ' + ven(s).name + ' won’t invoice — it wasn’t done, or was dropped. Closed lines stop waiting for an invoice and release their budget.</p></div>' +
+      '<div class="val-body" style="padding:16px 24px"><div id="close-list">' + closeList() + '</div>' +
+      '<label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin:14px 0 8px">Why won’t these be billed? <span class="req-chip">Required</span></label>' +
+      '<textarea class="claim-note" id="close-reason" maxlength="300" placeholder="e.g. The resident renewed, so the carpet in 0107 wasn’t replaced." oninput="closeOk()"></textarea></div>' +
+      '<div class="val-foot"><span id="close-sum" style="font-size:13px;color:var(--muted-foreground);margin-right:auto"></span><button class="btn" onclick="closeModal(\'close-ov\')">Cancel</button><button class="btn btn-primary" id="close-go" disabled onclick="confirmCloseLines()">Close lines</button></div></div>');
+    closeOk();
+  }
+  function closeList() {
+    return SPO.progress(S).openLines.map(k => { const l = S.lines[k], on = closeSel.indexOf(k) >= 0;
+      return '<label class="check-row" style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer"><input type="checkbox"' + (on ? ' checked' : '') + ' onchange="closeSel = this.checked ? closeSel.concat([' + k + ']) : closeSel.filter(x => x !== ' + k + '); closeOk()"><span style="flex:1">Line ' + (k + 1) + ' · ' + l.desc + '</span><b>' + money(r2(l.qty * l.price)) + '</b></label>'; }).join('');
+  }
+  function closeOk() {
+    const r = (document.getElementById('close-reason') || {}).value || '', amt = r2(closeSel.reduce((a, k) => a + S.lines[k].qty * S.lines[k].price, 0));
+    document.getElementById('close-go').disabled = !closeSel.length || !r.trim();
+    document.getElementById('close-go').textContent = 'Close ' + closeSel.length + ' line' + (closeSel.length === 1 ? '' : 's');
+    document.getElementById('close-sum').textContent = closeSel.length ? money(amt) + ' released from the budget' : 'Choose at least one line';
+  }
+  function confirmCloseLines() {
+    const s = S, reason = document.getElementById('close-reason').value.trim(); if (!reason || !closeSel.length) return;
+    SPO.closeLines(s, closeSel.slice().sort((a, b) => a - b), reason, 'Alicia Grant');
+    SPO.save(s); closeModal('close-ov'); renderPage();
+    showToast(closeSel.length + ' line' + (closeSel.length === 1 ? '' : 's') + ' closed unbilled', s.state === 'invoice' ? 'SPO-' + s.id + ' still waits for an invoice for its other lines.' : 'Nothing left to invoice — SPO-' + s.id + ' is ' + SPO.STATES[s.state].label + '.');
   }
 
   /* ---------- modals (val-modal pattern) ---------- */
@@ -606,7 +662,7 @@
   function runUpload() {
     const s = S, num = upName.replace('.pdf', '');
     s.invoice = { num, date: SPO.TODAY, file: upName, size: upSize, tax: 0, ship: 0,
-      lines: s.lines.map((l, i) => ({ desc: l.desc, amt: r2(l.qty * l.price), maps: [{ line: i, amt: r2(l.qty * l.price) }], conf: 'high' })) };
+      lines: SPO.progress(s).openLines.map(i => { const l = s.lines[i]; return { desc: l.desc, amt: r2(l.qty * l.price), maps: [{ line: i, amt: r2(l.qty * l.price) }], conf: 'high' }; }) }; /* the demo vendor bills what's still open */
     s.state = 'mapping'; s.ev.invoiced = SPO.now(); delete s.disputed;
     SPO.log(s, 'Invoice received', num + ' · ' + money(SPO.invTotal(s)) + ' · uploaded by Alicia Grant');
     SPO.save(s); closeModal('upload-ov');
@@ -616,9 +672,11 @@
   /* ===================== Invoice mapping — Line Connector board (shared with standalone intake, spo-map.js) ===================== */
   let M = null, MC = null, mapRO = false, retrying = false, mapView = 'lines', attest = false;
   const clone = o => JSON.parse(JSON.stringify(o));
-  function openInvoiceMap(readOnly) {
-    mapRO = !!readOnly || S.state !== 'mapping'; retrying = false; mapView = 'lines'; attest = false;
-    M = CX.prepare(clone(!mapRO && S.mapDraft ? S.mapDraft : S.invoice), S.id, mapRO);
+  let mapRec = null, restMode = 'expect', restReason = '';
+  function openInvoiceMap(readOnly, num) {
+    mapRec = num ? SPO.invoicesOf(S).find(r => r.num === num) || S.invoice : S.invoice;
+    mapRO = !!readOnly || S.state !== 'mapping' || mapRec !== S.invoice; retrying = false; mapView = 'lines'; attest = false; restMode = 'expect'; restReason = '';
+    M = CX.prepare(clone(!mapRO && S.mapDraft ? S.mapDraft : mapRec), S.id, mapRO);
     MC = CX.use({ spos: [S], inv: M, ro: mapRO, edit: false, onChange: renderMapTk,
       /* Itemized invoices are policy: a combined cross-GL line goes back to the vendor with the reason filled in. */
       onItemize: i => { renderMapTk(); openInvDispute('Please itemize “' + M.lines[i].desc + '” (' + money(M.lines[i].amt) + ') by GL code — it combines work booked to different GL codes, so we can’t split it ourselves.'); } });
@@ -663,15 +721,28 @@
       const seg = '<div class="cx-viewbar"><div class="mode-seg"><button class="' + (mapView === 'lines' ? 'active' : '') + '" onclick="mapView = \'lines\'; renderMapTk()">' + IC.map + '<span>Line items</span></button><button class="' + (mapView === 'pdf' ? 'active' : '') + '" onclick="mapView = \'pdf\'; renderMapTk()">' + IC.doc + '<span>PDF</span></button></div><span class="ivt-sub" style="margin:0">' + M.file + ' · ' + SPO.fileSize(SPO.invSize(M)) + ' · ' + money(SPO.invTotal({ invoice: M })) + '</span></div>';
       body = seg + (mapView === 'pdf' ? '<div class="cx-pdfview"><pre>' + pdfLines(s, M) + '</pre></div>'
         : CX.board() + '<h3 style="margin:26px 0 4px;font-size:15px">Totals</h3><p class="ivt-sub">Lines compare to the SPO estimate; tax and shipping are invoice-level.</p>' + CX.totals() +
-          (mapRO ? '' : '<div class="cx-attest' + (all ? '' : ' off') + '"><b>' + done + ' of ' + n + ' invoice items connected</b><label><input type="checkbox"' + (attest && all ? ' checked' : '') + (all ? '' : ' disabled') + ' onchange="attest = this.checked; renderMapTk()"> I checked the work and matched every invoice item.</label><span>' + (all ? 'Validating sends nothing yet — it makes SPO-' + s.id + ' ready for Accounting.' : 'Match or resolve each item, then check the box.') + '</span></div>'));
+          (mapRO ? '' : restBlock()) + (mapRO ? '' : '<div class="cx-attest' + (all ? '' : ' off') + '"><b>' + done + ' of ' + n + ' invoice items connected</b><label><input type="checkbox"' + (attest && all ? ' checked' : '') + (all ? '' : ' disabled') + ' onchange="attest = this.checked; renderMapTk()"> I checked the work and matched every invoice item.</label><span>' + (all ? 'Validating sends nothing yet — it makes SPO-' + s.id + ' ready for Accounting.' : 'Match or resolve each item, then check the box.') + '</span></div>'));
       foot = mapRO
-        ? '<span class="ivt-sub" style="margin:0">Validated ' + SPO.fmtDate(s.ev.mapped) + ' by Alicia Grant</span><button class="btn" style="margin-left:auto" onclick="closeMapTk()">Close</button>'
-        : '<span class="ivt-sub" style="margin:0">' + done + ' of ' + n + ' invoice items connected · progress saves automatically</span><button class="btn btn-danger" style="margin-left:auto" onclick="openInvDispute()">Dispute invoice</button><button class="btn btn-primary"' + (all && attest ? '' : ' disabled') + ' onclick="validateMapping()">Validate mapping</button>';
+        ? '<span class="ivt-sub" style="margin:0">Validated ' + SPO.fmtDate(mapRec !== s.invoice && mapRec.at ? mapRec.at.mapped : s.ev.mapped) + ' by Alicia Grant</span><button class="btn" style="margin-left:auto" onclick="closeMapTk()">Close</button>'
+        : '<span class="ivt-sub" style="margin:0">' + done + ' of ' + n + ' invoice items connected · progress saves automatically</span><button class="btn btn-danger" style="margin-left:auto" onclick="openInvDispute()">Dispute invoice</button><button class="btn btn-primary"' + (all && attest && (restMode !== 'close' || !restLines().length || restReason.trim()) ? '' : ' disabled') + ' onclick="validateMapping()">Validate mapping</button>';
     }
     tk.innerHTML = head + '<div class="ivt-body cx-mode">' + body + '</div><div class="ivt-foot">' + foot + '</div>';
     if (!M.extractFailed && mapView === 'lines') { CX.mount(); requestAnimationFrame(() => CX.draw()); }
     /* Autosave: work in progress survives closing the takeover — no Save draft button (audit SPO-31/37) */
     if (!mapRO) { s.mapDraft = clone(M); SPO.save(s); }
+  }
+  /* SPO lines this invoice doesn't cover (and no earlier invoice billed): wait for another invoice, or close them now. */
+  function restLines() {
+    return SPO.progress(S).openLines.filter(k => !M.lines.some(il => !il.res && il.maps.some(m => m.line === k)));
+  }
+  function restBlock() {
+    const r = restLines(); if (!r.length) return '';
+    const amt = r2(r.reduce((a, k) => a + S.lines[k].qty * S.lines[k].price, 0));
+    const opt = (k, title, sub) => '<button class="lm-opt' + (restMode === k ? ' sel' : '') + '" onclick="restMode = \'' + k + '\'; renderMapTk()"><span class="rd"></span><span><b>' + title + '</b><span class="s">' + sub + '</span></span></button>';
+    return '<div class="cx-rest"><b>' + r.length + ' SPO line' + (r.length === 1 ? ' isn’t' : 's aren’t') + ' on this invoice · ' + money(amt) + '</b><div class="cx-k" style="margin:2px 0 10px">' + r.map(k => 'Line ' + (k + 1) + ' · ' + S.lines[k].desc).join(' · ') + '</div>' +
+      opt('expect', 'Expect another invoice', 'SPO-' + S.id + ' waits in Open for the vendor’s next invoice once this one goes to Accounting') +
+      opt('close', 'Close ' + (r.length === 1 ? 'it' : 'them') + ' unbilled', 'The vendor won’t bill ' + (r.length === 1 ? 'it' : 'them') + ' · releases ' + money(amt) + ' from the budget') +
+      (restMode === 'close' ? '<div style="margin-left:26px"><textarea class="claim-note" style="min-height:52px" placeholder="Why won’t these be billed?" oninput="restReason = this.value; document.querySelector(\'.ivt-foot .btn-primary\').disabled = !(attest && CX.allResolved() && restReason.trim())">' + restReason + '</textarea></div>' : '') + '</div>';
   }
   function mRetry() {
     retrying = true; renderMapTk();
@@ -687,12 +758,16 @@
       else if (l.res === 'extra') { l.extra = { gl: l.resGl, unit: l.resUnit }; SPO.log(s, 'Extra charge accepted', l.desc + ' · ' + money(l.amt) + ' · ' + l.resGl + ' ' + SPO.glName(l.resGl)); }
     });
     M.lines.forEach(l => (l.maps || []).forEach(m => { delete m.sug; }));
+    const rest = restLines();
     s.invoice = Object.assign(M, { validated: true, extractFailed: false }); delete s.mapDraft;
-    const d = r2(SPO.invSubtotal(s) - SPO.total(s));
+    if (rest.length && restMode === 'close') SPO.closeLines(s, rest, restReason.trim(), 'Alicia Grant');
+    const covEst = r2(SPO.invCovers(s.invoice).reduce((a, k) => a + s.lines[k].qty * s.lines[k].price, 0) + s.invoice.lines.filter(l => l.extra && l.status !== 'removed').reduce((a, l) => a + l.amt, 0));
+    const d = r2(SPO.invSubtotal(s) - covEst);
     s.state = 'ready'; s.ev.mapped = SPO.now();
-    SPO.log(s, 'Invoice mapped & validated', M.lines.length + ' line' + (M.lines.length === 1 ? '' : 's') + (Math.abs(d) >= 0.005 ? ' · ' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + ' variance accepted' : ' · on estimate'), true);
+    const pv = SPO.progress(s);
+    SPO.log(s, 'Invoice mapped & validated', s.invoice.num + ' · ' + M.lines.length + ' line' + (M.lines.length === 1 ? '' : 's') + (pv.open ? ' · ' + pv.open + ' SPO line' + (pv.open === 1 ? '' : 's') + ' expected on another invoice' : '') + (Math.abs(d) >= 0.005 ? ' · ' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + ' variance accepted' : ' · on estimate'), true);
     SPO.save(s); closeMapTk(); renderPage();
-    showToast('Invoice ' + s.invoice.num + ' validated', 'SPO-' + s.id + ' is ready for Accounting.');
+    showToast('Invoice ' + s.invoice.num + ' validated', 'SPO-' + s.id + ' is ready for Accounting.' + (pv.open ? ' ' + pv.open + ' line' + (pv.open === 1 ? '' : 's') + ' wait for the next invoice.' : ''));
   }
 
   function openInvDispute(prefill) {
@@ -755,10 +830,11 @@
       '<div class="val-foot"><span style="font-size:13px;color:var(--muted-foreground);margin-right:auto">' + money(SPO.invTotal(s)) + ' · ' + s.invoice.num + '</span><button class="btn" onclick="closeModal(\'pack-ov\')">Cancel</button><button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendToAccounting()"><span style="display:inline-flex;width:15px;height:15px">' + IC.send + '</span>Send to Accounting</button></div></div>');
   }
   function sendToAccounting() {
-    const s = S; s.state = 'accounting'; s.ev.accounting = SPO.now();
-    SPO.log(s, 'Sent to Accounting', 'Packet: PO, invoice ' + s.invoice.num + ', GL allocation · ' + money(SPO.invTotal(s)));
+    const s = S, amt = SPO.invTotal(s), num = s.invoice.num; s.state = 'accounting'; s.ev.accounting = SPO.now();
+    SPO.log(s, 'Sent to Accounting', 'Packet: PO, invoice ' + num + ', GL allocation · ' + money(amt));
+    const waits = SPO.afterSend(s);
     SPO.save(s); closeModal('pack-ov'); renderPage();
-    showToast('Sent to Accounting', money(SPO.invTotal(s)) + ' for ' + ven(s).name + ' — SPO-' + s.id + ' is with Accounting.');
+    showToast('Sent to Accounting', money(amt) + ' for ' + ven(s).name + (waits ? ' — SPO-' + s.id + ' now waits for the next invoice.' : ' — SPO-' + s.id + ' is with Accounting.'));
   }
 
   function copyNum() { showToast('Copied', 'SPO-' + S.id); }

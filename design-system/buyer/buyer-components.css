@@ -1956,7 +1956,7 @@
 /* ===== Shared-invoice groups on the SPO list, Invoices and Closed tabs (10/16/2026, TKT-SPO-58) =====
    The invoice heads the group; its SPOs sit under it on a rail. No SPO is drawn as the parent. */
 .buyer .grp-toggle { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: var(--foreground); cursor: pointer; margin-left: auto; margin-right: 12px; white-space: nowrap; }
-.buyer .tbl .cell-sub { display: block; font-size: 12px; font-weight: 400; color: var(--muted-foreground); font-family: var(--font-sans, inherit); margin-top: 2px; }
+.buyer .tbl .cell-sub { display: block; font-size: 12px; font-weight: 400; color: var(--muted-foreground); font-family: Inter, -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif; letter-spacing: 0; margin-top: 2px; }
 .buyer .tbl tbody tr.inv-group td { background: var(--surface-soft, #f8f9fa); border-top: 1px solid var(--border); }
 .dark .buyer .tbl tbody tr.inv-group td, .buyer.dark .tbl tbody tr.inv-group td { background: var(--muted); }
 .buyer .tbl tbody tr.inv-member > td:nth-child(2) { position: relative; padding-left: 40px; }
@@ -1969,3 +1969,22 @@
 .buyer .expander.inv-caret svg { transform: rotate(-90deg); }
 .buyer .expander.inv-caret.open svg { transform: none; }
 .buyer .tbl tbody tr.inv-group.folded td { border-bottom: 1px solid var(--border); }
+
+/* ===== Partial invoicing (10/16/2026, TKT-SPO-59): one SPO billed across several invoices =====
+   Line tags say which invoice billed each line; open lines wait for the next invoice; closed lines are struck. */
+.buyer .ln-tag { display: inline-flex; align-items: center; gap: 4px; margin-left: 10px; padding: 1px 8px; border-radius: var(--radius-pill); font-size: 11.5px; font-weight: 600; vertical-align: 2px; white-space: nowrap; font-family: var(--font-sans, inherit); }
+.buyer .ln-tag svg { width: 11px; height: 11px; }
+.buyer .ln-tag.billed { background: var(--emerald-soft); color: var(--emerald); }
+.buyer .ln-tag.mapping { background: var(--amber-soft, #fef3c7); color: #b45309; }
+.buyer .ln-tag.open { background: var(--muted); color: var(--muted-foreground); }
+.buyer .ln-tag.closed { background: var(--muted); color: var(--muted-foreground); text-decoration: line-through; }
+.buyer .spo-line.closed .sl-desc, .buyer .spo-line.closed .sl-total, .buyer .spo-line.closed .sl-qty { color: var(--muted-foreground); }
+.buyer .spo-line.closed .sl-total { text-decoration: line-through; }
+.buyer .row-flag.info { color: var(--muted-foreground); }
+.buyer .row-flag.info::before { background: var(--sky); }
+.dark .buyer .row-flag.info, .buyer.dark .row-flag.info { color: var(--muted-foreground); }
+.buyer .cx-card.cx-l.locked { background: var(--muted); border-style: dashed; opacity: .8; }
+.buyer .cx-lock { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; color: var(--emerald); }
+.buyer .cx-lock svg { width: 12px; height: 12px; }
+.buyer .cx-rest { margin-top: 18px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md, 10px); background: var(--card); max-width: 760px; }
+.buyer .cx-rest .lm-opt { margin-top: 6px; }

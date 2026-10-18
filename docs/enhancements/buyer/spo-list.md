@@ -92,3 +92,30 @@ Gallery **Buyer App · Service POs** · design-doc **Service POs (SPO)** + **SPO
 - [ ] With 4 tiles/cards the grids are 2×2 on desktop and 1 column on mobile.
 **Audit findings:** SPO-33, SPO-34
 **Files:** `buyer/home.html`, `buyer/buyer-components.css` (`.cols-4`)
+
+## Addendum · Group by invoice (10/16/2026)
+
+**Why:** team feedback: show which SPOs are linked to each other. "Linked" means **by invoice**: one vendor invoice that covers several SPOs. The team's reference nested SPOs under a "parent" SPO with ⊟/⊞ toggles. We kept the idea and changed the shape: the **invoice** is the parent, because no SPO is the parent of another, and the line-items ⊞ keeps its one meaning.
+
+**What shipped**
+- **Invoices and Closed tabs group SPOs by invoice**, on by default, with a **Group by invoice** switch beside search (remembered per viewer; hidden on Open, where nothing is invoiced yet).
+- **Invoice heading row:** invoice number, "Shared invoice · 3 SPOs" (or "Invoice · 1 SPO"), property, vendor, invoice total, combined status ("Mixed" when the SPOs differ, e.g. one sent to Accounting), "Invoiced MM/DD/YYYY" and an Invoice PDF button. Every invoiced SPO sits under its invoice, one-SPO invoices included, so the grouping reads the same on every row (Vu chose this over showing the invoice number only on single rows). Canceled SPOs with no invoice stay plain rows.
+- **SPO rows** sit under the heading on a connector rail, each showing its share ("$245.25 · Share · 1 of 3") or "Full invoice"; the Total column shows the invoiced amount, not the estimate. Their ⊞ still opens line items.
+- **Fold:** a chevron on the heading (down = open, right = folded) hides its SPOs; folds survive sort, filter and paging.
+- **Paging and counts:** a group is one row for paging and never splits; tab counts stay in SPOs. Sorting moves whole groups (by invoice total, latest created, highest SPO number); SPOs inside stay in SPO order. Filters apply per SPO, and the heading says "1 hidden by filters".
+- **Seeds:** INV-CC-2607 (Crescent Cleaning, SPO-839/840/841, $757.55 with tax), INV-30377 (Pride Carpet Care, SPO-837/838), INV-DE-0815 (Delta Electric, SPO-835/836, Ready for Accounting).
+
+**Follow-ups (not built):** invoice labels on the Open tab, a Shared invoice card on the SPO page, search by invoice number, Send all to Accounting on a shared invoice's heading.
+
+### TKT-SPO-58 · Group SPOs by invoice on the Invoices and Closed tabs
+**Summary:** SPOs billed on the same vendor invoice are grouped under that invoice, so the team can see which SPOs are linked and what each was billed.
+**Acceptance criteria:**
+- [ ] On the Invoices and Closed tabs, every invoiced SPO sits under a heading row for its invoice: number, "Shared invoice · n SPOs" or "Invoice · 1 SPO", property, vendor, invoice total, status (or "Mixed"), invoice date, Invoice PDF.
+- [ ] Each SPO row under it shows its share of the invoice (with its tax share) and "Share · i of n", or "Full invoice"; the shares add up to the invoice total.
+- [ ] SPOs with no invoice are plain rows. The Open tab never groups.
+- [ ] A chevron on the heading folds and unfolds its SPOs; the fold survives sorting, filtering and paging.
+- [ ] A group counts as one row for paging and never splits across pages. Tab and card counts stay in SPOs.
+- [ ] Sorting moves whole groups; filters apply per SPO and the heading notes how many are hidden.
+- [ ] A Group by invoice switch turns grouping off (flat rows); the choice is remembered per viewer.
+**Backend / data:** an invoice id shared by the SPOs it covers (today `invoice.shared = { total, spos, idx }`), the invoice total, and each SPO's share including tax.
+**Files:** `buyer/spos.html` (units, `invRow`, `toggleInv`, `toggleGroupInv`), `buyer/spo-data.js` (seeds 835–841), `buyer/buyer-components.css` (`.inv-group`, `.inv-member`, `.inv-tree`, `.inv-caret`, `.grp-toggle`, `.cell-sub`)

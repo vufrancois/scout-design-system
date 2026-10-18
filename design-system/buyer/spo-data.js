@@ -182,6 +182,41 @@
       invoice: { num: 'INV-3307', date: '2026-07-22', file: 'INV-3307.pdf', tax: 0, ship: 0, validated: true,
         lines: [{ desc: 'Make-ready clean, 1 BR — Unit 110', amt: 150, maps: [{ line: 0, amt: 150 }], conf: 'high' }] },
       ev: { created: '2026-07-14 09:10', sent: '2026-07-14 09:11', accepted: '2026-07-14 12:00', invoiced: '2026-07-22 08:40', mapped: '2026-07-23 14:15', accounting: '2026-07-23 14:20', paid: '2026-07-30 11:00' } },
+    /* Partial invoicing (10/16/2026, TKT-SPO-59): one SPO billed across several invoices. s.billed[] keeps the
+       earlier invoices with their own status; s.invoice is the one in hand. 833 waits in Open for its second
+       invoice (the carpet lines); 834's second invoice is in, waiting to be mapped. */
+    { id: 834, state: 'mapping', prop: 'lonestar', v: 'AH', by: 'Alicia Grant', period: 'Jul 2026',
+      scope: 'Preventive maintenance on the Building 01 and 02 air handlers, plus smart thermostats in four units.',
+      lines: [L('Air handler service, Bldg 01', 1, 600, [A('6115', 'COMMON', 600)]), L('Air handler service, Bldg 02', 1, 600, [A('6115', 'COMMON', 600)]),
+        L('Smart thermostat install', 4, 90, [A('6115', '0203', 90), A('6115', '0204', 90), A('6115', '0205', 90), A('6115', '0206', 90)])],
+      billed: [{ num: 'INV-AH-0809', date: '2026-08-09', file: 'INV-AH-0809.pdf', tax: 0, ship: 0, validated: true, status: 'accounting',
+        at: { invoiced: '2026-08-09 14:00', mapped: '2026-08-11 10:00', accounting: '2026-08-11 10:05' },
+        lines: [{ desc: 'Air handler PM — Bldg 01', amt: 600, maps: [{ line: 0, amt: 600 }], conf: 'high' }, { desc: 'Air handler PM — Bldg 02', amt: 600, maps: [{ line: 1, amt: 600 }], conf: 'high' }] }],
+      invoice: { num: 'INV-AH-0821', date: '2026-08-21', file: 'INV-AH-0821.pdf', tax: 0, ship: 0,
+        lines: [{ desc: 'Smart thermostats installed — Units 203, 204, 205, 206', amt: 360, maps: [{ line: 2, amt: 360 }], conf: 'high' }] },
+      ev: { created: '2026-07-28 08:30', sent: '2026-07-28 08:31', accepted: '2026-07-28 12:00', invoiced: '2026-08-21 15:00' },
+      log: [{ at: '2026-07-28 08:30', t: 'SPO created', sub: 'by Alicia Grant' }, { at: '2026-07-28 08:31', t: 'Sent to vendor', sub: 'PO emailed to dispatch@acadianahvac.example' },
+        { at: '2026-07-28 12:00', t: 'Vendor accepted', sub: 'Acadiana HVAC', hi: true },
+        { at: '2026-08-09 14:00', t: 'Invoice received', sub: 'INV-AH-0809 · $1,200.00 · 2 of 3 lines' },
+        { at: '2026-08-11 10:00', t: 'Invoice mapped & validated', sub: 'INV-AH-0809 · 2 of 3 lines · the rest expected on another invoice', hi: true },
+        { at: '2026-08-11 10:05', t: 'Sent to Accounting', sub: 'Packet: PO, invoice INV-AH-0809, GL allocation · $1,200.00' },
+        { at: '2026-08-11 10:05', t: 'Waiting on the next invoice', sub: '1 of 3 lines not invoiced yet · Smart thermostat install' },
+        { at: '2026-08-21 15:00', t: 'Invoice received', sub: 'INV-AH-0821 · $360.00 · the next invoice' }] },
+    { id: 833, state: 'invoice', prop: 'cypress', v: 'MR', by: 'Alicia Grant', period: 'Jul 2026',
+      scope: 'Turn two vacant units: interior paint and carpet replacement in 0106 and 0107.',
+      lines: [L('Interior paint, unit 0106', 1, 400, [A('6140', '0106', 400)]), L('Interior paint, unit 0107', 1, 400, [A('6140', '0107', 400)]),
+        L('Carpet replacement, unit 0106', 1, 650, [A('6025', '0106', 650)]), L('Carpet replacement, unit 0107', 1, 650, [A('6025', '0107', 650)])],
+      billed: [{ num: 'INV-MR-0812', date: '2026-08-12', file: 'INV-MR-0812.pdf', tax: 0, ship: 0, validated: true, status: 'paid',
+        at: { invoiced: '2026-08-12 10:30', mapped: '2026-08-13 09:00', accounting: '2026-08-13 09:05', paid: '2026-08-20 12:00' },
+        lines: [{ desc: 'Interior paint — Unit 106', amt: 400, maps: [{ line: 0, amt: 400 }], conf: 'high' }, { desc: 'Interior paint — Unit 107', amt: 400, maps: [{ line: 1, amt: 400 }], conf: 'high' }] }],
+      ev: { created: '2026-07-27 09:00', sent: '2026-07-27 09:01', accepted: '2026-07-27 13:00' },
+      log: [{ at: '2026-07-27 09:00', t: 'SPO created', sub: 'by Alicia Grant' }, { at: '2026-07-27 09:01', t: 'Sent to vendor', sub: 'PO emailed to turns@southernmakeready.example' },
+        { at: '2026-07-27 13:00', t: 'Vendor accepted', sub: 'Southern Make-Ready Co.', hi: true },
+        { at: '2026-08-12 10:30', t: 'Invoice received', sub: 'INV-MR-0812 · $800.00 · 2 of 4 lines' },
+        { at: '2026-08-13 09:00', t: 'Invoice mapped & validated', sub: 'INV-MR-0812 · 2 of 4 lines · the rest expected on another invoice', hi: true },
+        { at: '2026-08-13 09:05', t: 'Sent to Accounting', sub: 'Packet: PO, invoice INV-MR-0812, GL allocation · $800.00' },
+        { at: '2026-08-13 09:05', t: 'Waiting on the next invoice', sub: '2 of 4 lines not invoiced yet · Carpet replacement, unit 0106 · Carpet replacement, unit 0107' },
+        { at: '2026-08-20 12:00', t: 'Invoice paid', sub: 'INV-MR-0812 · $800.00 released by Accounting', hi: true }] },
     /* Delta Electric billed two SPOs on one invoice; both validated together and wait to be sent to Accounting. */
     { id: 836, state: 'ready', prop: 'central', v: 'DE', by: 'Alicia Grant', period: 'Aug 2026',
       scope: 'Replace the failed breezeway light fixtures in Building 02.',
@@ -330,7 +365,7 @@
     const all = list().filter(s => s.prop === prop && s.period === period && s.id !== excludeId && ['draft', 'rebid', 'rejected', 'canceled'].indexOf(s.state) < 0);
     const out = {};
     GL.forEach(([g]) => { out[g] = { budget: GL_BUDGET[g], spent: GL_SPENT[g], committed: 0 }; });
-    all.forEach(s => s.lines.forEach(l => l.alloc.forEach(a => { if (out[a.gl]) out[a.gl].committed = r2(out[a.gl].committed + a.amt); })));
+    all.forEach(s => s.lines.forEach(l => !l.closed && l.alloc.forEach(a => { if (out[a.gl]) out[a.gl].committed = r2(out[a.gl].committed + a.amt); })));
     return out;
   }
   function glOver(s, bud) {
@@ -364,7 +399,7 @@
   /* A vendor's counter-proposal makes an Awaiting Invoice SPO the buyer's move (10/16/2026): the list, its
      Your Move count and Home all treat it as yours until you accept the time or propose another. */
   const needsTime = s => s.state === 'invoice' && !!s.appt && s.appt.status === 'countered';
-  const canRebid = s => s.state === 'rejected' || (s.state === 'invoice' && !s.invoice);
+  const canRebid = s => s.state === 'rejected' || (s.state === 'invoice' && !s.invoice && !(s.billed || []).length);
   const canRespond = s => s.state === 'invoice' && !s.ev.accepted && !s.ev.rejected;
   /* Only an answer the buyer recorded can be changed — never the vendor's own click. */
   const canEditResp = s => (s.state === 'invoice' && !!s.ack) || (s.state === 'rejected' && !!(s.reject && s.reject.by));
@@ -423,6 +458,55 @@
     push(e.paid, 'Paid', money(invTotal(s)) + ' released by Accounting', true);
     if (e.canceled && s.cancel) push(e.canceled, s.rebidAs ? 'Canceled for rebid' : 'Canceled', 'by ' + s.cancel.by + ' · “' + s.cancel.reason + '”' + (s.rebidAs ? ' · rebid as SPO-' + s.rebidAs : ''), false, true);
     return out;
+  }
+
+  /* ---------- partial invoicing (10/16/2026, TKT-SPO-59) ----------
+     One SPO can be billed across several invoices. A line is billed once a validated invoice maps to it, or
+     closed unbilled (l.closed, which releases its budget). s.invoice is the invoice in hand; s.billed[] holds
+     earlier ones, each with its own status. No new state: between invoices the SPO waits in Awaiting Invoice
+     (Open tab), and it reaches Paid only when every line is billed or closed and every invoice is paid. */
+  const invoicesOf = s => (s.billed || []).concat(s.invoice ? [s.invoice] : []);
+  const mapsLine = (inv, k) => (inv.lines || []).some(il => il.status !== 'removed' && (il.maps || []).some(m => m.line === k));
+  function lineState(s, k) {
+    const l = s.lines[k];
+    if (l.closed) return { kind: 'closed', by: l.closed.by, reason: l.closed.reason, at: l.closed.at };
+    const on = invoicesOf(s).filter(inv => mapsLine(inv, k)), done = on.find(inv => inv.validated);
+    if (done) return { kind: 'billed', num: done.num };
+    if (on.length) return { kind: 'mapping', num: on[0].num };
+    return { kind: 'open' };
+  }
+  function progress(s) {
+    const k = s.lines.map((l, i) => lineState(s, i).kind), n = k.length;
+    const billed = k.filter(x => x === 'billed').length, closed = k.filter(x => x === 'closed').length, open = n - billed - closed;
+    return { n, billed, closed, open, partial: open > 0 && (billed > 0 || (s.billed || []).length > 0),
+      openLines: k.map((x, i) => x === 'open' || x === 'mapping' ? i : -1).filter(i => i >= 0),
+      closedAmt: r2(s.lines.filter(l => l.closed).reduce((a, l) => a + l.qty * l.price, 0)) };
+  }
+  /* Everything invoiced on the SPO, across its invoices (one-invoice SPOs: same as invTotal). */
+  const billedTotal = s => r2(invoicesOf(s).reduce((a, inv) => a + invTotal({ invoice: inv }), 0));
+  const invCovers = inv => [...new Set([].concat(...(inv.lines || []).filter(il => il.status !== 'removed').map(il => (il.maps || []).map(m => m.line))))].sort((a, b) => a - b);
+  /* After an invoice goes to Accounting: if lines are still open, file it under billed and wait for the next one. */
+  function afterSend(s) {
+    const p = progress(s);
+    if (!p.open || !s.invoice) return false;
+    s.billed = (s.billed || []).concat([Object.assign(s.invoice, { status: 'accounting', at: { invoiced: s.ev.invoiced, mapped: s.ev.mapped, accounting: s.ev.accounting } })]);
+    delete s.invoice; delete s.ev.mapped; delete s.ev.accounting; s.state = 'invoice';
+    log(s, 'Waiting on the next invoice', p.open + ' of ' + p.n + ' line' + (p.n === 1 ? '' : 's') + ' not invoiced yet · ' + p.openLines.map(i => s.lines[i].desc).join(' · '));
+    return true;
+  }
+  /* Close lines that will never be billed (vendor didn't do the work). With nothing left open and no invoice in
+     hand, the SPO follows its invoices: Paid when they all are, otherwise With Accounting. */
+  function closeLines(s, ks, reason, by) {
+    const at = now();
+    ks.forEach(k => { s.lines[k].closed = { by, reason, at }; });
+    const amt = r2(ks.reduce((a, k) => a + s.lines[k].qty * s.lines[k].price, 0));
+    log(s, 'Lines closed unbilled', ks.length + ' line' + (ks.length === 1 ? '' : 's') + ' · ' + money(amt) + ' released from the budget · by ' + by + ' · “' + reason + '”', false, true);
+    if (s.state === 'invoice' && !s.invoice && !progress(s).open && (s.billed || []).length) {
+      const b = s.billed;
+      if (b.every(x => x.status === 'paid')) { s.state = 'paid'; s.ev.paid = b.map(x => x.at.paid).sort().pop(); }
+      else { s.state = 'accounting'; s.ev.accounting = b.map(x => x.at.accounting).sort().pop(); }
+      s.ev.invoiced = s.ev.invoiced || b[0].at.invoiced; s.ev.mapped = s.ev.mapped || b[b.length - 1].at.mapped;
+    }
   }
 
   /* ---------- store ---------- */
@@ -652,5 +736,5 @@
 
   window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, vh, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, invoicesOf, lineState, progress, invCovers, billedTotal, afterSend, closeLines, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

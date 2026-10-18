@@ -58,7 +58,7 @@
 - Invoices that cover more than one property.
 - Credit memos and negative lines.
 - Validating some SPOs and leaving others on a shared invoice (today it's all or nothing).
-- **One SPO receiving several invoices**: **on hold / TBD** (Vu, 10/07/2026). It's rare for our buyers. Until it's decided, the workaround: one SPO per billing stage (Clone SPO makes it quick); recurring work is a recurring SPO; a correction is Dispute → corrected invoice. See the design doc's Service POs rule "One invoice per SPO, and one per order".
+- ~~One SPO receiving several invoices~~: was on hold (10/07/2026); **built 10/16/2026 as partial invoicing — see the addendum and TKT-SPO-59**.
 
 ## Pitfalls
 - **The board re-renders on every change.** A pointer listener on the board element misses the second click of a click-click connect if the new board binds in the next animation frame. Use one delegated `pointerdown` on the document and draw synchronously after render.
@@ -218,3 +218,39 @@ The prototype now matches:
 - [ ] Shares are always even and read-only.
 **Audit findings:** SPO-43
 **Files:** `buyer/spo-map.js` (`glConflict`, `connect`, `itemize`, `splitLine`), `buyer/spo.html` (`openInvDispute(prefill)`), `buyer/buyer-components.css` (`.cx-refuse`)
+
+## Addendum · Partial invoicing: one SPO, several invoices (10/16/2026)
+
+**Why:** team feedback (Ravi, Jake): "SPO #1 — all line items mapped to INV #1; SPO #2 — some items INV #1 and some items INV #2." Agreed: no new status in the table; the SPO stays open until every line is mapped; show on the UI that it's partial. Vu's decisions: **A** — the first invoice goes to Accounting and gets paid on its own; **B** — buyers can close lines that will never be billed; **C** — the SPO stays in Open or Invoices until fully mapped; **D** — between invoices it waits in **Open**; **E** — closing lines releases their budget. This takes **"One SPO receiving several invoices" off hold**; the clone-per-stage workaround is retired.
+
+**The model**
+- Each SPO line knows its billing: **billed** (a validated invoice maps to it), **closed unbilled** (with who, when and why), or **open**. `s.invoice` is the invoice in hand; earlier invoices move to `s.billed[]`, each with its own status (With Accounting / Paid) and dates.
+- **No new state.** An SPO with open lines after its invoice goes to Accounting returns to **Awaiting Invoice** (Open tab). It reaches **Paid** only when every line is billed or closed and every invoice is paid.
+
+**What shipped**
+- **Validate:** if the invoice doesn't cover every open SPO line, the mapping takeover asks: **Expect another invoice** (default) or **Close them unbilled** (reason required; releases their budget). The Totals table compares the invoice only with the lines it covers and lists "Not on this invoice" separately.
+- **Send to Accounting** with lines still open: the invoice goes on alone; the SPO goes back to Awaiting Invoice ("Waiting on the next invoice" in Activity).
+- **Next invoice:** lines already billed are locked on the board ("Billed on INV-…"), and left out of Connect to… and Auto Map. The demo upload bills only the open lines.
+- **Close unbilled lines** (SPO page): checkboxes per open line, a required reason, the budget released. With nothing left open, the SPO follows its invoices to With Accounting or Paid.
+- **SPO page:** the tracker's Invoice step reads "2 of 4 lines"; the task strip "Waiting on Vendor · Next invoice" (Close unbilled lines, Upload invoice); each line item has a tag (INV-…, Not invoiced yet, Closed unbilled, On INV-… · to map); an **Invoices** card lists each invoice with its lines, amount and status; totals sum across invoices ("Invoiced total"). Rebid and Cancel are hidden once anything is billed.
+- **SPO list:** "2 of 3 invoiced" under the SPO number (hover: "Partly invoiced · 2 of 3 lines"); line tags when a row is expanded; in Group by invoice the SPO sits under each of its invoices, each row showing that invoice's lines ("Lines 1, 2 of 3") and status.
+- **Multi-SPO intake:** the review step notes lines not on the invoice; they wait for the next invoice (close them from the SPO page).
+- **Seeds:** SPO-833 (Open, page 2): INV-MR-0812 paid for the paint lines, carpet lines waiting. SPO-834 (Invoices): INV-AH-0809 with Accounting, INV-AH-0821 to map.
+
+**Not built:** closing lines from the multi-SPO intake; Paid assumes Accounting pays an SPO's invoices in order.
+
+### TKT-SPO-59 · Partial invoicing: one SPO billed across several invoices
+**Summary:** An SPO's lines can be billed on different invoices. Each invoice moves through Accounting on its own; the SPO waits in Open for the rest and shows how much is invoiced.
+**Acceptance criteria:**
+- [ ] Every SPO line is billed (by a named invoice), open, or closed unbilled.
+- [ ] Validating an invoice that leaves open lines asks: Expect another invoice (default) or Close them unbilled (reason required).
+- [ ] Sending that invoice to Accounting returns the SPO to Awaiting Invoice (Open tab); the invoice keeps its own status (With Accounting, Paid).
+- [ ] On the next invoice, billed and closed lines are locked on the mapping board and can't be connected or auto-mapped.
+- [ ] Close unbilled lines (SPO page) closes chosen open lines with a reason and releases their budget; with nothing left open the SPO moves to With Accounting, or Paid when every invoice is paid.
+- [ ] The SPO reaches Paid only when every line is billed or closed and every invoice is paid.
+- [ ] The SPO list shows "n of m invoiced" under the SPO number; expanded line items and the SPO page tag each line with its invoice or state; the SPO page lists every invoice with its lines, amount and status.
+- [ ] In Group by invoice (TKT-SPO-58), the SPO sits under each of its invoices, showing that invoice's lines, amount and status.
+- [ ] Rebid and Cancel aren't offered once any line is billed.
+**Backend / data:** per-line billing (invoice id, or closed with by/at/reason); invoices as their own records linked to SPO lines, each with a status; budget commitment excludes closed lines.
+**Replaces:** the "One SPO receiving several invoices" hold and its clone-per-stage workaround.
+**Files:** `buyer/spo-data.js` (`invoicesOf`, `lineState`, `progress`, `invCovers`, `billedTotal`, `afterSend`, `closeLines`, `budget`, seeds 833/834), `buyer/spo-map.js` (`lockOf`, `perSpo` rest), `buyer/spo.html` (`lineTag`, `invoiceCard`, `restBlock`, `openCloseLines`, `invoiceTotals`), `buyer/spos.html`, `buyer/spo-invoice.html` (`restNote`), `buyer/buyer-components.css` (`.ln-tag`, `.cx-rest`, `.cx-l.locked`)

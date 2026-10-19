@@ -108,6 +108,7 @@ Gallery **Buyer App · Service POs** · design-doc **Service POs (SPO)** + **SPO
 **Follow-ups (not built):** invoice labels on the Open tab, a Shared invoice card on the SPO page, search by invoice number, Send all to Accounting on a shared invoice's heading.
 
 ### TKT-SPO-58 · Group SPOs by invoice on the Invoices and Closed tabs
+> **Updated 10/19/2026 by TKT-SPO-61:** Send moved to the invoice heading; SPO rows read Map invoice / Mapped. A shared invoice is sent whole, so the "Mixed" heading status no longer occurs.
 **Summary:** SPOs billed on the same vendor invoice are grouped under that invoice, so the team can see which SPOs are linked and what each was billed.
 **Acceptance criteria:**
 - [ ] On the Invoices and Closed tabs, every invoiced SPO sits under a heading row for its invoice: number, "Shared invoice · n SPOs" or "Invoice · 1 SPO", property, vendor, invoice total, status (or "Mixed"), invoice date, Invoice PDF.

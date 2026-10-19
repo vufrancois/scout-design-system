@@ -482,6 +482,25 @@
       openLines: k.map((x, i) => x === 'open' || x === 'mapping' ? i : -1).filter(i => i >= 0),
       closedAmt: r2(s.lines.filter(l => l.closed).reduce((a, l) => a + l.qty * l.price, 0)) };
   }
+  /* Send to Accounting is per INVOICE (team feedback 10/19/2026, TKT-SPO-61): Accounting books invoice lines by GL and
+     unit and doesn't care about SPOs. peers = every SPO on the invoice with its slice; the invoice can go once each is
+     mapped (Ready for Accounting); sending moves them all together, so a shared invoice is never half sent. */
+  function invPeers(s, inv) {
+    inv = inv || s.invoice; if (!inv) return [];
+    const ids = inv.shared ? inv.shared.spos : [s.id];
+    return ids.map(id => { const sp = id === s.id ? s : get(id); const rec = sp && invoicesOf(sp).find(x => x.num === inv.num); return rec ? { sp, rec } : null; }).filter(Boolean);
+  }
+  const invReady = (s, inv) => { const p = invPeers(s, inv); return p.length > 0 && p.every(x => x.sp.state === 'ready' && x.rec === x.sp.invoice); };
+  function sendInvoice(s, by) {
+    const peers = invPeers(s), inv = s.invoice, total = inv.shared ? inv.shared.total : invTotal(s), at = now(), waits = [];
+    peers.forEach(({ sp }) => {
+      sp.state = 'accounting'; sp.ev.accounting = at;
+      log(sp, 'Sent to Accounting', 'Invoice ' + inv.num + ' · ' + money(total) + (peers.length > 1 ? ' · with ' + peers.filter(x => x.sp !== sp).map(x => 'SPO-' + x.sp.id).join(', ') : '') + ' · by ' + by);
+      if (afterSend(sp)) waits.push(sp.id);
+      save(sp);
+    });
+    return { num: inv.num, total, spos: peers.map(x => x.sp.id), waits };
+  }
   /* Everything invoiced on the SPO, across its invoices (one-invoice SPOs: same as invTotal). */
   const billedTotal = s => r2(invoicesOf(s).reduce((a, inv) => a + invTotal({ invoice: inv }), 0));
   const invCovers = inv => [...new Set([].concat(...(inv.lines || []).filter(il => il.status !== 'removed').map(il => (il.maps || []).map(m => m.line))))].sort((a, b) => a - b);
@@ -736,5 +755,5 @@
 
   window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, vh, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, invoicesOf, lineState, progress, invCovers, billedTotal, afterSend, closeLines, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, invoicesOf, lineState, progress, invCovers, billedTotal, invPeers, invReady, sendInvoice, afterSend, closeLines, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

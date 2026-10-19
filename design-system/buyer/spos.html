@@ -161,6 +161,7 @@
     card: SV + '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
     check: SV + '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>',
     archive: SV + '<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>',
+    dl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
     ban: SV + '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>'
   };
   const TABS = [
@@ -242,6 +243,7 @@
   const th = (k, label, extra) => '<th class="sortable' + (sortK === k ? ' sorted' : '') + (extra || '') + '" onclick="setSort(\'' + k + '\')">' + label + sortIc(k) + '</th>';
 
   /* Only the buyer's own move gets a primary button; everything else is the overflow menu. */
+  const MAPPED = '<span class="row-mapped"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mapped</span>';
   const ACTION = {
     draft: ['Continue', s => 'spo-new.html#' + s.id],
     approval: ['Review', s => 'approval.html#SPO-' + s.id],
@@ -307,7 +309,11 @@
       const own = !rec || rec === s.invoice;
       const isOpen = openRows.has(s.id);
       const act = SPO.needsTime(s) ? ['Review new time', x => 'spo.html#' + x.id + '/time'] : ACTION[s.state];
-      const action = act && own ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + act[1](s) + '">' + act[0] + '</a>' : rowMenu(s);
+      /* Send is per invoice (TKT-SPO-61): a mapped SPO under its invoice just reads Mapped; in flat view its row sends the whole invoice. */
+      const mapped = own && s.state === 'ready' && !SPO.needsTime(s);
+      const action = mapped && (inGroup || !SPO.invReady(s)) ? MAPPED
+        : mapped ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="spo.html#' + s.id + '/accounting" title="Sends invoice ' + s.invoice.num + (s.invoice.shared ? ' with all ' + s.invoice.shared.spos.length + ' SPOs' : '') + '">Send invoice</a>'
+        : act && own ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + act[1](s) + '">' + act[0] + '</a>' : rowMenu(s);
       const main = '<tr class="data-row' + (inGroup ? ' inv-member' + (inGroup === 'last' ? ' last' : '') : '') + '">' +
         '<td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(' + s.id + ')" title="Line items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
         '<td class="mono" style="font-weight:700;white-space:nowrap">' + (inGroup ? '<span class="inv-tree" aria-hidden="true"></span>' : '') + '<a class="table-link" style="font-family:inherit;font-weight:700" href="spo.html#' + s.id + '">SPO-' + s.id + '</a>' + recMark(s) + (!own && tabOf(s.state) !== tab() ? '<span class="cell-sub">Now in ' + TABS.find(x => x.id === tabOf(s.state)).label + (s.state === 'invoice' ? ' · next invoice' : '') + '</span>' : '') + (own && SPO.progress(s).partial ? '<span class="cell-sub" title="Partly invoiced · ' + SPO.progress(s).billed + ' of ' + s.lines.length + ' lines">' + SPO.progress(s).billed + ' of ' + s.lines.length + ' invoiced</span>' : '') + '</td>' +
@@ -326,16 +332,20 @@
     /* The invoice is the group heading, even for one SPO — no SPO is made to look like the parent of the others. */
     const invRow = u => {
       const n = u.n, hid = n - u.members.length, open = !foldedInv.has(u.key);
+      /* The invoice in hand on this tab: Send once every SPO on it is mapped; until then, how many are. */
+      const cur = u.members.find(m => u.recs[m.id] === m.invoice), ready = cur && SPO.invReady(cur, cur.invoice);
+      const peers = cur ? SPO.invPeers(cur, cur.invoice) : [], nMapped = peers.filter(x => ['ready', 'accounting', 'paid'].indexOf(x.sp.state) >= 0).length;
       const states = Array.from(new Set(u.members.map(m => recState(m, u.recs[m.id]))));
       return '<tr class="inv-group' + (open ? '' : ' folded') + '">' +
         '<td><button class="expander inv-caret' + (open ? ' open' : '') + '" onclick="toggleInv(\'' + encodeURIComponent(u.key) + '\')" aria-expanded="' + open + '" title="' + (open ? 'Hide' : 'Show') + ' SPOs on this invoice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></td>' +
-        '<td style="white-space:nowrap"><span class="mono" style="font-weight:700">' + u.inv.num + '</span><span class="cell-sub">' + (n > 1 ? 'Shared invoice · ' + n + ' SPOs' : 'Invoice · 1 SPO') + (hid ? ' · ' + hid + ' hidden by filters' : '') + '</span></td>' +
+        '<td style="white-space:nowrap"><span class="mono" style="font-weight:700">' + u.inv.num + '</span><span class="cell-sub">' + (n > 1 ? 'Shared invoice · ' + n + ' SPOs' : 'Invoice · 1 SPO') + (cur && n > 1 && !ready && nMapped && nMapped < peers.length ? ' · ' + nMapped + ' of ' + peers.length + ' mapped' : '') + (hid ? ' · ' + hid + ' hidden by filters' : '') + '</span></td>' +
         '<td class="col-hide cell-clip" title="' + propName(u.prop) + '">' + propName(u.prop) + '</td>' +
         '<td><span class="cell-entity"><span class="v-avatar vt" style="width:28px;height:28px;border-radius:7px;font-size:10px;--vh:' + SPO.vh(u.v) + '">' + SPO.ini(u.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[u.v].name + '">' + SPO.VEN[u.v].name + '</span></span></td>' +
         '<td class="num" style="font-weight:700">' + money(u.total) + '<span class="cell-sub">Invoice total</span></td>' +
         '<td>' + (states.length === 1 ? pillOf(states[0]) : '<span class="status-dot-item"><span class="status-dot dot-muted"></span><span class="status-dot-label">Mixed</span></span>') + '</td>' +
         '<td style="white-space:nowrap;color:var(--muted-foreground)">Invoiced ' + fmtD(u.inv.date) + '</td>' +
-        '<td><button class="btn btn-sm" style="white-space:nowrap" onclick="showToast(\'' + u.inv.num + ' (PDF)\', \'Demo action · the full invoice' + (n > 1 ? ', all ' + n + ' SPOs' : '') + '\')">Invoice PDF</button></td></tr>';
+        '<td><span class="inv-acts">' + (ready ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="spo.html#' + cur.id + '/accounting">Send</a>' : '') +
+        '<button class="icon-btn inv-pdf" title="Invoice PDF" aria-label="Download invoice ' + u.inv.num + ' (PDF)" onclick="showToast(\'' + u.inv.num + ' (PDF)\', \'Demo action · the full invoice' + (n > 1 ? ', all ' + n + ' SPOs' : '') + '\')">' + IC.dl + '</button></span></td></tr>';
     };
     const body = slice.map(u => !u.members ? spoRow(u.s)
       : invRow(u) + (foldedInv.has(u.key) ? '' : u.members.map((m, i) => spoRow(m, i === u.members.length - 1 ? 'last' : 'mid', u.recs[m.id])).join(''))).join('');

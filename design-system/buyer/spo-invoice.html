@@ -341,13 +341,13 @@
       '<h1 style="margin-bottom:0">' + r.num + ' mapped to ' + spos.length + ' SPO' + (spos.length === 1 ? '' : 's') + '</h1><div class="confirm-sub">' + SPO.VEN[r.v].name + ' · ' + propOf(r.prop).name + ' · ' + money(r.total) + '</div>' +
       '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">SPOs updated</h2></div>' + spos.map(s => { const st = SPO.STATES[s.state]; return '<div class="run-row"><span class="rd"><b>' + (s.run || s.ev.created).slice(8, 10) + '</b><span>' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+(s.run || s.ev.created).slice(5, 7) - 1] + '</span></span><div class="rb"><div><a class="table-link" href="spo.html#' + s.id + '">SPO-' + s.id + '</a> · ' + money(SPO.invTotal(s)) + '</div><div class="m">' + s.lines[0].desc + '</div></div><span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span></div>'; }).join('') +
       '<div class="sum-grand" style="margin-top:6px"><span>Invoice total</span><span class="amt">' + money(r.total) + '</span></div></div>' +
-      '<div class="confirm-actions">' + (allReady ? '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendAll()"><span style="display:inline-flex;width:16px;height:16px">' + IC.send + '</span>Send all to Accounting</button>' : '') +
+      '<div class="confirm-actions">' + (allReady ? '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendAll()"><span style="display:inline-flex;width:16px;height:16px">' + IC.send + '</span>Send invoice to Accounting</button>' : '') +
       '<a class="btn" href="spos.html#invoices">View Service POs</a></div></div>';
   }
   function sendAll() {
     let r = null; try { r = JSON.parse(sessionStorage.getItem('scout-intake-done')); } catch (e) { return; }
-    r.spos.forEach(id => { const s = SPO.get(id); if (s.state !== 'ready') return; s.state = 'accounting'; s.ev.accounting = SPO.now(); SPO.log(s, 'Sent to Accounting', 'Packet: PO, invoice ' + s.invoice.num + ' (shared), GL allocation · ' + money(SPO.invTotal(s))); SPO.afterSend(s); SPO.save(s); });
-    renderPage(); showToast('Sent to Accounting', r.spos.length + ' SPOs · ' + money(r.total));
+    const s0 = SPO.get(r.spos[0]); if (s0 && SPO.invReady(s0)) SPO.sendInvoice(s0, 'Alicia Grant'); /* one invoice, all its SPOs together (TKT-SPO-61) */
+    renderPage(); showToast('Invoice ' + r.num + ' sent to Accounting', money(r.total) + ' · ' + r.spos.length + ' SPO' + (r.spos.length === 1 ? '' : 's'));
   }
 
   function renderPage() {

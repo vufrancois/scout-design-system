@@ -75,11 +75,11 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 �
 | Cancel and rebid (live) | `#863` → **Cancel SPO** | Two options: Cancel SPO / **Cancel and rebid** + a reason → you land on the new parked SPO; the original reads "Rebid as SPO-###" |
 | Rebid now (live) | `#863` → **Rebid** | Reason + vendor search → Send: the original is canceled, the new SPO goes straight out (Save for later parks it). Approve `approval.html#SPO-864` first and rebid it: the approval **carries over** ("from SPO-864") |
 | Extraction failed | `#849` | "Invoice needs attention" → Retry extraction or Enter lines from the PDF |
-| Ready for Accounting | `#856` | Send to Accounting → packet: PO · Invoice · **GL allocation** (sums to the cent) → With Accounting |
+| Ready for Accounting | `#856` | **Send invoice** → packet: Invoice · **GL & unit allocation** (sums to the cent) → With Accounting |
 | With Accounting | `#855` | Violet **ACCOUNTING** actor; no buyer button |
 | Paid | `#854` | All 8 steps dated; approved by Priya Nair |
 | Canceled | `#852` | No stepper; SPO Status card names who canceled and quotes the reason; Clone SPO only |
-| Group by invoice | `spos.html#closed` · `#invoices` | Every invoiced SPO sits under its **invoice heading** (number, "Shared invoice · 3 SPOs" or "Invoice · 1 SPO", invoice total, date). INV-CC-2607 → SPO-839/840/841 each with "Share · 1 of 3"; INV-DE-0815 on Invoices is **Ready for Accounting** (send one → the heading reads **Mixed**). Fold a group with its chevron; search "0113" → "1 hidden by filters"; the **Group by invoice** switch turns it off. Canceled SPOs stay plain rows |
+| Group by invoice | `spos.html#closed` · `#invoices` | Every invoiced SPO sits under its **invoice heading** (number, "Shared invoice · 3 SPOs" or "Invoice · 1 SPO", invoice total, date). INV-CC-2607 → SPO-839/840/841 each with "Share · 1 of 3"; INV-DE-0815 on Invoices is **Ready for Accounting**: both SPO rows read ✓ Mapped and **Send** is on the invoice heading → one confirmation moves SPO-835 and 836 together. Fold a group with its chevron; search "0113" → "1 hidden by filters"; the **Group by invoice** switch turns it off. Canceled SPOs stay plain rows |
 | Partly invoiced · waiting | `#833` | Open tab, page 2: "2 of 4 invoiced" under the SPO number. Paint lines billed on INV-MR-0812 (paid), carpet lines **Not invoiced yet**; the tracker reads "2 of 4 lines"; **Invoices** card; **Close unbilled lines** → pick a line + reason → its budget is released |
 | Partly invoiced · next invoice | `#834` → `#834/invoice` | The second invoice INV-AH-0821: lines 1–2 are **locked** ("Billed on INV-AH-0809"), only the thermostat line can be connected. On the Invoices tab SPO-834 sits under **both** invoices (Lines 1, 2 of 3 · With Accounting / Lines 3 of 3 · Invoice to Map) |
 | Partial invoicing (live) | `#863` → Upload invoice | Remove one invoice line on the board → "1 SPO line isn't on this invoice": **Expect another invoice** → Validate → Send to Accounting → the SPO is back in **Awaiting Invoice**, "Partly invoiced"; then Close unbilled lines → With Accounting |
@@ -109,7 +109,7 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 �
 | GL rule | On `spo.html#857/invoice`, connect "Carpet steam clean — Unit 104" (6035) to Line 1 (6140) | Refused: "Different GL codes — this line needs to be itemized" → Ask the vendor to itemize (pre-filled dispute) or Split this line |
 | Unit warning | Remove Invoice line 3's connection, then connect "Make-ready refresh — Unit 105" to Line 1 (unit 0102) | Same GL, wrong unit: the link turns amber with "Unit mismatch"; fraction pills ("1/2") on every link |
 | 3 · Review | Check the attestation → **Validate 3 SPOs** | Each SPO's share; total $645.76 |
-| Receipt | **Send all to Accounting** | No confetti — the three SPOs move together; each SPO's invoice PDF says "1 of 3 SPOs" |
+| Receipt | **Send invoice to Accounting** | No confetti — the three SPOs move together; each SPO's invoice PDF says "1 of 3 SPOs" |
 | Drafts | Leave mid-way, open Service POs → Invoices | "1 invoice in progress" → Resume lands back on Match |
 
 ### Notifications — bell on every page · `buyer/notifications.html`

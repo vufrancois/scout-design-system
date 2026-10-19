@@ -126,3 +126,33 @@ The audit's own case is seeded: SPO-858's INV-30418.pdf is 2,662 bytes and shows
 **Audit findings:** SPO-39
 **Files:** `buyer/spo-data.js` (`fileSize`, `invSize`), `buyer/spo.html`, `buyer/spo-invoice.html`
 
+
+
+## Addendum · Send to Accounting per invoice (10/19/2026)
+
+**Why:** team feedback: "The 'send' CTA should be at the invoice level. We are sending the invoice to accounting, not the SPOs. The SPOs and the mapping only match the GL code and unit to each invoice line so accounting knows where to book it (they don't care about the SPO). When an invoice has been fully mapped, the Send CTA should be present." And: "If an SPO has not been fully mapped, keep the Map invoice CTA; once it's mapped it can say Mapped." Decisions (Vu): **A** — the packet drops the Purchase Order document; **B** — Home counts invoices ready to send; **C** — a shared invoice stays mapped all at once (standalone intake), so its SPOs are all mapped or all not.
+
+**What shipped**
+- **Invoices tab (grouped):** the invoice heading carries **Send** once every SPO on it is Ready for Accounting; Invoice PDF becomes an icon. SPO rows read **Map invoice** until mapped, then a quiet **✓ Mapped** label.
+- **Flat view:** a mapped SPO's row action is **Send invoice** (sends its whole invoice).
+- **Sending** (`SPO.sendInvoice`) moves every SPO on the invoice to With Accounting at once, each logging "Invoice INV-… · $total · with SPO-…". A shared invoice can no longer read "Mixed".
+- **Payment packet, one per invoice:** the invoice as the vendor sent it (PO reference lists every SPO) and a **GL & unit allocation** of every line across its SPOs, with the SPO number only as a reference column. No PO document.
+- **SPO page:** "Send invoice INV-… to Accounting", naming the SPOs that go with it; With Accounting shows the invoice total and this SPO's share.
+- **Home:** ready-to-send counts invoices ("2 invoices ready to send"); Your move counts a shared invoice once.
+- **Multi-SPO intake:** the receipt's button is **Send invoice to Accounting**.
+- **Partial invoicing** unchanged: after its invoice is sent, an SPO with open lines waits in Open for the next one.
+
+### TKT-SPO-61 · Send to Accounting per invoice
+**Summary:** Accounting receives invoices, not SPOs: Send is an invoice action, available once every SPO on the invoice is mapped, and it moves them all together.
+**Acceptance criteria:**
+- [ ] On the Invoices tab (grouped), the invoice heading shows **Send** only when every SPO on the invoice is mapped (Ready for Accounting); the invoice PDF is an icon beside it.
+- [ ] SPO rows under an invoice show **Map invoice** while that SPO needs mapping and a **Mapped** label (not a button) once mapped. No SPO row has a Send button.
+- [ ] In flat view, a mapped SPO row's action is **Send invoice**, which sends its whole invoice.
+- [ ] Sending opens one confirmation for the invoice (total, vendor, and every SPO it covers) and moves every SPO on it to With Accounting together; each SPO's Activity names the invoice and the other SPOs.
+- [ ] The payment packet is per invoice: the invoice and a GL & unit allocation of every invoice line across its SPOs (SPO number as a reference column). It sums to the invoice total.
+- [ ] The SPO page's strip reads "Send invoice INV-… to Accounting" and names the other SPOs that go with it.
+- [ ] Home's ready-to-send count and Your move count invoices, not SPOs.
+- [ ] An SPO with lines still open returns to Awaiting Invoice after its invoice is sent (TKT-SPO-59).
+**Backend / data:** a send-invoice action that transitions every SPO on the invoice atomically; the packet built per invoice (lines with GL, unit and SPO reference).
+**Replaces:** the per-SPO Send to Accounting in TKT-SPO-14 and the "Mixed" heading status in TKT-SPO-58.
+**Files:** `buyer/spo-data.js` (`invPeers`, `invReady`, `sendInvoice`), `buyer/spos.html` (`invRow`, `MAPPED`), `buyer/spo.html` (`packDoc`, `renderPack`, `sendToAccounting`, task strip), `buyer/spo-invoice.html` (`sendAll`), `buyer/home.html`, `buyer/buyer-components.css` (`.inv-acts`, `.inv-pdf`, `.row-mapped`)

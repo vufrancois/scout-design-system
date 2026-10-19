@@ -215,8 +215,11 @@
       case 'mapping': if (inv.extractFailed) return st('action', IC.warn, 'Invoice ' + inv.num + ' needs attention', 'Scout AI couldn\u2019t read its line items \u2014 retry the extraction or enter the lines from the PDF.', btn('Open invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
         if ((s.billed || []).length) return st('action', IC.map, 'Map invoice ' + inv.num + ' · the next invoice', money(SPO.invTotal(s)) + ' invoiced · ' + SPO.progress(s).billed + ' of ' + s.lines.length + ' lines are already billed on ' + s.billed.map(b => b.num).join(', ') + ' — map this one to the lines still open.', btn('Map invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
         return st('action', IC.map, 'Map invoice ' + inv.num + ' to SPO lines', money(SPO.invTotal(s)) + ' invoiced against a ' + money(SPO.total(s)) + ' estimate — confirm each invoice line’s SPO line, GL and unit.', btn('Map invoice', "location.hash='#" + s.id + "/invoice'", 'btn-primary', IC.map));
-      case 'ready': return st('action', IC.card, 'Send to Accounting', 'Invoice ' + inv.num + ' is mapped and validated — send the payment packet to Accounting.' + (SPO.progress(s).open ? ' ' + SPO.progress(s).open + ' of ' + s.lines.length + ' lines aren’t invoiced yet, so SPO-' + s.id + ' then waits for the next invoice.' : ''), btn('Send to Accounting', "location.hash='#" + s.id + "/accounting'", 'btn-primary', IC.send));
-      case 'accounting': return st('acct', IC.card, 'Waiting on Accounting · Payment', 'Sent on ' + SPO.fmtDate(s.ev.accounting) + ' with the PO, invoice' + (SPO.invoicesOf(s).length > 1 ? 's' : '') + ' and GL allocation. Accounting releases ' + money(SPO.billedTotal(s)) + ' to ' + endDot(v.name));
+      case 'ready': { const peers = SPO.invPeers(s), others = peers.filter(x => x.sp.id !== s.id), open = SPO.progress(s).open;
+        if (!SPO.invReady(s)) return st('wait', IC.map, 'Mapped · waiting on the rest of ' + inv.num, 'SPO-' + s.id + ' is mapped. The invoice goes to Accounting once ' + others.filter(x => x.sp.state !== 'ready').map(x => 'SPO-' + x.sp.id).join(', ') + ' ' + (others.length > 1 ? 'are' : 'is') + ' mapped too.');
+        return st('action', IC.card, 'Send invoice ' + inv.num + ' to Accounting', 'Mapped and validated — ' + money(inv.shared ? inv.shared.total : SPO.invTotal(s)) + (others.length ? ', covering this SPO and ' + others.map(x => 'SPO-' + x.sp.id).join(', ') + ', which go together' : '') + '.' + (open ? ' ' + open + ' of ' + s.lines.length + ' lines aren’t invoiced yet, so SPO-' + s.id + ' then waits for the next invoice.' : ''), btn('Send invoice', "location.hash='#" + s.id + "/accounting'", 'btn-primary', IC.send)); }
+      case 'accounting': { const sh = s.invoice && s.invoice.shared, nums = SPO.invoicesOf(s).map(r => r.num).join(', ');
+        return st('acct', IC.card, 'Waiting on Accounting · Payment', 'Invoice' + (SPO.invoicesOf(s).length > 1 ? 's ' : ' ') + nums + ' sent on ' + SPO.fmtDate(s.ev.accounting) + ' with ' + (SPO.invoicesOf(s).length > 1 ? 'their' : 'its') + ' GL & unit allocation. Accounting releases ' + money(sh ? sh.total : SPO.billedTotal(s)) + ' to ' + (sh ? v.name + ' for SPO-' + sh.spos.join(', SPO-') + ' (this SPO’s share ' + money(SPO.invTotal(s)) + ').' : endDot(v.name))); }
       case 'paid': return st('done', IC.flag, 'Paid', money(SPO.billedTotal(s)) + ' released to ' + v.name + ' on ' + SPO.fmtDate(s.ev.paid) + '. Documents stay available for your records.');
     }
     return '';
@@ -718,7 +721,7 @@
   function pdfLines(s, inv) {
     const W = 62, pad = (a, b) => a + ' '.repeat(Math.max(2, W - a.length - b.length)) + b;
     const v = ven(s), p = propOf(s);
-    const out = [v.name.toUpperCase(), v.email, '', pad('INVOICE', inv.num), pad('Date', SPO.fmtDate(inv.date)), pad('PO reference', 'SPO-' + s.id), '', 'BILL TO', p.name, p.addr + ', ' + p.city, '', '-'.repeat(W)];
+    const out = [v.name.toUpperCase(), v.email, '', pad('INVOICE', inv.num), pad('Date', SPO.fmtDate(inv.date)), pad('PO reference', inv.poRef || 'SPO-' + s.id), '', 'BILL TO', p.name, p.addr + ', ' + p.city, '', '-'.repeat(W)];
     inv.lines.forEach(l => out.push(pad((l.desc || '').slice(0, 44), money(l.amt || 0))));
     out.push('-'.repeat(W), pad('Subtotal', money(inv.lines.reduce((a, l) => a + (l.amt || 0), 0))));
     if (inv.tax) out.push(pad('Sales tax', money(inv.tax)));
@@ -828,37 +831,36 @@
     });
     return Object.keys(rows).sort().map(k => { const [gl, unit] = k.split('|'); return { gl, unit, amt: rows[k] }; });
   }
+  /* The payment packet is per INVOICE (TKT-SPO-61): the invoice as the vendor sent it, and every line's GL code and
+     unit across all its SPOs — what Accounting books from. SPO numbers stay only as a reference column. */
   function packDoc(s, t) {
-    const W = 62, pad = (a, b) => a + ' '.repeat(Math.max(2, W - a.length - b.length)) + b, p = propOf(s), v = ven(s);
-    if (t === 'inv') return pdfLines(s, s.invoice);
-    if (t === 'po') {
-      const out = ['PURCHASE ORDER  SPO-' + s.id, pad('Issued', SPO.fmtDate(s.ev.sent)), '', 'VENDOR', v.name, v.email, '', 'SERVICE LOCATION', p.name, p.addr + ', ' + p.city, '', 'SCOPE', s.scope, '', '-'.repeat(W)];
-      s.lines.forEach(l => { out.push(pad(l.desc.slice(0, 44), money(r2(l.qty * l.price)))); l.alloc.forEach(a => out.push('   ' + a.gl + ' ' + SPO.glName(a.gl) + ' · ' + SPO.unitLabel(a.unit))); });
-      out.push('-'.repeat(W), pad('SPO ESTIMATE', money(SPO.total(s))));
-      return out.join('\n');
-    }
-    const rows = glAllocation(s), out = ['GL ALLOCATION  SPO-' + s.id + ' · ' + s.invoice.num, p.name + ' · spend period ' + s.period, '', '-'.repeat(W)];
-    rows.forEach(r => out.push(pad(r.gl + ' ' + SPO.glName(r.gl) + ' · ' + SPO.unitLabel(r.unit), money(r.amt))));
+    const W = 66, pad = (a, b) => a + ' '.repeat(Math.max(2, W - a.length - b.length)) + b, p = propOf(s), peers = SPO.invPeers(s), inv = s.invoice;
+    const total = inv.shared ? inv.shared.total : SPO.invTotal(s), tax = r2(peers.reduce((a, x) => a + (x.rec.tax || 0), 0));
+    if (t === 'inv') return pdfLines(s, { num: inv.num, date: inv.date, lines: [].concat(...peers.map(x => x.rec.lines.filter(l => l.status !== 'removed'))), tax, ship: 0, poRef: peers.map(x => 'SPO-' + x.sp.id).join(', ') });
+    const rows = [].concat(...peers.map(x => glAllocation(x.sp).map(r => Object.assign(r, { spo: x.sp.id }))))
+      .sort((a, b) => a.gl.localeCompare(b.gl) || a.unit.localeCompare(b.unit));
+    const out = ['GL & UNIT ALLOCATION  ' + inv.num, ven(s).name + ' · ' + p.name, '', pad('GL · UNIT', 'REF        AMOUNT'), '-'.repeat(W)];
+    rows.forEach(r => out.push(pad((r.gl + ' ' + SPO.glName(r.gl) + ' · ' + SPO.unitLabel(r.unit)).slice(0, 44), ('SPO-' + r.spo).padEnd(9) + money(r.amt).padStart(11))));
     out.push('-'.repeat(W), pad('Allocated (lines)', money(r2(rows.reduce((a, r) => a + r.amt, 0)))));
-    if (s.invoice.tax) out.push(pad('Sales tax (invoice-level)', money(s.invoice.tax)));
-    out.push(pad('PAYABLE TOTAL', money(SPO.invTotal(s))));
+    if (tax) out.push(pad('Sales tax (invoice-level)', money(tax)));
+    out.push(pad('PAYABLE TOTAL', money(total)));
     return out.join('\n');
   }
   function openAccounting() { packTab = 'gl'; renderPack(); }
   function renderPack() {
-    const s = S, tabs = { po: 'Purchase Order', inv: 'Invoice ' + s.invoice.num, gl: 'GL allocation' };
-    modal('pack-ov', '<div class="val-modal" style="width:720px;max-width:calc(100vw - 40px)"><div class="val-head"><h2>Send SPO-' + s.id + ' to Accounting</h2><p>The payment packet Accounting needs to release ' + money(SPO.invTotal(s)) + ' to ' + ven(s).name + '.</p></div>' +
+    const s = S, inv = s.invoice, peers = SPO.invPeers(s), total = inv.shared ? inv.shared.total : SPO.invTotal(s), tabs = { inv: 'Invoice ' + inv.num, gl: 'GL & unit allocation' };
+    const others = peers.filter(x => x.sp.id !== s.id).map(x => 'SPO-' + x.sp.id);
+    modal('pack-ov', '<div class="val-modal" style="width:720px;max-width:calc(100vw - 40px)"><div class="val-head"><h2>Send invoice ' + inv.num + ' to Accounting</h2><p>' + money(total) + ' to ' + ven(s).name + '. Accounting books each line by its GL code and unit.' + (others.length ? ' Covers SPO-' + s.id + ' and ' + others.join(', ') + ' — they move to With Accounting together.' : '') + '</p></div>' +
       '<div class="val-body" style="padding:16px 22px"><div class="tab-bar" style="margin-bottom:12px">' + Object.keys(tabs).map(k => '<button class="tab-item' + (k === packTab ? ' active' : '') + '" onclick="packTab = \'' + k + '\'; renderPack()">' + tabs[k] + '</button>').join('') + '</div>' +
       '<div class="pay-doc"><pre>' + packDoc(s, packTab) + '</pre></div>' +
-      '<div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span style="font-size:12.5px;color:var(--muted-foreground)">' + tabs[packTab] + ' · PDF</span><button class="btn btn-sm" style="margin-left:auto;display:inline-flex;align-items:center;gap:7px" onclick="showToast(\'Payment packet downloaded\', \'PO, invoice and GL allocation · 3 PDFs\')"><span style="display:inline-flex;width:14px;height:14px">' + IC.dl + '</span>Download all (3)</button></div></div>' +
-      '<div class="val-foot"><span style="font-size:13px;color:var(--muted-foreground);margin-right:auto">' + money(SPO.invTotal(s)) + ' · ' + s.invoice.num + '</span><button class="btn" onclick="closeModal(\'pack-ov\')">Cancel</button><button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendToAccounting()"><span style="display:inline-flex;width:15px;height:15px">' + IC.send + '</span>Send to Accounting</button></div></div>');
+      '<div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span style="font-size:12.5px;color:var(--muted-foreground)">' + tabs[packTab] + ' · PDF</span><button class="btn btn-sm" style="margin-left:auto;display:inline-flex;align-items:center;gap:7px" onclick="showToast(\'Payment packet downloaded\', \'Invoice and GL &amp; unit allocation · 2 PDFs\')"><span style="display:inline-flex;width:14px;height:14px">' + IC.dl + '</span>Download both</button></div></div>' +
+      '<div class="val-foot"><span style="font-size:13px;color:var(--muted-foreground);margin-right:auto">' + money(total) + ' · ' + inv.num + (peers.length > 1 ? ' · ' + peers.length + ' SPOs' : '') + '</span><button class="btn" onclick="closeModal(\'pack-ov\')">Cancel</button><button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendToAccounting()"><span style="display:inline-flex;width:15px;height:15px">' + IC.send + '</span>Send invoice</button></div></div>');
   }
   function sendToAccounting() {
-    const s = S, amt = SPO.invTotal(s), num = s.invoice.num; s.state = 'accounting'; s.ev.accounting = SPO.now();
-    SPO.log(s, 'Sent to Accounting', 'Packet: PO, invoice ' + num + ', GL allocation · ' + money(amt));
-    const waits = SPO.afterSend(s);
-    SPO.save(s); closeModal('pack-ov'); renderPage();
-    showToast('Sent to Accounting', money(amt) + ' for ' + ven(s).name + (waits ? ' — SPO-' + s.id + ' now waits for the next invoice.' : ' — SPO-' + s.id + ' is with Accounting.'));
+    if (!SPO.invReady(S)) return;
+    const r = SPO.sendInvoice(S, 'Alicia Grant');
+    closeModal('pack-ov'); renderPage();
+    showToast('Invoice ' + r.num + ' sent to Accounting', money(r.total) + (r.spos.length > 1 ? ' · ' + r.spos.map(id => 'SPO-' + id).join(', ') + ' are with Accounting' : '') + (r.waits.length ? ' · SPO-' + r.waits.join(', SPO-') + ' now waits for the next invoice' : '') + '.');
   }
 
   function copyNum() { showToast('Copied', 'SPO-' + S.id); }

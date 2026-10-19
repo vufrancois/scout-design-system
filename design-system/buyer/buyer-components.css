@@ -2006,3 +2006,11 @@
 .buyer .inv-map .im-muted { color: var(--muted-foreground); }
 .buyer .inv-map .im-other { margin-left: 6px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--muted); color: var(--muted-foreground); font-size: 11px; font-weight: 600; }
 @media (max-width: 640px) { .buyer .inv-map .im-row { grid-template-columns: 1fr auto; } .buyer .inv-map .im-to { grid-column: 1 / -1; } .buyer .inv-map .im-row.hd span:last-child { display: none; } }
+
+/* ===== Send to Accounting per invoice (10/19/2026, TKT-SPO-61): Send sits on the invoice heading once every SPO on it
+   is mapped; SPO rows read "Mapped" (a label, not a button). ===== */
+.buyer .inv-acts { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.buyer .inv-pdf { width: 32px; height: 32px; }
+.buyer .inv-pdf svg { width: 15px; height: 15px; }
+.buyer .row-mapped { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--muted-foreground); white-space: nowrap; }
+.buyer .row-mapped svg { width: 14px; height: 14px; color: var(--emerald); }

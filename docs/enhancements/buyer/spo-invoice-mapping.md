@@ -154,7 +154,7 @@ The audit's own case is seeded: SPO-858's INV-30418.pdf is 2,662 bytes and shows
 - [ ] Home's ready-to-send count and Your move count invoices, not SPOs.
 - [ ] An SPO with lines still open returns to Awaiting Invoice after its invoice is sent (TKT-SPO-59).
 **Backend / data:** a send-invoice action that transitions every SPO on the invoice atomically; the packet built per invoice (lines with GL, unit and SPO reference).
-**Replaces:** the per-SPO Send to Accounting in TKT-SPO-14 and the "Mixed" heading status in TKT-SPO-58.
+**Replaces:** the per-SPO Send to Accounting in TKT-SPO-18 and the "Mixed" heading status in TKT-SPO-58.
 **Files:** `buyer/spo-data.js` (`invPeers`, `invReady`, `sendInvoice`), `buyer/spos.html` (`invRow`, `MAPPED`), `buyer/spo.html` (`packDoc`, `renderPack`, `sendToAccounting`, task strip), `buyer/spo-invoice.html` (`sendAll`), `buyer/home.html`, `buyer/buyer-components.css` (`.inv-acts`, `.inv-pdf`, `.row-mapped`)
 
 

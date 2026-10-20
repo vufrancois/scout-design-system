@@ -261,3 +261,36 @@ SPO Stepper states (`.ls-actor.acct`, `.ls-step.active.acct`, `.ls-step.halted`,
 - [ ] An invoice not yet validated shows no table.
 **Backend / data:** the validated mapping per invoice line (SPO id, SPO line, amount; extra GL/unit; removed reason), readable across the SPOs on a shared invoice.
 **Files:** `buyer/spo.html` (`invMap`, `invoiceCard`), `buyer/buyer-components.css` (`.inv-map`, `.im-row`, `.im-other`)
+
+
+> **Updated 10/20/2026 by TKT-SPO-62:** the mapping table from TKT-SPO-60 moved to the invoice page. The SPO page's Invoice card now lists the SPO's invoices with **Open invoice**.
+
+## Addendum · SPO page refresh (10/20/2026)
+
+**Why:** the team updated the SPO page in production and Vu liked it: GL/unit chips per line, "Validated invoices" in totals, actor and time on every Activity event, the property block in the scope card, fixing GL and unit after sending, an SPO | Invoice switch, and accounting references. We built them with guardrails, then cascaded the shared parts to the invoice page.
+
+**What shipped**
+- **GL Allocation Strip** (`SPO.glStrip`) under every SPO line — GL code · name · unit (links to Unit History) · amount per portion — the same component as the invoice page, also on the SPO list's expanded rows, recurring SPOs and the wizard's Review. A portion with no unit shows an amber "Unit not assigned".
+- **Totals:** "Validated invoices $0.00" until an invoice is validated, then the invoiced amounts, above the SPO estimate.
+- **Scope card:** bullets when the scope has one item per line; then Property · Address · Requested by … on … · Spend period (dotted underline; tooltip: the budget month it counts against). These left the side panel.
+- **Edit GL & unit** after sending (Awaiting Invoice, Invoice to Map, Ready): a GL and unit select per portion. Lines already billed are locked ("correct it on the mapping board"). The budget check re-runs: a change that pushes a GL over its spend-period budget can't be saved (a GL already over before the edit isn't blocked again). Every portion needs a unit. Saves log "GL & unit corrected" with each change; the vendor isn't emailed.
+- **SPO | Invoices · n** switch once the SPO has an invoice; the Invoices view lists them with Open invoice (`#<id>/invoices` opens it).
+- **Activity** (shared row, `SPO.actRow`, also on the invoice page): what happened, a short detail, then the exact time and **By …** (a person, the vendor, System or Accounting). Kept quiet: no method ("via email"), the detail never repeats the actor, no email addresses, no time zone (it's on the appointment card). Collapsible, "SPO and invoice history".
+- **Accounting references** (collapsed in the side panel, copyable): SPO number · vendor code · location ID. Demo codes look real — never TEMP codes or placeholder names (audit SPO-03, SPO-13).
+- **Documents:** a neutral count pill and a collapse arrow (also on the invoice page).
+
+**Different from the team's version:** over-budget GL changes are **blocked**, not sent for re-approval (a re-approval request type in Approvals is a follow-up); no "Add equal portion" (splitting a line means editing amounts — its own pass); "Vendor notification: sent" and the duplicated recipients list are left out (the Sent step and the vendor card cover them).
+
+### TKT-SPO-63 · SPO page refresh: GL strip, invoiced-to-date, activity actors, GL & unit corrections
+**Summary:** The SPO page shows GL and unit per line in the shared strip, how much is validated, who did what and when, and lets buyers correct GL and unit after sending without bypassing budget.
+**Acceptance criteria:**
+- [ ] Every SPO line shows its GL Allocation Strip (GL · unit · amount per portion); a portion with no unit reads "Unit not assigned". Same component on the SPO list, recurring SPOs, the wizard and the invoice page.
+- [ ] Totals show Validated invoices (or the invoiced amounts) and the SPO estimate.
+- [ ] The scope card shows bulleted scope when it lists items, plus property, address, requester and date, and spend period with a tooltip.
+- [ ] Edit GL & unit is offered while the SPO awaits or is mapping an invoice; billed lines are locked; a change that pushes a GL over budget can't be saved and says by how much; every portion needs a unit; saves are logged with each change and don't email the vendor.
+- [ ] Once the SPO has invoices, an SPO | Invoices · n switch lists them, each opening the invoice page.
+- [ ] Every Activity event shows its time and actor; no method, repeated actor, email address or time zone in the detail.
+- [ ] Accounting references (SPO number, vendor code, location ID) are available, collapsed and copyable.
+**Backend / data:** vendor codes and location IDs; a GL/unit correction endpoint that re-runs the budget check and logs the change; an actor on every event.
+**Follow-ups:** re-approval for over-budget corrections; Add equal portion.
+**Files:** `buyer/spo-data.js` (`glStrip`, `actorOf`, `actRow`, `vendorCode`, `locationId`, `acctRefs`), `buyer/spo.html` (`allocEditor`, `saveAllocEdit`, `spoTab`, scope card, side panel), `buyer/spos.html`, `buyer/schedule.html`, `buyer/spo-new.html`, `buyer/invoice.html`, `buyer/buyer-components.css` (`.gl-strip`, `.alloc-edit*`, `.acct-refs`, `.ameta`, `.scope-facts`, `.spo-tabs`)

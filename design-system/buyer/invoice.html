@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice — Scout Buyer</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buyer.css">
+<script src="cart.js"></script>
+<script src="spo-data.js"></script>
+<script src="invoice-pack.js"></script>
+</head>
+<body class="buyer">
+
+<!-- ===== App Bar ===== -->
+<div class="app-bar-wrap">
+  <nav class="app-bar" id="app-bar"></nav>
+  <script src="appbar.js"></script>
+</div>
+
+
+
+
+
+
+<section class="hero page-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner" style="flex-direction:column;gap:0">
+    <a class="back-link" id="back-link" href="spos.html#invoices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to Invoices</a>
+    <div class="hero-title-block">
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></div>
+      <div><h1 id="hero-title">Invoice</h1><p id="hero-sub"></p></div>
+    </div>
+  </div>
+</section>
+
+<main class="page">
+  <div class="det-grid">
+    <div class="det-main" id="det-main"></div>
+    <div class="det-side" id="det-side"></div>
+  </div>
+</main>
+
+<script>
+  /* ---------- Theme ---------- */
+  function applyTheme() {
+    const dark = localStorage.getItem('scout-theme') === 'dark';
+    document.body.classList.toggle('dark', dark);
+    const b = document.getElementById('theme-btn');
+    b.querySelector('.icon-sun').style.display = dark ? 'none' : '';
+    b.querySelector('.icon-moon').style.display = dark ? '' : 'none';
+  }
+  function toggleTheme() { localStorage.setItem('scout-theme', document.body.classList.contains('dark') ? 'light' : 'dark'); applyTheme(); }
+  applyTheme();
+
+  /* ---------- Menus ---------- */
+  function closeMenus() {
+    document.querySelectorAll('.menu-panel').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-chip').forEach(c => c.classList.remove('open'));
+  }
+  function toggleMenu(id) {
+    const panel = document.getElementById('menu-' + id), chip = document.getElementById('nav-' + id);
+    const wasOpen = panel.classList.contains('open');
+    closeMenus(); document.getElementById('ctx-switch').classList.remove('open');
+    if (!wasOpen) { panel.classList.add('open'); chip.classList.add('open'); }
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-anchor')) closeMenus();
+    if (!e.target.closest('.ctx-switch')) document.getElementById('ctx-switch').classList.remove('open');
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); document.getElementById('ctx-switch').classList.remove('open'); } });
+
+  /* ---------- Context switcher ---------- */
+  const PROPERTIES = [
+    { id: 'all', name: 'All properties', desc: 'Combined dashboard for every accessible property', units: null },
+    { id: 'magnolia', name: 'Magnolia Place Apartments', addr: '4201 Veterans Memorial Blvd', city: 'Metairie, LA 70006', units: 51 },
+    { id: 'bayou', name: 'Bayou Crossing Apartments', addr: '3850 Airline Dr', city: 'Baton Rouge, LA 70805', units: 120 },
+    { id: 'lonestar', name: 'Lone Star Flats', addr: '7200 Westheimer Rd', city: 'Houston, TX 77057', units: 78 },
+    { id: 'central', name: 'Central Park View', addr: '1501 Canal St', city: 'New Orleans, LA 70112', units: 96 },
+    { id: 'cypress', name: 'Cypress Lake Apartments', addr: '9100 Cypress Lake Dr', city: 'Lafayette, LA 70508', units: 64 },
+    { id: 'beauchene', name: 'Beau Chene Villas', addr: '225 Beau Chene Blvd', city: 'Mandeville, LA 70471', units: 40 },
+    { id: 'sherwood', name: 'Sherwood Acres', addr: '1250 Sherwood Forest Blvd', city: 'Baton Rouge, LA 70815', units: 88 },
+    { id: 'cyprus', name: 'Cyprus Glenn', addr: '4800 Cyprus Glenn Way', city: 'Shreveport, LA 71105', units: 32 },
+    { id: 'heights', name: 'Magnolia Heights Apartments', addr: '6301 Magnolia Heights Rd', city: 'Houston, TX 77004', units: 110 }
+  ];
+  let currentProp = 'all';
+  const bIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>';
+  const pinIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  function renderCtxList() {
+    document.getElementById('ctx-list').innerHTML = PROPERTIES.map(p => {
+      const active = p.id === currentProp;
+      const body = p.id === 'all'
+        ? '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.desc + '</span>'
+        : '<span class="opt-name">' + p.name + (active ? ' <span class="badge-active">Active</span>' : '') + '</span><span class="opt-addr">' + p.addr + '</span><span class="opt-city">' + pinIcon + p.city + '</span>';
+      const units = p.units ? '<span class="units-badge"><b>' + p.units + '</b><span>units</span></span>' : '';
+      return '<button class="ctx-option' + (active ? ' active' : '') + '" onclick="selectProp(\'' + p.id + '\')"><span class="opt-tile">' + bIcon + '</span><span class="opt-body">' + body + '</span>' + units + '</button>';
+    }).join('');
+  }
+  function selectProp(id) {
+    currentProp = id;
+    const p = PROPERTIES.find(x => x.id === id);
+    document.getElementById('echo-name').textContent = p.name;
+    document.getElementById('echo-name').title = p.id === 'all' ? '9 accessible properties' : p.units + ' units · ' + p.city;
+    renderCtxList();
+    document.getElementById('ctx-switch').classList.remove('open');
+    renderPage();
+  }
+  function toggleCtx() {
+    const el = document.getElementById('ctx-switch');
+    const wasOpen = el.classList.contains('open');
+    closeMenus();
+    if (!wasOpen) el.classList.add('open');
+  }
+  renderCtxList();
+
+  const money = SPO.money, r2 = SPO.r2;
+  const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  const IC = {
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+    pen: SVG + '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
+    shield: SVG + '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+    send: SVG + '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>',
+    hand: SVG + '<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>',
+    doc: SVG + '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>',
+    map: SVG + '<path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>',
+    card: SVG + '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    flag: SVG + '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>',
+    clock: SVG + '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+    warn: SVG + '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+    ban: SVG + '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>',
+    copy: SVG + '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+    dl: SVG + '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
+    cal: SVG + '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>',
+    upload: SVG + '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>',
+    refresh: SVG + '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>',
+    split: SVG + '<path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>',
+    swap: SVG + '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>',
+    search: SVG + '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'
+  };
+
+
+  /* ===================== Invoice page (team feedback 10/20/2026, TKT-SPO-62) =====================
+     After the invoice arrives, the INVOICE is the record that moves to payment; the SPO only says which GL code and unit
+     each invoice line books to. Drill into the invoice to see its lines and the SPO line each was mapped to. */
+  const ven = s => SPO.VEN[s.v];
+  const propOf = s => PROPERTIES.find(p => p.id === s.prop) || PROPERTIES[1];
+  const STAGE = { mapping: ['dot-pending', 'Invoice to Map'], ready: ['dot-pending', 'Ready for Accounting'], accounting: ['dot-violet', 'With Accounting'], paid: ['dot-approved', 'Paid'] };
+  const pill = k => '<span class="status-dot-item" style="white-space:nowrap"><span class="status-dot ' + STAGE[k][0] + '"></span><span class="status-dot-label">' + STAGE[k][1] + '</span></span>';
+  const recSt = (sp, rec) => rec === sp.invoice ? sp.state : rec.status;
+  /* The invoice's own status: to map until every SPO's slice is mapped, then ready, with Accounting, paid. */
+  const invStatus = peers => { const st = peers.map(x => recSt(x.sp, x.rec)); return st.indexOf('mapping') >= 0 ? 'mapping' : st.every(x => x === 'ready') ? 'ready' : st.indexOf('ready') >= 0 || st.indexOf('accounting') >= 0 ? 'accounting' : 'paid'; };
+  let F = null, packTab = 'gl', actExpanded = false, actCollapsed = false, docsCollapsed = false, view = 'details';
+  const NOUNIT = '<span class="alloc-chip warn">Unit not assigned</span>'; /* Accounting can't book a line without a unit */
+
+  /* Line items, invoice-first (team layout, 10/20/2026): one row per invoice line in the vendor's order, the SPO line(s)
+     it was mapped to, and under it the GL code · unit portions with amounts — pro-rated exactly as in the payment packet,
+     so this view and what Accounting receives always agree. A line split across SPOs on a shared invoice is one row. */
+  function portions(sp, il) {
+    const out = [];
+    (il.maps || []).forEach(m => {
+      const sl = sp.lines[m.line]; if (!sl) return;
+      const tot = sl.alloc.reduce((a, x) => a + x.amt, 0) || 1; let left = m.amt;
+      sl.alloc.forEach((a, j) => { const amt = j === sl.alloc.length - 1 ? r2(left) : r2(m.amt * a.amt / tot); left = r2(left - amt); out.push({ gl: a.gl, unit: a.unit, amt }); });
+    });
+    return out;
+  }
+  function invLines(peers) {
+    const rows = [], byDesc = {};
+    peers.forEach(({ sp, rec: r }) => r.lines.forEach(il => {
+      const k = (il.desc || '') + '|' + (il.status === 'removed' ? 'x' : '');
+      const row = byDesc[k] || (byDesc[k] = rows[rows.push({ desc: il.desc, amt: 0, parts: [] }) - 1]);
+      row.amt = r2(row.amt + (il.amt || 0)); row.parts.push({ sp, il, sug: recSt(sp, r) === 'mapping' });
+    }));
+    const ref = (sp, txt, sug) => '<a class="table-link il-ref' + (sug ? ' sug' : '') + '" href="spo.html#' + sp.id + '"' + (sug ? ' title="Suggested by Scout AI — confirm it on the mapping board"' : '') + '>' + IC.link + 'SPO-' + sp.id + (txt ? ' · ' + txt : '') + '</a>';
+    const prop = peers[0].sp.prop, unitChip = u => u ? '<a class="il-unit unit-link" href="unit-history.html#' + prop + '/' + u + '" title="Unit history">' + SPO.unitLabel(u) + '</a>' : NOUNIT; /* same link as the SPO page's strip */
+    return '<div class="il-table"><div class="il-row hd"><span>Item</span><span>Mapped SPOs</span><span class="il-amt">Total</span></div>' + rows.map(row => {
+      const gone = row.parts.every(x => x.il.status === 'removed');
+      const refs = [], strip = [];
+      row.parts.forEach(({ sp, il, sug }) => {
+        if (il.status === 'removed') { strip.push('<div class="il-por muted">Removed — not payable' + (il.resReason ? ' · “' + il.resReason + '”' : '') + '</div>'); return; }
+        if (il.extra) { refs.push(ref(sp, 'one-time extra')); strip.push('<div class="il-por"><span class="il-gl"><b>' + il.extra.gl + '</b>' + SPO.glName(il.extra.gl) + '</span><span class="im-muted">One-time extra</span>' + unitChip(il.extra.unit) + '<b class="il-amt">' + money(il.amt) + '</b></div>'); return; }
+        if (!(il.maps || []).length) { strip.push('<div class="il-por warn">' + IC.warn + 'Not mapped to an SPO line yet</div>'); return; }
+        il.maps.forEach(m => refs.push(ref(sp, 'Line ' + (m.line + 1), sug)));
+        portions(sp, il).forEach(po => strip.push('<div class="il-por"><span class="il-gl"><b>' + po.gl + '</b>' + SPO.glName(po.gl) + '</span>' + unitChip(po.unit) + '<b class="il-amt">' + money(po.amt) + '</b></div>'));
+      });
+      return '<div class="il-item' + (gone ? ' gone' : '') + '"><div class="il-row"><span class="il-desc">' + row.desc + '</span><span class="il-refs">' + (refs.join('') || '<span class="im-muted">—</span>') + '</span><b class="il-amt">' + money(row.amt) + '</b></div>' +
+        '<div class="il-strip">' + strip.join('') + '</div></div>';
+    }).join('') + '</div>';
+  }
+  /* One link to the mapping board (one per SPO on a shared invoice); Map invoice while it still needs mapping */
+  function mapLinks(peers, rec) {
+    const btn = (href, label) => '<a class="btn btn-sm" style="text-decoration:none;white-space:nowrap" href="' + href + '">' + label + '</a>';
+    if (peers.some(x => recSt(x.sp, x.rec) === 'mapping')) return '';
+    return peers.length === 1 ? btn('spo.html#' + peers[0].sp.id + '/mapping-' + encodeURIComponent(rec.num), 'View mapping')
+      : '<span class="il-maplinks"><span class="im-muted">View mapping:</span>' + peers.map(x => '<a class="table-link" href="spo.html#' + x.sp.id + '/mapping-' + encodeURIComponent(rec.num) + '">SPO-' + x.sp.id + '</a>').join('') + '</span>';
+  }
+
+  function renderPage() {
+    const num = decodeURIComponent((location.hash || '').replace('#', '').split('/')[0]);
+    F = PACK.find(num);
+    const main = document.getElementById('det-main'), side = document.getElementById('det-side');
+    if (!F) { document.title = 'Invoice not found — Scout Buyer'; document.getElementById('hero-sub').textContent = ''; document.getElementById('hero-title').textContent = 'Invoice not found'; main.innerHTML = '<div class="card">No invoice “' + num + '”. <a class="text-link" href="spos.html#invoices">Back to Invoices</a></div>'; side.innerHTML = ''; return; }
+    const { s, rec, peers } = F, v = ven(s), p = propOf(s), st = invStatus(peers);
+    const total = rec.shared ? rec.shared.total : SPO.invTotal({ invoice: rec }), w = PACK.whole(s, rec);
+    const sub = r2(w.lines.reduce((a, l) => a + (l.amt || 0), 0));
+    const cur = peers.find(x => x.rec === x.sp.invoice), at = k => cur ? cur.sp.ev[k] : (rec.at || {})[k];
+    document.title = 'Invoice ' + rec.num + ' — Scout Buyer';
+    document.getElementById('hero-title').innerHTML = rec.num + '<button class="hero-copy" onclick="showToast(\'Copied\', \'' + rec.num + '\')" title="Copy invoice number">' + IC.copy + '</button>';
+    document.getElementById('hero-sub').innerHTML = '<span class="hero-tag">Service</span>' + v.name + ' · ' + p.name + ' · Received ' + SPO.fmtDate(at('invoiced') || rec.date);
+    document.getElementById('back-link').href = 'spos.html#' + (st === 'paid' ? 'closed' : 'invoices');
+
+    /* Progress: Received → Mapped → Sent to Accounting → Paid, each with its actor and date; then the next step */
+    const ready = cur && SPO.invReady(cur.sp, rec), toMap = peers.filter(x => recSt(x.sp, x.rec) === 'mapping');
+    const STEPS = [['Received', 'vendor', IC.doc, at('invoiced') || rec.date], ['Mapped', 'you', IC.map, at('mapped')], ['Sent to Accounting', 'you', IC.send, at('accounting')], ['Payment recorded', 'acct', IC.card, at('paid')]];
+    const done = { mapping: 1, ready: 2, accounting: 3, paid: 4 }[st];
+    const stepper = '<div class="ls-stepper">' + STEPS.map(([label, actor, icon, d], i) => {
+      const cls = i < done ? 'done' : i === done ? 'active' + (actor === 'acct' ? ' acct' : '') : 'future';
+      return '<div class="ls-step ' + cls + '"><div class="ls-dot">' + (i < done ? IC.check : icon) + '</div><div class="ls-label">' + label + '</div>' +
+        (actor === 'you' ? '<span class="ls-actor you">YOU</span>' : actor === 'acct' ? '<span class="ls-actor acct">ACCOUNTING</span>' : '<span class="ls-actor">VENDOR</span>') +
+        (i < done && d ? '<span class="ls-date">' + SPO.fmtDate(d) + '</span>' : i === done ? '<span class="ls-date">' + (actor === 'acct' ? 'in progress' : 'your move') + '</span>' : '') + '</div>' +
+        (i < STEPS.length - 1 ? '<div class="ls-conn' + (i < done - 1 ? ' done' : '') + '"></div>' : '');
+    }).join('') + '</div>';
+    const strip = (tone, ico, title, desc, act) => '<div class="task-strip"><span class="ts-icon"' + (tone === 'acct' ? ' style="background:var(--violet-soft);color:var(--violet)"' : tone === 'done' ? ' style="background:var(--emerald-soft);color:var(--emerald)"' : '') + '>' + ico + '</span><div class="ts-body"><div class="ts-title">' + title + '</div><div class="ts-desc">' + desc + '</div></div>' + (act || '') + '</div>';
+    const next = st === 'mapping' ? strip('action', IC.map, 'Your next step · Map the invoice', toMap.length === peers.length ? 'Match each invoice line to an SPO line so Accounting knows its GL code and unit.' : toMap.map(x => 'SPO-' + x.sp.id).join(', ') + ' still to map.', '<a class="btn btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap" href="spo.html#' + toMap[0].sp.id + '/invoice"><span style="display:inline-flex;width:15px;height:15px">' + IC.map + '</span>Map invoice</a>')
+      : st === 'ready' ? strip('action', IC.send, 'Your next step · Send to Accounting', 'Every line is mapped' + (peers.length > 1 ? ' across ' + peers.length + ' SPOs, which move together' : '') + '. Accounting gets the invoice and its GL & unit allocation.', '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap" onclick="openAccounting()"><span style="display:inline-flex;width:15px;height:15px">' + IC.send + '</span>Send to Accounting</button>')
+      : st === 'accounting' ? strip('acct', IC.card, 'Waiting on Accounting · Payment', 'Sent on ' + SPO.fmtDate(at('accounting')) + '. Payment status follows the Accounting sync.')
+      : strip('done', IC.check, 'Paid', money(total) + ' released by Accounting on ' + SPO.fmtDate(at('paid')) + '.');
+    let m = '<div class="card"><div class="det-card-head"><h2>Invoice progress</h2>' + pill(st) + '</div>' + stepper + '</div>' + next;
+
+    /* Mapped SPO items: per SPO, the invoice lines on THIS invoice and the SPO line (GL, unit) each books to */
+    const seg = '<div class="mode-seg"><button class="' + (view === 'details' ? 'active' : '') + '" onclick="view = \'details\'; renderPage()">' + IC.map + '<span>Invoice details</span></button><button class="' + (view === 'pdf' ? 'active' : '') + '" onclick="view = \'pdf\'; renderPage()">' + IC.doc + '<span>Invoice PDF</span></button></div>';
+    m += '<div class="card"><div class="det-card-head hd"><div><h2>' + (view === 'pdf' ? 'Invoice PDF' : 'Line items and GL codes') + '</h2><div class="sub">' + (view === 'pdf' ? rec.file + ' · PDF, ' + SPO.fileSize(SPO.invSize(rec)) : 'Each invoice line, the SPO line it was mapped to, and the GL code and unit Accounting books it to.') + '</div></div><span class="il-head-acts">' + (view === 'details' ? mapLinks(peers, rec) : '') + seg + '</span></div>' +
+      (view === 'pdf' ? '<div class="cx-pdfview" style="margin-top:12px"><pre>' + PACK.pdfLines(s, w, p) + '</pre></div><div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:7px" onclick="showToast(\'Download started\', \'' + rec.file + '\')"><span style="display:inline-flex;width:14px;height:14px">' + IC.dl + '</span>Download PDF</button></div>' : invLines(peers) +
+      /* Totals, as on the vendor's invoice */
+      '<div class="det-totals" style="margin-top:14px"><div class="tot-row"><span>Item total</span><span>' + money(sub) + '</span></div><div class="tot-row"><span>Shipping</span><span>' + money(w.ship || 0) + '</span></div><div class="tot-row"><span>Sales tax' + (peers.length > 1 ? ' · each SPO’s share in Documents' : '') + '</span><span>' + money(w.tax) + '</span></div><div class="tot-row grand"><span>Total</span><span>' + money(total) + '</span></div></div>') + '</div>';
+
+    /* Side: facts, then this invoice's activity across its SPOs */
+    let sd = '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Invoice details</h2></div><dl class="fact-rows wide" style="margin-top:10px">' +
+      '<dt>Invoice #</dt><dd>' + rec.num + '</dd><dt>Invoice date</dt><dd>' + SPO.fmtDate(rec.date) + '</dd>' +
+      '<dt>Vendor</dt><dd>' + v.name + '</dd><dt>Property</dt><dd>' + p.name + '</dd><dt>Address</dt><dd>' + p.addr + ', ' + p.city + '</dd>' +
+      '<dt>Invoice total</dt><dd><b>' + money(total) + '</b></dd>' +
+      '<dt>Accounting</dt><dd>' + (st === 'paid' ? 'Paid ' + SPO.fmtDate(at('paid')) : st === 'accounting' ? 'Sent ' + SPO.fmtDate(at('accounting')) : 'Not sent') + '</dd></dl>' +
+      '<div class="w-note" style="margin:12px 0 0">' + IC.clock + '<span>Payment status follows the Accounting sync. Partial or unknown payments are never marked Paid.</span></div>' +
+      SPO.acctRefs([['Invoice #', rec.num, true], ['SPO number' + (peers.length > 1 ? 's' : ''), peers.map(x => 'SPO-' + x.sp.id).join(', '), peers.length === 1], ['Vendor code', SPO.vendorCode(s.v), true], ['Location ID', SPO.locationId(s.prop), true]]) + '</div>';
+    /* Documents: the vendor's invoice, the payment packet once sent, and the POs of the SPOs it covers */
+    const docs = [['Invoice ' + rec.num, rec.file, 'emerald', 'showToast(\'Download started\', \'' + rec.file + '\')', IC.dl]];
+    if (st === 'accounting' || st === 'paid') docs.push(['Payment packet', 'Invoice + GL & unit allocation · sent ' + SPO.fmtDate(at('accounting')), 'violet', 'showToast(\'Payment packet downloaded\', \'2 PDFs\')', IC.dl]);
+    peers.forEach(x => docs.push(['SPO-' + x.sp.id, 'Purchase order · ' + money(SPO.invTotal({ invoice: x.rec })) + ' on this invoice' + (x.rec.tax ? ' incl. ' + money(x.rec.tax) + ' tax' : ''), '', 'location.href=\'spo.html#' + x.sp.id + '\'', IC.link]));
+    sd += '<div class="card"><div class="det-card-head"><h2 class="h-count" style="font-size:16px">Documents <span class="count-pill">' + docs.length + '</span></h2><button class="row-action act-toggle' + (docsCollapsed ? '' : ' open') + '" title="' + (docsCollapsed ? 'Show' : 'Hide') + ' documents" aria-expanded="' + !docsCollapsed + '" onclick="docsCollapsed = !docsCollapsed; renderPage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>' +
+      (docsCollapsed ? '' : docs.map(d => '<div class="doc-row' + (d[2] ? ' ' + d[2] : '') + '">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + d[0] + '</div><div class="doc-date">' + d[1] + '</div></div><button class="row-action" title="' + (d[4] === IC.link ? 'Open' : 'Download') + '" onclick="' + d[3] + '">' + d[4] + '</button></div>').join('')) + '</div>';
+    const seen = new Set(), evs = [].concat(...peers.map(x => (x.sp.log || []).filter(e => (e.sub || '').indexOf(rec.num) >= 0 || (e.t || '').indexOf(rec.num) >= 0).map(e => Object.assign({}, e, { sp: x.sp }))))
+      .filter(e => { const k = e.at + '|' + e.t; if (seen.has(k)) return false; seen.add(k); return true; }).sort((a, b) => b.at.localeCompare(a.at))
+      /* each SPO logs its own slice; on the invoice, receipt reads as the whole invoice */
+      .map(e => e.t === 'Invoice received' ? Object.assign({}, e, { sub: rec.num + ' · ' + money(total) + (peers.length > 1 ? ' · ' + peers.length + ' SPOs' : '') }) : e);
+    const shown = actExpanded ? evs : evs.slice(0, 6);
+    sd += '<div class="card"><div class="det-card-head"><div><h2 style="font-size:16px">Activity</h2><div class="sub">Invoice history across its SPOs</div></div><button class="row-action act-toggle' + (actCollapsed ? '' : ' open') + '" title="' + (actCollapsed ? 'Show' : 'Hide') + ' activity" aria-expanded="' + !actCollapsed + '" onclick="actCollapsed = !actCollapsed; renderPage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>' +
+      (actCollapsed ? '' : '<div class="act-tl">' + (shown.length ? shown.map(e => SPO.actRow(e, e.sp)).join('') : '<div class="asub">Received ' + SPO.fmtDate(rec.date) + '.</div>') +
+      (evs.length > shown.length ? '<button class="act-more" onclick="actExpanded = true; renderPage()">Show ' + (evs.length - shown.length) + ' more</button>' : '') + '</div>') + '</div>';
+    main.innerHTML = m; side.innerHTML = sd;
+    if ((location.hash.split('/')[1] || '') === 'accounting' && ready) setTimeout(openAccounting, 120);
+  }
+
+  function copyRef(v) { try { navigator.clipboard.writeText(v).catch(() => {}); } catch (e) { /* no clipboard: the toast still confirms */ } showToast('Copied', v); }
+
+  /* Send to Accounting — the same packet as the SPO page (invoice-pack.js) */
+  function openAccounting() { packTab = 'gl'; renderPack(); }
+  function renderPack() { const c = F.peers.find(x => x.rec === x.sp.invoice); modal('pack-ov', PACK.packModal(c.sp, packTab, propOf(c.sp), IC, 'packTab', 'renderPack')); }
+  function sendToAccounting() {
+    const c = F.peers.find(x => x.rec === x.sp.invoice); if (!c || !SPO.invReady(c.sp)) return;
+    const r = SPO.sendInvoice(c.sp, 'Alicia Grant');
+    closeModal('pack-ov'); renderPage();
+    showToast('Invoice ' + r.num + ' sent to Accounting', money(r.total) + (r.spos.length > 1 ? ' · SPO-' + r.spos.join(', SPO-') + ' are with Accounting' : '') + (r.waits.length ? ' · SPO-' + r.waits.join(', SPO-') + ' now waits for the next invoice' : '') + '.');
+  }
+  function modal(id, html) {
+    let ov = document.getElementById(id);
+    if (!ov) { ov = document.createElement('div'); ov.className = 'overlay center'; ov.id = id; ov.addEventListener('click', e => { if (e.target === ov) closeModal(id); }); document.body.appendChild(ov); }
+    ov.innerHTML = html; ov.classList.add('open'); document.body.style.overflow = 'hidden';
+    return ov;
+  }
+  function closeModal(id) {
+    const ov = document.getElementById(id); if (ov) ov.classList.remove('open');
+    document.body.style.overflow = '';
+    const h = location.hash.split('/'); if (h.length > 1) history.replaceState(null, '', h[0]);
+  }
+  let toastTimer;
+  function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:600;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
+
+  window.addEventListener('hashchange', () => { actExpanded = false; renderPage(); });
+  renderPage();
+</script>
+</body>
+</html>

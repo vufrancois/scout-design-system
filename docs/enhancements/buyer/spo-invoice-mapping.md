@@ -156,3 +156,41 @@ The audit's own case is seeded: SPO-858's INV-30418.pdf is 2,662 bytes and shows
 **Backend / data:** a send-invoice action that transitions every SPO on the invoice atomically; the packet built per invoice (lines with GL, unit and SPO reference).
 **Replaces:** the per-SPO Send to Accounting in TKT-SPO-14 and the "Mixed" heading status in TKT-SPO-58.
 **Files:** `buyer/spo-data.js` (`invPeers`, `invReady`, `sendInvoice`), `buyer/spos.html` (`invRow`, `MAPPED`), `buyer/spo.html` (`packDoc`, `renderPack`, `sendToAccounting`, task strip), `buyer/spo-invoice.html` (`sendAll`), `buyer/home.html`, `buyer/buyer-components.css` (`.inv-acts`, `.inv-pdf`, `.row-mapped`)
+
+
+## Addendum · The invoice page and a Canceled tab (10/20/2026)
+
+**Why:** team feedback: "I would like the invoices to be drill through. When you drill into the invoice that's when you can see the line items and what SPO was mapped to it. Not the other way around… It's really a function of moving the invoice through the flow for payment and the SPO is solely for mapping the GL code and unit." The SPO exists earlier because GL and unit have to go through budget and approval. Decisions (Vu): **A** — add the invoice page; keep the list's Group by invoice for now. **B** — add a Canceled tab. **C** — Invoices and Closed count invoices. **D** — the SPO page's mapping table (TKT-SPO-60) moves to the invoice page. The team's two mock-ups shaped the page; what we kept different is noted below.
+
+**What shipped**
+- **Invoice page** (`buyer/invoice.html#<invoice number>`), opened from the invoice number on the Invoices and Closed tabs, and from the SPO page's Invoices tab.
+  - Header: invoice number (copy), a **Service** tag, vendor · property · received date.
+  - **Invoice progress:** Received (VENDOR) → Mapped (YOU) → Sent to Accounting (YOU) → Payment recorded (**ACCOUNTING**), dated; one status pill.
+  - **Next-step strip** with the one action: Map invoice · Send to Accounting · Waiting on Accounting · Paid.
+  - **Line items and GL codes** (invoice-first, the team's layout): one row per invoice line in the vendor's order · the **SPO line(s)** it maps to ("SPO-857 · Line 1") · total; under each line a **GL Allocation Strip** of GL code · name · unit (links to Unit History) · amount, pro-rated exactly as in the payment packet. A line split across SPOs on a shared invoice is one row. Problems show in the strip: Not mapped · Unit not assigned · One-time extra · removed lines struck with the reason. Links Scout AI suggested but nobody confirmed are muted, with a tooltip. **View mapping** opens the read-only board (one link per SPO on a shared invoice).
+  - **Invoice PDF** view (switch in the card header), item total · shipping · sales tax · total.
+  - Side: **Invoice details** (number, date, vendor, property, address, total, Accounting status, "payment status follows the Accounting sync" note, collapsed **Accounting references**: invoice #, SPO numbers, vendor code, location ID); **Documents** (invoice PDF, payment packet once sent, each SPO with its amount and tax share on this invoice); **Activity** across its SPOs.
+  - **Send to Accounting** from the page (the same per-invoice packet as the SPO page, shared code in `invoice-pack.js`).
+- **Canceled tab:** Open · Invoices · Closed · **Canceled**. Closed holds paid invoices only; Canceled has Canceled and Canceled for Rebid cards.
+- **Counts in invoices:** Invoices and Closed tab counts and cards count invoices (each invoice on the tab of its own status). Invoices: Total · Your Move (to map or send) · With Accounting. Closed: Paid Invoices · Total Paid.
+- **SPO page:** the Invoice card lists invoices with **Open invoice**; the mapping table (TKT-SPO-60) lives on the invoice page.
+
+**Kept different from the team's mock-ups:** one status pill (not three); Payment recorded is Accounting's step; real next-step copy; GL and unit are **read-only** on the invoice page (they go through budget and approval on the SPO; corrections via the SPO or the mapping board); no Qty / Unit price columns.
+
+**Held (needs invoice extraction to read them off the vendor's PDF):** quantity and rate on invoice lines, with a rate-vs-estimate hint; terms, due date and an Overdue flag. Also held: Dispute from the invoice page (today it's on the mapping board).
+
+### TKT-SPO-62 · Invoice page, invoice-first line items, and a Canceled tab
+**Summary:** After the invoice arrives it's the record: drill into it to see each invoice line, the SPO line it was mapped to, and the GL code and unit Accounting books it to.
+**Acceptance criteria:**
+- [ ] An invoice page opens from the invoice number on the Invoices and Closed tabs and from the SPO page; an unknown number shows "Invoice not found".
+- [ ] It shows progress (Received → Mapped → Sent to Accounting → Payment recorded) with actors and dates, one status, and a next-step strip whose action is Map invoice, Send to Accounting, or none.
+- [ ] Line items list each invoice line in invoice order with the SPO line(s) it maps to and a GL Allocation Strip of GL · unit · amount portions that sum to the line and match the payment packet; a line split across SPOs is one row.
+- [ ] Unmapped lines, units not assigned, one-time extras and removed lines are labelled in the strip; unconfirmed suggestions are visually distinct.
+- [ ] A switch shows the invoice PDF; totals show item total, shipping, sales tax and total.
+- [ ] The side shows invoice details, collapsed accounting references (invoice #, SPO numbers, vendor code, location ID, each copyable), documents (invoice, packet once sent, each SPO with its amount on this invoice) and the invoice's activity across its SPOs.
+- [ ] Send to Accounting from the page sends the whole invoice (TKT-SPO-61).
+- [ ] GL and unit are read-only here.
+- [ ] The SPO list has Open · Invoices · Closed · Canceled; Closed holds paid invoices; Invoices and Closed count invoices and their cards filter invoices.
+**Backend / data:** an invoice record with its lines, per-line mapping and status (TKT-SPO-59/61); vendor codes and property location IDs for the references.
+**Reshapes:** TKT-SPO-58 (tab counts and cards are invoices), TKT-SPO-60 (the mapping table moves from the SPO page to the invoice page).
+**Files:** `buyer/invoice.html`, `buyer/invoice-pack.js` (`pdfLines`, `glAllocation`, `packDoc`, `packModal`, `find`), `buyer/spos.html` (`TABS`, `invoicesOn`, `statCards`), `buyer/spo.html` (`invoiceCard`, `#<id>/mapping-<num>`), `buyer/buyer-components.css` (`.il-*`, `.hero-tag`, `.count-pill`)

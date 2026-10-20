@@ -141,7 +141,7 @@
       appt: { status: 'confirmed', start: '2026-08-20T10:00', end: '2026-08-20T12:00', by: 'buyer', at: '2026-08-14 10:01', confirmedAt: '2026-08-14 15:30' },
       ev: { created: '2026-08-14 10:00', sent: '2026-08-14 10:01', accepted: '2026-08-14 15:30', invoiced: '2026-08-21 16:40' } },
     { id: 857, state: 'mapping', prop: 'cypress', v: 'MR', by: 'Alicia Grant', period: 'Aug 2026',
-      scope: 'Make-ready for four vacant units: interior paint in 0102 and 0103, carpet cleaning in 0104, and a combined paint-and-carpet refresh in 0105.',
+      scope: 'Interior paint in units 0102 and 0103\nCarpet cleaning in unit 0104\nPaint-and-carpet refresh in unit 0105', /* one item per line → bullets on the SPO page (TKT-SPO-63) */
       lines: [
         L('Interior paint, unit 0102', 1, 400, [A('6140', '0102', 400)]),
         L('Interior paint, unit 0103', 1, 400, [A('6140', '0103', 400)]),
@@ -528,6 +528,51 @@
     }
   }
 
+  /* Who did it (TKT-SPO-63): every Activity event names its actor. An explicit e.by wins; an event whose detail already
+     says "by <name>" needs nothing more; otherwise the actor follows from what happened. */
+  function actorOf(e, s) {
+    if (e.by) return e.by;
+    if (/(^|· )by [A-Z]/.test(e.sub || '')) return null;
+    const T = e.t || '', v = (VEN[s.v] || { name: 'Vendor' }).name;
+    if (/^Vendor (accepted|rejected|proposed)/.test(T) || T === 'Invoice received' && !/uploaded by/.test(e.sub || '')) return v;
+    if (/^(Paid|Invoice paid)$/.test(T)) return 'Accounting';
+    if (/^(Created and sent by|Drafted by) recurring/.test(T) || T === 'Waiting on the next invoice') return 'System';
+    if (/^(Sent to vendor|PO resent|Sent for approval|Service time proposed|New time proposed|New time accepted|Sent to Accounting|Invoice mapped & validated|Lines closed unbilled)/.test(T)) return s.by;
+    return null;
+  }
+
+  /* Accounting references (TKT-SPO-63): the IDs Accounting matches in their system. Demo codes are stable and look real —
+     never TEMP codes or placeholder names (audit SPO-03, SPO-13). */
+  const LOCATION = { magnolia: '0412', bayou: '0518', lonestar: '0623', central: '0731', cypress: '0656', beauchene: '0844', sherwood: '0927', cyprus: '1035', heights: '1142' };
+  const vendorCode = k => { let h = 0; String(k).split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) >>> 0; }); return 'V-' + (10000 + h % 90000); };
+  const locationId = prop => LOCATION[prop] || '—';
+  /* rows: [[label, value, copyable]] — a collapsed block for the side panel */
+  function acctRefs(rows) {
+    return '<details class="acct-refs"><summary>Accounting references</summary><dl>' + rows.map(([l, v, c]) => '<dt>' + l + '</dt><dd>' + v + (c ? '<button class="ref-copy" title="Copy ' + l.toLowerCase() + '" onclick="event.preventDefault(); copyRef(\'' + v + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>' : '') + '</dd>').join('') + '</dl></details>';
+  }
+
+  /* GL Allocation Strip (TKT-SPO-63): the one GL component for SPO and invoice line items — each portion as
+     GL code · name · unit · amount. The unit links to Unit History when the property is known; a portion with no unit
+     shows an amber "Unit not assigned". Used by the SPO page, the SPO list, recurring SPOs, the wizard and the invoice page. */
+  function glStrip(alloc, prop) {
+    return '<div class="il-strip gl-strip">' + alloc.map(a => '<div class="il-por"><span class="il-gl"><b>' + (a.gl || '—') + '</b>' + (a.gl ? glName(a.gl) : '<span style="color:#b45309">GL not set</span>') + '</span>' +
+      (!a.unit ? '<span class="alloc-chip warn">Unit not assigned</span>' : prop ? '<a class="il-unit unit-link" href="unit-history.html#' + prop + '/' + a.unit + '" title="Unit history">' + unitLabel(a.unit) + '</a>' : '<span class="il-unit">' + unitLabel(a.unit) + '</span>') +
+      '<b class="il-amt">' + money(a.amt || 0) + '</b></div>').join('') + '</div>';
+  }
+
+  /* One Activity row, shared by the SPO page and the invoice page: what happened, a short detail, then the exact time and
+     who did it. Kept quiet on purpose: a trailing "by <name>" moves to the By line, the detail never repeats the actor,
+     the vendor's email address stays on the vendor card, and the time zone stays on the appointment card. */
+  function actRow(e, s) {
+    let d = e.sub || '', by = null;
+    const m = /(?:^| · )by ([A-Z][^·]+)$/.exec(d); /* a name, not "by proposing a new time" */
+    if (m) { by = m[1].trim(); d = d.slice(0, m.index); } else by = actorOf(e, s);
+    if (by && d.indexOf(by) === 0) d = d.slice(by.length).replace(/^ · /, '');
+    if (/^(PO emailed to|to) \S+@\S+$/.test(d)) d = '';
+    if (d === 'by proposing a new time') d = 'With a new time';
+    return '<div class="act-ev' + (e.hi ? ' hi' : '') + (e.bad ? ' bad' : '') + '"><span class="adot"></span><div class="abody"><div class="at">' + e.t + '</div>' + (d ? '<div class="asub">' + d + '</div>' : '') + '<div class="ameta">' + fmtDT(e.at) + (by ? ' · By ' + by : '') + '</div></div></div>';
+  }
+
   /* ---------- store ---------- */
   const clone = o => JSON.parse(JSON.stringify(o));
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
@@ -755,5 +800,5 @@
 
   window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, vh, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, invoicesOf, lineState, progress, invCovers, billedTotal, invPeers, invReady, sendInvoice, afterSend, closeLines, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, invoicesOf, lineState, progress, invCovers, billedTotal, invPeers, invReady, sendInvoice, actorOf, actRow, glStrip, vendorCode, locationId, acctRefs, afterSend, closeLines, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

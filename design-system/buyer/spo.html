@@ -9,6 +9,7 @@
 <script src="cart.js"></script>
 <script src="spo-data.js"></script>
 <script src="spo-map.js"></script>
+<script src="invoice-pack.js"></script>
 </head>
 <body class="buyer">
 
@@ -117,6 +118,7 @@
   const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
   const IC = {
     link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+    wrench: SVG + '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
     pen: SVG + '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
     shield: SVG + '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
     send: SVG + '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>',
@@ -151,7 +153,7 @@
   const STEP_EV = ['created', 'approved', 'sent', 'invoiced', 'mapped', 'accounting', 'paid'];
   const respTag = s => { const r = SPO.resp(s); return r ? '<span class="ls-resp ' + r.kind + '" title="' + (r.kind === 'accepted' && r.by === 'buyer' ? 'Recorded by ' + s.ack.by : r.kind === 'none' ? 'The vendor hasn’t accepted or rejected the PO' : r.label) + '">' + (r.kind === 'accepted' ? IC.check : r.kind === 'rejected' ? IC.x : '') + r.short + '</span>' : ''; };
 
-  let S, curId, actExpanded = false;
+  let S, curId, actExpanded = false, actCollapsed = false, docsCollapsed = false, spoTab = 'spo', editAlloc = null;
   function pick() {
     const h = (location.hash || '').replace('#', '');
     const [id, sub] = h.split('/');
@@ -186,9 +188,7 @@
     }).join('') + '</div>';
   }
 
-  function allocChips(l) {
-    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + S.prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
-  }
+  const allocChips = l => SPO.glStrip(l.alloc, S.prop);
 
   function taskStrip(s) {
     const st = (tone, ico, title, desc, actions) => {
@@ -259,16 +259,29 @@
       main += taskStrip(s) + apptCard(s);
     }
 
-    main += '<div class="card"><div class="det-card-head hd"><h2>Scope of work</h2></div><p class="spo-scope" style="margin-top:8px">' + s.scope + '</p></div>';
+    /* SPO | Invoices · n (TKT-SPO-63): the SPO's own record, or the invoices billed against it — each opens its invoice page */
+    const recs = SPO.invoicesOf(s);
+    if (sub === 'invoices') spoTab = 'invoices';
+    if (recs.length) main += '<div class="mode-seg spo-tabs"><button class="' + (spoTab === 'spo' ? 'active' : '') + '" onclick="spoTab = \'spo\'; renderPage()">' + IC.wrench + '<span>SPO</span></button><button class="' + (spoTab === 'invoices' ? 'active' : '') + '" onclick="spoTab = \'invoices\'; renderPage()">' + IC.doc + '<span>Invoices · ' + recs.length + '</span></button></div>';
+    if (recs.length && spoTab === 'invoices') main += invoiceCard(s);
+    else {
+      /* Scope: bullets when it lists several items; then where, who and when */
+      const items = s.scope.split(/\n+/).map(x => x.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+      main += '<div class="card"><div class="det-card-head hd"><h2>Scope of work</h2></div>' +
+        (items.length > 1 ? '<ul class="spo-scope-list">' + items.map(x => '<li>' + x + '</li>').join('') + '</ul>' : '<p class="spo-scope" style="margin-top:8px">' + s.scope + '</p>') +
+        '<dl class="scope-facts"><dt>Property</dt><dd>' + prop.name + '</dd><dt>Address</dt><dd>' + prop.addr + ', ' + prop.city + '</dd><dt>Requested by</dt><dd>' + s.by + ' on ' + SPO.fmtDate(s.ev.created) + '</dd><dt>Spend period</dt><dd><span class="tip-u" title="The budget month this SPO counts against. GL budget checks (approval, GL &amp; unit changes) use this month.">' + s.period + '</span></dd></dl></div>';
 
-    const est = SPO.total(s);
-    main += '<div class="card"><div class="det-card-head hd"><div><h2>Line items</h2><div class="sub">GL code and unit for every dollar</div></div></div>' +
-      s.lines.map((l, k) => '<div class="spo-line' + (l.closed ? ' closed' : '') + '"><span class="sl-desc">' + l.desc + lineTag(s, k) + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(r2(l.qty * l.price)) + '</span>' + allocChips(l) + '</div>').join('') +
-      '<div class="det-totals"><div class="tot-row grand"><span>SPO estimate</span><span>' + money(est) + '</span></div>' +
-      (SPO.progress(s).closedAmt ? '<div class="tot-row"><span>Closed unbilled · released from the budget</span><span>−' + money(SPO.progress(s).closedAmt) + '</span></div>' : '') +
-      (SPO.invoicesOf(s).some(r => r.validated) ? invoiceTotals(s) : '') + '</div></div>';
-
-    if (SPO.invoicesOf(s).length) main += invoiceCard(s);
+      const est = SPO.total(s), canEdit = allocEditable(s);
+      const validated = recs.filter(r => r.validated);
+      main += '<div class="card"><div class="det-card-head hd"><div><h2>Line items</h2><div class="sub">GL code and unit for every dollar</div></div>' +
+        (editAlloc ? '' : canEdit ? '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:7px" onclick="startAllocEdit()"><span style="display:inline-flex;width:14px;height:14px">' + IC.pen + '</span>Edit GL &amp; unit</button>' : '') + '</div>' +
+        (editAlloc ? allocEditor(s) : s.lines.map((l, k) => '<div class="spo-line' + (l.closed ? ' closed' : '') + '"><span class="sl-desc">' + l.desc + lineTag(s, k) + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(r2(l.qty * l.price)) + '</span>' + allocChips(l) + '</div>').join('')) +
+        '<div class="det-totals">' +
+        (s.ev.sent && !validated.length ? '<div class="tot-row"><span>Validated invoices</span><span>' + money(0) + '</span></div>' : '') +
+        '<div class="tot-row grand"><span>SPO estimate</span><span>' + money(est) + '</span></div>' +
+        (SPO.progress(s).closedAmt ? '<div class="tot-row"><span>Closed unbilled · released from the budget</span><span>−' + money(SPO.progress(s).closedAmt) + '</span></div>' : '') +
+        (validated.length ? invoiceTotals(s) : '') + '</div></div>';
+    }
 
     let side = '';
     if (s.state === 'rebid') side += '<div class="card"><div class="ven-card"><span class="ven-logo" style="border-style:dashed;background:none">?</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · to choose</div><div class="ven-name" style="margin-bottom:2px">Needs a vendor</div><div style="font-size:13px;color:var(--muted-foreground)">Was ' + v.name + ' on SPO-' + s.rebidOf + '</div></div></div></div>';
@@ -278,26 +291,25 @@
     const sx = s.series && window.SCH ? SCH.get(s.series) : null;
     const approvalVal = sx ? (sx.ev.approved ? 'Series · ' + ((sx.approval && sx.approval.by) || 'Priya Nair') : 'Not required') : s.state === 'approval' ? 'Pending · Supervisor' : s.approval && s.approval.carried ? 'Carried from SPO-' + s.approval.carried + ' · ' + s.approval.by : s.ev.approved ? 'Approved by ' + ((s.approval && s.approval.by) || 'Priya Nair') : s.state === 'draft' ? (SPO.needsApproval(s) ? 'Required on submit' : 'Not required') : 'Not required';
     side += '<div class="card"><dl class="fact-rows wide">' +
-      '<dt>Property</dt><dd>' + prop.name + '</dd>' +
-      '<dt>Requested by</dt><dd>' + s.by + '</dd>' +
-      '<dt>Created</dt><dd>' + SPO.fmtDate(s.ev.created) + '</dd>' +
-      '<dt>Spend period</dt><dd>' + s.period + '</dd>' +
-      '<dt>Approval</dt><dd>' + approvalVal + '</dd>' + vendorRespRow(s) + '</dl></div>';
+      '<dt>Approval</dt><dd>' + approvalVal + '</dd>' + vendorRespRow(s) + '</dl>' +
+      SPO.acctRefs([['SPO number', 'SPO-' + s.id, true], ['Vendor code', s.state === 'rebid' ? '—' : SPO.vendorCode(s.v), s.state !== 'rebid'], ['Location ID', SPO.locationId(s.prop), true]]) + '</div>';
 
     const docs = [];
     if (s.ev.sent) docs.push(['Purchase Order SPO-' + s.id, 'PO', '', s.ev.sent]);
     (s.billed || []).forEach(b => docs.push(['Invoice ' + b.num, 'Invoice', 'emerald', b.at.invoiced]));
     if (s.invoice && s.ev.invoiced) docs.push(['Invoice ' + s.invoice.num, 'Invoice', 'emerald', s.ev.invoiced]);
     if (s.ev.accounting) docs.push(['Payment packet', 'Sent to Accounting', 'violet', s.ev.accounting]);
-    side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Documents</h2></div>' +
-      (docs.length ? docs.map(d => '<div class="doc-row' + (d[2] ? ' ' + d[2] : '') + '">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + d[0] + '</div><div class="doc-date">' + SPO.fmtDate(d[3]) + ' · ' + d[1] + '</div></div><button class="row-action" title="Download" onclick="showToast(\'Download started\', \'' + d[0] + '.pdf\')">' + IC.dl + '</button></div>').join('')
+    side += '<div class="card"><div class="det-card-head"><h2 class="h-count" style="font-size:16px">Documents' + (docs.length ? ' <span class="count-pill">' + docs.length + '</span>' : '') + '</h2>' + (docs.length ? '<button class="row-action act-toggle' + (docsCollapsed ? '' : ' open') + '" title="' + (docsCollapsed ? 'Show' : 'Hide') + ' documents" aria-expanded="' + !docsCollapsed + '" onclick="docsCollapsed = !docsCollapsed; renderPage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>' : '') + '</div>' +
+      (docsCollapsed && docs.length ? '' : docs.length ? docs.map(d => '<div class="doc-row' + (d[2] ? ' ' + d[2] : '') + '">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + d[0] + '</div><div class="doc-date">' + SPO.fmtDate(d[3]) + ' · ' + d[1] + '</div></div><button class="row-action" title="Download" onclick="showToast(\'Download started\', \'' + d[0] + '.pdf\')">' + IC.dl + '</button></div>').join('')
         : '<div style="font-size:13px;color:var(--muted-foreground)">The PO is generated when the SPO is sent to the vendor.</div>') + '</div>';
 
     const evs = s.log.map((e, i) => [e, i]).sort((a, b) => b[0].at.localeCompare(a[0].at) || b[1] - a[1]).map(x => x[0]); /* same minute → later entry first */
     const shown = actExpanded ? evs : evs.slice(0, 5);
-    side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Activity</h2></div><div class="act-tl">' +
-      shown.map(e => '<div class="act-ev' + (e.hi ? ' hi' : '') + (e.bad ? ' bad' : '') + '"><span class="adot"></span><div class="abody"><div class="at">' + e.t + '</div>' + (e.sub ? '<div class="asub">' + e.sub + '</div>' : '') + '</div><span class="awhen">' + SPO.fmtDate(e.at) + '</span></div>').join('') +
-      (evs.length > shown.length ? '<button class="act-more" onclick="actExpanded = true; renderPage()">Show ' + (evs.length - shown.length) + ' more activities</button>' : '') + '</div></div>';
+    /* Activity (TKT-SPO-63): time and actor on every event; appointment times carry the property's time zone; collapsible */
+    side += '<div class="card"><div class="det-card-head"><div><h2 style="font-size:16px">Activity</h2><div class="sub">SPO and invoice history</div></div><button class="row-action act-toggle' + (actCollapsed ? '' : ' open') + '" title="' + (actCollapsed ? 'Show' : 'Hide') + ' activity" aria-expanded="' + !actCollapsed + '" onclick="actCollapsed = !actCollapsed; renderPage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></div>' +
+      (actCollapsed ? '' : '<div class="act-tl">' +
+      shown.map(e => SPO.actRow(e, s)).join('') +
+      (evs.length > shown.length ? '<button class="act-more" onclick="actExpanded = true; renderPage()">Show ' + (evs.length - shown.length) + ' more activities</button>' : '') + '</div>') + '</div>';
 
     document.getElementById('det-main').innerHTML = main;
     document.getElementById('det-side').innerHTML = side;
@@ -309,11 +321,53 @@
     if (sub === 'propose' && s.state === 'invoice') setTimeout(() => openTime('change'), 120);
     if ((sub === 'respond' || sub === 'accept') && (SPO.canRespond(s) || SPO.canEditResp(s))) setTimeout(openRecordResp, 120);
     if (sub === 'invoice' && s.state === 'mapping') setTimeout(openInvoiceMap, 150);
+    if (sub.indexOf('mapping-') === 0) setTimeout(() => openInvoiceMap(true, decodeURIComponent(sub.slice(8))), 150); /* read-only board, from the invoice page */
     if (sub === 'accounting' && s.state === 'ready') setTimeout(openAccounting, 150);
     if (sub === 'time') setTimeout(() => { const c = document.getElementById('appt-card'); if (c) { c.scrollIntoView({ block: 'center', behavior: 'smooth' }); c.classList.add('flash'); setTimeout(() => c.classList.remove('flash'), 1600); } }, 150);
   }
 
   /* Validated invoices against the estimate of the lines each one covers — with several invoices, summed. */
+  /* ---------- Correct GL code and unit after sending (TKT-SPO-63) ----------
+     Allowed until a line's invoice is validated (then it goes through the mapping board, so the packet Accounting got
+     can't change underneath it). The budget check re-runs: a change that pushes a GL over its budget can't be saved
+     here — pick another GL or have a Supervisor raise the budget. Logged in Activity; the vendor isn't emailed. */
+  const lineLocked = (s, k) => { const x = SPO.lineState(s, k); return x.kind === 'billed' ? 'Billed on ' + x.num : x.kind === 'closed' ? 'Closed unbilled' : ''; };
+  const allocEditable = s => ['invoice', 'mapping', 'ready'].indexOf(s.state) >= 0 && s.lines.some((l, k) => !lineLocked(s, k));
+  function startAllocEdit() { editAlloc = S.lines.map(l => l.alloc.map(a => ({ gl: a.gl, unit: a.unit, amt: a.amt }))); renderPage(); }
+  function cancelAllocEdit() { editAlloc = null; renderPage(); }
+  function setAlloc(k, j, f, v) { editAlloc[k][j][f] = v; renderPage(); }
+  function allocCheck(s) {
+    const draft = Object.assign({}, s, { lines: s.lines.map((l, k) => Object.assign({}, l, { alloc: editAlloc[k] })) });
+    const before = SPO.glOver(s), after = SPO.glOver(draft).filter(g => before.indexOf(g) < 0), bud = SPO.budget(s.prop, s.period, s.id);
+    const mine = g => draft.lines.reduce((a, l) => a + l.alloc.filter(x => x.gl === g).reduce((b, x) => b + x.amt, 0), 0);
+    return { over: after.map(g => ({ gl: g, by: r2(bud[g].spent + bud[g].committed + mine(g) - bud[g].budget) })), missing: editAlloc.some(al => al.some(a => !a.unit)),
+      changed: s.lines.some((l, k) => l.alloc.some((a, j) => a.gl !== editAlloc[k][j].gl || a.unit !== editAlloc[k][j].unit)) };
+  }
+  function allocEditor(s) {
+    const c = allocCheck(s), units = SPO.units(s.prop);
+    const glSel = (k, j, v) => '<select class="ivt-map-sel" aria-label="GL code" onchange="setAlloc(' + k + ', ' + j + ', \'gl\', this.value)">' + SPO.GL.map(([g, n]) => '<option value="' + g + '"' + (g === v ? ' selected' : '') + '>' + g + ' · ' + n + '</option>').join('') + '</select>';
+    const unitSel = (k, j, v) => '<select class="ivt-map-sel" aria-label="Unit" onchange="setAlloc(' + k + ', ' + j + ', \'unit\', this.value)"><option value=""' + (v ? '' : ' selected') + '>Select unit…</option><option value="COMMON"' + (v === 'COMMON' ? ' selected' : '') + '>Common area</option>' + units.map(u => '<option value="' + u.code + '"' + (u.code === v ? ' selected' : '') + '>Unit ' + u.code + ' · Bldg ' + u.bldg + '</option>').join('') + '</select>';
+    return s.lines.map((l, k) => { const lock = lineLocked(s, k);
+      return '<div class="spo-line' + (l.closed ? ' closed' : '') + '"><span class="sl-desc">' + l.desc + lineTag(s, k) + '</span><span class="sl-qty">' + l.qty + ' × ' + money(l.price) + '</span><span class="sl-total">' + money(r2(l.qty * l.price)) + '</span>' +
+        (lock ? allocChips(l) + '<div class="alloc-lock">' + lock + ' — correct it on the mapping board.</div>'
+          : '<div class="alloc-edit"><div class="alloc-edit-h">' + IC.doc + '<b>GL allocation</b><span>' + l.alloc.length + ' portion' + (l.alloc.length === 1 ? '' : 's') + '</span></div>' +
+            editAlloc[k].map((a, j) => '<div class="alloc-edit-row"><span class="alloc-amt">' + money(a.amt) + '</span>' + glSel(k, j, a.gl) + unitSel(k, j, a.unit) + '</div>').join('') + '</div>') + '</div>'; }).join('') +
+      '<div class="alloc-foot">' + (c.over.length ? '<div class="w-note warn" style="margin:0 auto 0 0">' + IC.warn + '<span>' + c.over.map(o => o.gl + ' ' + SPO.glName(o.gl) + ' would be ' + money(o.by) + ' over its ' + s.period + ' budget').join('; ') + '. Choose another GL, or ask a Supervisor to raise the budget.</span></div>'
+        : c.missing ? '<div class="w-note warn" style="margin:0 auto 0 0">' + IC.warn + '<span>Every portion needs a unit.</span></div>' : '<span class="w-note" style="margin:0 auto 0 0">Changes are logged in Activity. The vendor isn’t notified.</span>') +
+      '<button class="btn" onclick="cancelAllocEdit()">Cancel</button><button class="btn btn-primary"' + (c.changed && !c.over.length && !c.missing ? '' : ' disabled') + ' onclick="saveAllocEdit()">Save changes</button></div>';
+  }
+  function saveAllocEdit() {
+    const s = S, c = allocCheck(s); if (!c.changed || c.over.length || c.missing) return;
+    const notes = [];
+    s.lines.forEach((l, k) => l.alloc.forEach((a, j) => { const n = editAlloc[k][j];
+      if (a.gl !== n.gl) notes.push('Line ' + (k + 1) + ': GL ' + a.gl + ' → ' + n.gl);
+      if (a.unit !== n.unit) notes.push('Line ' + (k + 1) + ': ' + SPO.unitLabel(a.unit) + ' → ' + SPO.unitLabel(n.unit));
+      a.gl = n.gl; a.unit = n.unit; }));
+    SPO.log(s, 'GL & unit corrected', notes.join(' · ') + ' · by Alicia Grant');
+    SPO.save(s); editAlloc = null; renderPage();
+    showToast('GL & unit corrected', notes.length + ' change' + (notes.length === 1 ? '' : 's') + ' saved to SPO-' + s.id + '.');
+  }
+
   function invoiceTotals(s) {
     const recs = SPO.invoicesOf(s).filter(r => r.validated), many = recs.length > 1;
     let sub = 0, cov = 0, tax = 0;
@@ -343,33 +397,10 @@
       return '<span class="status-dot-item"><span class="status-dot ' + st[0] + '"></span><span class="status-dot-label">' + st[1] + '</span></span>'; };
     const row = r => { const k = stOf(r), cov = SPO.invCovers(r), cur = r === s.invoice;
       return '<div class="doc-row emerald" style="margin-top:10px">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + r.num + ' · ' + r.file + '</div><div class="doc-date">Received ' + SPO.fmtDate(cur ? s.ev.invoiced : r.at.invoiced) + ' · ' + (many ? 'Line' + (cov.length === 1 ? ' ' : 's ') + cov.map(i => i + 1).join(', ') + ' · ' : 'PDF, ' + SPO.fileSize(SPO.invSize(r)) + ' · ' + r.lines.length + ' line' + (r.lines.length === 1 ? '' : 's') + ' · ') + (r.shared ? 'this SPO’s share ' : '') + money(SPO.invTotal({ invoice: r })) + '</div></div>' +
-        (many ? chip(k) : '') + (k === 'mapping' ? '<button class="btn btn-primary btn-sm" onclick="location.hash=\'#' + s.id + '/invoice\'">Map invoice</button>' : '<button class="btn btn-sm" onclick="openInvoiceMap(true, \'' + r.num + '\')">View mapping</button>') + '</div>' + invMap(s, r); };
+        (many ? chip(k) : '') + (k === 'mapping' ? '<button class="btn btn-primary btn-sm" onclick="location.hash=\'#' + s.id + '/invoice\'">Map invoice</button>' : '') + '<a class="btn btn-sm" style="text-decoration:none;white-space:nowrap" href="invoice.html#' + encodeURIComponent(r.num) + '">Open invoice</a></div>'; };
     return '<div class="card"><div class="det-card-head hd"><div><h2>' + (many ? 'Invoices' : 'Invoice') + '</h2>' + (many ? '<div class="sub">' + p.billed + ' of ' + p.n + ' lines invoiced' + (p.closed ? ' · ' + p.closed + ' closed unbilled' : '') + (p.open ? ' · ' + p.open + ' still open' : '') + '</div>' : '') + '</div>' +
       (many ? (s.state === 'invoice' && p.open ? '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:7px" onclick="openUpload()"><span style="display:inline-flex;width:14px;height:14px">' + IC.upload + '</span>Add invoice</button>' : '') : chip(stOf(s.invoice))) + '</div>' +
       recs.map(row).join('') + '</div>';
-  }
-
-  /* Mapping, one level up (team feedback, 10/18/2026, TKT-SPO-60): each invoice line with the SPO and SPO line it was
-     mapped to, without opening View mapping. A shared invoice lists every SPO's lines — this SPO's first, the others
-     labelled and linked — and how its tax was split. Shown once the invoice is validated (mapping shows the board). */
-  function invMap(s, r) {
-    if (!r.validated) return '';
-    const parts = (r.shared ? r.shared.spos : [s.id]).map(id => { const sp = id === s.id ? s : SPO.get(id); return { sp, rec: sp && SPO.invoicesOf(sp).find(x => x.num === r.num) }; })
-      .filter(x => x.rec).sort((a, b) => (b.sp.id === s.id) - (a.sp.id === s.id));
-    const spoRef = sp => sp.id === s.id ? '<b>SPO-' + sp.id + '</b>' : '<a class="table-link" href="spo.html#' + sp.id + '">SPO-' + sp.id + '</a><span class="im-other">other SPO</span>';
-    const rows = [];
-    parts.forEach(({ sp, rec }) => rec.lines.forEach(il => {
-      let to;
-      if (il.status === 'removed') to = '<span class="im-muted">Removed — not payable' + (il.resReason ? ' · “' + il.resReason + '”' : '') + '</span>';
-      else if (il.extra) to = spoRef(sp) + ' · One-time extra · ' + il.extra.gl + ' ' + SPO.glName(il.extra.gl) + ' · ' + SPO.unitLabel(il.extra.unit);
-      else if ((il.maps || []).length) to = il.maps.map(m => spoRef(sp) + ' · Line ' + (m.line + 1) + ' · ' + (sp.lines[m.line] ? sp.lines[m.line].desc : '') + (il.maps.length > 1 ? ' <span class="im-muted">1/' + il.maps.length + ' · ' + money(m.amt) + '</span>' : '')).join('<br>');
-      else to = '<span class="im-muted">Not mapped</span>';
-      rows.push('<div class="im-row' + (sp.id !== s.id ? ' other' : '') + (il.status === 'removed' ? ' gone' : '') + '"><span class="im-desc">' + il.desc + '</span><span class="im-amt">' + money(il.amt) + '</span><span class="im-to">' + to + '</span></div>');
-    }));
-    const tax = parts.reduce((a, x) => a + (x.rec.tax || 0), 0);
-    if (tax) rows.push('<div class="im-row"><span class="im-desc">Sales tax</span><span class="im-amt">' + money(r2(tax)) + '</span><span class="im-to">' + (parts.length > 1 ? 'Split by billed amount · ' + parts.map(x => 'SPO-' + x.sp.id + ' ' + money(x.rec.tax || 0)).join(' · ') : 'Invoice-level') + '</span></div>');
-    return '<div class="inv-map">' + (r.shared ? '<div class="im-head">' + IC.link.replace('<svg', '<svg class="im-ic"') + 'Shared invoice · ' + r.shared.spos.length + ' SPOs · ' + money(r.shared.total) + ' total</div>' : '') +
-      '<div class="im-row hd"><span>Invoice line</span><span class="im-amt">Amount</span><span>Mapped to</span></div>' + rows.join('') + '</div>';
   }
 
   /* Close unbilled lines (TKT-SPO-59): the vendor won't bill them. Releases their budget; with nothing left open
@@ -718,18 +749,7 @@
   }
   function otherWaiting(s) { return SPO.list().filter(x => x.id !== s.id && x.v === s.v && x.prop === s.prop && x.state === 'invoice'); }
 
-  function pdfLines(s, inv) {
-    const W = 62, pad = (a, b) => a + ' '.repeat(Math.max(2, W - a.length - b.length)) + b;
-    const v = ven(s), p = propOf(s);
-    const out = [v.name.toUpperCase(), v.email, '', pad('INVOICE', inv.num), pad('Date', SPO.fmtDate(inv.date)), pad('PO reference', inv.poRef || 'SPO-' + s.id), '', 'BILL TO', p.name, p.addr + ', ' + p.city, '', '-'.repeat(W)];
-    inv.lines.forEach(l => out.push(pad((l.desc || '').slice(0, 44), money(l.amt || 0))));
-    out.push('-'.repeat(W), pad('Subtotal', money(inv.lines.reduce((a, l) => a + (l.amt || 0), 0))));
-    if (inv.tax) out.push(pad('Sales tax', money(inv.tax)));
-    out.push(pad(inv.shared ? 'THIS SPO’S SHARE' : 'TOTAL DUE', money(r2(inv.lines.reduce((a, l) => a + (l.amt || 0), 0) + (inv.tax || 0) + (inv.ship || 0)))));
-    if (inv.shared) out.push('', 'Shared invoice · ' + inv.shared.idx + ' of ' + inv.shared.spos.length + ' SPOs (' + inv.shared.spos.map(id => 'SPO-' + id).join(', ') + ')', pad('Invoice total', money(inv.shared.total)));
-    out.push('', 'Terms: Net 30 · Remit to ' + v.name);
-    return out.join('\n');
-  }
+  const pdfLines = (s, inv) => PACK.pdfLines(s, inv, propOf(s));
 
   function renderMapTk() {
     const tk = document.getElementById('map-tk'); if (!tk) return;
@@ -816,46 +836,8 @@
 
   /* ===================== Send to Accounting (payment packet) ===================== */
   let packTab = 'gl';
-  function glAllocation(s) {
-    const rows = {};
-    const add = (gl, unit, amt) => { const k = gl + '|' + unit; rows[k] = r2((rows[k] || 0) + amt); };
-    s.invoice.lines.forEach(l => {
-      if (l.status === 'removed') return;
-      if (l.extra) { add(l.extra.gl, l.extra.unit, l.amt); return; }
-      (l.maps || []).forEach(m => {
-        const sl = s.lines[m.line], tot = sl.alloc.reduce((a, x) => a + x.amt, 0) || 1;
-        /* Pro-rate in cents; the last split takes the remainder so the packet sums to the invoice exactly */
-        let left = m.amt;
-        sl.alloc.forEach((a, j) => { const amt = j === sl.alloc.length - 1 ? r2(left) : r2(m.amt * a.amt / tot); left = r2(left - amt); add(a.gl, a.unit, amt); });
-      });
-    });
-    return Object.keys(rows).sort().map(k => { const [gl, unit] = k.split('|'); return { gl, unit, amt: rows[k] }; });
-  }
-  /* The payment packet is per INVOICE (TKT-SPO-61): the invoice as the vendor sent it, and every line's GL code and
-     unit across all its SPOs — what Accounting books from. SPO numbers stay only as a reference column. */
-  function packDoc(s, t) {
-    const W = 66, pad = (a, b) => a + ' '.repeat(Math.max(2, W - a.length - b.length)) + b, p = propOf(s), peers = SPO.invPeers(s), inv = s.invoice;
-    const total = inv.shared ? inv.shared.total : SPO.invTotal(s), tax = r2(peers.reduce((a, x) => a + (x.rec.tax || 0), 0));
-    if (t === 'inv') return pdfLines(s, { num: inv.num, date: inv.date, lines: [].concat(...peers.map(x => x.rec.lines.filter(l => l.status !== 'removed'))), tax, ship: 0, poRef: peers.map(x => 'SPO-' + x.sp.id).join(', ') });
-    const rows = [].concat(...peers.map(x => glAllocation(x.sp).map(r => Object.assign(r, { spo: x.sp.id }))))
-      .sort((a, b) => a.gl.localeCompare(b.gl) || a.unit.localeCompare(b.unit));
-    const out = ['GL & UNIT ALLOCATION  ' + inv.num, ven(s).name + ' · ' + p.name, '', pad('GL · UNIT', 'REF        AMOUNT'), '-'.repeat(W)];
-    rows.forEach(r => out.push(pad((r.gl + ' ' + SPO.glName(r.gl) + ' · ' + SPO.unitLabel(r.unit)).slice(0, 44), ('SPO-' + r.spo).padEnd(9) + money(r.amt).padStart(11))));
-    out.push('-'.repeat(W), pad('Allocated (lines)', money(r2(rows.reduce((a, r) => a + r.amt, 0)))));
-    if (tax) out.push(pad('Sales tax (invoice-level)', money(tax)));
-    out.push(pad('PAYABLE TOTAL', money(total)));
-    return out.join('\n');
-  }
   function openAccounting() { packTab = 'gl'; renderPack(); }
-  function renderPack() {
-    const s = S, inv = s.invoice, peers = SPO.invPeers(s), total = inv.shared ? inv.shared.total : SPO.invTotal(s), tabs = { inv: 'Invoice ' + inv.num, gl: 'GL & unit allocation' };
-    const others = peers.filter(x => x.sp.id !== s.id).map(x => 'SPO-' + x.sp.id);
-    modal('pack-ov', '<div class="val-modal" style="width:720px;max-width:calc(100vw - 40px)"><div class="val-head"><h2>Send invoice ' + inv.num + ' to Accounting</h2><p>' + money(total) + ' to ' + ven(s).name + '. Accounting books each line by its GL code and unit.' + (others.length ? ' Covers SPO-' + s.id + ' and ' + others.join(', ') + ' — they move to With Accounting together.' : '') + '</p></div>' +
-      '<div class="val-body" style="padding:16px 22px"><div class="tab-bar" style="margin-bottom:12px">' + Object.keys(tabs).map(k => '<button class="tab-item' + (k === packTab ? ' active' : '') + '" onclick="packTab = \'' + k + '\'; renderPack()">' + tabs[k] + '</button>').join('') + '</div>' +
-      '<div class="pay-doc"><pre>' + packDoc(s, packTab) + '</pre></div>' +
-      '<div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span style="font-size:12.5px;color:var(--muted-foreground)">' + tabs[packTab] + ' · PDF</span><button class="btn btn-sm" style="margin-left:auto;display:inline-flex;align-items:center;gap:7px" onclick="showToast(\'Payment packet downloaded\', \'Invoice and GL &amp; unit allocation · 2 PDFs\')"><span style="display:inline-flex;width:14px;height:14px">' + IC.dl + '</span>Download both</button></div></div>' +
-      '<div class="val-foot"><span style="font-size:13px;color:var(--muted-foreground);margin-right:auto">' + money(total) + ' · ' + inv.num + (peers.length > 1 ? ' · ' + peers.length + ' SPOs' : '') + '</span><button class="btn" onclick="closeModal(\'pack-ov\')">Cancel</button><button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendToAccounting()"><span style="display:inline-flex;width:15px;height:15px">' + IC.send + '</span>Send invoice</button></div></div>');
-  }
+  function renderPack() { modal('pack-ov', PACK.packModal(S, packTab, propOf(S), IC, 'packTab', 'renderPack')); }
   function sendToAccounting() {
     if (!SPO.invReady(S)) return;
     const r = SPO.sendInvoice(S, 'Alicia Grant');
@@ -863,11 +845,12 @@
     showToast('Invoice ' + r.num + ' sent to Accounting', money(r.total) + (r.spos.length > 1 ? ' · ' + r.spos.map(id => 'SPO-' + id).join(', ') + ' are with Accounting' : '') + (r.waits.length ? ' · SPO-' + r.waits.join(', SPO-') + ' now waits for the next invoice' : '') + '.');
   }
 
-  function copyNum() { showToast('Copied', 'SPO-' + S.id); }
+  function copyNum() { copyRef('SPO-' + S.id); }
+  function copyRef(v) { try { navigator.clipboard.writeText(v).catch(() => {}); } catch (e) { /* no clipboard: the toast still confirms */ } showToast('Copied', v); }
   let toastTimer;
   function showToast(title, desc) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:600;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:14px 18px;max-width:360px;font-size:13px;transition:opacity .2s'; document.body.appendChild(el); } el.innerHTML = '<b style="display:block;font-size:14px">' + title + '</b><span style="color:var(--muted-foreground)">' + desc + '</span>'; el.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.opacity = 0, 3000); }
 
-  window.addEventListener('hashchange', () => { actExpanded = false; renderPage(); });
+  window.addEventListener('hashchange', () => { actExpanded = false; editAlloc = null; spoTab = 'spo'; renderPage(); });
   renderPage();
 </script>
 </body>

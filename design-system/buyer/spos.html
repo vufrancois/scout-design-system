@@ -167,8 +167,20 @@
   const TABS = [
     { id: 'open', label: 'Open', icon: IC.wrench, states: ['draft', 'approval', 'rebid', 'rejected', 'invoice'] },
     { id: 'invoices', label: 'Invoices', icon: IC.doc, states: ['mapping', 'ready', 'accounting'] },
-    { id: 'closed', label: 'Closed', icon: IC.archive, states: ['paid', 'canceled'] }
+    { id: 'closed', label: 'Closed', icon: IC.archive, states: ['paid'] },
+    { id: 'canceled', label: 'Canceled', icon: IC.ban, states: ['canceled'] }
   ];
+  /* Invoices and Closed count INVOICES (TKT-SPO-62): each invoice sits on the tab of its own status, wherever its SPO is. */
+  const recSt = (s, inv) => inv === s.invoice ? s.state : inv.status;
+  const aggSt = sts => sts.indexOf('mapping') >= 0 ? 'mapping' : sts.every(x => x === 'ready') ? 'ready' : sts.indexOf('ready') >= 0 || sts.indexOf('accounting') >= 0 ? 'accounting' : 'paid';
+  const invGroup = st => st === 'accounting' ? 'accounting' : st === 'paid' ? 'paid' : 'you';
+  const ALL_STATES = () => [].concat(...TABS.map(x => x.states));
+  function invoicesOn(tabId, pool) {
+    const by = {};
+    pool.forEach(s => SPO.invoicesOf(s).forEach(inv => { const st = recSt(s, inv); if (tabOf(st) !== tabId) return; const k = s.v + '|' + inv.num; (by[k] = by[k] || { key: k, inv, sts: [] }).sts.push(st); }));
+    return Object.values(by).map(u => Object.assign(u, { status: aggSt(u.sts), total: u.inv.shared ? u.inv.shared.total : SPO.invTotal({ invoice: u.inv }) }));
+  }
+  const INV_TABS = ['invoices', 'closed'];
   const vInit = v => v;
   const tabOf = st => (TABS.find(x => x.states.indexOf(st) >= 0) || {}).id;
   let cardFilter = 'all', vendorF = null, respF = null, apptF = null, propF = null, dateDays = null, page = 1, sortK = 'date', sortDir = -1;
@@ -200,10 +212,10 @@
         s.lines.map(l => l.desc + ' ' + l.alloc.map(a => a.unit + ' ' + a.gl + ' ' + SPO.glName(a.gl)).join(' ')).join(' ')).toLowerCase().includes(q)));
   }
 
-  function statCards(t, rows) {
+  function statCards(t, rows, invs) {
     const el = document.getElementById('stat-cards');
     const card = (key, cls, icon, title, n, desc) => '<div class="stat-card-colored ' + cls + (cardFilter === key ? ' active' : '') + '" onclick="setCard(\'' + key + '\')"><span class="stat-card-title">' + icon + title + '</span><div class="stat-card-count">' + n + '</div><div class="stat-card-desc">' + desc + '</div></div>';
-    const g = k => rows.filter(s => groupOf(s) === k).length;
+    const g = k => rows.filter(s => groupOf(s) === k).length, gi = k => invs.filter(u => invGroup(u.status) === k).length;
     el.style.gridTemplateColumns = '';
     if (t === 'open') {
       el.className = 'kpi-grid';
@@ -213,14 +225,17 @@
         card('rejected', 'stat-rose', IC.x, 'Vendor Rejected', g('rejected'), 'Rebid with another vendor');
     } else if (t === 'invoices') {
       el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(3, 1fr)';
-      el.innerHTML = card('all', 'stat-gray', IC.doc, 'Total Invoices', rows.length, 'Invoice received') +
-        card('you', 'stat-amber', IC.pen, 'Your Move', g('you'), 'Map invoice or send to Accounting') +
-        card('accounting', 'stat-violet', IC.card, 'With Accounting', g('accounting'), 'Awaiting payment');
+      el.innerHTML = card('all', 'stat-gray', IC.doc, 'Total Invoices', invs.length, 'Received, not yet paid') +
+        card('you', 'stat-amber', IC.pen, 'Your Move', gi('you'), 'Map, or send to Accounting') +
+        card('accounting', 'stat-violet', IC.card, 'With Accounting', gi('accounting'), 'Awaiting payment');
+    } else if (t === 'closed') {
+      el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(2, 1fr)';
+      el.innerHTML = card('all', 'stat-emerald', IC.check, 'Paid Invoices', invs.length, 'Released by Accounting') +
+        card('all', 'stat-gray', IC.archive, 'Total Paid', money(invs.reduce((a, u) => a + u.total, 0)), 'Across these invoices');
     } else {
-      el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(3, 1fr)';
-      el.innerHTML = card('all', 'stat-gray', IC.archive, 'Total Closed', rows.length, 'Paid or canceled') +
-        card('paid', 'stat-emerald', IC.check, 'Paid', g('paid'), 'Released by Accounting') +
-        card('canceled', 'stat-rose', IC.ban, 'Canceled', g('canceled'), 'Withdrawn before payment');
+      el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(2, 1fr)';
+      el.innerHTML = card('all', 'stat-rose', IC.ban, 'Canceled', rows.length, 'Withdrawn before an invoice') +
+        card('rebid', 'stat-amber', IC.pen, 'Canceled for Rebid', rows.filter(s => s.rebidAs).length, 'Replaced by a new SPO');
     }
   }
 
@@ -236,9 +251,7 @@
       : x.kind === 'closed' ? '<span class="ln-tag closed">Closed unbilled</span>' : '<span class="ln-tag open">Not invoiced yet</span>';
   }
   function pill(s) { const st = SPO.STATES[s.state]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; }
-  function allocChips(l, prop) {
-    return '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
-  }
+  const allocChips = (l, prop) => SPO.glStrip(l.alloc, prop);
   const sortIc = k => '<svg class="sort-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (sortK === k ? (sortDir === 1 ? '<path d="m7 14.5 5-5 5 5"/>' : '<path d="m7 9.5 5 5 5-5"/>') : '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>') + '</svg>';
   const th = (k, label, extra) => '<th class="sortable' + (sortK === k ? ' sorted' : '') + (extra || '') + '" onclick="setSort(\'' + k + '\')">' + label + sortIc(k) + '</th>';
 
@@ -256,11 +269,11 @@
   function renderPage() {
     const t = tab();
     document.getElementById('tab-bar').innerHTML = TABS.map(tb =>
-      '<button class="tab-item' + (tb.id === t ? ' active' : '') + '" onclick="location.hash=\'#' + tb.id + '\'">' + tb.icon.replace('stat-card-icon', '') + tb.label + '<span class="tab-count">' + scoped(tb.states).length + '</span></button>').join('');
+      '<button class="tab-item' + (tb.id === t ? ' active' : '') + '" onclick="location.hash=\'#' + tb.id + '\'">' + tb.icon.replace('stat-card-icon', '') + tb.label + '<span class="tab-count">' + (INV_TABS.indexOf(tb.id) >= 0 ? invoicesOn(tb.id, scoped(ALL_STATES())).length : scoped(tb.states).length) + '</span></button>').join('');
     const rows = scoped(TABS.find(x => x.id === t).states);
-    statCards(t, rows);
+    statCards(t, rows, INV_TABS.indexOf(t) >= 0 ? invoicesOn(t, scoped(ALL_STATES())) : null);
 
-    let list = rows.filter(s => cardFilter === 'all' || groupOf(s) === cardFilter);
+    let list = rows.filter(s => cardFilter === 'all' || (t === 'canceled' ? cardFilter === 'rebid' && !!s.rebidAs : groupOf(s) === cardFilter));
     const sortVal = s => sortK === 'num' ? s.id : sortK === 'total' ? SPO.total(s) : sortK === 'prop' ? propName(s.prop)
       : sortK === 'vendor' ? SPO.VEN[s.v].name : sortK === 'status' ? SPO.STATES[s.state].rank : s.ev.created;
     const cmp = (va, vb) => typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
@@ -278,7 +291,6 @@
          Each invoice sits on the tab of ITS OWN status (QA 10/18/2026): an earlier invoice with Accounting is on
          Invoices and a paid one on Closed, wherever its SPO is now (e.g. back in Open for the next invoice). The
          invoice in hand follows its SPO. Card filters match the invoice's status; tab counts stay in SPOs. */
-      const recSt = (s, inv) => inv === s.invoice ? s.state : inv.status;
       const pool = scoped([].concat(...TABS.map(x => x.states))).sort((a, b) => cmp(sortVal(a), sortVal(b)) * sortDir || b.id - a.id);
       pool.forEach(s => {
         const recs = SPO.invoicesOf(s);
@@ -286,7 +298,6 @@
         recs.forEach(inv => {
           const st = recSt(s, inv);
           if (tabOf(st) !== t) return;
-          if (cardFilter !== 'all' && (inv === s.invoice ? groupOf(s) : SPO.STATES[st].group) !== cardFilter) return;
           const sh = inv.shared, k = s.v + '|' + inv.num;
           if (!by[k]) units.push(by[k] = { key: k, inv, v: s.v, prop: s.prop, members: [], n: sh ? sh.spos.length : 1, total: sh ? sh.total : SPO.invTotal({ invoice: inv }) });
           by[k].members.push(s); (by[k].recs = by[k].recs || {})[s.id] = inv;
@@ -296,6 +307,8 @@
         : sortK === 'date' ? u.members.map(m => m.ev.created).sort().pop() : sortVal(u.members[0]);
       const uId = u => u.s ? u.s.id : u.members[0].id;
       units.forEach(u => { if (u.members) u.members.sort((a, b) => a.id - b.id); });
+      /* Cards filter whole invoices by the invoice's own status (to map or send / with Accounting) */
+      if (cardFilter !== 'all') units = units.filter(u => !u.members || invGroup(aggSt(u.members.map(m => recSt(m, u.recs[m.id])))) === cardFilter);
       units.sort((a, b) => cmp(uVal(a), uVal(b)) * sortDir || uId(b) - uId(a));
     }
     const pages = Math.max(1, Math.ceil(units.length / PER));
@@ -338,7 +351,7 @@
       const states = Array.from(new Set(u.members.map(m => recState(m, u.recs[m.id]))));
       return '<tr class="inv-group' + (open ? '' : ' folded') + '">' +
         '<td><button class="expander inv-caret' + (open ? ' open' : '') + '" onclick="toggleInv(\'' + encodeURIComponent(u.key) + '\')" aria-expanded="' + open + '" title="' + (open ? 'Hide' : 'Show') + ' SPOs on this invoice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></td>' +
-        '<td style="white-space:nowrap"><span class="mono" style="font-weight:700">' + u.inv.num + '</span><span class="cell-sub">' + (n > 1 ? 'Shared invoice · ' + n + ' SPOs' : 'Invoice · 1 SPO') + (cur && n > 1 && !ready && nMapped && nMapped < peers.length ? ' · ' + nMapped + ' of ' + peers.length + ' mapped' : '') + (hid ? ' · ' + hid + ' hidden by filters' : '') + '</span></td>' +
+        '<td style="white-space:nowrap"><a class="table-link mono" style="font-weight:700" href="invoice.html#' + encodeURIComponent(u.inv.num) + '" title="Open invoice">' + u.inv.num + '</a><span class="cell-sub">' + (n > 1 ? 'Shared invoice · ' + n + ' SPOs' : 'Invoice · 1 SPO') + (cur && n > 1 && !ready && nMapped && nMapped < peers.length ? ' · ' + nMapped + ' of ' + peers.length + ' mapped' : '') + (hid ? ' · ' + hid + ' hidden by filters' : '') + '</span></td>' +
         '<td class="col-hide cell-clip" title="' + propName(u.prop) + '">' + propName(u.prop) + '</td>' +
         '<td><span class="cell-entity"><span class="v-avatar vt" style="width:28px;height:28px;border-radius:7px;font-size:10px;--vh:' + SPO.vh(u.v) + '">' + SPO.ini(u.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[u.v].name + '">' + SPO.VEN[u.v].name + '</span></span></td>' +
         '<td class="num" style="font-weight:700">' + money(u.total) + '<span class="cell-sub">Invoice total</span></td>' +
@@ -350,7 +363,7 @@
     const body = slice.map(u => !u.members ? spoRow(u.s)
       : invRow(u) + (foldedInv.has(u.key) ? '' : u.members.map((m, i) => spoRow(m, i === u.members.length - 1 ? 'last' : 'mid', u.recs[m.id])).join(''))).join('');
     const nSpo = new Set([].concat(...units.map(u => u.members ? u.members.map(m => m.id) : [u.s.id]))).size, nInv = units.filter(u => u.members).length;
-    document.getElementById('grp-toggle').style.display = t === 'open' ? 'none' : '';
+    document.getElementById('grp-toggle').style.display = INV_TABS.indexOf(t) >= 0 ? '' : 'none';
     document.getElementById('grp-switch').setAttribute('aria-checked', String(groupInv));
 
     document.getElementById('tbl-zone').innerHTML = '<div class="tbl-wrap" style="margin-top:4px"><div style="overflow-x:auto"><table class="tbl">' +

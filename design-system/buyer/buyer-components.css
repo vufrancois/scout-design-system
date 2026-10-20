@@ -2014,3 +2014,79 @@
 .buyer .inv-pdf svg { width: 15px; height: 15px; }
 .buyer .row-mapped { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--muted-foreground); white-space: nowrap; }
 .buyer .row-mapped svg { width: 14px; height: 14px; color: var(--emerald); }
+
+/* ===== Invoice page (10/20/2026, TKT-SPO-62): after the invoice arrives it's the record. Line items are invoice-first: one
+   row per invoice line (vendor's order), the SPO line(s) it maps to, and a strip of GL · unit portions with amounts. ===== */
+.buyer .il-head-acts { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.buyer .il-maplinks { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; }
+.buyer .il-table { margin-top: 12px; border: 1px solid var(--border); border-radius: var(--radius-md, 10px); overflow: hidden; }
+.buyer .il-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 110px; gap: 14px; align-items: center; padding: 14px 16px; }
+.buyer .il-row.hd { padding: 10px 16px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); background: var(--surface-soft, #f8f9fa); }
+.dark .buyer .il-row.hd, .buyer.dark .il-row.hd { background: var(--muted); }
+.buyer .il-item { border-top: 1px solid var(--border); }
+.buyer .il-desc { font-weight: 600; font-size: 14px; }
+.buyer .il-refs { display: flex; flex-direction: column; gap: 3px; font-size: 13px; }
+.buyer .il-ref { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+.buyer .il-ref svg { width: 13px; height: 13px; flex-shrink: 0; }
+.buyer .il-amt { text-align: right; font-variant-numeric: tabular-nums; }
+.buyer .il-strip { margin: 0 16px 14px; border: 1px solid #bfdbfe; border-radius: var(--radius-md, 10px); background: var(--sky-soft); overflow: hidden; }
+.dark .buyer .il-strip, .buyer.dark .il-strip { border-color: var(--border); background: var(--muted); }
+.buyer .il-por { display: flex; align-items: center; gap: 10px; padding: 9px 14px; font-size: 13px; }
+.buyer .il-por + .il-por { border-top: 1px solid #bfdbfe; }
+.dark .buyer .il-por + .il-por, .buyer.dark .il-por + .il-por { border-top-color: var(--border); }
+.buyer .il-por .il-gl { flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: 8px; }
+.buyer .il-por .il-gl b { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; padding: 2px 7px; border-radius: 6px; background: var(--card); color: #1d4ed8; }
+.buyer .il-unit { padding: 2px 8px; border-radius: 6px; background: var(--card); color: var(--muted-foreground); font-size: 12px; white-space: nowrap; }
+.buyer .il-por .il-amt { min-width: 84px; }
+.buyer .il-por.muted { color: var(--muted-foreground); }
+.buyer .il-por.warn { color: #b45309; background: var(--amber-soft); }
+.buyer .il-por.warn svg { width: 14px; height: 14px; }
+.buyer .il-item.gone .il-desc, .buyer .il-item.gone > .il-row .il-amt { color: var(--muted-foreground); text-decoration: line-through; }
+@media (max-width: 640px) { .buyer .il-row { grid-template-columns: 1fr auto; } .buyer .il-row .il-refs { grid-column: 1 / -1; grid-row: 2; } .buyer .il-row.hd span:nth-child(2) { display: none; } .buyer .il-por { flex-wrap: wrap; } }
+/* Invoice page header tag: what kind of invoice this is (Service now; product-order invoices could share the page later) */
+.buyer .hero-tag { display: inline-flex; align-items: center; margin-right: 10px; padding: 1px 9px; border-radius: var(--radius-pill); background: rgba(255,255,255,.18); color: #fff; font-size: 12px; font-weight: 700; vertical-align: 1px; }
+
+/* ===== SPO page refresh (10/20/2026, TKT-SPO-63) ===== */
+.buyer .spo-tabs { align-self: flex-start; justify-self: start; width: max-content; margin: 0; }
+.buyer .spo-scope-list { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14.5px; }
+.buyer .scope-facts { display: grid; grid-template-columns: 120px 1fr; gap: 4px 12px; margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13px; }
+.buyer .scope-facts dt { color: var(--muted-foreground); font-weight: 600; }
+.buyer .scope-facts dd { margin: 0; }
+.buyer .alloc-chip.warn { background: var(--amber-soft); border-color: #fcd34d; color: #b45309; }
+.buyer .alloc-lock { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted-foreground); margin-top: 6px; }
+.buyer .alloc-edit { grid-column: 1 / -1; margin-top: 10px; border: 1px solid #bfdbfe; border-radius: var(--radius-md, 10px); background: var(--sky-soft); overflow: hidden; }
+.dark .buyer .alloc-edit, .buyer.dark .alloc-edit { border-color: var(--border); background: var(--muted); }
+.buyer .alloc-edit-h { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #1d4ed8; }
+.buyer .alloc-edit-h svg { width: 15px; height: 15px; }
+.buyer .alloc-edit-h span { text-transform: none; letter-spacing: 0; color: var(--muted-foreground); font-size: 12px; }
+.buyer .alloc-edit-row { display: grid; grid-template-columns: 90px 1fr 1fr; gap: 10px; align-items: center; padding: 10px 14px; border-top: 1px solid #bfdbfe; background: var(--card); }
+.dark .buyer .alloc-edit-row, .buyer.dark .alloc-edit-row { border-top-color: var(--border); }
+.buyer .alloc-edit-row .alloc-amt { font-weight: 600; font-variant-numeric: tabular-nums; font-size: 13px; }
+.buyer .alloc-foot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 14px 0 4px; }
+.buyer .act-ev .ameta { font-size: 12px; color: var(--muted-foreground); margin-top: 3px; }
+.buyer .act-toggle svg { transition: transform .15s; transform: rotate(-90deg); }
+.buyer .act-toggle.open svg { transform: none; }
+@media (max-width: 640px) { .buyer .alloc-edit-row { grid-template-columns: 1fr; } .buyer .scope-facts { grid-template-columns: 1fr; } }
+/* A link Scout AI suggested but nobody has confirmed yet: muted, with a tooltip — no extra tag */
+.buyer .il-ref.sug { color: var(--muted-foreground); font-weight: 500; }
+/* GL Allocation Strip inside an SPO line (TKT-SPO-63): same component as the invoice page, full width under the line */
+.buyer .spo-line .gl-strip { grid-column: 1 / -1; margin: 8px 0 0; }
+.buyer .il-unit.unit-link { text-decoration: none; color: var(--muted-foreground); }
+.buyer .il-unit.unit-link:hover { color: var(--foreground); text-decoration: underline; }
+.buyer .il-por .alloc-chip.warn { padding: 2px 8px; border-radius: 6px; }
+/* Accounting references (TKT-SPO-63): collapsed by default; the IDs Accounting matches in their system */
+.buyer .acct-refs { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 13px; }
+.buyer .acct-refs summary { cursor: pointer; color: var(--muted-foreground); font-weight: 600; list-style: none; display: inline-flex; align-items: center; gap: 6px; }
+.buyer .acct-refs summary::-webkit-details-marker { display: none; }
+.buyer .acct-refs summary::before { content: ''; width: 0; height: 0; border-left: 5px solid currentColor; border-top: 4px solid transparent; border-bottom: 4px solid transparent; transition: transform .15s; }
+.buyer .acct-refs[open] summary::before { transform: rotate(90deg); }
+.buyer .acct-refs dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 10px 0 0; }
+.buyer .acct-refs dt { color: var(--muted-foreground); }
+.buyer .acct-refs dd { margin: 0; text-align: right; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12.5px; display: inline-flex; justify-content: flex-end; align-items: center; gap: 6px; }
+.buyer .ref-copy { border: none; background: none; padding: 2px; color: var(--muted-foreground); cursor: pointer; display: inline-flex; }
+.buyer .ref-copy:hover { color: var(--foreground); }
+.buyer .ref-copy svg { width: 13px; height: 13px; }
+.buyer .tip-u { border-bottom: 1px dotted currentColor; cursor: help; }
+/* Count pill beside a card heading (Documents): neutral, centred on the heading — not the rose notification badge */
+.buyer .h-count { display: inline-flex; align-items: center; gap: 8px; }
+.buyer .count-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: var(--radius-pill); background: var(--muted); color: var(--muted-foreground); font-size: 12px; font-weight: 700; line-height: 1; }

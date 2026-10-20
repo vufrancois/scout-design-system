@@ -140,7 +140,7 @@
   const ven = x => SPO.VEN[x.v];
   const endDot = t => /[.!?]$/.test(t) ? t : t + '.';
   const pillHtml = x => { const st = SCH.STATES[x.status]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; };
-  const allocChips = l => '<div class="alloc-row">' + l.alloc.map(a => '<span class="alloc-chip"><span class="code">' + a.gl + '</span>' + SPO.glName(a.gl) + '<span class="sep"></span><a class="unit-link" href="unit-history.html#' + X.prop + '/' + a.unit + '" title="Unit history">' + SPO.unitLabel(a.unit) + '</a>' + (l.alloc.length > 1 ? '<span class="sep"></span><span class="amt">' + money(a.amt) + '</span>' : '') + '</span>').join('') + '</div>';
+  const allocChips = l => SPO.glStrip(l.alloc, X.prop);
   const dateTile = d => '<span class="rd"><b>' + d.slice(8) + '</b><span>' + MON[+d.slice(5, 7) - 1] + '</span></span>';
   const btn = (label, onclick, kind, ico) => '<button class="btn' + (kind ? ' ' + kind : '') + '" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap" onclick="' + onclick + '">' + (ico ? '<span style="display:inline-flex;width:15px;height:15px">' + ico + '</span>' : '') + label + '</button>';
 

@@ -53,7 +53,7 @@ One demo order (#515) with every state as a hash — the stepper itself is click
 
 ## Buyer App — Service POs `buyer/spo.html#<id>`
 
-SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 · Closed 12), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
+SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 · Closed 8 · Canceled 2 — Invoices and Closed count invoices), and new SPOs start at `buyer/spo-new.html#new`. **Open any SPO page with `#reset-spos` to restore the seeds** after a live demo.
 
 | State | SPO | What to show |
 |---|---|---|
@@ -83,7 +83,10 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 �
 | Partly invoiced · waiting | `#833` | Open tab, page 2: "2 of 4 invoiced" under the SPO number. Paint lines billed on INV-MR-0812 (paid), carpet lines **Not invoiced yet**; the tracker reads "2 of 4 lines"; **Invoices** card; **Close unbilled lines** → pick a line + reason → its budget is released |
 | Partly invoiced · next invoice | `#834` → `#834/invoice` | The second invoice INV-AH-0821: lines 1–2 are **locked** ("Billed on INV-AH-0809"), only the thermostat line can be connected. On the Invoices tab SPO-834 sits under **both** invoices (Lines 1, 2 of 3 · With Accounting / Lines 3 of 3 · Invoice to Map) |
 | Partial invoicing (live) | `#863` → Upload invoice | Remove one invoice line on the board → "1 SPO line isn't on this invoice": **Expect another invoice** → Validate → Send to Accounting → the SPO is back in **Awaiting Invoice**, "Partly invoiced"; then Close unbilled lines → With Accounting |
-| Invoice mapping on the card | `#836` · `#840` | Invoice card: each invoice line → **SPO # · Line · description**. A shared invoice shows the other SPOs' lines ("other SPO", linked) and the tax split; 857 after mapping shows a split line (1/2 · $400.00) and a one-time extra |
+| Invoice page | `invoice.html#INV-DE-0815` (or click an invoice number on Invoices/Closed) | Progress Received → Mapped → Sent to Accounting → Payment recorded; next step **Send to Accounting**. **Line items and GL codes**: each invoice line → **SPO-835 · Line 1**, and under it the GL strip (6075 Electrical · Unit 0117 · $180.00). Switch to **Invoice PDF**; open **Accounting references**; Send → both SPOs move together. Try `#INV-7781` after mapping SPO-857 (a line split across units, a mixed-GL line, a one-time extra) and `#INV-AH-0821` (to map: muted suggested links) |
+| Canceled tab | `spos.html#canceled` | Closed now holds paid invoices only; Canceled lists SPO-851 and 852, with a **Canceled for Rebid** card |
+| Edit GL & unit | `#863` → **Edit GL & unit** | Change a unit → Save → Activity logs "GL & unit corrected". Move both lines to 6045 → "would be $10.00 over its Aug 2026 budget", Save blocked. On `#833`, billed lines are locked |
+| SPO page side panel | `#862` | Activity with time and **By …**; **Accounting references** (SPO-862 · V-12177 · 0656, copyable); Documents count; Spend period tooltip in the scope card; **SPO \| Invoices** switch on `#856` |
 
 ### Recurring SPOs — `buyer/schedules.html` · `buyer/schedule.html#SCH-<nn>`
 

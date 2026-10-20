@@ -189,13 +189,6 @@
         '<div class="il-strip">' + strip.join('') + '</div></div>';
     }).join('') + '</div>';
   }
-  /* One link to the mapping board (one per SPO on a shared invoice); Map invoice while it still needs mapping */
-  function mapLinks(peers, rec) {
-    const btn = (href, label) => '<a class="btn btn-sm" style="text-decoration:none;white-space:nowrap" href="' + href + '">' + label + '</a>';
-    if (peers.some(x => recSt(x.sp, x.rec) === 'mapping')) return '';
-    return peers.length === 1 ? btn('spo.html#' + peers[0].sp.id + '/mapping-' + encodeURIComponent(rec.num), 'View mapping')
-      : '<span class="il-maplinks"><span class="im-muted">View mapping:</span>' + peers.map(x => '<a class="table-link" href="spo.html#' + x.sp.id + '/mapping-' + encodeURIComponent(rec.num) + '">SPO-' + x.sp.id + '</a>').join('') + '</span>';
-  }
 
   function renderPage() {
     const num = decodeURIComponent((location.hash || '').replace('#', '').split('/')[0]);
@@ -231,7 +224,7 @@
 
     /* Mapped SPO items: per SPO, the invoice lines on THIS invoice and the SPO line (GL, unit) each books to */
     const seg = '<div class="mode-seg"><button class="' + (view === 'details' ? 'active' : '') + '" onclick="view = \'details\'; renderPage()">' + IC.map + '<span>Invoice details</span></button><button class="' + (view === 'pdf' ? 'active' : '') + '" onclick="view = \'pdf\'; renderPage()">' + IC.doc + '<span>Invoice PDF</span></button></div>';
-    m += '<div class="card"><div class="det-card-head hd"><div><h2>' + (view === 'pdf' ? 'Invoice PDF' : 'Line items and GL codes') + '</h2><div class="sub">' + (view === 'pdf' ? rec.file + ' · PDF, ' + SPO.fileSize(SPO.invSize(rec)) : 'Each invoice line, the SPO line it was mapped to, and the GL code and unit Accounting books it to.') + '</div></div><span class="il-head-acts">' + (view === 'details' ? mapLinks(peers, rec) : '') + seg + '</span></div>' +
+    m += '<div class="card"><div class="det-card-head hd"><div><h2>' + (view === 'pdf' ? 'Invoice PDF' : 'Line items and GL codes') + '</h2><div class="sub">' + (view === 'pdf' ? rec.file + ' · PDF, ' + SPO.fileSize(SPO.invSize(rec)) : 'Each invoice line, the SPO line it was mapped to, and the GL code and unit Accounting books it to.') + '</div></div><span class="il-head-acts">' + seg + '</span></div>' +
       (view === 'pdf' ? '<div class="cx-pdfview" style="margin-top:12px"><pre>' + PACK.pdfLines(s, w, p) + '</pre></div><div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:7px" onclick="showToast(\'Download started\', \'' + rec.file + '\')"><span style="display:inline-flex;width:14px;height:14px">' + IC.dl + '</span>Download PDF</button></div>' : invLines(peers) +
       /* Totals, as on the vendor's invoice */
       '<div class="det-totals" style="margin-top:14px"><div class="tot-row"><span>Item total</span><span>' + money(sub) + '</span></div><div class="tot-row"><span>Shipping</span><span>' + money(w.ship || 0) + '</span></div><div class="tot-row"><span>Sales tax' + (peers.length > 1 ? ' · each SPO’s share in Documents' : '') + '</span><span>' + money(w.tax) + '</span></div><div class="tot-row grand"><span>Total</span><span>' + money(total) + '</span></div></div>') + '</div>';

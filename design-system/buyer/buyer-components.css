@@ -2018,7 +2018,6 @@
 /* ===== Invoice page (10/20/2026, TKT-SPO-62): after the invoice arrives it's the record. Line items are invoice-first: one
    row per invoice line (vendor's order), the SPO line(s) it maps to, and a strip of GL · unit portions with amounts. ===== */
 .buyer .il-head-acts { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-.buyer .il-maplinks { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; }
 .buyer .il-table { margin-top: 12px; border: 1px solid var(--border); border-radius: var(--radius-md, 10px); overflow: hidden; }
 .buyer .il-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 110px; gap: 14px; align-items: center; padding: 14px 16px; }
 .buyer .il-row.hd { padding: 10px 16px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); background: var(--surface-soft, #f8f9fa); }

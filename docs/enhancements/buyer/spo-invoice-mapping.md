@@ -169,7 +169,7 @@ The audit's own case is seeded: SPO-858's INV-30418.pdf is 2,662 bytes and shows
   - **Next-step strip** with the one action: Map invoice · Send to Accounting · Waiting on Accounting · Paid.
   - **Line items and GL codes** (invoice-first, the team's layout): one row per invoice line in the vendor's order · the **SPO line(s)** it maps to ("SPO-857 · Line 1") · total; under each line a **GL Allocation Strip** of GL code · name · unit (links to Unit History) · amount, pro-rated exactly as in the payment packet. A line split across SPOs on a shared invoice is one row. Problems show in the strip: Not mapped · Unit not assigned · One-time extra · removed lines struck with the reason. Links Scout AI suggested but nobody confirmed are muted, with a tooltip. No separate "View mapping" link: the line items are the mapping in readable form; Map invoice (next-step strip) opens the board while the invoice still needs mapping (removed 10/20/2026).
   - **Invoice PDF** view (switch in the card header), item total · shipping · sales tax · total.
-  - Side: **Invoice details** (number, date, vendor, property, address, total, Accounting status, "payment status follows the Accounting sync" note, collapsed **Accounting references**: invoice #, SPO numbers, vendor code, location ID); **Documents** (invoice PDF, payment packet once sent, each SPO with its amount and tax share on this invoice); **Activity** across its SPOs.
+  - Side: **Invoice details** (number, date, vendor, property, address, total, Accounting status, "payment status follows the Accounting sync" note, collapsed **Accounting references**: invoice #, SPO numbers, vendor code, location ID); **Documents** (invoice PDF, payment packet once sent, each SPO with its line amount on this invoice — no per-SPO tax (10/21/2026)); **Activity** across its SPOs.
   - **Send to Accounting** from the page (the same per-invoice packet as the SPO page, shared code in `invoice-pack.js`).
 - **Canceled tab:** Open · Invoices · Closed · **Canceled**. Closed holds paid invoices only; Canceled has Canceled and Canceled for Rebid cards.
 - **Counts in invoices:** Invoices and Closed tab counts and cards count invoices (each invoice on the tab of its own status). Invoices: Total · Your Move (to map or send) · With Accounting. Closed: Paid Invoices · Total Paid.
@@ -187,10 +187,18 @@ The audit's own case is seeded: SPO-858's INV-30418.pdf is 2,662 bytes and shows
 - [ ] Line items list each invoice line in invoice order with the SPO line(s) it maps to and a GL Allocation Strip of GL · unit · amount portions that sum to the line and match the payment packet; a line split across SPOs is one row.
 - [ ] Unmapped lines, units not assigned, one-time extras and removed lines are labelled in the strip; unconfirmed suggestions are visually distinct.
 - [ ] A switch shows the invoice PDF; totals show item total, shipping, sales tax and total.
-- [ ] The side shows invoice details, collapsed accounting references (invoice #, SPO numbers, vendor code, location ID, each copyable), documents (invoice, packet once sent, each SPO with its amount on this invoice) and the invoice's activity across its SPOs.
+- [ ] The side shows invoice details, collapsed accounting references (invoice #, SPO numbers, vendor code, location ID, each copyable), documents (invoice, packet once sent, each SPO with its line amount on this invoice; tax shows once, in the totals) and the invoice's activity across its SPOs.
 - [ ] Send to Accounting from the page sends the whole invoice (TKT-SPO-61).
 - [ ] GL and unit are read-only here.
 - [ ] The SPO list has Open · Invoices · Closed · Canceled; Closed holds paid invoices; Invoices and Closed count invoices and their cards filter invoices.
 **Backend / data:** an invoice record with its lines, per-line mapping and status (TKT-SPO-59/61); vendor codes and property location IDs for the references.
 **Reshapes:** TKT-SPO-58 (tab counts and cards are invoices), TKT-SPO-60 (the mapping table moves from the SPO page to the invoice page).
 **Files:** `buyer/invoice.html`, `buyer/invoice-pack.js` (`pdfLines`, `glAllocation`, `packDoc`, `packModal`, `find`), `buyer/spos.html` (`TABS`, `invoicesOn`, `statCards`), `buyer/spo.html` (`invoiceCard`, `#<id>/mapping-<num>`), `buyer/buyer-components.css` (`.il-*`, `.hero-tag`, `.count-pill`)
+
+
+## Addendum · No per-SPO tax on the invoice or SPO pages (10/21/2026)
+
+Following the mapping pages: tax is invoice-level, so nothing shows a per-SPO tax share any more.
+- **Invoice page:** the totals' Sales tax line no longer points to "each SPO's share"; Documents show each SPO's **line amount** on the invoice (SPO-835 · $180.00), not a share incl. tax.
+- **SPO page (shared invoice):** the Invoice card reads "this SPO's lines $380.00"; line-item totals show "Invoiced to this SPO" (lines only) with a note that tax is on the invoice; the With Accounting and Paid strips show the invoice total with "this SPO's lines". A one-SPO invoice keeps its tax and total — all of it is this SPO's.
+- **Activity:** a shared invoice's "Invoice received" and "Paid" read the whole invoice (INV-CC-2607 · $757.55); "Sent to Accounting" reads "packet: invoice + GL & unit allocation" (no PO since TKT-SPO-61).

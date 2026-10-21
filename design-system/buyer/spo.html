@@ -219,8 +219,8 @@
         if (!SPO.invReady(s)) return st('wait', IC.map, 'Mapped · waiting on the rest of ' + inv.num, 'SPO-' + s.id + ' is mapped. The invoice goes to Accounting once ' + others.filter(x => x.sp.state !== 'ready').map(x => 'SPO-' + x.sp.id).join(', ') + ' ' + (others.length > 1 ? 'are' : 'is') + ' mapped too.');
         return st('action', IC.card, 'Send invoice ' + inv.num + ' to Accounting', 'Mapped and validated — ' + money(inv.shared ? inv.shared.total : SPO.invTotal(s)) + (others.length ? ', covering this SPO and ' + others.map(x => 'SPO-' + x.sp.id).join(', ') + ', which go together' : '') + '.' + (open ? ' ' + open + ' of ' + s.lines.length + ' lines aren’t invoiced yet, so SPO-' + s.id + ' then waits for the next invoice.' : ''), btn('Send invoice', "location.hash='#" + s.id + "/accounting'", 'btn-primary', IC.send)); }
       case 'accounting': { const sh = s.invoice && s.invoice.shared, nums = SPO.invoicesOf(s).map(r => r.num).join(', ');
-        return st('acct', IC.card, 'Waiting on Accounting · Payment', 'Invoice' + (SPO.invoicesOf(s).length > 1 ? 's ' : ' ') + nums + ' sent on ' + SPO.fmtDate(s.ev.accounting) + ' with ' + (SPO.invoicesOf(s).length > 1 ? 'their' : 'its') + ' GL & unit allocation. Accounting releases ' + money(sh ? sh.total : SPO.billedTotal(s)) + ' to ' + (sh ? v.name + ' for SPO-' + sh.spos.join(', SPO-') + ' (this SPO’s share ' + money(SPO.invTotal(s)) + ').' : endDot(v.name))); }
-      case 'paid': return st('done', IC.flag, 'Paid', money(SPO.billedTotal(s)) + ' released to ' + v.name + ' on ' + SPO.fmtDate(s.ev.paid) + '. Documents stay available for your records.');
+        return st('acct', IC.card, 'Waiting on Accounting · Payment', 'Invoice' + (SPO.invoicesOf(s).length > 1 ? 's ' : ' ') + nums + ' sent on ' + SPO.fmtDate(s.ev.accounting) + ' with ' + (SPO.invoicesOf(s).length > 1 ? 'their' : 'its') + ' GL & unit allocation. Accounting releases ' + money(sh ? sh.total : SPO.billedTotal(s)) + ' to ' + (sh ? v.name + ' for SPO-' + sh.spos.join(', SPO-') + ' (this SPO’s lines ' + money(SPO.invSubtotal(s)) + ').' : endDot(v.name))); }
+      case 'paid': return st('done', IC.flag, 'Paid', (s.invoice && s.invoice.shared ? 'Invoice ' + s.invoice.num + ' · ' + money(s.invoice.shared.total) + ' (this SPO’s lines ' + money(SPO.invSubtotal(s)) + ')' : money(SPO.billedTotal(s))) + ' released to ' + v.name + ' on ' + SPO.fmtDate(s.ev.paid) + '. Documents stay available for your records.');
     }
     return '';
   }
@@ -368,15 +368,20 @@
     showToast('GL & unit corrected', notes.length + ' change' + (notes.length === 1 ? '' : 's') + ' saved to SPO-' + s.id + '.');
   }
 
+  /* Validated invoices against the estimate of the lines each one covers — with several invoices, summed. Tax is
+     invoice-level (10/21/2026): a shared invoice counts only this SPO's lines here, never a per-SPO tax share; a
+     one-SPO invoice keeps its tax, since all of it belongs to this SPO. */
   function invoiceTotals(s) {
-    const recs = SPO.invoicesOf(s).filter(r => r.validated), many = recs.length > 1;
-    let sub = 0, cov = 0, tax = 0;
-    recs.forEach(r => { sub += SPO.invSubtotal({ invoice: r }); cov += SPO.invCovers(r).reduce((a, k) => a + s.lines[k].qty * s.lines[k].price, 0); tax += r.tax || 0; });
-    sub = r2(sub); tax = r2(tax); const vr = r2(sub - cov);
+    const recs = SPO.invoicesOf(s).filter(r => r.validated), many = recs.length > 1, shared = recs.some(r => r.shared);
+    let sub = 0, cov = 0, tax = 0, tot = 0;
+    recs.forEach(r => { const st = SPO.invSubtotal({ invoice: r }); sub += st; cov += SPO.invCovers(r).reduce((a, k) => a + s.lines[k].qty * s.lines[k].price, 0);
+      if (!r.shared) tax += (r.tax || 0) + (r.ship || 0); tot += r.shared ? st : SPO.invTotal({ invoice: r }); });
+    sub = r2(sub); tax = r2(tax); tot = r2(tot); const vr = r2(sub - cov);
     return '<div class="tot-row"><span>' + (many ? 'Invoiced on ' + recs.map(r => r.num).join(', ') : 'Invoice ' + recs[0].num) + ' · subtotal</span><span>' + money(sub) + '</span></div>' +
       (vr ? '<div class="tot-row"><span>Variance accepted at mapping</span><span style="color:#b45309">' + (vr > 0 ? '+' : '−') + money(Math.abs(vr)) + '</span></div>' : '') +
       (tax ? '<div class="tot-row"><span>Sales tax</span><span>' + money(tax) + '</span></div>' : '') +
-      '<div class="tot-row grand"><span>' + (many ? 'Invoiced total' : 'Invoice total') + '</span><span>' + money(SPO.billedTotal({ billed: recs.filter(r => r !== s.invoice), invoice: recs.indexOf(s.invoice) >= 0 ? s.invoice : null })) + '</span></div>';
+      '<div class="tot-row grand"><span>' + (shared ? 'Invoiced to this SPO' : many ? 'Invoiced total' : 'Invoice total') + '</span><span>' + money(tot) + '</span></div>' +
+      (shared ? '<div class="tot-row"><span style="font-size:12px">Shared invoice · tax is on the invoice, not split by SPO</span><span></span></div>' : '');
   }
 
   /* Line tag: which invoice billed it, still open, or closed unbilled (partial invoicing, TKT-SPO-59). Shown once an
@@ -396,7 +401,7 @@
     const chip = k => { const st = { mapping: ['dot-pending', 'Needs mapping'], ready: ['dot-pending', 'Validated · ready to send'], accounting: ['dot-violet', 'With Accounting'], paid: ['dot-approved', 'Paid'] }[k] || ['dot-approved', 'Mapped & validated'];
       return '<span class="status-dot-item"><span class="status-dot ' + st[0] + '"></span><span class="status-dot-label">' + st[1] + '</span></span>'; };
     const row = r => { const k = stOf(r), cov = SPO.invCovers(r), cur = r === s.invoice;
-      return '<div class="doc-row emerald" style="margin-top:10px">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + r.num + ' · ' + r.file + '</div><div class="doc-date">Received ' + SPO.fmtDate(cur ? s.ev.invoiced : r.at.invoiced) + ' · ' + (many ? 'Line' + (cov.length === 1 ? ' ' : 's ') + cov.map(i => i + 1).join(', ') + ' · ' : 'PDF, ' + SPO.fileSize(SPO.invSize(r)) + ' · ' + r.lines.length + ' line' + (r.lines.length === 1 ? '' : 's') + ' · ') + (r.shared ? 'this SPO’s share ' : '') + money(SPO.invTotal({ invoice: r })) + '</div></div>' +
+      return '<div class="doc-row emerald" style="margin-top:10px">' + IC.doc.replace('<svg', '<svg class="doc-ico"') + '<div style="flex:1;min-width:0"><div class="doc-name">' + r.num + ' · ' + r.file + '</div><div class="doc-date">Received ' + SPO.fmtDate(cur ? s.ev.invoiced : r.at.invoiced) + ' · ' + (many ? 'Line' + (cov.length === 1 ? ' ' : 's ') + cov.map(i => i + 1).join(', ') + ' · ' : 'PDF, ' + SPO.fileSize(SPO.invSize(r)) + ' · ' + r.lines.length + ' line' + (r.lines.length === 1 ? '' : 's') + ' · ') + (r.shared ? 'this SPO’s lines ' + money(SPO.invSubtotal({ invoice: r })) : money(SPO.invTotal({ invoice: r }))) + '</div></div>' +
         (many ? chip(k) : '') + (k === 'mapping' ? '<button class="btn btn-primary btn-sm" onclick="location.hash=\'#' + s.id + '/invoice\'">Map invoice</button>' : '') + '<a class="btn btn-sm" style="text-decoration:none;white-space:nowrap" href="invoice.html#' + encodeURIComponent(r.num) + '">Open invoice</a></div>'; };
     return '<div class="card"><div class="det-card-head hd"><div><h2>' + (many ? 'Invoices' : 'Invoice') + '</h2>' + (many ? '<div class="sub">' + p.billed + ' of ' + p.n + ' lines invoiced' + (p.closed ? ' · ' + p.closed + ' closed unbilled' : '') + (p.open ? ' · ' + p.open + ' still open' : '') + '</div>' : '') + '</div>' +
       (many ? (s.state === 'invoice' && p.open ? '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:7px" onclick="openUpload()"><span style="display:inline-flex;width:14px;height:14px">' + IC.upload + '</span>Add invoice</button>' : '') : chip(stOf(s.invoice))) + '</div>' +

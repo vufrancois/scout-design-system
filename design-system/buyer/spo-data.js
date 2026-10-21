@@ -199,7 +199,7 @@
         { at: '2026-07-28 12:00', t: 'Vendor accepted', sub: 'Acadiana HVAC', hi: true },
         { at: '2026-08-09 14:00', t: 'Invoice received', sub: 'INV-AH-0809 · $1,200.00 · 2 of 3 lines' },
         { at: '2026-08-11 10:00', t: 'Invoice mapped & validated', sub: 'INV-AH-0809 · 2 of 3 lines · the rest expected on another invoice', hi: true },
-        { at: '2026-08-11 10:05', t: 'Sent to Accounting', sub: 'Packet: PO, invoice INV-AH-0809, GL allocation · $1,200.00' },
+        { at: '2026-08-11 10:05', t: 'Sent to Accounting', sub: 'Invoice INV-AH-0809 · packet: invoice + GL & unit allocation · $1,200.00' },
         { at: '2026-08-11 10:05', t: 'Waiting on the next invoice', sub: '1 of 3 lines not invoiced yet · Smart thermostat install' },
         { at: '2026-08-21 15:00', t: 'Invoice received', sub: 'INV-AH-0821 · $360.00 · the next invoice' }] },
     { id: 833, state: 'invoice', prop: 'cypress', v: 'MR', by: 'Alicia Grant', period: 'Jul 2026',
@@ -214,7 +214,7 @@
         { at: '2026-07-27 13:00', t: 'Vendor accepted', sub: 'Southern Make-Ready Co.', hi: true },
         { at: '2026-08-12 10:30', t: 'Invoice received', sub: 'INV-MR-0812 · $800.00 · 2 of 4 lines' },
         { at: '2026-08-13 09:00', t: 'Invoice mapped & validated', sub: 'INV-MR-0812 · 2 of 4 lines · the rest expected on another invoice', hi: true },
-        { at: '2026-08-13 09:05', t: 'Sent to Accounting', sub: 'Packet: PO, invoice INV-MR-0812, GL allocation · $800.00' },
+        { at: '2026-08-13 09:05', t: 'Sent to Accounting', sub: 'Invoice INV-MR-0812 · packet: invoice + GL & unit allocation · $800.00' },
         { at: '2026-08-13 09:05', t: 'Waiting on the next invoice', sub: '2 of 4 lines not invoiced yet · Carpet replacement, unit 0106 · Carpet replacement, unit 0107' },
         { at: '2026-08-20 12:00', t: 'Invoice paid', sub: 'INV-MR-0812 · $800.00 released by Accounting', hi: true }] },
     /* Delta Electric billed two SPOs on one invoice; both validated together and wait to be sent to Accounting. */
@@ -452,10 +452,11 @@
     if (s.ack) push(e.accepted, 'Acceptance recorded', ackText(s), true);
     else push(e.accepted, 'Vendor accepted', v.name + (s.appt && s.appt.status === 'countered' && s.appt.by === 'vendor' && s.appt.at === e.accepted ? ' · by proposing a new time' : ''), true);
     if (e.rejected) { if (s.reject && s.reject.by) push(e.rejected, 'Rejection recorded', 'by ' + s.reject.by, false, true); else push(e.rejected, 'Vendor rejected', '“' + ((s.reject && s.reject.reason) || '') + '”', false, true); }
-    if (e.invoiced && s.invoice) push(e.invoiced, 'Invoice received', s.invoice.num + (s.invoice.extractFailed ? ' · Scout AI couldn’t read the line items' : ' · ' + money(invTotal(s))) + (e.accepted || e.rejected ? '' : ' · the vendor never responded to the PO'));
+    const invAmt = s.invoice && s.invoice.shared ? s.invoice.shared.total : invTotal(s); /* a shared invoice reads as the whole invoice — no per-SPO tax (10/21/2026) */
+    if (e.invoiced && s.invoice) push(e.invoiced, 'Invoice received', s.invoice.num + (s.invoice.extractFailed ? ' · Scout AI couldn’t read the line items' : ' · ' + money(invAmt) + (s.invoice.shared ? ' · ' + s.invoice.shared.spos.length + ' SPOs' : '')) + (e.accepted || e.rejected ? '' : ' · the vendor never responded to the PO'));
     push(e.mapped, 'Invoice mapped & validated', 'by Alicia Grant', true);
-    push(e.accounting, 'Sent to Accounting', 'Packet: PO, invoice, GL allocation');
-    push(e.paid, 'Paid', money(invTotal(s)) + ' released by Accounting', true);
+    push(e.accounting, 'Sent to Accounting', (s.invoice ? 'Invoice ' + s.invoice.num + ' · ' : '') + 'packet: invoice + GL & unit allocation');
+    push(e.paid, 'Paid', (s.invoice && s.invoice.shared ? s.invoice.num + ' · ' : '') + money(invAmt) + ' released by Accounting', true);
     if (e.canceled && s.cancel) push(e.canceled, s.rebidAs ? 'Canceled for rebid' : 'Canceled', 'by ' + s.cancel.by + ' · “' + s.cancel.reason + '”' + (s.rebidAs ? ' · rebid as SPO-' + s.rebidAs : ''), false, true);
     return out;
   }

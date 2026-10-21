@@ -598,6 +598,11 @@
   function reset() { try { localStorage.removeItem(KEY); localStorage.removeItem(SKEY); localStorage.removeItem('scout-intake-v1'); localStorage.removeItem('scout-notif-read'); } catch (e) { /* noop */ } }
   /* Demo reset: open any SPO page with #reset-spos (clean-URL hosting drops query strings, hashes survive). */
   try { if (location.hash === '#reset-spos') { reset(); history.replaceState(null, '', location.pathname); } } catch (e) { /* noop */ }
+  /* Demo: one half-mapped invoice intake (10/21/2026), so the Invoices tab shows "1 invoice in progress · Resume" from the
+     start. Crescent Cleaning's INV-CC-2608 across SPO-842/845/847: two lines confirmed, one still a Scout AI suggestion,
+     the supplies line unresolved. Restored whenever no drafts are stored (first visit, or after #reset-spos); finishing or
+     discarding it leaves an empty store, so it doesn't come back until the next reset. */
+  try { if (localStorage.getItem('scout-intake-v1') === null) localStorage.setItem('scout-intake-v1', JSON.stringify({"CC:INV-CC-2608":{"key":"CC:INV-CC-2608","file":"INV-CC-2608.pdf","v":"CC","prop":"magnolia","num":"INV-CC-2608","date":"2026-08-24","spoIds":[842,845,847],"why":{"842":"Run 08/05 ↔ “week of 08/03”","845":"Run 08/12 ↔ “week of 08/10”","847":"Run 08/19 ↔ “week of 08/17”"},"showAll":false,"inv":{"num":"INV-CC-2608","date":"2026-08-24","file":"INV-CC-2608.pdf","size":248320,"tax":55.76,"ship":0,"lines":[{"desc":"Common-area cleaning — week of 08/03","amt":180,"maps":[{"spo":842,"line":0,"amt":180,"sug":false}],"conf":"manual"},{"desc":"Common-area cleaning — week of 08/10","amt":180,"maps":[{"spo":845,"line":0,"amt":180,"sug":false}],"conf":"manual"},{"desc":"Common-area cleaning — week of 08/17 (incl. pressure rinse)","amt":195,"maps":[{"spo":847,"line":0,"amt":195,"sug":true}]},{"desc":"Cleaning supplies restock","amt":35,"maps":[]}]},"attest":false,"manual":false,"edit":false,"aiMaps":[[{"spo":842,"line":0,"amt":180,"sug":true}],[{"spo":845,"line":0,"amt":180,"sug":true}],[{"spo":847,"line":0,"amt":195,"sug":true}],[]],"saved":"2026-08-24 08:40"}})); } catch (e) { /* storage unavailable */ }
 
   function counts(prop) {
     const c = {}; Object.keys(STATES).forEach(k => c[k] = 0);

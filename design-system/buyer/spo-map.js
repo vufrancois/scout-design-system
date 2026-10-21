@@ -176,11 +176,6 @@
   function addLine() { C.inv.lines.push({ desc: '', amt: 0, maps: [], manual: true }); C.edit = true; changed(); }
   function rmLine(i) { C.inv.lines.splice(i, 1); changed(); }
   function toggleEdit() { C.edit = !C.edit; changed(); }
-  function setTax(id, v) {
-    const n = parseFloat(String(v).replace(/[$,]/g, ''));
-    const cur = taxShares(); C.inv.taxSplit = Object.assign({}, cur, { [id]: isNaN(n) ? 0 : r2(n) }); changed();
-  }
-  function resetTax() { delete C.inv.taxSplit; changed(); }
 
   /* ---------- render ---------- */
   function varChip(d) {
@@ -269,15 +264,12 @@
       if (o.restN && !C.ro) h += row((multi ? 'SPO-' + s.id + ' · n' : 'N') + 'ot on this invoice', o.restN + ' SPO line' + (o.restN === 1 ? '' : 's') + ' · another invoice, or close ' + (o.restN === 1 ? 'it' : 'them') + ' unbilled when you validate', money(o.rest), '—', '—'); });
     const removed = r2(C.inv.lines.filter(l => l.res === 'remove').reduce((a, l) => a + (l.amt || 0), 0));
     if (removed) h += row('Removed — not payable', '', '—', '−' + money(removed), '—');
-    h += row('Sales tax', multi ? 'Invoice-level · split across SPOs by billed amount' : 'Invoice-level · not compared to line estimates', '—', money(C.inv.tax || 0), '—');
+    h += row('Sales tax', 'Invoice-level · not compared to line estimates', '—', money(C.inv.tax || 0), '—');
     if (C.inv.ship) h += row('Shipping', 'Invoice-level', '—', money(C.inv.ship), '—');
     h += row('Invoice total', '', '', money(r2(payable + (C.inv.tax || 0) + (C.inv.ship || 0))), '') + '</div>';
-    if (multi && C.inv.tax) {
-      const sum = r2(Object.values(tax).reduce((a, b) => a + b, 0));
-      h += '<div class="cx-taxsplit"><div class="cx-row"><b style="font-size:13.5px">Tax split</b>' + (C.inv.taxSplit && !C.ro ? '<button class="w-linkbtn" onclick="CX.resetTax()">Reset to proportional</button>' : '<span class="cx-k">Proportional to each SPO’s billed amount</span>') + '</div>' +
-        C.spos.map(s => '<div class="cx-map"><span>SPO-' + s.id + '</span>' + (C.ro ? '<b>' + money(tax[s.id]) + '</b>' : '<span class="money-in" style="height:30px"><span class="cur">$</span><input inputmode="decimal" value="' + tax[s.id].toFixed(2) + '" onfocus="this.select()" onchange="CX.setTax(' + s.id + ', this.value)"></span>') + '</div>').join('') +
-        (Math.abs(sum - C.inv.tax) > 0.005 ? '<div class="w-note warn">' + I.warn + '<span>Tax shares total ' + money(sum) + ' — they need to add up to ' + money(C.inv.tax) + '.</span></div>' : '') + '</div>';
-    }
+    /* No tax split on the board (team feedback 10/21/2026): tax is invoice-level and goes to Accounting with the invoice.
+       Each SPO's record still gets a proportional share behind the scenes (taxShares), but nobody edits or reviews it here. */
+
     return h;
   }
 
@@ -382,6 +374,6 @@
       return C;
     }, prepare, resolved, status, allResolved, doneCount, perSpo, taxShares, shipShares, taxOk, sumMaps,
     board, totals, mount, draw, unitsIn, unitMismatch, glConflict,
-    connect, unlink, accept, dismissRefuse, itemize, splitLine, autoMap, pick, res, set, lineAmt, lineDesc, addLine, rmLine, toggleEdit, setTax, resetTax
+    connect, unlink, accept, dismissRefuse, itemize, splitLine, autoMap, pick, res, set, lineAmt, lineDesc, addLine, rmLine, toggleEdit
   };
 })();

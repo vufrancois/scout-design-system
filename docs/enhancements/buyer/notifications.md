@@ -102,6 +102,7 @@ Gallery **Buyer App · Notifications**; design-doc **Notifications** rules. `doc
 **Files:** `buyer/notif.js`, `buyer/buyer-components.css` (`.nt-*`)
 
 ### TKT-SPO-41 · Notifications page, grouping and settings
+> **Updated 10/21/2026:** settings are a dialog opened by Settings or the bell's gear — never left showing on the page.
 **Summary:** A full page with filters, read management, grouping of repetitive events and per-type settings.
 **Acceptance criteria:**
 - [ ] Metric cards (Needs Action · Unread · All), a type filter, an Unread only toggle, Mark all read, and per-row Mark read / unread.
@@ -110,3 +111,8 @@ Gallery **Buyer App · Notifications**; design-doc **Notifications** rules. `doc
 - [ ] Items older than a week start out read.
 **Audit findings:** SPO-58
 **Files:** `buyer/notifications.html`, `buyer/notif.js` (`groupList`, prefs)
+
+
+## Addendum · Settings only when asked for (10/21/2026)
+
+Team feedback: settings shouldn't appear unless clicked. They were an inline panel driven by `#settings`, so a reload or a link left them showing. Now **Notification settings** is a dialog opened by the page's Settings button or the bell's gear; the gear link opens it once and clears `#settings`, so a reload never reopens it. Done, Escape or a click outside closes it. TKT-SPO-41: per-type settings live in this dialog.

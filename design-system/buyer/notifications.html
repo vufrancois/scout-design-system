@@ -35,7 +35,6 @@
 <main class="page">
   <div class="kpi-grid nt-kpis" id="stat-cards"></div>
   <div class="nt-toolbar" id="nt-toolbar"></div>
-  <div id="nt-settings"></div>
   <div id="nt-zone"></div>
 </main>
 
@@ -114,7 +113,6 @@
   let ntTab = 'action', typeF = 'all', unreadOnly = false, page = 1;
   function renderPage() {
     if (!window.NOTIF) { setTimeout(renderPage, 60); return; }
-    const settings = location.hash === '#settings';
     const list = NOTIF.scoped(NOTIF.all(), currentProp), act = list.filter(n => n.isAction), unread = act.filter(n => !n.read).length;
     document.getElementById('nt-sub').textContent = (unread ? unread + ' action item' + (unread === 1 ? '' : 's') + ' unread' : 'Nothing unread needs you') + ' · ' + (currentProp === 'all' ? 'all properties' : PROPERTIES.find(p => p.id === currentProp).name);
     const card = (k, cls, title, n, desc) => '<div class="stat-card-colored ' + cls + (ntTab === k ? ' active' : '') + '" onclick="ntTab = \'' + k + '\'; renderPage()"><span class="stat-card-title">' + title + '</span><div class="stat-card-count">' + n + '</div><div class="stat-card-desc">' + desc + '</div></div>';
@@ -129,21 +127,31 @@
     document.getElementById('nt-toolbar').innerHTML = seg +
       '<label class="nt-toggle"><input type="checkbox"' + (unreadOnly ? ' checked' : '') + ' onchange="unreadOnly = this.checked; renderPage()"> Unread only</label>' +
       '<button class="btn btn-sm" style="margin-left:auto" onclick="NOTIF.markRead(NOTIF.ids())">Mark all read</button>' +
-      '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="location.hash = location.hash === \'#settings\' ? \'\' : \'#settings\'"><span style="display:inline-flex;width:14px;height:14px">' + NOTIF.ICON.gear + '</span>Settings</button>';
-    document.getElementById('nt-settings').innerHTML = settings ? settingsHtml() : '';
+      '<button class="btn btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="openSettings()"><span style="display:inline-flex;width:14px;height:14px">' + NOTIF.ICON.gear + '</span>Settings</button>';
     document.getElementById('nt-zone').innerHTML = '<div class="card"><div class="nt-pagelist">' + NOTIF.listHtml(shown, { page: true, empty: ntTab === 'action' ? 'Nothing needs you right now. Action items clear themselves when the task is done.' : 'No notifications match these filters.' }) + '</div></div>';
   }
   function settingsHtml() {
     const prefs = NOTIF.loadPrefs();
-    return '<div class="card nt-settings"><div class="det-card-head hd"><div><h2>Notification settings</h2><div class="sub">Choose what shows in your feed and counts toward the bell</div></div></div>' +
+    return '<div class="val-modal" style="width:560px;max-width:calc(100vw - 32px)"><div class="val-head"><h2>Notification settings</h2><p>Choose what shows in your feed and counts toward the bell.</p></div><div class="val-body" style="padding:8px 24px 18px">' +
       '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">' + Object.keys(NOTIF.TYPES).map(k => '<label class="opt-row" style="cursor:pointer"><span class="opt-ic">' + NOTIF.ICON[k] + '</span><span class="opt-body"><span class="opt-name">' + NOTIF.TYPES[k].label + '</span><span class="opt-desc">' + ({ spo: 'Vendor accepted or rejected, cancellations', invoice: 'Invoices to map or validate, payments', approval: 'Requests waiting on you and decisions', schedule: 'Runs drafted or sent, series approvals', order: 'Orders confirmed and delivered' })[k] + '</span></span><span class="switch-wrap"><input type="checkbox"' + (prefs[k] === false ? '' : ' checked') + ' onchange="setPref(\'' + k + '\', this.checked)"> In-app</span></label>').join('') + '</div>' +
       '<div class="opt-row" style="margin-top:8px;opacity:.7"><span class="opt-ic">@</span><span class="opt-body"><span class="opt-name">Email</span><span class="opt-desc">Daily digest of action items — coming soon</span></span><span class="nt-tag">Coming soon</span></div>' +
-      '<div class="w-note" style="margin-top:10px"><span>Turning a type off hides it from the feed and the bell count. Action items still appear on their pages.</span></div></div>';
+      '<div class="w-note" style="margin-top:10px"><span>Turning a type off hides it from the feed and the bell count. Action items still appear on their pages.</span></div></div><div class="val-foot"><button class="btn btn-primary" onclick="closeSettings()">Done</button></div></div>';
   }
+  /* Settings open only when asked for (team feedback 10/21/2026): a dialog from the Settings button or the bell's gear —
+     never left showing on the page. The bell's gear link (#settings) opens it once, then the hash is cleared. */
+  function openSettings() {
+    let ov = document.getElementById('nt-settings-ov');
+    if (!ov) { ov = document.createElement('div'); ov.className = 'overlay center'; ov.id = 'nt-settings-ov'; ov.addEventListener('click', e => { if (e.target === ov) closeSettings(); }); document.body.appendChild(ov); }
+    ov.innerHTML = settingsHtml(); ov.classList.add('open'); document.body.style.overflow = 'hidden';
+  }
+  function closeSettings() { const ov = document.getElementById('nt-settings-ov'); if (ov) ov.classList.remove('open'); document.body.style.overflow = ''; }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSettings(); });
+  function fromHash() { if (!window.NOTIF) { setTimeout(fromHash, 60); return; } /* the bell's data loads first */ if (location.hash === '#settings') { history.replaceState(null, '', location.pathname); openSettings(); } }
   function setPref(k, on) { const p = NOTIF.loadPrefs(); p[k] = on; NOTIF.savePrefs(p); NOTIF.changed(); }
   document.addEventListener('notif-change', renderPage);
-  window.addEventListener('hashchange', renderPage);
+  window.addEventListener('hashchange', () => { fromHash(); renderPage(); });
   renderPage();
+  fromHash();
 </script>
 </body>
 </html>

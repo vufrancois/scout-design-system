@@ -110,3 +110,6 @@ Gallery **Buyer App · Unit History** and the design-doc **Unit History** rule. 
 - [ ] Laundry and other shared equipment can be charged to Common area.
 **Audit findings:** —
 **Files:** `buyer/spo-data.js` (`ORDER_LINES`); production: the order line model
+
+
+> **Updated 10/21/2026:** Unit History is reached from **Admin → Oversight** (it left the SPOs menu); its pages highlight Admin in the app bar.

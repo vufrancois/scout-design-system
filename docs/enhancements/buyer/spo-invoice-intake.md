@@ -112,6 +112,7 @@ Gallery: **Line Connector** replaces the SPO Line Match card, and there's a new 
 **Files:** `buyer/spo-invoice.html` (`viewVendor`, `upload`, `manual`)
 
 ### TKT-SPO-34 · Standalone intake, step 2: match across SPOs and split the tax
+> **Updated 10/21/2026:** no tax split on screen — tax is invoice-level; each SPO's share is computed proportionally behind the scenes and never edited (see the addendum).
 **Summary:** The board spans every chosen SPO; each SPO is compared with its own estimate; invoice-level tax is split across SPOs.
 **Acceptance criteria:**
 - [ ] SPO lines are grouped by SPO, with a header (run date, estimate, variance).
@@ -256,3 +257,12 @@ The prototype now matches:
 **Backend / data:** per-line billing (invoice id, or closed with by/at/reason); invoices as their own records linked to SPO lines, each with a status; budget commitment excludes closed lines.
 **Replaces:** the "One SPO receiving several invoices" hold and its clone-per-stage workaround.
 **Files:** `buyer/spo-data.js` (`invoicesOf`, `lineState`, `progress`, `invCovers`, `billedTotal`, `afterSend`, `closeLines`, `budget`, seeds 833/834), `buyer/spo-map.js` (`lockOf`, `perSpo` rest), `buyer/spo.html` (`lineTag`, `invoiceCard`, `restBlock`, `openCloseLines`, `invoiceTotals`), `buyer/spos.html`, `buyer/spo-invoice.html` (`restNote`), `buyer/buyer-components.css` (`.ln-tag`, `.cx-rest`, `.cx-l.locked`)
+
+
+## Addendum · No tax split on the mapping pages (10/21/2026)
+
+Team feedback: remove the tax split from invoice mapping. Tax is invoice-level and goes to Accounting with the invoice (TKT-SPO-61), so buyers no longer see or edit a per-SPO split.
+- The board's **Tax split** box (editable per SPO, "Reset to proportional") is removed; the Sales tax row reads "Invoice-level".
+- The intake's review step drops "Sales tax share" per SPO: each SPO card shows its lines on the invoice; the summary lists each SPO's lines, then one Sales tax line, then the invoice total.
+- Behind the scenes each SPO's record still carries a proportional share (the last SPO takes the cents), so totals, the packet and the GL allocation still reconcile.
+- **TKT-SPO-34** loses its tax-split criteria (below).

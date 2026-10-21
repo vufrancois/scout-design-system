@@ -1687,7 +1687,6 @@
 .buyer .cx-map .money-in input { width: 76px; }
 .buyer .cx-res { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
 .buyer .cx-res .lm-fields { margin-left: 26px; }
-.buyer .cx-taxsplit { margin-top: 14px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 8px; }
 /* Mapping takeover in board mode: one scrolling column, PDF as a toggle (the board needs the width) */
 .buyer .ivt-body.cx-mode { display: block; overflow: auto; padding: 20px 28px 28px; }
 .buyer .cx-viewbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }

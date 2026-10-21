@@ -15,7 +15,8 @@
   | Marketplace · products · product · compare · wishlists | Marketplace |
   | Orders · order detail | **Orders** |
   | Approvals · approval | **Admin** (moved 10/14/2026, see the addendum) |
-  | All SPO pages · recurring SPOs · recurring SPO · unit history · invoice intake | SPOs |
+  | All SPO pages · recurring SPOs · recurring SPO · invoice intake | SPOs |
+  | Unit history (moved 10/21/2026) | Admin |
   | Wishlists | Heart icon |
   | Cart · checkout | Cart icon |
   | Notifications | Bell |
@@ -69,7 +70,7 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 | Menu | Items |
 |---|---|
 | **Orders** | Order Tracking · Reviews · Quotes · Purchase History |
-| **SPOs** | Service POs · Recurring SPOs · Service calendar (added 10/16/2026) · Unit History |
+| **SPOs** | Service POs · Recurring SPOs · Service calendar (added 10/16/2026) |
 | **Admin** | **Oversight:** Approvals · Budgets · Funding Report — **Setup:** Vendor Select · Shopping Lists · Organization |
 
 - Orders and SPOs now list purchases by type; Admin holds what spans both, in two labelled columns.
@@ -81,7 +82,7 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 ### TKT-APP-03 · Reshuffle the menus by job
 **Summary:** Orders and SPOs list purchases by type; Admin gathers the tools that span both, with a pending-approvals count.
 **Acceptance criteria:**
-- [ ] Orders: Order Tracking, Reviews, Quotes, Purchase History. SPOs: Service POs, Recurring SPOs, Unit History.
+- [ ] Orders: Order Tracking, Reviews, Quotes, Purchase History. SPOs: Service POs, Recurring SPOs, Service calendar. Admin → Oversight also lists Unit History (moved 10/21/2026). No Messages button in the app bar.
 - [ ] Admin shows two labelled columns: Oversight (Approvals, Budgets, Funding Report) and Setup (Vendor Select, Shopping Lists, Organization).
   - **Decided 10/18/2026:** Vendor Select is for managing approved vendors, so it stays in Admin → Setup.
 - [ ] The Approvals item is named "Approvals" and describes orders, Service POs and schedules.
@@ -90,3 +91,10 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 - [ ] The Admin panel stays inside the viewport at 1,280px and up.
 **Files:** `buyer/appbar.js` (menus, page map, `admin-badge`), `buyer/approvals.html` (title), `buyer/spo-new.html` (copy), `buyer/notif.js` (`syncApprovals`), `buyer/buyer-components.css` (`.menu-group-label`, `.chip-badge`, `#menu-admin`)
 
+
+
+## Addendum · Unit History moves to Admin; no Messages button (10/21/2026)
+
+- **Unit History** moves from the SPOs menu to **Admin → Oversight**, after Approvals, Budgets and Funding Report: it's spend reporting by unit across SPOs and orders, not an SPO task. Unit History pages highlight Admin. The SPOs menu is now Service POs · Recurring SPOs · Service calendar.
+- **The Messages button is removed** from the app bar entirely (team feedback). The bar's icons are now theme, Notifications, Wishlists and Cart.
+- TKT-APP-03's acceptance criteria are updated: SPOs lists Service POs, Recurring SPOs and Service calendar; Admin's Oversight adds Unit History; the app bar has no Messages button.

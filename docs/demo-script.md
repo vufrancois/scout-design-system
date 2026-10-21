@@ -99,7 +99,6 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 �
 | Ended | `#SCH-05` | Completed its 6 runs (Ended tab → Completed card) |
 | Make recurring (live) | `spo.html#866` → Make recurring | Wizard opens on **Scope** with **Repeat this SPO** on: pick Weekly · Wednesday → preview shows 52 runs / $11,700 → Submit recurring SPO for approval; SPO-866 becomes run 1 and links to the new series |
 | Service calendar | `calendar.html` (SPOs → **Service calendar**) | August: tiles tinted by vendor, dots by date/time status — 863 **Pending** (amber ring), 862/858 **Approved**, 860 **New time proposed** (sky diamond), 861 **Denied** (rose); September: 867 **Needs rebid**. Click a legend key to hide/show; click a tile for its action (Review new time, Rebid, Choose vendor, Add to calendar) |
-| Mini calendar | `schedule.html#SCH-04` | Rail **Run calendar**: click 09/07 → Skip → the Upcoming runs list updates too |
 | Edit (live) | `spo-new.html#edit-SCH-01` | Same price → "Covered by the series approval · Save changes"; raise the price → "Changes need re-approval" |
 
 ### Standalone invoice intake — `buyer/spo-invoice.html`

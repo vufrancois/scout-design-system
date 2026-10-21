@@ -98,3 +98,5 @@ The bar's **behaviour** is still copied into every page: theme toggle, menus, Co
 - **Unit History** moves from the SPOs menu to **Admin → Oversight**, after Approvals, Budgets and Funding Report: it's spend reporting by unit across SPOs and orders, not an SPO task. Unit History pages highlight Admin. The SPOs menu is now Service POs · Recurring SPOs · Service calendar.
 - **The Messages button is removed** from the app bar entirely (team feedback). The bar's icons are now theme, Notifications, Wishlists and Cart.
 - TKT-APP-03's acceptance criteria are updated: SPOs lists Service POs, Recurring SPOs and Service calendar; Admin's Oversight adds Unit History; the app bar has no Messages button.
+
+- **Messages removed everywhere (10/21/2026):** also from the vendor app's sidebar and top bar, the buyer product page (Chat with seller), and the Marketplace promo (Message any vendor).

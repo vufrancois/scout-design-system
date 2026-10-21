@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="buyer.css">
 <script src="cart.js"></script>
 <script src="spo-data.js"></script>
-<script src="sch-cal.js"></script>
 </head>
 <body class="buyer">
 
@@ -116,6 +115,7 @@
   const money = SPO.money, fmtD = SPO.fmtDate;
   const SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
   const IC = {
+    cal: '<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>',
     rep: SVG + '<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',
     pen: SVG + '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
     shield: SVG + '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
@@ -208,12 +208,12 @@
 
     let side = '<div class="card"><div class="ven-card"><span class="ven-logo vt" style="--vh:' + SPO.vh(x.v) + '">' + x.v + '</span><div style="min-width:0"><div class="ven-eyebrow">Vendor · ' + v.trade + '</div><div class="ven-name" style="margin-bottom:2px">' + v.name + '</div>' +
       '<div style="font-size:13px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="PO recipient">' + v.email + '</div></div></div></div>';
-    /* Run calendar: this series only — click a date for Skip / Undo skip or the run's SPO. */
-    side += '<div class="card"><div class="det-card-head" style="margin-bottom:10px"><h2 style="font-size:16px">Run calendar</h2></div><div id="sch-cal-mini"></div></div>';
     const apprVal = x.status === 'approval' ? 'Pending · Supervisor' : x.ev.approved ? 'Approved by ' + ((x.approval && x.approval.by) || 'Priya Nair') : 'Not required';
     side += '<div class="card"><dl class="fact-rows wide"><dt>Property</dt><dd>' + prop.name + '</dd><dt>Created by</dt><dd>' + x.by + '</dd><dt>Starts</dt><dd>' + fmtD(x.start) + '</dd>' +
       '<dt>Ends</dt><dd>' + SCH.endText(x).replace('Ends ', '').replace(/ · last.*/, '').replace('No end date', 'Never').replace('after ', 'After ') + '</dd><dt>Sending</dt><dd>' + (x.mode === 'auto' ? 'Auto-send' : 'Draft only') + '</dd>' +
       '<dt>Series approval</dt><dd>' + apprVal + '</dd></dl>' +
+      /* The Service calendar stands on its own (team feedback 10/21/2026): no per-series calendar here, just a way there. */
+      '<a class="text-link" style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13px" href="calendar.html">' + IC.cal + 'View runs on the Service calendar</a>' +
       (x.ev.approved ? '<div class="w-note" style="margin-top:12px"><span style="display:inline-flex;width:14px;height:14px">' + IC.shield + '</span><span>Approved once for the series — runs that match this template need no further approval.</span></div>' : '') + '</div>';
     const evs = x.log.slice().sort((a, b) => b.at.localeCompare(a.at)), shown = actExpanded ? evs : evs.slice(0, 5);
     side += '<div class="card"><div class="det-card-head"><h2 style="font-size:16px">Activity</h2></div><div class="act-tl">' +
@@ -222,7 +222,6 @@
 
     document.getElementById('det-main').innerHTML = main;
     document.getElementById('det-side').innerHTML = side;
-    CAL.mount(document.getElementById('sch-cal-mini'), { list: () => [SCH.get(X.id)], mini: true, start: x.status === 'ended' ? (x.ev.ended || SPO.TODAY) : (SCH.nextRun(x) || SPO.TODAY), onChange: () => { X = SCH.get(X.id); renderPage(); } });
     if (sub === 'pause' && x.status === 'active') setTimeout(openPause, 120);
     if (sub === 'end' && !ended) setTimeout(openEnd, 120);
   }

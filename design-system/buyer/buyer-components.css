@@ -2088,3 +2088,8 @@
 /* Count pill beside a card heading (Documents): neutral, centred on the heading — not the rose notification badge */
 .buyer .h-count { display: inline-flex; align-items: center; gap: 8px; }
 .buyer .count-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: var(--radius-pill); background: var(--muted); color: var(--muted-foreground); font-size: 12px; font-weight: 700; line-height: 1; }
+/* Recurring marker on the Service calendar (10/21/2026): every recurring run's tile and popover title carry the arrows icon */
+.buyer .cal-chip .num { display: inline-flex; align-items: center; gap: 3px; }
+.buyer .cal-chip .rec-ic { width: 10px; height: 10px; flex-shrink: 0; }
+.buyer .cp-rec { display: inline-flex; color: var(--muted-foreground); margin-right: 2px; }
+.buyer .cp-rec .rec-ic { width: 13px; height: 13px; }

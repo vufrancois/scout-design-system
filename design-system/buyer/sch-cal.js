@@ -115,9 +115,12 @@
       '<div class="cal-grid">' + DOWS.map(w => '<div class="cal-dow">' + (s.mini ? w[0] : w) + '</div>').join('') + cells + '</div>' +
       (s.mini && legendKeys.length ? '<div class="cal-legend mini">' + legendKeys.map(k => '<span class="cal-key static"><i class="sdot s-' + k + '"></i>' + STATUS[k].label + '</span>').join('') + '</div>' : '') + '</div>';
   }
+  const REC = '<svg class="rec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Recurring"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>';
   function chip(key, r, d, j) {
-    const num = r.kind === 'spo' ? String(r.spo.id) : r.spo ? String(r.spo.id) : '↻';
-    const what = r.kind === 'spo' ? 'SPO-' + r.spo.id : r.x.name + (r.spo ? ' · SPO-' + r.spo.id : '');
+    /* Recurring runs always carry the arrows icon — with their SPO number once the run has created one — so a run never
+       looks like a one-off SPO (team feedback 10/21/2026). One-off SPO appointments show the number only. */
+    const num = r.kind === 'spo' ? String(r.spo.id) : REC + (r.spo ? String(r.spo.id) : '');
+    const what = r.kind === 'spo' ? 'SPO-' + r.spo.id : 'Recurring · ' + r.x.name + (r.spo ? ' · SPO-' + r.spo.id : '');
     return '<button type="button" class="cal-chip vt' + (r.status === 'off' ? ' is-off' : '') + '" style="--vh:' + SPO.vh(r.v) + '" title="' + what + ' · ' + SPO.VEN[r.v].name + ' · ' + t12(r.time) + ' · ' + STATUS[r.status].label + '" onclick="CAL.pick(\'' + key + '\', \'' + d + '\', this, ' + j + ')">' +
       '<i class="sdot s-' + r.status + '" aria-hidden="true"></i><span class="num">' + num + '</span><span class="t">' + vShort(r.v) + '</span><span class="tm">' + tShort(r.time) + '</span></button>';
   }
@@ -155,7 +158,7 @@
         '<div class="cp-status">' + statusLine(r.status) + '</div><div class="cp-actions">' + act + btnA('Open SPO', 'spo.html#' + id, false) + '</div></div>';
     }
     const x = r.x, canSkip = r.date > TODAY() && x.status === 'active';
-    return '<div class="cp-run"><div class="cp-name">' + vt + '<a class="table-link" href="schedule.html#' + x.id + '">' + x.name + '</a></div>' +
+    return '<div class="cp-run"><div class="cp-name">' + vt + '<span class="cp-rec" title="Recurring SPO">' + REC + '</span><a class="table-link" href="schedule.html#' + x.id + '">' + x.name + '</a></div>' +
       '<div class="cp-meta">' + (propName(x.prop) ? propName(x.prop) + ' · ' : '') + v.name + ' · ' + t12(x.cadence.time) + ' · ' + SPO.money(r.spo ? SPO.total(r.spo) : SCH.perRun(x)) + '</div>' +
       '<div class="cp-status">' + statusLine(r.status) + (r.status === 'approved' ? ' <span class="cp-src">recurring SPO run' + (r.spo ? ' · SPO-' + r.spo.id + ' ' + SPO.STATES[r.spo.state].label : '') + '</span>' : r.skipped ? ' <span class="cp-src">skipped</span>' : r.status === 'pending' ? ' <span class="cp-src">series approval</span>' : '') + '</div><div class="cp-actions">' +
       (canSkip ? (r.skipped ? '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\', true)">Undo skip</button>' : '<button type="button" class="btn btn-sm" onclick="CAL.skip(\'' + key + '\', \'' + x.id + '\', \'' + r.date + '\')">Skip this date</button>') : '') +

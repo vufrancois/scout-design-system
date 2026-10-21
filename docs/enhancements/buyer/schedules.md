@@ -205,6 +205,7 @@ Gallery **Buyer App · Service POs → Recurring SPOs** and the design-doc **Rec
 **Files:** `buyer/sch-cal.js` (`runs`, `mount`, `pick`, `skip`), `buyer/schedules.html` (`setView`, `renderCal`), `buyer/buyer-components.css` (`.cal*`, `.seg.on-card`, `.cal-toggle`)
 
 ### TKT-SPO-49 · Run calendar on a recurring SPO's page
+> **Superseded 10/21/2026 — don't build.** The Service calendar (TKT-SPO-56) stands on its own; the recurring SPO page links to it.
 **Summary:** The recurring SPO's rail shows its own runs on a mini month calendar.
 **Acceptance criteria:**
 - [ ] The mini calendar shows only this series, opening on the month of the next run (or the end date for an ended series).
@@ -243,6 +244,7 @@ Gallery **Buyer App · Service POs → Recurring SPOs** and the design-doc **Rec
 **Files:** `buyer/calendar.html`, `buyer/sch-cal.js` (`items`, `mount`, `pick`, `ics`), `buyer/appbar.js` (menu, page map), `buyer/spo.html` (`#<id>/propose`)
 
 ### TKT-SPO-57 · Vendor tint and status dot legend
+> **Updated 10/21/2026:** every recurring run carries the arrows icon (with its SPO number once created); only those items offer "Open recurring SPO".
 **Summary:** Tiles are coloured by vendor; the dot is only the date/time status, matching the legend.
 **Acceptance criteria:**
 - [ ] Each vendor has one stable tint used by its calendar tiles and its avatars (SPO list, SPO page, Recurring SPOs, vendor picker).
@@ -260,3 +262,10 @@ Vu removed the Recurring SPOs page's List | Calendar toggle: the **Service calen
 ## Addendum · Renamed "Recurring SPOs" (10/16/2026)
 
 Vu renamed **Schedules** to **Recurring SPOs** everywhere in the app and the docs ("more fitting and less confusing alongside other names"): the SPOs menu, page titles, buttons ("New Recurring SPO", "Edit recurring SPO", "Back to Recurring SPOs"), the Approvals request label, notifications (the type filter reads "Recurring SPOs"), Activity lines ("Created and sent by recurring SPO") and the ticket titles. **Unchanged:** the `SCH-<nn>` ids, file names (`schedules.html`, `schedule.html`), code names (`window.SCH`), and **Schedule service** — the appointment switch, a different meaning. Store keys bumped (`scout-spos-v9`, `scout-schedules-v2`) so stored Activity uses the new wording.
+
+
+## Addendum · The Service calendar stands on its own (10/21/2026)
+
+Team feedback: remove the separate recurring calendar so the Service calendar stands on its own, mark recurring items with the arrows icon, and stop non-recurring items from offering "Open recurring SPO".
+- **Removed:** the Run calendar (mini calendar) in a recurring SPO's rail. The page links to the Service calendar ("View runs on the Service calendar"); Skip and Undo skip stay on its Upcoming runs list. **TKT-SPO-49 is superseded — don't build it.**
+- **Recurring marker:** every recurring run's tile carries the arrows icon — alone before the run exists, with the SPO number once it does (⇄ 842) — and the popover title shows it too. One-off SPO appointments show the number only. "Open recurring SPO" only appears on items with the icon (checked tile by tile).

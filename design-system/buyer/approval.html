@@ -190,11 +190,13 @@
     const items = s.lines.map(l => item(l.desc, l.alloc.map(a => a.gl + ' ' + SPO.glName(a.gl) + ' \u00B7 ' + SPO.unitLabel(a.unit)).join(' + '), l.qty, l.price));
     const snap = s.lines.map(l => [l.desc + ' \u00B7 Qty ' + l.qty, Math.round(l.qty * l.price * 100) / 100]);
     const status = s.state === 'approval' ? 'pending' : s.ev.approved ? 'approved' : s.state === 'canceled' ? 'rejected' : 'revision';
-    const hist = [{ t: 'Submitted for approval', actor: 'Buyer', rev: 0, amt: SPO.total(s), when: SPO.fmtDT(s.ev.approvalReq), items: snap }];
+    const hist = [{ t: s.revised ? 'Revised SPO submitted' : 'Submitted for approval', actor: s.revised ? s.revised.by : 'Buyer', rev: 0, amt: SPO.total(s), when: SPO.fmtDT(s.ev.approvalReq), items: snap, comment: s.revised ? '“' + s.revised.reason + '”' : null }];
+    if (!hist[0].comment) delete hist[0].comment;
     if (s.ev.approved) hist.push({ t: 'Approved', actor: 'Supervisor', rev: 0, amt: SPO.total(s), when: SPO.fmtDT(s.ev.approved), items: snap });
     return { spo: s.id, v: s.v, buyer: s.by, prop: s.prop, status, level: 'Supervisor', date: SPO.fmtDate(s.ev.approvalReq), items, shipping: null,
       eligible: ['Supervisor', 'Master'], decidedBy: s.ev.approved ? ((s.approval && s.approval.by) || 'Priya Nair') : null,
-      reasonTxt: lim && over.length ? 'Over $2,500 and GL budget' : lim ? 'Over $2,500' : over.length ? 'Over ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' budget' : 'Amount threshold',
+      revised: s.revised || null,
+      reasonTxt: s.revised ? 'Revised SPO · unplanned work on invoice ' + s.revised.from : lim && over.length ? 'Over $2,500 and GL budget' : lim ? 'Over $2,500' : over.length ? 'Over ' + over.map(g => g + ' ' + SPO.glName(g)).join(', ') + ' budget' : 'Amount threshold',
       comment: s.cancel ? s.cancel.reason : null, history: hist };
   }
   SPO.list().filter(s => s.ev.approvalReq).forEach(s => { REQS['SPO-' + s.id] = spoReq(s); });
@@ -241,22 +243,22 @@
       { l: 'Requested', s: 'done', i: IC.check, dt: d[0] || R.date },
       { l: 'Under Review', s: 'done', i: IC.check, dt: d[1] || R.date },
       { l: 'Approved', s: 'done', i: IC.check, dt: d[2] || R.date },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
+      { l: R.revised ? 'Invoice Unlocked' : R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'done', i: IC.check, dt: d[3] || R.date }];
     else if (st === 'rejected') steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Under Review', s: 'done', i: IC.check, dt: R.date },
       { l: 'Rejected', s: 'rejected', i: IC.cross, dt: R.date },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.revised ? 'Invoice Unlocked' : R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
     else if (st === 'revision') steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Buyer revision', s: 'active sky', i: IC.refresh },
       { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.revised ? 'Invoice Unlocked' : R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
     else steps = [
       { l: 'Requested', s: 'done', i: IC.check, dt: R.date },
       { l: 'Under Review', s: 'active', i: IC.eye, dt: 'your move' },
       { l: 'Approved', s: 'future', i: IC.thumb },
-      { l: R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
+      { l: R.revised ? 'Invoice Unlocked' : R.spo ? 'Sent to Vendor' : R.sch ? 'Recurring SPO Active' : 'Order Created', s: 'future', i: IC.cart }];
     return '<div class="ap-stepper">' + steps.map((sp, i) => {
       const conn = i < steps.length - 1
         ? '<div class="ap-conn' + (steps[i + 1].s === 'rejected' || sp.s === 'rejected' && false ? ' rose' : (sp.s === 'done' && steps[i + 1].s.startsWith('done')) ? ' done' : sp.s === 'done' && steps[i + 1].s !== 'future' ? ' done' : '') + '"></div>' : '';
@@ -275,19 +277,20 @@
   }
 
   function renderPage() {
-    document.getElementById('hero-sub').textContent = (R.spo ? 'Service PO ' : R.sch ? 'Recurring SPO ' : '#') + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
+    document.getElementById('hero-sub').textContent = (R.revised ? 'Revised ' : R.spo ? 'Service PO ' : R.sch ? 'Recurring SPO ' : '#') + curId + ' · ' + R.buyer + ' · ' + money(R.amount);
     const st = R.status;
     let main = '';
 
     main += '<div class="card"><div class="det-card-head"><h2>Approval Progress</h2>' + statusPill(st) + '</div>' + stepper(st) + '</div>';
 
+    if (R.revised) main += '<div class="callout violet" style="margin:0 0 16px"><b>Revised SPO · not sent to vendor</b>Created by ' + R.revised.by + ' from invoice ' + R.revised.from + ' while mapping <a class="table-link" href="spo.html#' + R.revised.parent + '">SPO-' + R.revised.parent + '</a> — the vendor billed work no SPO covered. ' + (R.status === 'pending' ? 'Approving lets the invoice go to Accounting; rejecting sends these lines back to the buyer to match or remove.' : '') + '<div style="margin-top:8px;font-style:italic">“' + R.revised.reason + '”</div></div>';
     if (st === 'pending') {
-      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span style="display:flex;gap:8px">' + (R.spo ? '<span class="pill p-neutral">Service PO</span>' : R.sch ? '<span class="pill p-neutral">Recurring SPO</span>' : '') + '<span class="pill p-neutral">' + R.level + ' approval</span></span></div>' +
-        '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px">Comment to the buyer <span class="req-chip">Required for revision or rejection</span></div>' +
+      main += '<div class="card decision-card"><div class="det-card-head"><h2>Your decision</h2><span style="display:flex;gap:8px">' + (R.revised ? '<span class="pill p-neutral">Revised SPO</span>' : R.spo ? '<span class="pill p-neutral">Service PO</span>' : R.sch ? '<span class="pill p-neutral">Recurring SPO</span>' : '') + '<span class="pill p-neutral">' + R.level + ' approval</span></span></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px">Comment to the buyer <span class="req-chip">' + (R.revised ? 'Required for rejection' : 'Required for revision or rejection') + '</span></div>' +
         '<textarea class="dec-comment" id="dec-comment" placeholder="Explain what should change, or why this is being rejected…" oninput="decGate()"></textarea>' +
         '<div class="decision-actions">' +
         '<button class="btn btn-primary" onclick="decide(\'approved\')">Approve</button>' +
-        '<button class="btn btn-outline-sky" id="dec-rev" disabled data-tip="Add a comment first" onclick="decide(\'revision\')">Request revision</button>' +
+        (R.revised ? '' : '<button class="btn btn-outline-sky" id="dec-rev" disabled data-tip="Add a comment first" onclick="decide(\'revision\')">Request revision</button>') +
         '<button class="btn btn-outline-rose" id="dec-rej" disabled data-tip="Add a comment first" onclick="decide(\'rejected\')">Reject</button>' +
         '<span id="dec-hint" style="font-size:12.5px;color:var(--muted-foreground);align-self:center">Approving needs no comment.</span>' +
         '</div></div>';
@@ -342,6 +345,11 @@
       side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Recurring SPO active</h2></div>' +
         '<p style="font-size:13px;color:var(--muted-foreground)">Approved once for the series. ' + (SCH.nextRun(sx) ? 'Next run ' + SPO.fmtDate(SCH.nextRun(sx)) + ' · ' : '') + (sx.mode === 'auto' ? 'POs are emailed automatically.' : 'Each run is drafted for the buyer to send.') + '</p>' +
         '<div class="order-row"><div class="onum">' + sx.id + '</div><a class="toolbar-btn" style="text-decoration:none" href="schedule.html#' + sx.id + '">View recurring SPO</a></div></div>';
+    } else if (R.spo && R.status === 'approved' && R.revised) {
+      const sp = SPO.get(R.spo);
+      side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Revised SPO approved</h2></div>' +
+        '<p style="font-size:13px;color:var(--muted-foreground)">Nothing was sent to the vendor. ' + (sp.state === 'ready' ? (SPO.invReady(sp) ? 'Invoice ' + R.revised.from + ' is ready to send to Accounting.' : 'Invoice ' + R.revised.from + ' can go to Accounting once every SPO on it is mapped.') : 'It joins invoice ' + R.revised.from + ' when that invoice is mapped.') + '</p>' +
+        '<div class="order-row"><div class="onum">SPO-' + sp.id + '</div><a class="toolbar-btn" style="text-decoration:none" href="invoice.html#' + encodeURIComponent(R.revised.from) + '">View invoice</a></div></div>';
     } else if (R.spo && R.status === 'approved') {
       const sp = SPO.get(R.spo), v = SPO.VEN[sp.v];
       side += '<div class="card"><div class="det-card-head"><h2 style="display:inline-flex;align-items:center;gap:8px;font-size:16px"><span style="color:var(--emerald);display:inline-flex;width:18px;height:18px">' + IC.box + '</span>Sent to vendor</h2></div>' +
@@ -409,6 +417,8 @@
   /* An approval decision on a Service PO moves the SPO itself. */
   function syncSpo(next, c) {
     const s = SPO.get(R.spo), v = SPO.VEN[s.v];
+    /* A Revised SPO (TKT-SPO-64) is never emailed: approving unlocks its invoice; rejecting sends its lines back to mapping. */
+    if (s.revised) { if (next === 'approved') SPO.approveRevised(s, 'Alicia Grant (Supervisor)', c); else SPO.rejectRevised(s, 'Alicia Grant (Supervisor)', c); return; }
     if (next === 'approved') {
       s.state = 'invoice'; s.ev.approved = SPO.now(); s.ev.sent = SPO.now(); s.approval = { by: 'Alicia Grant', reason: R.reasonTxt };
       SPO.log(s, 'Approved', 'by Alicia Grant (Supervisor)' + (c ? ' \u00B7 \u201C' + c + '\u201D' : ''), true);

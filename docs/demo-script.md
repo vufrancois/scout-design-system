@@ -86,6 +86,8 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 �
 | Invoice page | `invoice.html#INV-DE-0815` (or click an invoice number on Invoices/Closed) | Progress Received → Mapped → Sent to Accounting → Payment recorded; next step **Send to Accounting**. **Line items and GL codes**: each invoice line → **SPO-835 · Line 1**, and under it the GL strip (6075 Electrical · Unit 0117 · $180.00). Switch to **Invoice PDF**; open **Accounting references**; Send → both SPOs move together. Try `#INV-7781` after mapping SPO-857 (a line split across units, a mixed-GL line, a one-time extra) and `#INV-AH-0821` (to map: muted suggested links) |
 | Canceled tab | `spos.html#canceled` | Closed now holds paid invoices only; Canceled lists SPO-851 and 852, with a **Canceled for Rebid** card |
 | Edit GL & unit | `#863` → **Edit GL & unit** | Change a unit → Save → Activity logs "GL & unit corrected". Move both lines to 6045 → "would be $10.00 over its Aug 2026 budget", Save blocked. On `#833`, billed lines are locked |
+| Revised SPO (seeded) | `spos.html#invoices` → INV-1188 | Heading reads **Revised SPO awaiting approval**; SPO-832 "Revised · from INV-1188". `invoice.html#INV-1188`: "Waiting on approval · Revised SPO-832". `approval.html#SPO-832`: the buyer's note, **Approve** / **Reject** only. Approve → Send unlocks (no vendor email); or Reject → SPO-856's drain line is back to *Needs a match*, with the rejection reason on the line |
+| Revised SPO (live) | `spo.html#856/invoice` after a Reject, or any unmatched line | **Create a Revised SPO** → pop-up (line, GL, unit, Explain to your manager) → Validate mapping → "Mapped · Revised SPO awaiting approval" |
 | SPO page side panel | `#862` | Activity with time and **By …**; **Accounting references** (SPO-862 · V-12177 · 0656, copyable); Documents count; Spend period tooltip in the scope card; **SPO \| Invoices** switch on `#856` |
 
 ### Recurring SPOs — `buyer/schedules.html` · `buyer/schedule.html#SCH-<nn>`
@@ -107,11 +109,11 @@ SPOs are buyer-side only. The list is `buyer/spos.html` (Open 14 · Invoices 8 �
 |---|---|---|
 | Entry | Service POs → **Add invoice**, or `spo.html#847` → Upload invoice → "map them together" | The sky callout knows Crescent Cleaning has 2 other SPOs waiting at Magnolia |
 | 1 · Vendor & invoice | Drop the PDF | Scout AI fills Crescent Cleaning · INV-CC-2608 · 08/24 and pre-checks SPO-842/845/847 with reasons ("Run 08/05 ↔ 'week of 08/03'") |
-| 2 · Match | Drag a connector; then **Auto Map** | Three weekly runs on one board; 847 shows +$15 over; the $35 supplies line opens the resolver → one-time extra booked to SPO-847; tax $55.76 is one invoice-level line (no split on screen) |
+| 2 · Match | Drag a connector; then **Auto Map** | Three weekly runs on one board; 847 shows +$15 over; the $35 supplies line opens the resolver → **Create a Revised SPO** (6045 · Common area, note to the manager) → it reads "Revised SPO-n · awaiting approval"; tax $55.76 is one invoice-level line (no split on screen) |
 | GL rule | On `spo.html#857/invoice`, connect "Carpet steam clean — Unit 104" (6035) to Line 1 (6140) | Refused: "Different GL codes — this line needs to be itemized" → Ask the vendor to itemize (pre-filled dispute) or Split this line |
 | Unit warning | Remove Invoice line 3's connection, then connect "Make-ready refresh — Unit 105" to Line 1 (unit 0102) | Same GL, wrong unit: the link turns amber with "Unit mismatch"; fraction pills ("1/2") on every link |
-| 3 · Review | Check the attestation → **Validate 3 SPOs** | Each SPO's share; total $645.76 |
-| Receipt | **Send invoice to Accounting** | No confetti — the three SPOs move together; each SPO's invoice PDF says "1 of 3 SPOs" |
+| 3 · Review | Check the attestation → **Validate 3 SPOs** | Each SPO's lines plus the Revised SPO's $35; total $645.76; "The invoice goes once Revised SPO-n is approved" |
+| Receipt | `approval.html#SPO-n` → **Approve**, then **Send invoice to Accounting** | Send is locked until the Revised SPO is approved; then all four SPOs move together |
 | Drafts | Service POs → Invoices (seeded) | "1 invoice in progress · INV-CC-2608" → **Resume** lands on Match at 2 of 4 items connected; it comes back after `#reset-spos` |
 
 ### Notifications — bell on every page · `buyer/notifications.html`

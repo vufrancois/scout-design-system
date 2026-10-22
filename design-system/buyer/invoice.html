@@ -146,11 +146,11 @@
      each invoice line books to. Drill into the invoice to see its lines and the SPO line each was mapped to. */
   const ven = s => SPO.VEN[s.v];
   const propOf = s => PROPERTIES.find(p => p.id === s.prop) || PROPERTIES[1];
-  const STAGE = { mapping: ['dot-pending', 'Invoice to Map'], ready: ['dot-pending', 'Ready for Accounting'], accounting: ['dot-violet', 'With Accounting'], paid: ['dot-approved', 'Paid'] };
+  const STAGE = { mapping: ['dot-pending', 'Invoice to Map'], awaiting: ['dot-pending', 'Revised SPO awaiting approval'], ready: ['dot-pending', 'Ready for Accounting'], accounting: ['dot-violet', 'With Accounting'], paid: ['dot-approved', 'Paid'] };
   const pill = k => '<span class="status-dot-item" style="white-space:nowrap"><span class="status-dot ' + STAGE[k][0] + '"></span><span class="status-dot-label">' + STAGE[k][1] + '</span></span>';
-  const recSt = (sp, rec) => rec === sp.invoice ? sp.state : rec.status;
+  const recSt = (sp, rec) => rec === sp.invoice ? (sp.revised && sp.state === 'approval' ? 'awaiting' : sp.state) : rec.status;
   /* The invoice's own status: to map until every SPO's slice is mapped, then ready, with Accounting, paid. */
-  const invStatus = peers => { const st = peers.map(x => recSt(x.sp, x.rec)); return st.indexOf('mapping') >= 0 ? 'mapping' : st.every(x => x === 'ready') ? 'ready' : st.indexOf('ready') >= 0 || st.indexOf('accounting') >= 0 ? 'accounting' : 'paid'; };
+  const invStatus = peers => { const st = peers.map(x => recSt(x.sp, x.rec)); return st.indexOf('mapping') >= 0 ? 'mapping' : st.indexOf('awaiting') >= 0 ? 'awaiting' : st.every(x => x === 'ready') ? 'ready' : st.indexOf('ready') >= 0 || st.indexOf('accounting') >= 0 ? 'accounting' : 'paid'; };
   let F = null, packTab = 'gl', actExpanded = false, actCollapsed = false, docsCollapsed = false, view = 'details';
   const NOUNIT = '<span class="alloc-chip warn">Unit not assigned</span>'; /* Accounting can't book a line without a unit */
 
@@ -207,16 +207,17 @@
     /* Progress: Received → Mapped → Sent to Accounting → Paid, each with its actor and date; then the next step */
     const ready = cur && SPO.invReady(cur.sp, rec), toMap = peers.filter(x => recSt(x.sp, x.rec) === 'mapping');
     const STEPS = [['Received', 'vendor', IC.doc, at('invoiced') || rec.date], ['Mapped', 'you', IC.map, at('mapped')], ['Sent to Accounting', 'you', IC.send, at('accounting')], ['Payment recorded', 'acct', IC.card, at('paid')]];
-    const done = { mapping: 1, ready: 2, accounting: 3, paid: 4 }[st];
+    const done = { mapping: 1, awaiting: 2, ready: 2, accounting: 3, paid: 4 }[st];
     const stepper = '<div class="ls-stepper">' + STEPS.map(([label, actor, icon, d], i) => {
       const cls = i < done ? 'done' : i === done ? 'active' + (actor === 'acct' ? ' acct' : '') : 'future';
       return '<div class="ls-step ' + cls + '"><div class="ls-dot">' + (i < done ? IC.check : icon) + '</div><div class="ls-label">' + label + '</div>' +
         (actor === 'you' ? '<span class="ls-actor you">YOU</span>' : actor === 'acct' ? '<span class="ls-actor acct">ACCOUNTING</span>' : '<span class="ls-actor">VENDOR</span>') +
-        (i < done && d ? '<span class="ls-date">' + SPO.fmtDate(d) + '</span>' : i === done ? '<span class="ls-date">' + (actor === 'acct' ? 'in progress' : 'your move') + '</span>' : '') + '</div>' +
+        (i < done && d ? '<span class="ls-date">' + SPO.fmtDate(d) + '</span>' : i === done ? '<span class="ls-date">' + (actor === 'acct' ? 'in progress' : st === 'awaiting' ? 'after approval' : 'your move') + '</span>' : '') + '</div>' +
         (i < STEPS.length - 1 ? '<div class="ls-conn' + (i < done - 1 ? ' done' : '') + '"></div>' : '');
     }).join('') + '</div>';
     const strip = (tone, ico, title, desc, act) => '<div class="task-strip"><span class="ts-icon"' + (tone === 'acct' ? ' style="background:var(--violet-soft);color:var(--violet)"' : tone === 'done' ? ' style="background:var(--emerald-soft);color:var(--emerald)"' : '') + '>' + ico + '</span><div class="ts-body"><div class="ts-title">' + title + '</div><div class="ts-desc">' + desc + '</div></div>' + (act || '') + '</div>';
     const next = st === 'mapping' ? strip('action', IC.map, 'Your next step · Map the invoice', toMap.length === peers.length ? 'Match each invoice line to an SPO line so Accounting knows its GL code and unit.' : toMap.map(x => 'SPO-' + x.sp.id).join(', ') + ' still to map.', '<a class="btn btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap" href="spo.html#' + toMap[0].sp.id + '/invoice"><span style="display:inline-flex;width:15px;height:15px">' + IC.map + '</span>Map invoice</a>')
+      : st === 'awaiting' ? (() => { const rv = peers.filter(x => recSt(x.sp, x.rec) === 'awaiting').map(x => x.sp); return strip('action', IC.clock, 'Waiting on approval · Revised SPO-' + rv.map(x => x.id).join(', SPO-'), 'Every line is mapped. ' + rv.map(x => 'Revised SPO-' + x.id + ' covers work no SPO had (' + money(SPO.total(x)) + ')').join('; ') + ' — a manager approves it before this invoice can go to Accounting. The vendor isn’t emailed.', '<a class="btn" style="text-decoration:none;white-space:nowrap" href="approval.html#SPO-' + rv[0].id + '">View approval</a>'); })()
       : st === 'ready' ? strip('action', IC.send, 'Your next step · Send to Accounting', 'Every line is mapped' + (peers.length > 1 ? ' across ' + peers.length + ' SPOs, which move together' : '') + '. Accounting gets the invoice and its GL & unit allocation.', '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap" onclick="openAccounting()"><span style="display:inline-flex;width:15px;height:15px">' + IC.send + '</span>Send to Accounting</button>')
       : st === 'accounting' ? strip('acct', IC.card, 'Waiting on Accounting · Payment', 'Sent on ' + SPO.fmtDate(at('accounting')) + '. Payment status follows the Accounting sync.')
       : strip('done', IC.check, 'Paid', money(total) + ' released by Accounting on ' + SPO.fmtDate(at('paid')) + '.');

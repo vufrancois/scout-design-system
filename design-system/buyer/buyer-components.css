@@ -1687,6 +1687,11 @@
 .buyer .cx-map .money-in input { width: 76px; }
 .buyer .cx-res { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
 .buyer .cx-res .lm-fields { margin-left: 26px; }
+/* Revised SPO pop-up (TKT-SPO-64) */
+.rv-l { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted-foreground); margin-bottom: 6px; }
+.rv-line { display: flex; align-items: center; gap: 12px; }
+.rv-line input { flex: 1; }
+.rv-line b { font-variant-numeric: tabular-nums; }
 /* Mapping takeover in board mode: one scrolling column, PDF as a toggle (the board needs the width) */
 .buyer .ivt-body.cx-mode { display: block; overflow: auto; padding: 20px 28px 28px; }
 .buyer .cx-viewbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }

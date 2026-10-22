@@ -301,15 +301,19 @@
     const cards = sl.map(x => '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><a class="table-link" href="spo.html#' + x.s.id + '" target="_blank" rel="noopener">SPO-' + x.s.id + '</a>' + (x.s.run ? '<span class="cx-k">Run ' + fmtD(x.s.run) + '</span>' : '') + '</h2><div class="sub">' + x.s.lines.map(l => l.desc).join(' · ') + ' · estimate ' + money(x.o.est) + '</div></div>' + vchip(x.o.variance) + '</div>' +
       x.lines.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty"></span><span class="sl-total">' + money(l.amt) + '</span><div class="cx-k" style="grid-column:1 / -1">' + l.how + '</div></div>').join('') +
       restNote(x) + '<div class="det-totals"><div class="tot-row grand"><span>SPO-' + x.s.id + ' lines on ' + W.num + '</span><span>' + money(r2(x.lines.reduce((a, l) => a + l.amt, 0))) + '</span></div></div></div>').join('');
+    const revs = {}; W.inv.lines.forEach(l => { if (l.res === 'revised') (revs[l.resSpo] = revs[l.resSpo] || []).push(l); });
+    const rv = Object.keys(revs).map(id => { const r = SPO.get(+id); return '<div class="card"><div class="det-card-head hd"><div><h2 style="display:inline-flex;align-items:center;gap:10px"><a class="table-link" href="spo.html#' + id + '" target="_blank" rel="noopener">Revised SPO-' + id + '</a></h2><div class="sub">' + (r && r.ev.approved ? 'Approved' : 'Awaiting approval') + ' · not sent to vendor</div></div></div>' +
+      revs[id].map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty"></span><span class="sl-total">' + money(l.amt) + '</span></div>').join('') + '</div>'; }).join('');
     const rm = removed.length ? '<div class="card"><div class="det-card-head hd"><h2>Removed — not payable</h2></div>' + removed.map(l => '<div class="spo-line"><span class="sl-desc">' + l.desc + '</span><span class="sl-qty"></span><span class="sl-total" style="text-decoration:line-through;color:var(--muted-foreground)">' + money(l.amt) + '</span><div class="cx-k" style="grid-column:1 / -1">“' + l.resReason + '” · the vendor sees this reason</div></div>').join('') + '</div>' : '';
     const side = '<div class="card"><div class="det-card-head"><h2>' + W.num + '</h2></div>' +
       '<div class="sum-row"><span class="muted">Vendor</span><span>' + SPO.VEN[W.v].name + '</span></div><div class="sum-row"><span class="muted">Property</span><span style="text-align:right">' + propOf(W.prop).name + '</span></div>' +
       sl.map(x => '<div class="sum-row"><span class="muted">SPO-' + x.s.id + '</span><span>' + money(r2(x.lines.reduce((a, l) => a + l.amt, 0))) + '</span></div>').join('') +
+      Object.keys(revs).map(id => '<div class="sum-row"><span class="muted">Revised SPO-' + id + '</span><span>' + money(r2(revs[id].reduce((a, l) => a + l.amt, 0))) + '</span></div>').join('') +
       (W.inv.tax ? '<div class="sum-row"><span class="muted">Sales tax</span><span>' + money(W.inv.tax) + '</span></div>' : '') + (W.inv.ship ? '<div class="sum-row"><span class="muted">Shipping</span><span>' + money(W.inv.ship) + '</span></div>' : '') +
       '<div class="sum-grand"><span>Invoice total</span><span class="amt">' + money(total) + '</span></div>' +
-      '<div class="cx-attest" style="margin-top:14px"><label><input type="checkbox"' + (W.attest ? ' checked' : '') + ' onchange="W.attest = this.checked; persist(); renderPage()"> I checked the work and matched every invoice item.</label><span>Validating makes ' + (sl.length > 1 ? 'all ' + sl.length + ' SPOs' : 'the SPO') + ' ready for Accounting — nothing is paid yet.</span></div>' +
+      '<div class="cx-attest" style="margin-top:14px"><label><input type="checkbox"' + (W.attest ? ' checked' : '') + ' onchange="W.attest = this.checked; persist(); renderPage()"> I checked the work and matched every invoice item.</label><span>Validating makes ' + (sl.length > 1 ? 'all ' + sl.length + ' SPOs' : 'the SPO') + ' ready for Accounting — nothing is paid yet.' + (Object.keys(revs).length ? ' The invoice goes once Revised SPO-' + Object.keys(revs).join(', SPO-') + ' is approved.' : '') + '</span></div>' +
       '<button class="btn btn-primary btn-block" style="margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px"' + (W.attest ? '' : ' disabled') + ' onclick="validateAll()"><span style="display:inline-flex;width:16px;height:16px">' + IC.shield + '</span>Validate ' + (sl.length > 1 ? sl.length + ' SPOs' : 'SPO-' + sl[0].s.id) + '</button></div>';
-    return [cards + rm, side];
+    return [cards + rv + rm, side];
   }
   function validateAll() {
     if (!W.attest) return;
@@ -330,8 +334,9 @@
       SPO.log(s, 'Invoice mapped & validated', money(SPO.invTotal(s)) + ' share' + (Math.abs(d) >= 0.005 ? ' · ' + (d > 0 ? '+' : '−') + money(Math.abs(d)) + ' variance accepted' : ' · on estimate'), true);
       SPO.save(s);
     });
+    const revIds = SPO.attachRevised(sl.map(x => x.s.id), W.num, W.inv.lines.filter(l => l.res === 'revised'), total);
     const key = W.key; dropDraft();
-    try { sessionStorage.setItem('scout-intake-done', JSON.stringify({ num: W.num, v: W.v, prop: W.prop, total, spos: sl.map(x => x.s.id) })); } catch (e) { /* noop */ }
+    try { sessionStorage.setItem('scout-intake-done', JSON.stringify({ num: W.num, v: W.v, prop: W.prop, total, spos: sl.map(x => x.s.id).concat(revIds) })); } catch (e) { /* noop */ }
     location.hash = '#done-' + encodeURIComponent(key);
   }
   function viewDone() {
@@ -340,8 +345,9 @@
     const spos = r.spos.map(id => SPO.get(id)), allReady = spos.every(s => s.state === 'ready');
     return '<div class="confirm-wrap" style="padding-top:0"><div class="confirm-ic" style="width:72px;height:72px"><span style="display:inline-flex;width:34px;height:34px">' + IC.check + '</span></div>' +
       '<h1 style="margin-bottom:0">' + r.num + ' mapped to ' + spos.length + ' SPO' + (spos.length === 1 ? '' : 's') + '</h1><div class="confirm-sub">' + SPO.VEN[r.v].name + ' · ' + propOf(r.prop).name + ' · ' + money(r.total) + '</div>' +
-      '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">SPOs updated</h2></div>' + spos.map(s => { const st = SPO.STATES[s.state]; return '<div class="run-row"><span class="rd"><b>' + (s.run || s.ev.created).slice(8, 10) + '</b><span>' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+(s.run || s.ev.created).slice(5, 7) - 1] + '</span></span><div class="rb"><div><a class="table-link" href="spo.html#' + s.id + '">SPO-' + s.id + '</a> · ' + money(SPO.invTotal(s)) + '</div><div class="m">' + s.lines[0].desc + '</div></div><span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span></div>'; }).join('') +
+      '<div class="card next-card"><div class="det-card-head"><h2 style="font-size:16px">SPOs updated</h2></div>' + spos.map(s => { const st = SPO.STATES[s.state]; return '<div class="run-row"><span class="rd"><b>' + (s.run || s.ev.created).slice(8, 10) + '</b><span>' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+(s.run || s.ev.created).slice(5, 7) - 1] + '</span></span><div class="rb"><div><a class="table-link" href="spo.html#' + s.id + '">' + (s.revised ? 'Revised SPO-' : 'SPO-') + s.id + '</a> · ' + money(SPO.invSubtotal(s)) + '</div><div class="m">' + s.lines[0].desc + '</div></div><span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span></div>'; }).join('') +
       '<div class="sum-grand" style="margin-top:6px"><span>Invoice total</span><span class="amt">' + money(r.total) + '</span></div></div>' +
+      (spos.some(s => s.revised && s.state === 'approval') ? '<div class="w-note" style="margin:0 auto 16px;max-width:560px"><span>Send to Accounting unlocks once a manager approves ' + spos.filter(s => s.revised && s.state === 'approval').map(s => '<a class="table-link" href="approval.html#SPO-' + s.id + '">Revised SPO-' + s.id + '</a>').join(', ') + '. The vendor isn’t emailed.</span></div>' : '') +
       '<div class="confirm-actions">' + (allReady ? '<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px" onclick="sendAll()"><span style="display:inline-flex;width:16px;height:16px">' + IC.send + '</span>Send invoice to Accounting</button>' : '') +
       '<a class="btn" href="spos.html#invoices">View Service POs</a></div></div>';
   }

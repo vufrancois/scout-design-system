@@ -166,13 +166,14 @@
   };
   const TABS = [
     { id: 'open', label: 'Open', icon: IC.wrench, states: ['draft', 'approval', 'rebid', 'rejected', 'invoice'] },
-    { id: 'invoices', label: 'Invoices', icon: IC.doc, states: ['mapping', 'ready', 'accounting'] },
+    { id: 'invoices', label: 'Invoices', icon: IC.doc, states: ['mapping', 'awaiting', 'ready', 'accounting'] },
     { id: 'closed', label: 'Closed', icon: IC.archive, states: ['paid'] },
     { id: 'canceled', label: 'Canceled', icon: IC.ban, states: ['canceled'] }
   ];
   /* Invoices and Closed count INVOICES (TKT-SPO-62): each invoice sits on the tab of its own status, wherever its SPO is. */
-  const recSt = (s, inv) => inv === s.invoice ? s.state : inv.status;
-  const aggSt = sts => sts.indexOf('mapping') >= 0 ? 'mapping' : sts.every(x => x === 'ready') ? 'ready' : sts.indexOf('ready') >= 0 || sts.indexOf('accounting') >= 0 ? 'accounting' : 'paid';
+  /* A Revised SPO (TKT-SPO-64) whose invoice slice is mapped but still awaiting approval holds its invoice on Invoices. */
+  const recSt = (s, inv) => inv === s.invoice ? (s.revised && s.state === 'approval' ? 'awaiting' : s.state) : inv.status;
+  const aggSt = sts => sts.indexOf('mapping') >= 0 ? 'mapping' : sts.indexOf('awaiting') >= 0 ? 'awaiting' : sts.every(x => x === 'ready') ? 'ready' : sts.indexOf('ready') >= 0 || sts.indexOf('accounting') >= 0 ? 'accounting' : 'paid';
   const invGroup = st => st === 'accounting' ? 'accounting' : st === 'paid' ? 'paid' : 'you';
   const ALL_STATES = () => [].concat(...TABS.map(x => x.states));
   function invoicesOn(tabId, pool) {
@@ -226,7 +227,7 @@
     } else if (t === 'invoices') {
       el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(3, 1fr)';
       el.innerHTML = card('all', 'stat-gray', IC.doc, 'Total Invoices', invs.length, 'Received, not yet paid') +
-        card('you', 'stat-amber', IC.pen, 'Your Move', gi('you'), 'Map, or send to Accounting') +
+        card('you', 'stat-amber', IC.pen, 'Your Move', gi('you'), 'Map, get approval, or send to Accounting') +
         card('accounting', 'stat-violet', IC.card, 'With Accounting', gi('accounting'), 'Awaiting payment');
     } else if (t === 'closed') {
       el.className = 'kpi-grid'; el.style.gridTemplateColumns = 'repeat(2, 1fr)';
@@ -241,8 +242,8 @@
 
   /* Whose move a row is: by state, except a vendor's new time, which is yours. */
   const groupOf = s => SPO.needsTime(s) ? 'you' : SPO.STATES[s.state].group;
-  const pillOf = k => { const st = SPO.STATES[k]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; };
-  const recState = (s, rec) => !rec || rec === s.invoice ? s.state : rec.status;
+  const pillOf = k => { const st = k === 'awaiting' ? { dot: 'dot-pending', label: 'Revised SPO awaiting approval' } : SPO.STATES[k]; return '<span class="status-dot-item"><span class="status-dot ' + st.dot + '"></span><span class="status-dot-label">' + st.label + '</span></span>'; };
+  const recState = (s, rec) => !rec ? s.state : recSt(s, rec);
   /* Which invoice billed each line, once the SPO has one (TKT-SPO-59). */
   function lineTag(s, k) {
     if (!SPO.invoicesOf(s).length && !s.lines[k].closed) return '';
@@ -329,7 +330,7 @@
         : act && own ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="' + act[1](s) + '">' + act[0] + '</a>' : rowMenu(s);
       const main = '<tr class="data-row' + (inGroup ? ' inv-member' + (inGroup === 'last' ? ' last' : '') : '') + '">' +
         '<td><button class="expander' + (isOpen ? ' open' : '') + '" onclick="toggleRow(' + s.id + ')" title="Line items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
-        '<td class="mono" style="font-weight:700;white-space:nowrap">' + (inGroup ? '<span class="inv-tree" aria-hidden="true"></span>' : '') + '<a class="table-link" style="font-family:inherit;font-weight:700" href="spo.html#' + s.id + '">SPO-' + s.id + '</a>' + recMark(s) + (!own && tabOf(s.state) !== tab() ? '<span class="cell-sub">Now in ' + TABS.find(x => x.id === tabOf(s.state)).label + (s.state === 'invoice' ? ' · next invoice' : '') + '</span>' : '') + (own && SPO.progress(s).partial ? '<span class="cell-sub" title="Partly invoiced · ' + SPO.progress(s).billed + ' of ' + s.lines.length + ' lines">' + SPO.progress(s).billed + ' of ' + s.lines.length + ' invoiced</span>' : '') + '</td>' +
+        '<td class="mono" style="font-weight:700;white-space:nowrap">' + (inGroup ? '<span class="inv-tree" aria-hidden="true"></span>' : '') + '<a class="table-link" style="font-family:inherit;font-weight:700" href="spo.html#' + s.id + '">SPO-' + s.id + '</a>' + recMark(s) + (s.revised ? '<span class="cell-sub">Revised · from ' + s.revised.from + '</span>' : '') + (!own && tabOf(s.state) !== tab() ? '<span class="cell-sub">Now in ' + TABS.find(x => x.id === tabOf(s.state)).label + (s.state === 'invoice' ? ' · next invoice' : '') + '</span>' : '') + (own && SPO.progress(s).partial ? '<span class="cell-sub" title="Partly invoiced · ' + SPO.progress(s).billed + ' of ' + s.lines.length + ' lines">' + SPO.progress(s).billed + ' of ' + s.lines.length + ' invoiced</span>' : '') + '</td>' +
         '<td class="col-hide cell-clip" title="' + propName(s.prop) + '">' + propName(s.prop) + '</td>' +
         (s.state === 'rebid' ? '<td><span class="cell-entity"><span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px;border-style:dashed">?</span><span class="nm" style="color:var(--muted-foreground)">Needs a vendor<span style="display:block;font-size:12px">Rebid of SPO-' + s.rebidOf + '</span></span></span></td>'
           : '<td><span class="cell-entity"><span class="v-avatar vt" style="width:28px;height:28px;border-radius:7px;font-size:10px;--vh:' + SPO.vh(s.v) + '">' + SPO.ini(s.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[s.v].name + '">' + SPO.VEN[s.v].name + '</span></span></td>') +
@@ -347,7 +348,7 @@
       const n = u.n, hid = n - u.members.length, open = !foldedInv.has(u.key);
       /* The invoice in hand on this tab: Send once every SPO on it is mapped; until then, how many are. */
       const cur = u.members.find(m => u.recs[m.id] === m.invoice), ready = cur && SPO.invReady(cur, cur.invoice);
-      const peers = cur ? SPO.invPeers(cur, cur.invoice) : [], nMapped = peers.filter(x => ['ready', 'accounting', 'paid'].indexOf(x.sp.state) >= 0).length;
+      const peers = cur ? SPO.invPeers(cur, cur.invoice) : [], nMapped = peers.filter(x => ['ready', 'accounting', 'paid'].indexOf(x.sp.state) >= 0 || (x.sp.revised && x.rec.validated)).length;
       const states = Array.from(new Set(u.members.map(m => recState(m, u.recs[m.id]))));
       return '<tr class="inv-group' + (open ? '' : ' folded') + '">' +
         '<td><button class="expander inv-caret' + (open ? ' open' : '') + '" onclick="toggleInv(\'' + encodeURIComponent(u.key) + '\')" aria-expanded="' + open + '" title="' + (open ? 'Hide' : 'Show') + ' SPOs on this invoice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></td>' +
@@ -355,7 +356,7 @@
         '<td class="col-hide cell-clip" title="' + propName(u.prop) + '">' + propName(u.prop) + '</td>' +
         '<td><span class="cell-entity"><span class="v-avatar vt" style="width:28px;height:28px;border-radius:7px;font-size:10px;--vh:' + SPO.vh(u.v) + '">' + SPO.ini(u.v) + '</span><span class="nm cell-clip" style="display:block;max-width:200px" title="' + SPO.VEN[u.v].name + '">' + SPO.VEN[u.v].name + '</span></span></td>' +
         '<td class="num" style="font-weight:700">' + money(u.total) + '<span class="cell-sub">Invoice total</span></td>' +
-        '<td>' + (states.length === 1 ? pillOf(states[0]) : '<span class="status-dot-item"><span class="status-dot dot-muted"></span><span class="status-dot-label">Mixed</span></span>') + '</td>' +
+        '<td>' + (states.indexOf('awaiting') >= 0 ? pillOf('awaiting') : states.length === 1 ? pillOf(states[0]) : '<span class="status-dot-item"><span class="status-dot dot-muted"></span><span class="status-dot-label">Mixed</span></span>') + '</td>' +
         '<td style="white-space:nowrap;color:var(--muted-foreground)">Invoiced ' + fmtD(u.inv.date) + '</td>' +
         '<td><span class="inv-acts">' + (ready ? '<a class="btn btn-primary btn-sm" style="text-decoration:none;white-space:nowrap" href="spo.html#' + cur.id + '/accounting">Send</a>' : '') +
         '<button class="icon-btn inv-pdf" title="Invoice PDF" aria-label="Download invoice ' + u.inv.num + ' (PDF)" onclick="showToast(\'' + u.inv.num + ' (PDF)\', \'Demo action · the full invoice' + (n > 1 ? ', all ' + n + ' SPOs' : '') + '\')">' + IC.dl + '</button></span></td></tr>';

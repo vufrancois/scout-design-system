@@ -15,7 +15,7 @@
     - Only lines that share one GL code can be combined; shares are even and read-only (see the 10/09 addendum).
     - Several invoice lines can land on one SPO line.
   - **Auto Map** accepts suggestions, then connects only amount-and-words matches. It never maps everything to one line, as the live button does.
-  - **The resolver opens in place** on an unconnected invoice line: add to the SPO / one-time extra / remove. With several SPOs, it also asks which SPO the line is booked to.
+  - **The resolver opens in place** on an unconnected invoice line: **Create a Revised SPO** / remove (TKT-SPO-64). With several SPOs, the Revised SPO pop-up asks which SPO the work relates to.
   - **Validate** needs every line resolved and **one attestation**: "I checked the work and matched every invoice item."
 - **The single-SPO mapping takeover now uses the board.**
   - The PDF moved from a fixed left pane to a **Line items / PDF** toggle, because the board needs the width.

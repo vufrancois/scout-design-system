@@ -216,7 +216,7 @@
   ];
   /* Service POs that needed approval share this queue (one approvals surface for orders and services). */
   SPO.list().filter(sp => sp.ev.approvalReq).forEach(sp => REQS.push({
-    id: 'SPO-' + sp.id, spo: true, v: sp.v, buyer: sp.by, prop: sp.prop, level: 'Supervisor', date: sp.ev.approvalReq.slice(0, 10),
+    id: 'SPO-' + sp.id, spo: true, revised: sp.revised ? sp.revised.from : null, v: sp.v, buyer: sp.by, prop: sp.prop, level: 'Supervisor', date: sp.ev.approvalReq.slice(0, 10),
     status: sp.state === 'approval' ? 'pending' : sp.ev.approved ? 'approved' : sp.state === 'canceled' ? 'rejected' : 'revision',
     items: sp.lines.map(l => item(l.desc, l.alloc.map(a => a.gl + ' \u00B7 ' + SPO.unitLabel(a.unit)).join(' + '), l.qty, l.price))
   }));
@@ -314,7 +314,7 @@
   function row(r) {
     const p = STATUS[r.status]; const prop = PROPERTIES.find(x => x.id === r.prop); const vv = vends(r);
     const main = '<tr class="data-row"><td><button class="expander' + (open.has(r.id) ? ' open' : '') + '" onclick="toggleRow(\'' + r.id + '\')" title="Items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>' +
-      '<td class="mono"><a class="table-link" style="font-family:inherit" href="approval.html#' + r.id + '">' + (r.spo ? '' : '#') + r.id + '</a></td>' +
+      '<td class="mono"><a class="table-link" style="font-family:inherit" href="approval.html#' + r.id + '">' + (r.spo ? '' : '#') + r.id + '</a>' + (r.revised ? '<span class="cell-sub">Revised · from ' + r.revised + '</span>' : '') + '</td>' +
       '<td class="col-hide cell-clip" title="' + prop.name + '">' + prop.name + '</td>' +
       '<td>' + (vv.length > 1
         ? '<span class="cell-entity" title="' + vv.map(v => VEN[v]).join(' · ') + '"><span style="display:inline-flex">' + vv.map((v, i) => '<span class="v-avatar" style="width:28px;height:28px;border-radius:7px;font-size:10px' + (i ? ';margin-left:-9px;box-shadow:0 0 0 2px var(--card)' : '') + '">' + v + '</span>').join('') + '</span><span class="nm">' + vv.length + ' vendors</span></span>'

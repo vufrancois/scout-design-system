@@ -11,12 +11,11 @@
   - Obvious matches are pre-connected, including reworded descriptions (SPO-38, SPO-45).
   - A **combined invoice line maps to several SPO lines** with split amounts, e.g. SPO-857's $800 "paint & carpet" line covers 2 SPO lines (SPO-43).
   - Each target shows its allocation chips and a per-line variance: emerald on estimate, amber over, sky under (SPO-40).
-- **Unmatched lines get a resolver, never a dead end** (SPO-41). The three options:
-  - add it to the SPO as a new line (amends the scope);
-  - accept it as a one-time extra charge;
+- **Unmatched lines get a resolver, never a dead end** (SPO-41). Since 10/21/2026 (TKT-SPO-64) the two options are:
+  - **create a Revised SPO** for the work (a new SPO that goes to approval, never emailed to the vendor);
   - remove it as not payable.
 
-  Add and extra both require a GL code and unit. Demo: SPO-857's $125 dump fee, accepted as an extra on 6045 / 0105.
+  *Add to the SPO as a new line* and *Accept as a one-time extra charge* were removed. Seeded extras (SPO-857's $125 dump fee on 6045 / 0105) still read as one-time extras.
 - **Totals:** the SPO estimate is the baseline from the start, never $0.00 before lines are connected (SPO-36). Tax and shipping are invoice-level. The variance total is shown, and accepted variance is logged ("+$155.00 variance accepted") (SPO-44).
 - **Extraction failure is a state, not an empty table** (SPO-46). SPO-849's strip reads "Invoice … needs attention", and the takeover shows a callout with **Retry extraction** or **Enter lines from the PDF**. The activity log says Scout AI couldn't read the lines, without claiming an invoiced amount.
 - **Edit invoice lines** is a visible link in the panel header, not hidden (SPO-42).
@@ -66,6 +65,8 @@
 **Files:** `buyer/spo.html` (`openInvoiceMap`, `renderMapTk`, `lmRow`, `validateMapping`), `buyer/buyer-components.css` (`.lm-*`)
 
 ### TKT-SPO-16 · Resolve invoice lines not on the SPO
+> **Reshaped by TKT-SPO-64:** the resolver's Add and Extra options are replaced by Create a Revised SPO; Remove stays.
+
 **Summary:** An invoice line with no SPO match must be resolved: add to the SPO, accept as a one-time extra, or remove as not payable.
 **Acceptance criteria:**
 - [ ] An unmatched line shows the resolver; the line can't be confirmed until an option is chosen.
@@ -202,3 +203,23 @@ Following the mapping pages: tax is invoice-level, so nothing shows a per-SPO ta
 - **Invoice page:** the totals' Sales tax line no longer points to "each SPO's share"; Documents show each SPO's **line amount** on the invoice (SPO-835 · $180.00), not a share incl. tax.
 - **SPO page (shared invoice):** the Invoice card reads "this SPO's lines $380.00"; line-item totals show "Invoiced to this SPO" (lines only) with a note that tax is on the invoice; the With Accounting and Paid strips show the invoice total with "this SPO's lines". A one-SPO invoice keeps its tax and total — all of it is this SPO's.
 - **Activity:** a shared invoice's "Invoice received" and "Paid" read the whole invoice (INV-CC-2607 · $757.55); "Sent to Accounting" reads "packet: invoice + GL & unit allocation" (no PO since TKT-SPO-61).
+
+
+---
+
+### TKT-SPO-64 · Revised SPO for unplanned work on an invoice
+**Summary:** When an invoice bills work no SPO covers, the buyer creates a **Revised SPO** from the mapping board. It goes to approval for every amount, is never emailed to the vendor, and lets the buyer finish mapping now; the invoice can't go to Accounting until a manager approves it. (Team idea: the "silent SPO", 10/21/2026.)
+**Acceptance criteria:**
+- [ ] The resolver on an unmatched invoice line offers **Create a Revised SPO** and **Remove — not payable** only; Add to the SPO and one-time extra are gone.
+- [ ] Create opens a pop-up: the invoice line's description (editable) and amount, GL code and unit (pre-filled from the SPO), the related SPO when several are on the board, and a required **Explain to your manager** note. When a Revised SPO for the same invoice is already pending, the line can be added to it instead (its note is shown).
+- [ ] Creating makes a new SPO in **Pending Approval** with the vendor, property and period of the related SPO; no vendor email, no appointment, no schedule. Both SPOs log it.
+- [ ] The line counts as mapped ("Revised SPO-n · awaiting approval"); clicking the option again undoes it. Totals show a Revised SPO row.
+- [ ] Validating gives each Revised SPO its own validated slice of the invoice (its lines, no tax); every slice carries the shared-invoice total and peer list.
+- [ ] While any Revised SPO on the invoice awaits approval: the invoice sits on **Invoices / Your Move** with the status **Revised SPO awaiting approval**; Send is locked on the list, invoice page, SPO page and intake receipt; the next-step strip names the Revised SPO and links to its approval.
+- [ ] The approval page shows a "Revised SPO · not sent to vendor" callout with the invoice, the related SPO and the buyer's note; it offers **Approve** and **Reject** (comment required) — no Request revision.
+- [ ] **Approve** → the Revised SPO is Ready for Accounting (or waits for its invoice to be mapped); nothing is emailed; Send unlocks once every SPO on the invoice is ready.
+- [ ] **Reject** → the Revised SPO is canceled; its invoice lines go back to *Needs a match* and the invoice returns to Invoice to Map, with the remaining SPOs still sharing it. Each returned line shows who rejected it and their reason (also in an intake draft). Seeded one-time extras stay as they are.
+- [ ] The Revised SPO's page reads "Revised SPO · from invoice … while mapping SPO-n · not sent to vendor"; its tracker shows Sent as "not sent"; Make recurring, Rebid and Cancel aren't offered. The SPO list and Approvals list mark it "Revised · from INV-…".
+**Backend / data:** an SPO flag `revised { from, parent, by, at, reason }`; approval for every Revised SPO regardless of amount; a skip of the vendor send on approval; invoice slices per SPO with a shared total (TKT-SPO-61).
+**Reshapes:** TKT-SPO-16 (resolver options), TKT-SPO-61 (Send also waits for approval of a Revised SPO).
+**Files:** `buyer/spo-map.js` (`openRevised`, `saveRevised`, `resolver`, `totals`, `prepare`), `buyer/spo-data.js` (`createRevised`, `approveRevised`, `rejectRevised`, `attachRevised`, `pendingRevised`, seeds 832/856), `buyer/spo.html` (`validateMapping`, strips, stepper), `buyer/spo-invoice.html` (`validateAll`, review, receipt), `buyer/approval.html` (`spoReq`, `syncSpo`), `buyer/approvals.html`, `buyer/spos.html` (`recSt`, `aggSt`), `buyer/invoice.html` (`invStatus`), `buyer/buyer-components.css` (`.rv-*`)

@@ -54,12 +54,15 @@
       l.maps = l.maps || [];
       l.maps.forEach(m => { if (m.spo == null) m.spo = defSpo; if (m.sug === undefined) m.sug = !ro && !l.confirmed && l.conf !== 'manual'; if (ro) m.sug = false; });
       if ((l.res === 'add' || l.res === 'extra') && !l.resSpo) l.resSpo = defSpo;
+      /* a Revised SPO that was rejected (or no longer exists) puts its line back to "Needs a match" */
+      if (l.res === 'revised') { const r = SPO.get(l.resSpo); if (!r || r.state === 'canceled') { if (r && r.cancel) l.revRejected = { id: r.id, by: r.cancel.by, reason: r.cancel.reason }; l.res = null; delete l.resSpo; delete l.resLine; l.maps = []; } }
     });
     return inv;
   }
   function resolved(l) {
     if (l.res === 'remove') return !!(l.resReason || '').trim();
     if (l.res === 'add' || l.res === 'extra') return !!(l.resGl && l.resUnit && l.resSpo);
+    if (l.res === 'revised') { const r = SPO.get(l.resSpo); return !!r && r.state !== 'canceled'; }
     return l.maps.length > 0 && l.amt > 0 && Math.abs(sumMaps(l) - l.amt) < 0.005 && l.maps.every(m => !m.sug);
   }
   function status(l) {
@@ -169,7 +172,10 @@
     if (v === 'none') { l.maps = []; l.res = l.res || null; changed(); return; }
     const [s, k] = v.split(':'); connect(i, s, k);
   }
-  function res(i, k) { const l = C.inv.lines[i]; l.res = l.res === k ? null : k; if (l.res) { l.maps = []; if (!l.resSpo) l.resSpo = C.spos[0].id; } changed(); }
+  function res(i, k) {
+    const l0 = C.inv.lines[i];
+    if (k === 'revised') { if (l0.res === 'revised') { l0.res = null; delete l0.resSpo; delete l0.resLine; changed(); } else openRevised(i); return; }
+    const l = l0; l.res = l.res === k ? null : k; if (l.res) { l.maps = []; if (!l.resSpo) l.resSpo = C.spos[0].id; } changed(); }
   function set(i, f, v) { C.inv.lines[i][f] = f === 'resSpo' ? +v : v; changed(); }
   function lineAmt(i, v) { const n = parseFloat(String(v).replace(/[$,]/g, '')); const l = C.inv.lines[i]; l.amt = isNaN(n) ? 0 : r2(n); if (l.maps.length) resplit(l); changed(); }
   function lineDesc(i, v) { C.inv.lines[i].desc = v; changed(); }
@@ -209,7 +215,7 @@
     const opts = '<option value="">Connect to…</option>' + C.spos.map(s => '<optgroup label="SPO-' + s.id + '">' + s.lines.map((sl, k) => lockOf(s, k) ? '' : '<option value="' + s.id + ':' + k + '">Line ' + (k + 1) + ' · ' + sl.desc + ' · ' + money(est(s, k)) + '</option>').join('') + '</optgroup>').join('') + '<option value="none">Not on ' + (multi ? 'any SPO' : 'the SPO') + '…</option>';
     const right = C.inv.lines.map((l, i) => {
       const st = status(l), key = 'r:' + i;
-      const stateChip = { ok: '<span class="cx-state ok">' + I.check + (l.res === 'remove' ? 'Removed — not payable' : l.res === 'extra' ? 'One-time extra' : l.res === 'add' ? 'Added to SPO-' + l.resSpo : 'Mapped' + (l.maps.length > 1 ? ' · ' + l.maps.length + ' SPO lines' : '')) + '</span>',
+      const stateChip = { ok: '<span class="cx-state ok">' + I.check + (l.res === 'remove' ? 'Removed — not payable' : l.res === 'extra' ? 'One-time extra' : l.res === 'revised' ? revLabel(l) : l.res === 'add' ? 'Added to SPO-' + l.resSpo : 'Mapped' + (l.maps.length > 1 ? ' · ' + l.maps.length + ' SPO lines' : '')) + '</span>',
         sug: '<span class="cx-state sug">' + I.ai + 'Suggested by Scout AI</span>' + (C.ro ? '' : '<button class="w-linkbtn" onclick="CX.accept(' + i + ')">Accept</button>'),
         bad: '<span class="cx-state attn">' + I.warn + 'Split totals ' + money(sumMaps(l)) + ' of ' + money(l.amt) + '</span>',
         attn: '<span class="cx-state attn">' + I.warn + (l.res ? 'Finish the details below' : 'Needs a match') + '</span>' }[st];
@@ -229,6 +235,7 @@
         (C.onItemize ? '<button class="btn btn-sm" onclick="CX.itemize(' + i + ')">Ask the vendor to itemize</button>' : '') +
         '<button class="btn btn-sm" onclick="CX.splitLine(' + i + ')">Split this line</button><button class="w-linkbtn" onclick="CX.dismissRefuse()">Dismiss</button></div></div></div>';
       if (!l.maps.length && !C.ro) body += resolver(l, i);
+      else if (C.ro && l.res === 'revised') body += '<div class="cx-k" style="margin-top:6px">' + revLabel(l) + '</div>';
       else if (C.ro && l.res) body += '<div class="cx-k" style="margin-top:6px">' + (l.res === 'remove' ? '“' + (l.resReason || '') + '”' : 'Booked to ' + l.resGl + ' ' + SPO.glName(l.resGl) + ' · ' + SPO.unitLabel(l.resUnit) + (C.spos.length > 1 ? ' · SPO-' + l.resSpo : '')) + '</div>';
       return '<div class="cx-card cx-r ' + st + (sel && sel.side === 'r' && sel.key === key ? ' sel' : '') + (l.res === 'remove' ? ' gone' : '') + '" data-key="' + key + '">' +
         (C.ro || l.res ? '' : '<button class="cx-dot' + (l.maps.length ? ' on' : '') + '" data-side="r" data-key="' + key + '" aria-label="Connect invoice line ' + (i + 1) + '"></button>') +
@@ -247,12 +254,53 @@
     const glSel = '<div><label>GL code</label><select class="ivt-map-sel" onchange="CX.set(' + i + ', \'resGl\', this.value)"><option value="">GL code…</option>' + SPO.GL.map(([c, n]) => '<option value="' + c + '"' + (l.resGl === c ? ' selected' : '') + '>' + c + ' · ' + n + '</option>').join('') + '</select></div>';
     const unitSel = '<div><label>Unit</label><select class="ivt-map-sel" onchange="CX.set(' + i + ', \'resUnit\', this.value)"><option value="">Unit…</option><option value="COMMON"' + (l.resUnit === 'COMMON' ? ' selected' : '') + '>Common area</option>' + SPO.units(prop).map(u => '<option value="' + u.code + '"' + (l.resUnit === u.code ? ' selected' : '') + '>Unit ' + u.code + ' · Bldg ' + u.bldg + '</option>').join('') + '</select></div>';
     const fields = '<div class="lm-fields"' + (multi ? ' style="grid-template-columns:1fr 1fr 1fr"' : '') + '>' + spoSel + glSel + unitSel + '</div>';
+    /* Unplanned work becomes a Revised SPO (TKT-SPO-64) — never an amendment to an approved SPO or an unapproved extra. */
+    const rv = l.res === 'revised' ? SPO.get(l.resSpo) : null;
     return '<div class="cx-res"><div class="w-note warn" style="margin:0 0 6px">' + I.warn + '<span>Not on ' + (multi ? 'any selected SPO' : 'SPO-' + C.spos[0].id) + '. Connect it, or choose how to handle it.</span></div>' +
-      opt('add', 'Add to the SPO as a new line', 'Amends the SPO — its scope now includes this work') + (l.res === 'add' ? fields : '') +
-      opt('extra', 'Accept as a one-time extra charge', 'Booked to a GL and unit on this invoice only') + (l.res === 'extra' ? fields : '') +
+      (l.revRejected && !l.res ? '<div class="w-note" style="margin:0 0 6px;border-color:var(--rose);background:var(--rose-soft)"><span><b>Revised SPO-' + l.revRejected.id + ' was rejected</b> by ' + l.revRejected.by + ': “' + l.revRejected.reason + '” Remove the line, ask the vendor to correct the invoice, or create a new Revised SPO.</span></div>' : '') +
+      opt('revised', rv ? 'Revised SPO-' + rv.id + (rv.ev.approved ? ' · approved' : ' · awaiting approval') : 'Create a Revised SPO', rv ? (rv.lines[l.resLine] || rv.lines[0]).desc + ' · ' + SPO.glName((rv.lines[l.resLine] || rv.lines[0]).alloc[0].gl) + ' · ' + SPO.unitLabel((rv.lines[l.resLine] || rv.lines[0]).alloc[0].unit) + ' · the vendor isn’t emailed. Click to undo.' : 'A new SPO for this work, sent to a manager for approval with your explanation. The vendor isn’t emailed; you can finish mapping now.') +
       opt('remove', 'Remove — not payable', 'Left out of the payable total; the vendor sees your reason') +
       (l.res === 'remove' ? '<div style="margin-left:26px"><textarea class="claim-note" style="min-height:52px" placeholder="Why isn’t this payable?" onchange="CX.set(' + i + ', \'resReason\', this.value)">' + (l.resReason || '') + '</textarea></div>' : '') + '</div>';
   }
+  const revLabel = l => { const r = SPO.get(l.resSpo); return 'Revised SPO-' + l.resSpo + (r && r.ev.approved ? ' · approved' : ' · awaiting approval'); };
+  /* ---------- Revised SPO pop-up ---------- */
+  let RV = null;
+  function openRevised(i) {
+    const l = C.inv.lines[i], num = C.inv.num || 'this invoice', parent = C.spos[0].id;
+    const pend = SPO.pendingRevised(num).filter(x => C.spos.some(s => s.id === x.revised.parent));
+    const a0 = C.spos[0].lines[0].alloc[0]; /* start from the SPO's own GL and unit — usually the same building work */
+    RV = { i, num, parent, desc: l.desc || '', gl: a0.gl, unit: a0.unit, reason: '', addTo: pend.length ? pend[0].id : null };
+    let ov = document.getElementById('rev-ov');
+    if (!ov) { ov = document.createElement('div'); ov.className = 'overlay center'; ov.id = 'rev-ov'; ov.style.zIndex = '520'; ov.addEventListener('click', e => { if (e.target === ov) closeRevised(); }); document.body.appendChild(ov); }
+    ov.classList.add('open'); drawRevised();
+  }
+  function closeRevised() { const ov = document.getElementById('rev-ov'); if (ov) ov.classList.remove('open'); RV = null; }
+  function rvSet(f, v) { RV[f] = f === 'parent' || f === 'addTo' ? (v === '' || v === null ? null : +v) : v; drawRevised(f === 'reason' || f === 'desc'); }
+  function rvOk() { return !!(RV.gl && RV.unit && (RV.desc || '').trim() && (RV.addTo || (RV.reason || '').trim())); }
+  function drawRevised(keepFocus) {
+    const ov = document.getElementById('rev-ov'), l = C.inv.lines[RV.i], ps = C.spos.find(s => s.id === RV.parent) || C.spos[0];
+    if (keepFocus) { const b = ov.querySelector('#rv-go'); if (b) b.disabled = !rvOk(); return; }
+    const pend = SPO.pendingRevised(RV.num).filter(x => C.spos.some(s => s.id === x.revised.parent)), add = RV.addTo ? SPO.get(RV.addTo) : null;
+    const sel = (f, opts, v) => '<select class="ivt-map-sel" onchange="CX.rvSet(\'' + f + '\', this.value)">' + opts.map(([k, n]) => '<option value="' + k + '"' + (String(k) === String(v) ? ' selected' : '') + '>' + n + '</option>').join('') + '</select>';
+    ov.innerHTML = '<div class="val-modal" style="width:560px;max-width:calc(100vw - 32px)"><div class="val-head"><h2>Create a Revised SPO</h2><p>For work on ' + RV.num + ' that no SPO covers. It goes to a manager for approval; the vendor isn’t emailed and nothing is scheduled. You can finish mapping now — the invoice can’t go to Accounting until it’s approved.</p></div>' +
+      '<div class="val-body" style="padding:14px 24px;display:grid;gap:12px">' +
+      (pend.length ? '<label class="check-row" style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox"' + (add ? ' checked' : '') + ' onchange="CX.rvSet(\'addTo\', this.checked ? ' + pend[0].id + ' : null)"> Add to Revised SPO-' + pend[0].id + ' (awaiting approval) instead of creating another</label>' : '') +
+      (C.spos.length > 1 && !add ? '<div><label class="rv-l">Work related to</label>' + sel('parent', C.spos.map(s => [s.id, 'SPO-' + s.id + ' · ' + s.lines[0].desc]), RV.parent) + '</div>' : '') +
+      '<div><label class="rv-l">Invoice line</label><div class="rv-line"><input class="ivt-map-sel" value="' + (RV.desc || '').replace(/"/g, '&quot;') + '" oninput="CX.rvSet(\'desc\', this.value)"><b>' + money(l.amt) + '</b></div></div>' +
+      '<div class="lm-fields" style="margin:0"><div><label>GL code</label>' + sel('gl', [['', 'GL code…']].concat(SPO.GL.map(([c, n]) => [c, c + ' · ' + n])), RV.gl) + '</div><div><label>Unit</label>' + sel('unit', [['', 'Unit…'], ['COMMON', 'Common area']].concat(SPO.units(ps.prop).map(u => [u.code, 'Unit ' + u.code + ' · Bldg ' + u.bldg])), RV.unit) + '</div></div>' +
+      (add ? '<div class="w-note"><span>Revised SPO-' + add.id + '’s explanation: “' + add.revised.reason + '”</span></div>'
+        : '<div><label class="rv-l">Explain to your manager <span class="req-chip">Required</span></label><textarea class="claim-note" style="min-height:70px" placeholder="What was done, and why it wasn’t on the SPO — e.g. the tech found a clogged drain and cleared it on the same visit." oninput="CX.rvSet(\'reason\', this.value)">' + (RV.reason || '') + '</textarea></div>') +
+      '</div><div class="val-foot"><button class="btn" onclick="CX.closeRevised()">Cancel</button><button class="btn btn-primary" id="rv-go"' + (rvOk() ? '' : ' disabled') + ' onclick="CX.saveRevised()">' + (add ? 'Add to SPO-' + add.id : 'Create Revised SPO') + '</button></div></div>';
+  }
+  function saveRevised() {
+    if (!RV || !rvOk()) return;
+    const l = C.inv.lines[RV.i], upd = !!RV.addTo;
+    const r = SPO.createRevised({ parent: RV.parent, num: RV.num, desc: RV.desc.trim(), amt: l.amt, gl: RV.gl, unit: RV.unit, reason: (RV.reason || '').trim(), by: 'Alicia Grant', addTo: RV.addTo });
+    l.res = 'revised'; l.resSpo = r.id; l.resLine = r.line; l.maps = [];
+    closeRevised(); changed();
+    if (typeof showToast === 'function') showToast('Revised SPO-' + r.id + (upd ? ' updated' : ' sent for approval'), 'The vendor isn’t emailed. Finish mapping — Send unlocks once a manager approves it.');
+  }
+
   function totals() {
     const ps = perSpo(), tax = taxShares(), multi = C.spos.length > 1;
     const payable = r2(live().reduce((a, l) => a + (l.amt || 0), 0));
@@ -262,6 +310,8 @@
     C.spos.forEach(s => { const o = ps[s.id];
       h += row(multi ? 'SPO-' + s.id : 'Lines', (o.added ? 'Estimate ' + money(o.est) + ' + ' + money(o.added) + ' added' : 'Against the estimate of the lines it covers — never a $0 baseline') + (o.extra ? ' · ' + money(o.extra) + ' one-time extra' : ''), money(o.base), money(o.billed), vtxt(o.variance));
       if (o.restN && !C.ro) h += row((multi ? 'SPO-' + s.id + ' · n' : 'N') + 'ot on this invoice', o.restN + ' SPO line' + (o.restN === 1 ? '' : 's') + ' · another invoice, or close ' + (o.restN === 1 ? 'it' : 'them') + ' unbilled when you validate', money(o.rest), '—', '—'); });
+    const revs = {}; C.inv.lines.forEach(l => { if (l.res === 'revised') revs[l.resSpo] = r2((revs[l.resSpo] || 0) + (l.amt || 0)); });
+    Object.keys(revs).forEach(id => { const r = SPO.get(+id); h += row('Revised SPO-' + id, r && r.ev.approved ? 'Approved · not sent to vendor' : 'Awaiting approval · not sent to vendor', money(revs[id]), money(revs[id]), '$0.00'); });
     const removed = r2(C.inv.lines.filter(l => l.res === 'remove').reduce((a, l) => a + (l.amt || 0), 0));
     if (removed) h += row('Removed — not payable', '', '—', '−' + money(removed), '—');
     h += row('Sales tax', 'Invoice-level · not compared to line estimates', '—', money(C.inv.tax || 0), '—');
@@ -373,7 +423,7 @@
       });
       return C;
     }, prepare, resolved, status, allResolved, doneCount, perSpo, taxShares, shipShares, taxOk, sumMaps,
-    board, totals, mount, draw, unitsIn, unitMismatch, glConflict,
+    board, totals, mount, draw, unitsIn, unitMismatch, glConflict, openRevised, closeRevised, rvSet, saveRevised,
     connect, unlink, accept, dismissRefuse, itemize, splitLine, autoMap, pick, res, set, lineAmt, lineDesc, addLine, rmLine, toggleEdit
   };
 })();

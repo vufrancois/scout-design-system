@@ -161,8 +161,24 @@
       scope: 'Recharge refrigerant and replace the run capacitor on the split system.',
       lines: [L('Refrigerant recharge + capacitor', 1, 385, [A('6115', '0207', 385)])],
       invoice: { num: 'INV-1188', date: '2026-08-12', file: 'INV-1188.pdf', tax: 0, ship: 0, validated: true,
+        shared: { total: 480, spos: [856, 832], idx: 1 },
         lines: [{ desc: 'Refrigerant recharge, run capacitor — Unit 207', amt: 385, maps: [{ line: 0, amt: 385 }], conf: 'high' }] },
       ev: { created: '2026-07-30 14:00', sent: '2026-07-30 14:01', accepted: '2026-07-31 09:20', invoiced: '2026-08-12 10:05', mapped: '2026-08-16 11:42' } },
+    /* Revised SPO (10/21/2026, TKT-SPO-64): work billed on INV-1188 that SPO-856 didn't cover. Created from the mapping
+       board, never sent to the vendor, waiting on a manager — so INV-1188 can't go to Accounting yet. */
+    { id: 832, state: 'approval', prop: 'lonestar', v: 'AH', by: 'Alicia Grant', period: 'Jul 2026',
+      scope: 'Unplanned work billed on invoice INV-1188 (with SPO-856): condensate drain line flush, unit 0207.',
+      lines: [L('Condensate drain line flush — Unit 207', 1, 95, [A('6115', '0207', 95)])],
+      revised: { from: 'INV-1188', parent: 856, by: 'Alicia Grant', at: '2026-08-16 11:40',
+        reason: 'While recharging the unit the tech found the condensate drain clogged and flushed it on the same visit — it would have flooded the closet.' },
+      approval: { reason: 'Revised SPO · unplanned work on an invoice' },
+      invoice: { num: 'INV-1188', date: '2026-08-12', file: 'INV-1188.pdf', tax: 0, ship: 0, validated: true,
+        shared: { total: 480, spos: [856, 832], idx: 2 },
+        lines: [{ desc: 'Condensate drain line flush — Unit 207', amt: 95, maps: [{ line: 0, amt: 95 }], conf: 'manual' }] },
+      ev: { created: '2026-08-16 11:40', approvalReq: '2026-08-16 11:40', invoiced: '2026-08-12 10:05', mapped: '2026-08-16 11:42' },
+      log: [{ at: '2026-08-16 11:40', t: 'Revised SPO created', sub: 'from invoice INV-1188 while mapping SPO-856 · not sent to vendor · by Alicia Grant' },
+        { at: '2026-08-16 11:40', t: 'Sent for approval', sub: '“While recharging the unit the tech found the condensate drain clogged and flushed it on the same visit — it would have flooded the closet.”' },
+        { at: '2026-08-16 11:42', t: 'Invoice mapped & validated', sub: 'INV-1188 · its line on the shared invoice · by Alicia Grant', hi: true }] },
     { id: 855, state: 'accounting', prop: 'magnolia', v: 'LF', by: 'Priya Nair', period: 'Jul 2026',
       scope: 'Repair the pool-area gate latch and replace two damaged fence panels.',
       lines: [L('Gate latch repair', 1, 140, [A('6090', 'COMMON', 140)]), L('Fence panel replacement', 2, 200, [A('6090', 'COMMON', 400)])],
@@ -542,6 +558,80 @@
     return null;
   }
 
+  /* ---------- Revised SPO (10/21/2026, TKT-SPO-64) ----------
+     Work on an invoice that no SPO covers becomes a new SPO instead of amending an approved one. It's created from the
+     mapping board, never emailed to the vendor and never scheduled, and always goes to approval with the buyer's
+     explanation. Mapping carries on against it; at validation it gets its own slice of the invoice (a shared invoice),
+     so Send to Accounting stays locked until it's approved. Rejected: canceled, and its lines go back to "Needs a match". */
+  const pendingRevised = num => list().filter(x => x.revised && x.revised.from === num && x.state === 'approval');
+  function createRevised(o) {
+    const at = now();
+    if (o.addTo) {
+      const s = get(o.addTo); s.lines.push(L(o.desc, 1, o.amt, [A(o.gl, o.unit, o.amt)]));
+      log(s, 'Line added', o.desc + ' · ' + money(o.amt) + ' · from invoice ' + o.num + ' · by ' + o.by); save(s);
+      return { id: s.id, line: s.lines.length - 1 };
+    }
+    const p = get(o.parent), id = nextId();
+    const s = { id, state: 'approval', prop: p.prop, v: p.v, by: o.by, period: p.period,
+      scope: 'Unplanned work billed on invoice ' + o.num + ' (with SPO-' + p.id + '): ' + o.desc + '.',
+      lines: [L(o.desc, 1, o.amt, [A(o.gl, o.unit, o.amt)])],
+      revised: { from: o.num, parent: p.id, by: o.by, at, reason: o.reason }, approval: { reason: 'Revised SPO · unplanned work on an invoice' },
+      ev: { created: at, approvalReq: at },
+      log: [{ at, t: 'Revised SPO created', sub: 'from invoice ' + o.num + ' while mapping SPO-' + p.id + ' · not sent to vendor · by ' + o.by },
+        { at, t: 'Sent for approval', sub: '“' + o.reason + '”' }] };
+    save(s); log(p, 'Revised SPO-' + id + ' created', o.desc + ' · ' + money(o.amt) + ' · from invoice ' + o.num + ' · awaiting approval · by ' + o.by); save(p);
+    return { id, line: 0 };
+  }
+  /* Approved: no email. With its slice of the invoice already validated it's Ready; otherwise it waits for that mapping. */
+  function approveRevised(s, by, c) {
+    s.ev.approved = now(); s.approval = Object.assign({}, s.approval, { by });
+    s.state = s.invoice && s.invoice.validated ? 'ready' : 'mapping';
+    log(s, 'Approved', 'by ' + by + (c ? ' · “' + c + '”' : '') + ' · not sent to vendor', true); save(s);
+    const p = get(s.revised.parent); if (p) { log(p, 'Revised SPO-' + s.id + ' approved', 'by ' + by); save(p); }
+  }
+  function rejectRevised(s, by, c) {
+    s.state = 'canceled'; s.ev.canceled = now(); s.cancel = { by, reason: c };
+    log(s, 'Rejected in approval', 'by ' + by + ' · “' + c + '”', false, true);
+    const lines = s.invoice ? s.invoice.lines.slice() : []; delete s.invoice; save(s);
+    const p = get(s.revised.parent); if (!p) return;
+    const rej = { id: s.id, by, reason: c }, back = l => ({ desc: l.desc, amt: l.amt, maps: [], conf: 'manual', revRejected: rej });
+    if (p.invoice && p.invoice.num === s.revised.from) {
+      if (p.invoice.validated) {
+        /* the invoice goes back to mapping, the rejected lines unresolved */
+        p.invoice.lines.forEach(l => { l.conf = 'manual'; }); /* lines the buyer already confirmed stay confirmed */
+        p.invoice.lines = p.invoice.lines.concat(lines.map(back)); p.invoice.validated = false;
+        const left = p.invoice.shared ? p.invoice.shared.spos.filter(id => id !== s.id) : [];
+        const total = p.invoice.shared ? p.invoice.shared.total : null;
+        left.forEach((id, i) => { const x = id === p.id ? p : get(id), rec = x && invoicesOf(x).find(r => r.num === s.revised.from); if (!rec) return;
+          if (left.length > 1) rec.shared = { total, spos: left, idx: i + 1 }; else delete rec.shared; if (x !== p) save(x); });
+        if (['ready', 'mapping'].indexOf(p.state) >= 0) { p.state = 'mapping'; delete p.ev.mapped; }
+      }
+      [p.invoice, p.mapDraft].forEach(inv => inv && inv.lines.forEach(l => { if (l.res === 'revised' && l.resSpo === s.id) { l.res = null; delete l.resSpo; delete l.resLine; l.maps = []; l.revRejected = rej; } }));
+    }
+    log(p, 'Revised SPO-' + s.id + ' rejected', '“' + c + '” · its invoice lines need a match again', false, true); save(p);
+  }
+
+  /* Validating an invoice that has Revised SPO lines: each Revised SPO gets its own slice (its lines, no tax — tax stays
+     with the invoice) and the invoice becomes shared across the base SPOs and the Revised SPOs. A Revised SPO still
+     awaiting approval stays in Pending Approval, which keeps Send locked for the whole invoice (invReady). */
+  function attachRevised(baseIds, num, lines, total) {
+    const byRev = {}; lines.forEach(l => { const r = get(l.resSpo); if (r && r.state !== 'canceled') (byRev[r.id] = byRev[r.id] || []).push(l); });
+    const revIds = Object.keys(byRev).map(Number); if (!revIds.length) return [];
+    const base = baseIds.map(get), b0 = base[0].invoice, at = now();
+    const all = baseIds.concat(revIds), shared = i => ({ total, spos: all, idx: i + 1 });
+    base.forEach((x, i) => { x.invoice.shared = shared(i); save(x); });
+    revIds.forEach((id, j) => {
+      const r = get(id);
+      r.invoice = { num, date: b0.date, file: b0.file, size: b0.size, tax: 0, ship: 0, validated: true, shared: shared(baseIds.length + j),
+        lines: byRev[id].map(l => ({ desc: l.desc, amt: l.amt, maps: [{ line: l.resLine, amt: l.amt }], conf: 'manual' })) };
+      r.ev.invoiced = r.ev.invoiced || at; r.ev.mapped = at;
+      r.state = r.ev.approved ? 'ready' : 'approval';
+      log(r, 'Invoice mapped & validated', num + ' · ' + money(r2(byRev[id].reduce((a, l) => a + l.amt, 0))) + (r.ev.approved ? '' : ' · waits for approval before it can go to Accounting'), true);
+      save(r);
+    });
+    return revIds;
+  }
+
   /* Accounting references (TKT-SPO-63): the IDs Accounting matches in their system. Demo codes are stable and look real —
      never TEMP codes or placeholder names (audit SPO-03, SPO-13). */
   const LOCATION = { magnolia: '0412', bayou: '0518', lonestar: '0623', central: '0731', cypress: '0656', beauchene: '0844', sherwood: '0927', cyprus: '1035', heights: '1142' };
@@ -806,5 +896,5 @@
 
   window.SPO = { TODAY, APPROVAL_LIMIT, VEN, ini, vh, GL, GL_BUDGET, STATES, ICON, ORDER_LINES, fileSize, invSize,
     units, unitLabel, glName, money, r2, fmtDate, fmtDT, total, invSubtotal, invTotal,
-    budget, glOver, needsApproval, invoicesOf, lineState, progress, invCovers, billedTotal, invPeers, invReady, sendInvoice, actorOf, actRow, glStrip, vendorCode, locationId, acctRefs, afterSend, closeLines, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
+    budget, glOver, needsApproval, invoicesOf, lineState, progress, invCovers, billedTotal, invPeers, invReady, sendInvoice, actorOf, actRow, glStrip, pendingRevised, createRevised, approveRevised, rejectRevised, attachRevised, vendorCode, locationId, acctRefs, afterSend, closeLines, needsTime, resp, canRebid, canRespond, canEditResp, ackText, TZ, APPT, appt, fmtAppt, dLong, t12, list, get, save, nextId, now, log, reset, counts };
 })();

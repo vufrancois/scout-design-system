@@ -205,7 +205,7 @@ Gallery **Buyer App · Service POs → Recurring SPOs** and the design-doc **Rec
 **Files:** `buyer/sch-cal.js` (`runs`, `mount`, `pick`, `skip`), `buyer/schedules.html` (`setView`, `renderCal`), `buyer/buyer-components.css` (`.cal*`, `.seg.on-card`, `.cal-toggle`)
 
 ### TKT-SPO-49 · Run calendar on a recurring SPO's page
-> **Superseded 10/21/2026 — don't build.** The Service calendar (TKT-SPO-56) stands on its own; the recurring SPO page links to it.
+> **Restored 10/21/2026:** the run calendar was briefly removed, then brought back on request. Build it; its header links to the Service calendar.
 **Summary:** The recurring SPO's rail shows its own runs on a mini month calendar.
 **Acceptance criteria:**
 - [ ] The mini calendar shows only this series, opening on the month of the next run (or the end date for an ended series).
@@ -267,5 +267,5 @@ Vu renamed **Schedules** to **Recurring SPOs** everywhere in the app and the doc
 ## Addendum · The Service calendar stands on its own (10/21/2026)
 
 Team feedback: remove the separate recurring calendar so the Service calendar stands on its own, mark recurring items with the arrows icon, and stop non-recurring items from offering "Open recurring SPO".
-- **Removed:** the Run calendar (mini calendar) in a recurring SPO's rail. The page links to the Service calendar ("View runs on the Service calendar"); Skip and Undo skip stay on its Upcoming runs list. **TKT-SPO-49 is superseded — don't build it.**
+- **Run calendar kept:** it was removed in this round, then restored the same day on request. The recurring SPO's rail has its Run calendar again (TKT-SPO-49 stands), with a **Service calendar** link in its header.
 - **Recurring marker:** every recurring run's tile carries the arrows icon — alone before the run exists, with the SPO number once it does (⇄ 842) — and the popover title shows it too. One-off SPO appointments show the number only. "Open recurring SPO" only appears on items with the icon (checked tile by tile).

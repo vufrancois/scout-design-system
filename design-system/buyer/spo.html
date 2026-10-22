@@ -497,7 +497,8 @@
      An approval carries over when the amount doesn't go up. */
   const ME = 'Alicia Grant';
   function rebidLink(s) {
-    if (s.revised) return '<div class="series-link">' + IC.split + '<span>Revised SPO · from invoice <b>' + s.revised.from + '</b> while mapping SPO-' + s.revised.parent + ' · not sent to vendor</span><a class="text-link" href="spo.html#' + s.revised.parent + '">View SPO-' + s.revised.parent + '</a></div>';
+    if (s.revised) { const inv = SPO.list().some(x => SPO.invoicesOf(x).some(r => r.num === s.revised.from));
+      return '<div class="series-link">' + IC.split + '<span>Revised SPO · from invoice <b>' + s.revised.from + '</b> · not sent to vendor</span>' + (inv ? '<a class="text-link" href="invoice.html#' + encodeURIComponent(s.revised.from) + '">View invoice</a>' : '') + '</div>'; }
     if (s.rebidOf) { const o = SPO.get(s.rebidOf); return '<div class="series-link">' + IC.swap + '<span>Rebid of <b>SPO-' + s.rebidOf + '</b>' + (o && o.ev.canceled ? ' · canceled ' + SPO.fmtDate(o.ev.canceled) : '') + (o ? ' · was ' + ven(o).name : '') + '</span><a class="text-link" href="spo.html#' + s.rebidOf + '">View SPO-' + s.rebidOf + '</a></div>'; }
     if (s.rebidAs) { const n = SPO.get(s.rebidAs); return '<div class="series-link">' + IC.swap + '<span>Rebid as <b>SPO-' + s.rebidAs + '</b>' + (n ? ' · ' + SPO.STATES[n.state].label + (n.state !== 'rebid' ? ' · ' + ven(n).name : '') : '') + '</span><a class="text-link" href="spo.html#' + s.rebidAs + '">View SPO-' + s.rebidAs + '</a></div>'; }
     return '';

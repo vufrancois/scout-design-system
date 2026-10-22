@@ -266,26 +266,27 @@
   /* ---------- Revised SPO pop-up ---------- */
   let RV = null;
   function openRevised(i) {
-    const l = C.inv.lines[i], num = C.inv.num || 'this invoice', parent = C.spos[0].id;
-    const pend = SPO.pendingRevised(num).filter(x => C.spos.some(s => s.id === x.revised.parent));
-    const a0 = C.spos[0].lines[0].alloc[0]; /* start from the SPO's own GL and unit — usually the same building work */
-    RV = { i, num, parent, desc: l.desc || '', gl: a0.gl, unit: a0.unit, reason: '', addTo: pend.length ? pend[0].id : null };
+    /* A Revised SPO belongs to the invoice, not to one SPO (10/22/2026): no "related SPO" to pick. */
+    const l = C.inv.lines[i], num = C.inv.num || 'this invoice';
+    const pend = SPO.pendingRevised(num, C.spos[0].v);
+    /* One SPO on the invoice: start from its GL and unit (usually the same building work). Several: start empty. */
+    const a0 = C.spos.length === 1 ? C.spos[0].lines[0].alloc[0] : { gl: '', unit: '' };
+    RV = { i, num, desc: l.desc || '', gl: a0.gl, unit: a0.unit, reason: '', addTo: pend.length ? pend[0].id : null };
     let ov = document.getElementById('rev-ov');
     if (!ov) { ov = document.createElement('div'); ov.className = 'overlay center'; ov.id = 'rev-ov'; ov.style.zIndex = '520'; ov.addEventListener('click', e => { if (e.target === ov) closeRevised(); }); document.body.appendChild(ov); }
     ov.classList.add('open'); drawRevised();
   }
   function closeRevised() { const ov = document.getElementById('rev-ov'); if (ov) ov.classList.remove('open'); RV = null; }
-  function rvSet(f, v) { RV[f] = f === 'parent' || f === 'addTo' ? (v === '' || v === null ? null : +v) : v; drawRevised(f === 'reason' || f === 'desc'); }
+  function rvSet(f, v) { RV[f] = f === 'addTo' ? (v === '' || v === null ? null : +v) : v; drawRevised(f === 'reason' || f === 'desc'); }
   function rvOk() { return !!(RV.gl && RV.unit && (RV.desc || '').trim() && (RV.addTo || (RV.reason || '').trim())); }
   function drawRevised(keepFocus) {
-    const ov = document.getElementById('rev-ov'), l = C.inv.lines[RV.i], ps = C.spos.find(s => s.id === RV.parent) || C.spos[0];
+    const ov = document.getElementById('rev-ov'), l = C.inv.lines[RV.i], ps = C.spos[0];
     if (keepFocus) { const b = ov.querySelector('#rv-go'); if (b) b.disabled = !rvOk(); return; }
-    const pend = SPO.pendingRevised(RV.num).filter(x => C.spos.some(s => s.id === x.revised.parent)), add = RV.addTo ? SPO.get(RV.addTo) : null;
+    const pend = SPO.pendingRevised(RV.num, C.spos[0].v), add = RV.addTo ? SPO.get(RV.addTo) : null;
     const sel = (f, opts, v) => '<select class="ivt-map-sel" onchange="CX.rvSet(\'' + f + '\', this.value)">' + opts.map(([k, n]) => '<option value="' + k + '"' + (String(k) === String(v) ? ' selected' : '') + '>' + n + '</option>').join('') + '</select>';
     ov.innerHTML = '<div class="val-modal" style="width:560px;max-width:calc(100vw - 32px)"><div class="val-head"><h2>Create a Revised SPO</h2><p>For work on ' + RV.num + ' that no SPO covers. It goes to a manager for approval; the vendor isn’t emailed and nothing is scheduled. You can finish mapping now — the invoice can’t go to Accounting until it’s approved.</p></div>' +
       '<div class="val-body" style="padding:14px 24px;display:grid;gap:12px">' +
       (pend.length ? '<label class="check-row" style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox"' + (add ? ' checked' : '') + ' onchange="CX.rvSet(\'addTo\', this.checked ? ' + pend[0].id + ' : null)"> Add to Revised SPO-' + pend[0].id + ' (awaiting approval) instead of creating another</label>' : '') +
-      (C.spos.length > 1 && !add ? '<div><label class="rv-l">Work related to</label>' + sel('parent', C.spos.map(s => [s.id, 'SPO-' + s.id + ' · ' + s.lines[0].desc]), RV.parent) + '</div>' : '') +
       '<div><label class="rv-l">Invoice line</label><div class="rv-line"><input class="ivt-map-sel" value="' + (RV.desc || '').replace(/"/g, '&quot;') + '" oninput="CX.rvSet(\'desc\', this.value)"><b>' + money(l.amt) + '</b></div></div>' +
       '<div class="lm-fields" style="margin:0"><div><label>GL code</label>' + sel('gl', [['', 'GL code…']].concat(SPO.GL.map(([c, n]) => [c, c + ' · ' + n])), RV.gl) + '</div><div><label>Unit</label>' + sel('unit', [['', 'Unit…'], ['COMMON', 'Common area']].concat(SPO.units(ps.prop).map(u => [u.code, 'Unit ' + u.code + ' · Bldg ' + u.bldg])), RV.unit) + '</div></div>' +
       (add ? '<div class="w-note"><span>Revised SPO-' + add.id + '’s explanation: “' + add.revised.reason + '”</span></div>'
@@ -295,7 +296,7 @@
   function saveRevised() {
     if (!RV || !rvOk()) return;
     const l = C.inv.lines[RV.i], upd = !!RV.addTo;
-    const r = SPO.createRevised({ parent: RV.parent, num: RV.num, desc: RV.desc.trim(), amt: l.amt, gl: RV.gl, unit: RV.unit, reason: (RV.reason || '').trim(), by: 'Alicia Grant', addTo: RV.addTo });
+    const r = SPO.createRevised({ num: RV.num, date: C.inv.date, v: C.spos[0].v, prop: C.spos[0].prop, spos: C.spos.map(s => s.id), desc: RV.desc.trim(), amt: l.amt, gl: RV.gl, unit: RV.unit, reason: (RV.reason || '').trim(), by: 'Alicia Grant', addTo: RV.addTo });
     l.res = 'revised'; l.resSpo = r.id; l.resLine = r.line; l.maps = [];
     closeRevised(); changed();
     if (typeof showToast === 'function') showToast('Revised SPO-' + r.id + (upd ? ' updated' : ' sent for approval'), 'The vendor isn’t emailed. Finish mapping — Send unlocks once a manager approves it.');
